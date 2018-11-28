@@ -1,14 +1,10 @@
-import { arg } from 'gqliteral'
-import { GQLiteralInputObjectType } from 'gqliteral/dist/core'
-import { ArgDefinition, ArgOpts, FieldOpts } from 'gqliteral/dist/types'
-import { TypesMap } from './prisma'
-import {
-  GraphQLScalarType,
-  GraphQLType,
-  GraphQLTypeField,
-} from './source-helper'
-import { throwIfUnknownFields } from './throw'
-import { AnonymousField, ObjectField } from './types'
+import { arg } from 'gqliteral';
+import { GQLiteralInputObjectType } from 'gqliteral/dist/core';
+import { ArgDefinition, ArgOpts, FieldOpts } from 'gqliteral/dist/types';
+import { TypesMap } from './prisma';
+import { GraphQLScalarType, GraphQLType, GraphQLTypeField } from './source-helper';
+import { throwIfUnknownFields } from './throw';
+import { AnonymousAliases, AnonymousField, AnonymousInputFields, AnonymousPickOmitField, ObjectField } from './types';
 
 export interface ScalarToObjectInputArg {
   String: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
@@ -84,15 +80,23 @@ export function getAllFields(
   )
 }
 
+function isDefaultInput(
+  inputFields: AnonymousInputFields | undefined,
+): boolean {
+  return (
+    inputFields === undefined ||
+    (Array.isArray(inputFields) && inputFields.length === 0)
+  )
+}
+
 export function getFields(
-  inputFields: AnonymousField[] | undefined,
+  inputFields: AnonymousInputFields | undefined,
   typeName: string,
   typesMap: TypesMap,
 ): ObjectField[] {
-  const fields =
-    inputFields === undefined || inputFields.length === 0
-      ? getAllFields(typeName, typesMap)
-      : normalizeFields(inputFields)
+  const fields = isDefaultInput(inputFields)
+    ? getAllFields(typeName, typesMap)
+    : normalizeFields(inputFields as AnonymousInputFields)
 
   const graphqlType = getGraphQLType(typeName, typesMap)
 
@@ -102,8 +106,36 @@ export function getFields(
   return fields
 }
 
-export function normalizeFields(fields: AnonymousField[]): ObjectField[] {
-  return fields.map(f => {
+function isPickOmitField(
+  arg: AnonymousInputFields,
+): arg is AnonymousPickOmitField {
+  return (
+    (arg as AnonymousPickOmitField).pick !== undefined ||
+    (arg as AnonymousPickOmitField).omit !== undefined
+  )
+}
+
+function isAliasField(arg: AnonymousInputFields): arg is AnonymousAliases {
+  return (arg as AnonymousAliases).aliases !== undefined
+}
+
+export function normalizeFields(fields: AnonymousInputFields): ObjectField[] {
+  let fieldsToMap: AnonymousField[] = []
+
+  if (Array.isArray(fields)) {
+    fieldsToMap = fields
+  } else {
+    if (isPickOmitField(fields) && fields.omit) {
+      throw new Error('Omit not yet implemented')
+    }
+    if (isPickOmitField(fields) && fields.pick) {
+      fieldsToMap = fields.pick
+    } else if (isAliasField(fields)) {
+      fieldsToMap = fields.aliases
+    }
+  }
+
+  return fieldsToMap.map(f => {
     if (typeof f === 'string') {
       return {
         name: f,

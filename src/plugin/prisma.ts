@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import { arg, enumType, inputObjectType, objectType } from 'gqliteral'
+import { arg, core, enumType, inputObjectType, objectType } from 'gqliteral'
 import { GQLiteralObjectType } from 'gqliteral/dist/core'
 import { ArgDefinition } from 'gqliteral/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
@@ -13,7 +13,12 @@ import {
   GraphQLTypeObject,
 } from './source-helper'
 import { throwIfUnknownClientFunction, throwIfUnkownArgsName } from './throw'
-import { AnonymousField, InputField, ObjectField } from './types'
+import {
+  AddFieldInput,
+  AnonymousInputFields,
+  InputField,
+  ObjectField,
+} from './types'
 import {
   getFields,
   getLiteralArg,
@@ -311,10 +316,6 @@ function exportRelayConnectionTypes(
   module.exports[aggregateTypeName] = objectType(aggregateTypeName, t => {
     addFieldsTo(t, typesMap, aliasesMap, getFields(undefined, t.name, typesMap))
   })
-
-  // objectType('*Connection', (t) => {
-  //   t.field('pageInfo', 'PageInfo')
-  // })
 }
 
 interface AliasMap {
@@ -323,47 +324,48 @@ interface AliasMap {
   }
 }
 
-type AddFieldInput<GenTypes, TypeName extends string> =
-  | InputField<GenTypes, TypeName>[]
-  | {
-      expose: InputField<GenTypes, TypeName>[]
-    }
-  | {
-      hide: InputField<GenTypes, TypeName>[]
-    }
+// TODO: Fix this
+let typesMapCache: TypesMap | null = null
+let aliasesMapCache = {}
 
-class PrismaPlugin {
+function getTypesMap() {
+  if (typesMapCache === null) {
+    const schemaPath = join(__dirname, '../generated/prisma.graphql')
+    typesMapCache = buildTypesMap(schemaPath)
+  }
+
+  return typesMapCache
+}
+
+function getAliasesMap() {
+  return aliasesMapCache
+}
+
+class ObjectTypeWithPrisma<
+  GenTypes = GQLiteralGen,
+  TypeName extends string = any
+> extends core.GQLiteralObjectType<GenTypes, TypeName> {
   protected typesMap: TypesMap
   protected aliasesMap: AliasMap
 
-  constructor() {
-    const schemaPath = join(__dirname, '../generated/prisma.graphql')
-
-    this.typesMap = buildTypesMap(schemaPath)
-    this.aliasesMap = {}
+  constructor(typeName: string) {
+    super(typeName)
+    this.typesMap = getTypesMap()
+    this.aliasesMap = getAliasesMap()
   }
 
-  addFields<GenTypes = GQLiteralGen, TypeName extends string = any>(
-    t: GQLiteralObjectType<GenTypes, TypeName>,
-    inputFields?: AddFieldInput<GenTypes, TypeName>,
-  ) {
-    const typeName = t.name
+  prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>) {
+    const typeName = this.name
+
     const fields = getFields(
-      inputFields as AnonymousField[],
+      inputFields as AnonymousInputFields,
       typeName,
       this.typesMap,
     )
 
     this.addFieldsToAliasMap(typeName, fields)
 
-    addFieldsTo(t, this.typesMap, this.aliasesMap, fields)
-  }
-
-  hideFields<GenTypes = GQLiteralGen, TypeName extends string = any>(
-    t: GQLiteralObjectType,
-    ...inputFields: InputField<GenTypes, TypeName>[]
-  ): void {
-    hidePrismaFields(t, this.typesMap, inputFields)
+    addFieldsTo(this, this.typesMap, this.aliasesMap, fields)
   }
 
   protected addFieldsToAliasMap(typeName: string, fields: ObjectField[]) {
@@ -385,4 +387,20 @@ class PrismaPlugin {
   }
 }
 
-export const prisma = new PrismaPlugin()
+export function prismaObjectType<
+  GenTypes = GQLiteralGen,
+  TypeName extends string = any
+>(
+  typeName: TypeName,
+  fn?: (t: ObjectTypeWithPrisma<GenTypes, TypeName>) => void,
+) {
+  const objectType = new ObjectTypeWithPrisma<GenTypes, TypeName>(typeName)
+
+  if (fn === undefined) {
+    objectType.prismaFields()
+  } else {
+    fn(objectType)
+  }
+
+  return objectType
+}

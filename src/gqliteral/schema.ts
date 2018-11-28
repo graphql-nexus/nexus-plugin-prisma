@@ -7,24 +7,21 @@ import * as allTypes from './types'
  * type we defined above) and export it.
  */
 
-interface PrismaSchemaConfig<GenTypes = any> extends core.Types.SchemaConfig<GenTypes> {
+interface PrismaSchemaConfig<GenTypes = any>
+  extends core.Types.SchemaConfig<GenTypes> {
   prismaSchemaPath: string
 }
 
-// class PrismaSchemaBuilder extends core.SchemaBuilder {
-  
-// }
+function buildPrismaSchema<GenTypes = GQLiteralGen>(
+  options: PrismaSchemaConfig<GenTypes>,
+) {
+  buildSchema(options)
+}
 
-// const buildPrismaSchema = ({ prismaSchemaPath }) => {
-
-
-//   return buildSchema()
-// }
-
-
-
-export const prismaSchema = buildSchema({
+export const prismaSchema = buildPrismaSchema({
   types: allTypes,
+
+  prismaSchemaPath: '__PRISMA__SCHEMA__PATH__',
 
   outputs: {
     schema: path.join(__dirname, '../../schema.graphql'),
@@ -42,7 +39,7 @@ export const prismaSchema = buildSchema({
     rootTypes: {
       User: 'prisma.User',
       //Post: 'prisma.Post',
-    }, 
+    },
   },
 
   // plugins: [prismaPlugin],
@@ -68,11 +65,7 @@ export const schema = buildSchema({
       User: 'prisma.User',
       //Post: 'prisma.Post',
     },
-
-
   },
-
-
 
   // plugins: [prismaPlugin],
 })

@@ -28,6 +28,12 @@ type MT<T> = T | (() => T);
 // Maybe Thunk, with args
 type MTA<T, A> = T | ((args?: A) => T);
 
+export type QueryBlogPostsReturnType = MP<MPL<MP<PostReturnType>>>;
+
+export interface QueryBlogPostsArgs {
+  where?: PostWhereInput;
+}
+
 export type QueryUserReturnType = MP<null | UserReturnType>;
 
 export interface QueryUserArgs {
@@ -37,45 +43,20 @@ export interface QueryUserArgs {
 export type QueryUsersReturnType = MP<MPL<MP<UserReturnType>>>;
 
 export interface QueryUsersArgs {
-  first?: number;
-  last?: number;
+  where?: UserWhereInput;
 }
 
 export interface QueryRootType {
+  blogPosts: any[];
   user?: null | any;
   users: any[];
 }
 
 export type QueryReturnType = {
+  blogPosts: MTA<MP<any[]>, QueryBlogPostsArgs>;
   user?: MTA<MP<null | any>, QueryUserArgs>;
   users: MTA<MP<any[]>, QueryUsersArgs>;
 }
-
-interface UserWhereUniqueInput {
-  id?: string;
-}
-
-export type UserBlogPostsReturnType = MP<MPL<MP<PostReturnType>>>;
-
-export interface UserBlogPostsArgs {
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
-  orderBy?: PostOrderByInput;
-  skip?: number;
-  where?: PostWhereInput;
-}
-
-export type UserIdReturnType = MP<string>;
-
-export type UserNameReturnType = MP<string>;
-
-export type UserRootType = prisma.User;
-
-export type UserReturnType = prisma.User
-
-export type PostOrderByInput = "content_ASC" | "content_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "title_ASC" | "title_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
 interface PostWhereInput {
   AND?: Array<null | PostWhereInput>;
@@ -162,18 +143,6 @@ interface CommentWhereInput {
   OR?: Array<null | CommentWhereInput>;
 }
 
-export type PostCommentsReturnType = MP<MPL<MP<CommentReturnType>>>;
-
-export interface PostCommentsArgs {
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
-  orderBy?: CommentOrderByInput;
-  skip?: number;
-  where?: CommentWhereInput;
-}
-
 export type PostContentReturnType = MP<string>;
 
 export type PostIdReturnType = MP<string>;
@@ -181,74 +150,94 @@ export type PostIdReturnType = MP<string>;
 export type PostTitleReturnType = MP<string>;
 
 export interface PostRootType {
-  comments: any[];
   content: string;
   id: string;
   title: string;
 }
 
 export type PostReturnType = {
-  comments: MTA<MP<any[]>, PostCommentsArgs>;
   content: MT<MP<string>>;
   id: MT<MP<string>>;
   title: MT<MP<string>>;
 }
 
-export type CommentOrderByInput = "content_ASC" | "content_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
-
-export type CommentContentReturnType = MP<string>;
-
-export type CommentIdReturnType = MP<string>;
-
-export interface CommentRootType {
-  content: string;
-  id: string;
+interface UserWhereUniqueInput {
+  id?: string;
 }
 
-export type CommentReturnType = {
-  content: MT<MP<string>>;
-  id: MT<MP<string>>;
+export type UserIdentifierReturnType = MP<string>;
+
+export type UserNameReturnType = MP<string>;
+
+export type UserRootType = prisma.User;
+
+export type UserReturnType = prisma.User
+
+interface UserWhereInput {
+  AND?: Array<null | UserWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  name?: string;
+  name_contains?: string;
+  name_ends_with?: string;
+  name_gt?: string;
+  name_gte?: string;
+  name_in?: Array<null | string>;
+  name_lt?: string;
+  name_lte?: string;
+  name_not?: string;
+  name_not_contains?: string;
+  name_not_ends_with?: string;
+  name_not_in?: Array<null | string>;
+  name_not_starts_with?: string;
+  name_starts_with?: string;
+  NOT?: Array<null | UserWhereInput>;
+  OR?: Array<null | UserWhereInput>;
+  posts_every?: PostWhereInput;
+  posts_none?: PostWhereInput;
+  posts_some?: PostWhereInput;
 }
 
 export interface GQLiteralGenArgTypes {
   Query: {
+    blogPosts: QueryBlogPostsArgs;
     user: QueryUserArgs;
     users: QueryUsersArgs;
-  };
-  User: {
-    blogPosts: UserBlogPostsArgs;
-  };
-  Post: {
-    comments: PostCommentsArgs;
   };
 }
 
 export interface GQLiteralGenRootTypes {
   Query: QueryRootType;
-  User: UserRootType;
   Post: PostRootType;
-  Comment: CommentRootType;
+  User: UserRootType;
 }
 
 export interface GQLiteralGenReturnTypes {
   Query: {
+    blogPosts: QueryBlogPostsReturnType;
     user: QueryUserReturnType;
     users: QueryUsersReturnType;
   };
-  User: {
-    blogPosts: UserBlogPostsReturnType;
-    id: UserIdReturnType;
-    name: UserNameReturnType;
-  };
   Post: {
-    comments: PostCommentsReturnType;
     content: PostContentReturnType;
     id: PostIdReturnType;
     title: PostTitleReturnType;
   };
-  Comment: {
-    content: CommentContentReturnType;
-    id: CommentIdReturnType;
+  User: {
+    identifier: UserIdentifierReturnType;
+    name: UserNameReturnType;
   };
 }
 
@@ -257,28 +246,24 @@ export interface GQLiteralGenTypes {
   rootTypes: GQLiteralGenRootTypes;
   returnTypes: GQLiteralGenReturnTypes;
   context: ctx.Context;
-  enums: {
-    PostOrderByInput: PostOrderByInput;
-    CommentOrderByInput: CommentOrderByInput;
-  };
+  enums: {};
   objects: {
     Query: QueryRootType;
-    User: UserRootType;
     Post: PostRootType;
-    Comment: CommentRootType;
+    User: UserRootType;
   };
   interfaces: {};
   unions: {};
   scalars: {
-    ID: any;
     String: any;
-    Int: any;
+    ID: any;
     Boolean: any;
   };
   inputObjects: {
-    UserWhereUniqueInput: any;
     PostWhereInput: any;
     CommentWhereInput: any;
+    UserWhereUniqueInput: any;
+    UserWhereInput: any;
   };
   allInputTypes: 
     | Extract<keyof GQLiteralGenTypes['inputObjects'], string>

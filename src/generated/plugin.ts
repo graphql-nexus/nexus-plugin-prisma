@@ -24,8 +24,8 @@ type UserPostsArgs =
 type UserExposableFields = Extract<keyof Omit<UserPromise, KeysToOmit>, string>
 type UserExposableObjects =
   | UserExposableFields
-  | { name: 'id'; args?: [] | false; alias?: string }
-  | { name: 'name'; args?: [] | false; alias?: string }
+  | { name: 'id'; args?: false; alias?: string }
+  | { name: 'name'; args?: false; alias?: string }
   | { name: 'posts'; args?: UserPostsArgs[] | false; alias?: string }
 
 type PostCommentsArgs =
@@ -39,9 +39,9 @@ type PostCommentsArgs =
 type PostExposableFields = Extract<keyof Omit<PostPromise, KeysToOmit>, string>
 type PostExposableObjects =
   | PostExposableFields
-  | { name: 'id'; args?: [] | false; alias?: string }
-  | { name: 'title'; args?: [] | false; alias?: string }
-  | { name: 'content'; args?: [] | false; alias?: string }
+  | { name: 'id'; args?: false; alias?: string }
+  | { name: 'title'; args?: false; alias?: string }
+  | { name: 'content'; args?: false; alias?: string }
   | { name: 'comments'; args?: PostCommentsArgs[] | false; alias?: string }
 
 type QueryUserArgs = 'where'
@@ -95,6 +95,19 @@ type QueryExposableObjects =
     }
   | { name: 'comments'; args?: QueryCommentsArgs[] | false; alias?: string }
 
+interface QueryAliases {
+  name: QueryExposableFields
+  alias: string
+}
+interface UserAliases {
+  name: UserExposableFields
+  alias: string
+}
+interface PostAliases {
+  name: PostExposableFields
+  alias: string
+}
+
 export interface PluginShapes {
   fields: Record<string, any>
 }
@@ -104,6 +117,11 @@ interface PluginTypes {
     Query: QueryExposableObjects
     User: UserExposableObjects
     Post: PostExposableObjects
+  }
+  alias: {
+    Query: QueryAliases
+    User: UserAliases
+    Post: PostAliases
   }
 }
 
