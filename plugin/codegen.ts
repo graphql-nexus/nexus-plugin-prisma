@@ -1,0 +1,176 @@
+import { readFileSync, writeFileSync } from 'fs'
+import { EOL } from 'os'
+import { join } from 'path'
+import { prisma } from '../src/generated/prisma-client'
+import {
+  extractTypes,
+  GraphQLTypeField,
+  GraphQLTypeObject,
+  GraphQLTypes,
+} from './source-helper'
+
+codegen()
+process.exit(0)
+
+export function codegen(/* schemaPath: string */) {
+  const schemaPath =
+    '/Users/flavian/Projects/prisma/woopwoop/src/generated/prisma.graphql'
+  const typeDefs = readFileSync(schemaPath).toString()
+
+  const types = extractTypes(typeDefs)
+
+  const typesToRender = render(types)
+
+  const outputPath = join(__dirname, '../src/generated/plugins.ts')
+
+  writeFileSync(outputPath, typesToRender)
+
+  console.log('Types generated at plugin.ts')
+}
+
+export function render(types: GraphQLTypes) {
+  const objectTypes = types.types.filter(t => t.type.isObject)
+
+  return `\
+// GENERATED TYPES FOR PLUGIN. /!\\ DO NOT EDIT MANUALLY
+
+${objectTypes.map(renderType).join(EOL)}
+
+export interface PluginTypes {
+  fields: {
+${objectTypes
+    .map(type => `    ${type.name}: ${getExposableObjectsTypeName(type)}`)
+    .join(EOL)}
+  }
+  aliases: {
+${objectTypes
+    .map(type => `    ${type.name}: ${getTypeAliasesName(type)}`)
+    .join(EOL)}
+  }
+}
+
+// declare global {
+//   interface GraphQLiteralGen extends PluginTypes {}
+// }
+  `
+}
+
+function renderType(type: GraphQLTypeObject) {
+  return `\
+// Types for ${type.name}
+
+${renderFields(type)}
+
+${renderFieldsArgs(type)}
+
+${renderAliasFields(type)}
+`
+}
+
+function renderFields(type: GraphQLTypeObject) {
+  return `\
+type ${getExposableObjectsTypeName(type)} =
+  | ${getExposableFieldsTypeName(type)}
+${type.fields
+    .map(
+      f =>
+        `  | { name: '${f.name}', args?: ${
+          f.arguments.length > 0
+            ? `${getTypeFieldArgName(type, f)}[] | false`
+            : '[] | false'
+        }, alias?: string  } `,
+    )
+    .join(EOL)}
+
+type ${getExposableFieldsTypeName(type)} =
+${type.fields.map(f => `  | '${f.name}'`).join(EOL)}
+`
+}
+
+function renderFieldsArgs(type: GraphQLTypeObject) {
+  return `\
+${type.fields
+    .filter(field => field.arguments.length > 0)
+    .map(field => renderFieldArg(type, field))
+    .join(EOL)}
+  `
+}
+
+function renderFieldArg(type: GraphQLTypeObject, f: GraphQLTypeField) {
+  return `\
+type ${getTypeFieldArgName(type, f)} =
+${f.arguments.map(arg => `  | '${arg.name}'`).join(EOL)}`
+}
+
+function renderAliasFields(type: GraphQLTypeObject) {
+  return `\
+interface ${getTypeAliasesName(type)} {
+  name: ${getExposableFieldsTypeName(type)}
+  alias: string
+}`
+}
+
+function getExposableFieldsTypeName(type: GraphQLTypeObject) {
+  return `${type.name}Fields`
+}
+
+function upperFirst(s: string) {
+  return s.replace(/^\w/, c => c.toUpperCase())
+}
+
+function getTypeFieldArgName(type: GraphQLTypeObject, field: GraphQLTypeField) {
+  return `${type.name}${upperFirst(field.name)}Args`
+}
+
+function getExposableObjectsTypeName(type: GraphQLTypeObject) {
+  return `${type.name}`
+}
+
+function getTypeAliasesName(type: GraphQLTypeObject) {
+  return `${type.name}Alias`
+}
+
+// function renderArgs(
+//   field: GraphQLTypeField,
+//   isMutation = false,
+//   isTopLevel = false,
+// ) {
+//   const { arguments: args } = field
+//   const hasArgs = args.length > 0
+
+//   const allOptional = args.reduce((acc, curr) => {
+//     if (!acc) {
+//       return false
+//     }
+
+//     return !curr.type.isRequired
+//   }, true)
+
+//   // hard-coded for Prisma ease-of-use
+//   if (isMutation && field.name.startsWith('create')) {
+//     return `data${allOptional ? '?' : ''}: ${this.renderInputFieldTypeHelper(
+//       args[0],
+//       isMutation,
+//     )}`
+//   } else if (
+//     (isMutation && field.name.startsWith('delete')) || // either it's a delete mutation
+//     (!isMutation &&
+//       isTopLevel &&
+//       args.length === 1 &&
+//       (isObjectType(field.type) || isObjectType((field.type as any).ofType))) // or a top-level single query
+//   ) {
+//     return `where${allOptional ? '?' : ''}: ${this.renderInputFieldTypeHelper(
+//       args[0],
+//       isMutation,
+//     )}`
+//   }
+
+//   return `args${allOptional ? '?' : ''}: {${hasArgs ? ' ' : ''}${args
+//     .map(
+//       a =>
+//         `${this.renderFieldName(a, false)}${
+//           isNonNullType(a.type) ? '' : '?'
+//         }: ${this.renderInputFieldTypeHelper(a, isMutation)}`,
+//     )
+//     .join(', ')}${args.length > 0 ? ' ' : ''}}`
+// }

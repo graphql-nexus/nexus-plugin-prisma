@@ -4,7 +4,7 @@
  * By default this will regenerate when the server is started 
  * and NODE_ENV !== "production".
  * 
- * Mostly for internal use by GQLiteral unless otherwise 
+ * Mostly for internal use by GraphQLiteral unless otherwise 
  * documented / subject to change.
  * 
  * If you want more configurable types to use elsewhere, look into one of:
@@ -16,165 +16,80 @@
 import * as prisma from "./prisma-client/index"
 import * as ctx from "./../context"
 
+declare global {
+  interface GraphQLiteralGen extends GraphQLiteralGenTypes {}
+}
+
 // Maybe Promise
-type MP<T> = T | PromiseLike<T>;
+type MaybePromise<T> = T | PromiseLike<T>;
 
 // Maybe Promise List
-type MPL<T> = MP<T>[];
+type MaybePromiseList<T> = Iterable<MaybePromise<T>>;
 
 // Maybe Thunk
-type MT<T> = T | (() => T);
+type MaybeThunk<T> = T | (() => T);
 
 // Maybe Thunk, with args
-type MTA<T, A> = T | ((args?: A) => T);
+type MaybeThunkArgs<T, A> = T | ((args?: A) => T);
 
-export type QueryBlogPostsReturnType = MP<MPL<MP<PostReturnType>>>;
+export type QueryBrandsReturnType = MaybePromiseList<BrandReturnType>;
 
-export interface QueryBlogPostsArgs {
-  where?: PostWhereInput;
+export interface QueryBrandsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: BrandOrderByInput;
+  skip?: number;
+  where?: BrandWhereInput;
 }
 
-export type QueryUserReturnType = MP<null | UserReturnType>;
+export type QueryCollectionReturnType = CollectionReturnType;
 
-export interface QueryUserArgs {
-  where?: UserWhereUniqueInput;
+export interface QueryCollectionArgs {
+  collectionId: string;
 }
 
-export type QueryUsersReturnType = MP<MPL<MP<UserReturnType>>>;
+export type QueryOptionsReturnType = MaybePromiseList<OptionReturnType>;
 
-export interface QueryUsersArgs {
-  where?: UserWhereInput;
+export interface QueryOptionsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: OptionOrderByInput;
+  skip?: number;
+  where?: OptionWhereInput;
+}
+
+export type QueryProductsReturnType = MaybePromiseList<ProductReturnType>;
+
+export interface QueryProductsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: ProductOrderByInput;
+  skip?: number;
+  where?: ProductWhereInput;
 }
 
 export interface QueryRootType {
-  blogPosts: any[];
-  user?: null | any;
-  users: any[];
+  brands: any[];
+  options: any[];
+  products: any[];
 }
 
 export type QueryReturnType = {
-  blogPosts: MTA<MP<any[]>, QueryBlogPostsArgs>;
-  user?: MTA<MP<null | any>, QueryUserArgs>;
-  users: MTA<MP<any[]>, QueryUsersArgs>;
+  brands: MaybeThunkArgs<MaybePromise<any[]>, QueryBrandsArgs>;
+  options: MaybeThunkArgs<MaybePromise<any[]>, QueryOptionsArgs>;
+  products: MaybeThunkArgs<MaybePromise<any[]>, QueryProductsArgs>;
 }
 
-interface PostWhereInput {
-  AND?: Array<null | PostWhereInput>;
-  comments_every?: CommentWhereInput;
-  comments_none?: CommentWhereInput;
-  comments_some?: CommentWhereInput;
-  content?: string;
-  content_contains?: string;
-  content_ends_with?: string;
-  content_gt?: string;
-  content_gte?: string;
-  content_in?: Array<null | string>;
-  content_lt?: string;
-  content_lte?: string;
-  content_not?: string;
-  content_not_contains?: string;
-  content_not_ends_with?: string;
-  content_not_in?: Array<null | string>;
-  content_not_starts_with?: string;
-  content_starts_with?: string;
-  id?: string;
-  id_contains?: string;
-  id_ends_with?: string;
-  id_gt?: string;
-  id_gte?: string;
-  id_in?: Array<null | string>;
-  id_lt?: string;
-  id_lte?: string;
-  id_not?: string;
-  id_not_contains?: string;
-  id_not_ends_with?: string;
-  id_not_in?: Array<null | string>;
-  id_not_starts_with?: string;
-  id_starts_with?: string;
-  NOT?: Array<null | PostWhereInput>;
-  OR?: Array<null | PostWhereInput>;
-  title?: string;
-  title_contains?: string;
-  title_ends_with?: string;
-  title_gt?: string;
-  title_gte?: string;
-  title_in?: Array<null | string>;
-  title_lt?: string;
-  title_lte?: string;
-  title_not?: string;
-  title_not_contains?: string;
-  title_not_ends_with?: string;
-  title_not_in?: Array<null | string>;
-  title_not_starts_with?: string;
-  title_starts_with?: string;
-}
+export type BrandOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
-interface CommentWhereInput {
-  AND?: Array<null | CommentWhereInput>;
-  content?: string;
-  content_contains?: string;
-  content_ends_with?: string;
-  content_gt?: string;
-  content_gte?: string;
-  content_in?: Array<null | string>;
-  content_lt?: string;
-  content_lte?: string;
-  content_not?: string;
-  content_not_contains?: string;
-  content_not_ends_with?: string;
-  content_not_in?: Array<null | string>;
-  content_not_starts_with?: string;
-  content_starts_with?: string;
-  id?: string;
-  id_contains?: string;
-  id_ends_with?: string;
-  id_gt?: string;
-  id_gte?: string;
-  id_in?: Array<null | string>;
-  id_lt?: string;
-  id_lte?: string;
-  id_not?: string;
-  id_not_contains?: string;
-  id_not_ends_with?: string;
-  id_not_in?: Array<null | string>;
-  id_not_starts_with?: string;
-  id_starts_with?: string;
-  NOT?: Array<null | CommentWhereInput>;
-  OR?: Array<null | CommentWhereInput>;
-}
-
-export type PostContentReturnType = MP<string>;
-
-export type PostIdReturnType = MP<string>;
-
-export type PostTitleReturnType = MP<string>;
-
-export interface PostRootType {
-  content: string;
-  id: string;
-  title: string;
-}
-
-export type PostReturnType = {
-  content: MT<MP<string>>;
-  id: MT<MP<string>>;
-  title: MT<MP<string>>;
-}
-
-interface UserWhereUniqueInput {
-  id?: string;
-}
-
-export type UserIdentifierReturnType = MP<string>;
-
-export type UserNameReturnType = MP<string>;
-
-export type UserRootType = prisma.User;
-
-export type UserReturnType = prisma.User
-
-interface UserWhereInput {
-  AND?: Array<null | UserWhereInput>;
+interface BrandWhereInput {
+  AND?: Array<null | BrandWhereInput>;
   id?: string;
   id_contains?: string;
   id_ends_with?: string;
@@ -203,82 +118,650 @@ interface UserWhereInput {
   name_not_in?: Array<null | string>;
   name_not_starts_with?: string;
   name_starts_with?: string;
-  NOT?: Array<null | UserWhereInput>;
-  OR?: Array<null | UserWhereInput>;
-  posts_every?: PostWhereInput;
-  posts_none?: PostWhereInput;
-  posts_some?: PostWhereInput;
+  NOT?: Array<null | BrandWhereInput>;
+  OR?: Array<null | BrandWhereInput>;
+  products_every?: ProductWhereInput;
+  products_none?: ProductWhereInput;
+  products_some?: ProductWhereInput;
 }
 
-export interface GQLiteralGenArgTypes {
+interface ProductWhereInput {
+  AND?: Array<null | ProductWhereInput>;
+  attributes_every?: AttributeWhereInput;
+  attributes_none?: AttributeWhereInput;
+  attributes_some?: AttributeWhereInput;
+  brand?: BrandWhereInput;
+  collections_every?: CollectionWhereInput;
+  collections_none?: CollectionWhereInput;
+  collections_some?: CollectionWhereInput;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  name?: string;
+  name_contains?: string;
+  name_ends_with?: string;
+  name_gt?: string;
+  name_gte?: string;
+  name_in?: Array<null | string>;
+  name_lt?: string;
+  name_lte?: string;
+  name_not?: string;
+  name_not_contains?: string;
+  name_not_ends_with?: string;
+  name_not_in?: Array<null | string>;
+  name_not_starts_with?: string;
+  name_starts_with?: string;
+  NOT?: Array<null | ProductWhereInput>;
+  OR?: Array<null | ProductWhereInput>;
+  variants_every?: VariantWhereInput;
+  variants_none?: VariantWhereInput;
+  variants_some?: VariantWhereInput;
+}
+
+interface AttributeWhereInput {
+  AND?: Array<null | AttributeWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  key?: string;
+  key_contains?: string;
+  key_ends_with?: string;
+  key_gt?: string;
+  key_gte?: string;
+  key_in?: Array<null | string>;
+  key_lt?: string;
+  key_lte?: string;
+  key_not?: string;
+  key_not_contains?: string;
+  key_not_ends_with?: string;
+  key_not_in?: Array<null | string>;
+  key_not_starts_with?: string;
+  key_starts_with?: string;
+  NOT?: Array<null | AttributeWhereInput>;
+  OR?: Array<null | AttributeWhereInput>;
+  products_every?: ProductWhereInput;
+  products_none?: ProductWhereInput;
+  products_some?: ProductWhereInput;
+  value?: string;
+  value_contains?: string;
+  value_ends_with?: string;
+  value_gt?: string;
+  value_gte?: string;
+  value_in?: Array<null | string>;
+  value_lt?: string;
+  value_lte?: string;
+  value_not?: string;
+  value_not_contains?: string;
+  value_not_ends_with?: string;
+  value_not_in?: Array<null | string>;
+  value_not_starts_with?: string;
+  value_starts_with?: string;
+}
+
+interface CollectionWhereInput {
+  AND?: Array<null | CollectionWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  name?: string;
+  name_contains?: string;
+  name_ends_with?: string;
+  name_gt?: string;
+  name_gte?: string;
+  name_in?: Array<null | string>;
+  name_lt?: string;
+  name_lte?: string;
+  name_not?: string;
+  name_not_contains?: string;
+  name_not_ends_with?: string;
+  name_not_in?: Array<null | string>;
+  name_not_starts_with?: string;
+  name_starts_with?: string;
+  NOT?: Array<null | CollectionWhereInput>;
+  OR?: Array<null | CollectionWhereInput>;
+  products_every?: ProductWhereInput;
+  products_none?: ProductWhereInput;
+  products_some?: ProductWhereInput;
+}
+
+interface VariantWhereInput {
+  AND?: Array<null | VariantWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  NOT?: Array<null | VariantWhereInput>;
+  optionValues_every?: OptionValueWhereInput;
+  optionValues_none?: OptionValueWhereInput;
+  optionValues_some?: OptionValueWhereInput;
+  OR?: Array<null | VariantWhereInput>;
+  price?: number;
+  price_gt?: number;
+  price_gte?: number;
+  price_in?: Array<null | number>;
+  price_lt?: number;
+  price_lte?: number;
+  price_not?: number;
+  price_not_in?: Array<null | number>;
+}
+
+interface OptionValueWhereInput {
+  AND?: Array<null | OptionValueWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  name?: string;
+  name_contains?: string;
+  name_ends_with?: string;
+  name_gt?: string;
+  name_gte?: string;
+  name_in?: Array<null | string>;
+  name_lt?: string;
+  name_lte?: string;
+  name_not?: string;
+  name_not_contains?: string;
+  name_not_ends_with?: string;
+  name_not_in?: Array<null | string>;
+  name_not_starts_with?: string;
+  name_starts_with?: string;
+  NOT?: Array<null | OptionValueWhereInput>;
+  option?: OptionWhereInput;
+  OR?: Array<null | OptionValueWhereInput>;
+}
+
+interface OptionWhereInput {
+  AND?: Array<null | OptionWhereInput>;
+  id?: string;
+  id_contains?: string;
+  id_ends_with?: string;
+  id_gt?: string;
+  id_gte?: string;
+  id_in?: Array<null | string>;
+  id_lt?: string;
+  id_lte?: string;
+  id_not?: string;
+  id_not_contains?: string;
+  id_not_ends_with?: string;
+  id_not_in?: Array<null | string>;
+  id_not_starts_with?: string;
+  id_starts_with?: string;
+  name?: string;
+  name_contains?: string;
+  name_ends_with?: string;
+  name_gt?: string;
+  name_gte?: string;
+  name_in?: Array<null | string>;
+  name_lt?: string;
+  name_lte?: string;
+  name_not?: string;
+  name_not_contains?: string;
+  name_not_ends_with?: string;
+  name_not_in?: Array<null | string>;
+  name_not_starts_with?: string;
+  name_starts_with?: string;
+  NOT?: Array<null | OptionWhereInput>;
+  OR?: Array<null | OptionWhereInput>;
+  values_every?: OptionValueWhereInput;
+  values_none?: OptionValueWhereInput;
+  values_some?: OptionValueWhereInput;
+}
+
+export type BrandIdReturnType = string;
+
+export type BrandNameReturnType = string;
+
+export type BrandProductsReturnType = MaybePromiseList<ProductReturnType>;
+
+export interface BrandProductsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: ProductOrderByInput;
+  skip?: number;
+  where?: ProductWhereInput;
+}
+
+export type BrandRootType = prisma.Brand;
+
+export type BrandReturnType = prisma.Brand
+
+export type ProductOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+
+export type ProductAttributesReturnType = MaybePromiseList<AttributeReturnType>;
+
+export interface ProductAttributesArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: AttributeOrderByInput;
+  skip?: number;
+  where?: AttributeWhereInput;
+}
+
+export type ProductBrandReturnType = BrandReturnType;
+
+export type ProductCollectionsReturnType = MaybePromiseList<CollectionReturnType>;
+
+export interface ProductCollectionsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: CollectionOrderByInput;
+  skip?: number;
+  where?: CollectionWhereInput;
+}
+
+export type ProductIdReturnType = string;
+
+export type ProductNameReturnType = string;
+
+export type ProductOptionsReturnType = MaybePromiseList<OptionReturnType>;
+
+export type ProductVariantsReturnType = MaybePromiseList<VariantReturnType>;
+
+export interface ProductVariantsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: VariantOrderByInput;
+  skip?: number;
+  where?: VariantWhereInput;
+}
+
+export type ProductRootType = prisma.Product;
+
+export type ProductReturnType = prisma.Product
+
+export type AttributeOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "key_ASC" | "key_DESC" | "updatedAt_ASC" | "updatedAt_DESC" | "value_ASC" | "value_DESC";
+
+export type AttributeIdReturnType = string;
+
+export type AttributeKeyReturnType = string;
+
+export type AttributeProductsReturnType = MaybePromiseList<ProductReturnType>;
+
+export interface AttributeProductsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: ProductOrderByInput;
+  skip?: number;
+  where?: ProductWhereInput;
+}
+
+export type AttributeValueReturnType = string;
+
+export type AttributeRootType = prisma.Attribute;
+
+export type AttributeReturnType = prisma.Attribute
+
+export type CollectionOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+
+export type CollectionAttributesReturnType = MaybePromiseList<AttributeReturnType>;
+
+export type CollectionBrandsReturnType = MaybePromiseList<BrandReturnType>;
+
+export type CollectionIdReturnType = string;
+
+export type CollectionNameReturnType = string;
+
+export type CollectionOptionsReturnType = MaybePromiseList<OptionReturnType>;
+
+export type CollectionProductsReturnType = MaybePromiseList<ProductReturnType>;
+
+export interface CollectionProductsArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: ProductOrderByInput;
+  skip?: number;
+  where?: ProductWhereInput;
+}
+
+export type CollectionRootType = prisma.Collection;
+
+export type CollectionReturnType = prisma.Collection
+
+export type OptionIdReturnType = string;
+
+export type OptionNameReturnType = string;
+
+export type OptionValuesReturnType = MaybePromiseList<OptionValueReturnType>;
+
+export interface OptionValuesArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: OptionValueOrderByInput;
+  skip?: number;
+  where?: OptionValueWhereInput;
+}
+
+export type OptionRootType = prisma.Option;
+
+export type OptionReturnType = prisma.Option
+
+export type OptionValueOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+
+export type OptionValueIdReturnType = string;
+
+export type OptionValueNameReturnType = string;
+
+export type OptionValueOptionReturnType = OptionReturnType;
+
+export type OptionValueRootType = prisma.OptionValue;
+
+export type OptionValueReturnType = prisma.OptionValue
+
+export type VariantOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "price_ASC" | "price_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+
+export type VariantIdReturnType = string;
+
+export type VariantOptionValuesReturnType = MaybePromiseList<OptionValueReturnType>;
+
+export interface VariantOptionValuesArgs {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  orderBy?: OptionValueOrderByInput;
+  skip?: number;
+  where?: OptionValueWhereInput;
+}
+
+export type VariantPriceReturnType = null | number;
+
+export type VariantRootType = prisma.Variant;
+
+export type VariantReturnType = prisma.Variant
+
+export type OptionOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+
+export type MutationAddProductsToCollectionReturnType = CollectionReturnType;
+
+export interface MutationAddProductsToCollectionArgs {
+  collectionId: string;
+  productIds: string[];
+}
+
+export type MutationCreateProductReturnType = ProductReturnType;
+
+export interface MutationCreateProductArgs {
+  data: CreateProductInput;
+}
+
+export type MutationRemoveProductsFromCollectionReturnType = CollectionReturnType;
+
+export interface MutationRemoveProductsFromCollectionArgs {
+  collectionId: string;
+  productIds: string[];
+}
+
+export type MutationUpdateProductReturnType = ProductReturnType;
+
+export interface MutationUpdateProductArgs {
+  data: UpdateProductInput;
+}
+
+export type MutationRootType = {};
+
+export type MutationReturnType = {};
+
+interface CreateProductInput {
+  attributesIds: UniqueInput[];
+  brand: UniqueInput;
+  name: string;
+  variants: CreateVariantInput[];
+}
+
+interface UniqueInput {
+  id: string;
+}
+
+interface CreateVariantInput {
+  availableForSale: boolean;
+  optionsValueIds: UniqueInput[];
+  price: number;
+}
+
+interface UpdateProductInput {
+  attributesIds: UniqueInput[];
+  brand: UniqueInput;
+  id: string;
+  name: string;
+  variants: UpdateVariantInput[];
+}
+
+interface UpdateVariantInput {
+  availableForSale: boolean;
+  id: string;
+  optionsValueIds: UniqueInput[];
+  price: number;
+}
+
+export interface GraphQLiteralGenArgTypes {
   Query: {
-    blogPosts: QueryBlogPostsArgs;
-    user: QueryUserArgs;
-    users: QueryUsersArgs;
+    brands: QueryBrandsArgs;
+    collection: QueryCollectionArgs;
+    options: QueryOptionsArgs;
+    products: QueryProductsArgs;
+  };
+  Brand: {
+    products: BrandProductsArgs;
+  };
+  Product: {
+    attributes: ProductAttributesArgs;
+    collections: ProductCollectionsArgs;
+    variants: ProductVariantsArgs;
+  };
+  Attribute: {
+    products: AttributeProductsArgs;
+  };
+  Collection: {
+    products: CollectionProductsArgs;
+  };
+  Option: {
+    values: OptionValuesArgs;
+  };
+  Variant: {
+    optionValues: VariantOptionValuesArgs;
+  };
+  Mutation: {
+    addProductsToCollection: MutationAddProductsToCollectionArgs;
+    createProduct: MutationCreateProductArgs;
+    removeProductsFromCollection: MutationRemoveProductsFromCollectionArgs;
+    updateProduct: MutationUpdateProductArgs;
   };
 }
 
-export interface GQLiteralGenRootTypes {
+export interface GraphQLiteralGenRootTypes {
   Query: QueryRootType;
-  Post: PostRootType;
-  User: UserRootType;
+  Brand: BrandRootType;
+  Product: ProductRootType;
+  Attribute: AttributeRootType;
+  Collection: CollectionRootType;
+  Option: OptionRootType;
+  OptionValue: OptionValueRootType;
+  Variant: VariantRootType;
+  Mutation: MutationRootType;
 }
 
-export interface GQLiteralGenReturnTypes {
+export interface GraphQLiteralGenReturnTypes {
   Query: {
-    blogPosts: QueryBlogPostsReturnType;
-    user: QueryUserReturnType;
-    users: QueryUsersReturnType;
+    brands: QueryBrandsReturnType;
+    collection: QueryCollectionReturnType;
+    options: QueryOptionsReturnType;
+    products: QueryProductsReturnType;
   };
-  Post: {
-    content: PostContentReturnType;
-    id: PostIdReturnType;
-    title: PostTitleReturnType;
+  Brand: {
+    id: BrandIdReturnType;
+    name: BrandNameReturnType;
+    products: BrandProductsReturnType;
   };
-  User: {
-    identifier: UserIdentifierReturnType;
-    name: UserNameReturnType;
+  Product: {
+    attributes: ProductAttributesReturnType;
+    brand: ProductBrandReturnType;
+    collections: ProductCollectionsReturnType;
+    id: ProductIdReturnType;
+    name: ProductNameReturnType;
+    options: ProductOptionsReturnType;
+    variants: ProductVariantsReturnType;
+  };
+  Attribute: {
+    id: AttributeIdReturnType;
+    key: AttributeKeyReturnType;
+    products: AttributeProductsReturnType;
+    value: AttributeValueReturnType;
+  };
+  Collection: {
+    attributes: CollectionAttributesReturnType;
+    brands: CollectionBrandsReturnType;
+    id: CollectionIdReturnType;
+    name: CollectionNameReturnType;
+    options: CollectionOptionsReturnType;
+    products: CollectionProductsReturnType;
+  };
+  Option: {
+    id: OptionIdReturnType;
+    name: OptionNameReturnType;
+    values: OptionValuesReturnType;
+  };
+  OptionValue: {
+    id: OptionValueIdReturnType;
+    name: OptionValueNameReturnType;
+    option: OptionValueOptionReturnType;
+  };
+  Variant: {
+    id: VariantIdReturnType;
+    optionValues: VariantOptionValuesReturnType;
+    price: VariantPriceReturnType;
+  };
+  Mutation: {
+    addProductsToCollection: MutationAddProductsToCollectionReturnType;
+    createProduct: MutationCreateProductReturnType;
+    removeProductsFromCollection: MutationRemoveProductsFromCollectionReturnType;
+    updateProduct: MutationUpdateProductReturnType;
   };
 }
 
-export interface GQLiteralGenTypes {
-  argTypes: GQLiteralGenArgTypes;
-  rootTypes: GQLiteralGenRootTypes;
-  returnTypes: GQLiteralGenReturnTypes;
+export interface GraphQLiteralGenTypes {
+  argTypes: GraphQLiteralGenArgTypes;
+  rootTypes: GraphQLiteralGenRootTypes;
+  returnTypes: GraphQLiteralGenReturnTypes;
   context: ctx.Context;
-  enums: {};
+  enums: {
+    BrandOrderByInput: BrandOrderByInput;
+    ProductOrderByInput: ProductOrderByInput;
+    AttributeOrderByInput: AttributeOrderByInput;
+    CollectionOrderByInput: CollectionOrderByInput;
+    OptionValueOrderByInput: OptionValueOrderByInput;
+    VariantOrderByInput: VariantOrderByInput;
+    OptionOrderByInput: OptionOrderByInput;
+  };
   objects: {
     Query: QueryRootType;
-    Post: PostRootType;
-    User: UserRootType;
+    Brand: BrandRootType;
+    Product: ProductRootType;
+    Attribute: AttributeRootType;
+    Collection: CollectionRootType;
+    Option: OptionRootType;
+    OptionValue: OptionValueRootType;
+    Variant: VariantRootType;
+    Mutation: MutationRootType;
   };
   interfaces: {};
   unions: {};
   scalars: {
     String: any;
+    Int: any;
     ID: any;
     Boolean: any;
   };
   inputObjects: {
-    PostWhereInput: any;
-    CommentWhereInput: any;
-    UserWhereUniqueInput: any;
-    UserWhereInput: any;
+    BrandWhereInput: any;
+    ProductWhereInput: any;
+    AttributeWhereInput: any;
+    CollectionWhereInput: any;
+    VariantWhereInput: any;
+    OptionValueWhereInput: any;
+    OptionWhereInput: any;
+    CreateProductInput: any;
+    UniqueInput: any;
+    CreateVariantInput: any;
+    UpdateProductInput: any;
+    UpdateVariantInput: any;
   };
   allInputTypes: 
-    | Extract<keyof GQLiteralGenTypes['inputObjects'], string>
-    | Extract<keyof GQLiteralGenTypes['enums'], string>
-    | Extract<keyof GQLiteralGenTypes['scalars'], string>;
+    | Extract<keyof GraphQLiteralGenTypes['inputObjects'], string>
+    | Extract<keyof GraphQLiteralGenTypes['enums'], string>
+    | Extract<keyof GraphQLiteralGenTypes['scalars'], string>;
   allOutputTypes: 
-    | Extract<keyof GQLiteralGenTypes['objects'], string>
-    | Extract<keyof GQLiteralGenTypes['enums'], string>
-    | Extract<keyof GQLiteralGenTypes['unions'], string>
-    | Extract<keyof GQLiteralGenTypes['interfaces'], string>
-    | Extract<keyof GQLiteralGenTypes['scalars'], string>;
+    | Extract<keyof GraphQLiteralGenTypes['objects'], string>
+    | Extract<keyof GraphQLiteralGenTypes['enums'], string>
+    | Extract<keyof GraphQLiteralGenTypes['unions'], string>
+    | Extract<keyof GraphQLiteralGenTypes['interfaces'], string>
+    | Extract<keyof GraphQLiteralGenTypes['scalars'], string>;
 }
 
-export type Gen = GQLiteralGenTypes;
-
-declare global {
-  interface GQLiteralGen extends GQLiteralGenTypes {}
-}
+export type Gen = GraphQLiteralGenTypes;

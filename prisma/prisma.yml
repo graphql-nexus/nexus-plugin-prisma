@@ -2,7 +2,8 @@ datamodel: datamodel.prisma
 
 hooks:
   post-deploy:
-    - yarn prisma generate
+    - yarn run codegen
+
 generate:
   - generator: typescript-client
     output: ../src/generated/prisma-client/

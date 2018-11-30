@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { Context } from './context'
 import { prisma } from './generated/prisma-client'
-import { schema } from './gqliteral/schema'
+import { schema } from './schema'
 
 const server = new ApolloServer({
   schema,

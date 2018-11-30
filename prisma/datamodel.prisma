@@ -1,17 +1,49 @@
-type User {
+type Collection {
   id: ID! @unique
   name: String!
-  posts: [Post!]!
+  products: [Product!]!
 }
 
-type Post {
+type Product {
   id: ID! @unique
-  title: String!
-  content: String!
-  comments: [Comment!]!
+  name: String!
+  brand: Brand!
+  variants: [Variant!]!
+  collections: [Collection!]!
+  attributes: [Attribute!]!
 }
 
-type Comment {
+type Brand {
   id: ID! @unique
-  content: String!
+  name: String!
+  products: [Product!]!
+}
+
+type Attribute {
+  id: ID! @unique
+  key: String!
+  value: String!
+  products: [Product!]!
+}
+
+type OptionValue {
+  id: ID! @unique
+  name: String!
+  option: Option!
+}
+
+type Option {
+  id: ID! @unique
+  name: String!
+  values: [OptionValue!]!
+}
+
+type Variant {
+  id: ID! @unique
+  optionValues: [OptionValue!]!
+  price: Int
+
+  #availableForSale: Boolean!
+  #sku: String
+  #image: Image
 }

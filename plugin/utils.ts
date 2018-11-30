@@ -1,17 +1,27 @@
-import { arg } from 'gqliteral';
-import { GQLiteralInputObjectType } from 'gqliteral/dist/core';
-import { ArgDefinition, ArgOpts, FieldOpts } from 'gqliteral/dist/types';
-import { TypesMap } from './prisma';
-import { GraphQLScalarType, GraphQLType, GraphQLTypeField } from './source-helper';
-import { throwIfUnknownFields } from './throw';
-import { AnonymousAliases, AnonymousField, AnonymousInputFields, AnonymousPickOmitField, ObjectField } from './types';
+import { arg } from 'gqliteral'
+import { InputObjectTypeDef } from 'gqliteral/dist/core'
+import { ArgDefinition, ArgOpts, FieldOpts } from 'gqliteral/dist/types'
+import { TypesMap } from './prisma'
+import {
+  GraphQLScalarType,
+  GraphQLType,
+  GraphQLTypeField,
+} from './source-helper'
+import { throwIfUnknownFields } from './throw'
+import {
+  AnonymousAliases,
+  AnonymousField,
+  AnonymousInputFields,
+  AnonymousPickOmitField,
+  ObjectField,
+} from './types'
 
 export interface ScalarToObjectInputArg {
-  String: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
-  Boolean: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
-  Float: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
-  Int: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
-  ID: (arg: GQLiteralInputObjectType, name: string, opts: ArgOpts) => void
+  String: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
+  Boolean: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
+  Float: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
+  Int: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
+  ID: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
 }
 
 const scalarToObjectInputArg: ScalarToObjectInputArg = {
@@ -39,7 +49,7 @@ const scalarToLiteralArg: ScalarToLiteralArg = {
 }
 
 export function getObjectInputArg(
-  arg: GQLiteralInputObjectType,
+  arg: InputObjectTypeDef,
   field: GraphQLTypeField,
   opts: ArgOpts,
 ) {
@@ -142,7 +152,7 @@ export function normalizeFields(fields: AnonymousInputFields): ObjectField[] {
       }
     }
 
-    return f as ObjectField
+    return f
   })
 }
 

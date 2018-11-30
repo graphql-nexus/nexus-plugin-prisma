@@ -1,0 +1,1 @@
+export { prismaObjectType } from './prisma'

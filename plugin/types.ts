@@ -1,6 +1,6 @@
 interface GenTypesShape {
   fields: Record<string, any>
-  alias: Record<string, any>
+  aliases: Record<string, any>
 }
 
 export interface ObjectField {
@@ -30,10 +30,8 @@ export type AnonymousInputFields =
   | AnonymousAliases
   | AnonymousPickOmitField
 
-// addPrismaFields('id', { name: "fsfdlksjfsf" })
-
 export type InputField<
-  GenTypes = GQLiteralGen,
+  GenTypes = GraphQLiteralGen,
   TypeName extends string = any
 > = GenTypes extends GenTypesShape
   ? TypeName extends keyof GenTypes['fields']
@@ -42,24 +40,34 @@ export type InputField<
   : AnonymousField
 
 export type AliasField<
-  GenTypes = GQLiteralGen,
+  GenTypes = GraphQLiteralGen,
   TypeName extends string = any
 > = GenTypes extends GenTypesShape
-  ? TypeName extends keyof GenTypes['alias']
-    ? GenTypes['alias'][TypeName]
+  ? TypeName extends keyof GenTypes['aliases']
+    ? GenTypes['aliases'][TypeName]
     : AnonymousAliasField
   : AnonymousAliasField
 
-interface AliasesField<GenTypes, TypeName extends string> {
+export type PrismaTypeNames<
+  GenTypes = GraphQLiteralGen
+> = GenTypes extends GenTypesShape
+  ? Extract<keyof GenTypes['fields'], string>
+  : string
+
+export interface AliasesField<GenTypes, TypeName extends string> {
   aliases: AliasField<GenTypes, TypeName>[]
 }
 
-interface PickOmitField<GenTypes, TypeName extends string> {
+export interface PickOmitField<GenTypes, TypeName extends string> {
   omit?: InputField<GenTypes, TypeName>[]
   pick?: InputField<GenTypes, TypeName>[]
 }
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
+type XOR<T, U> = (T | U) extends object
+  ? (Without<T, U> & U) | (Without<U, T> & T)
+  : T | U
+
 export type AddFieldInput<GenTypes, TypeName extends string> =
   | InputField<GenTypes, TypeName>[]
-  | AliasesField<GenTypes, TypeName>
-  | PickOmitField<GenTypes, TypeName>
+  | XOR<PickOmitField<GenTypes, TypeName>, AliasesField<GenTypes, TypeName>>
