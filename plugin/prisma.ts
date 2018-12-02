@@ -1,14 +1,33 @@
-import { readFileSync } from 'fs';
-import { arg, enumType, inputObjectType, objectType } from 'gqliteral';
-import { ObjectTypeDef, WrappedType } from 'gqliteral/dist/core';
-import { ArgDefinition } from 'gqliteral/dist/types';
-import { GraphQLFieldResolver } from 'graphql';
-import * as _ from 'lodash';
-import { join } from 'path';
-import { extractTypes, GraphQLEnumObject, GraphQLTypeArgument, GraphQLTypeField, GraphQLTypeObject } from './source-helper';
-import { throwIfUnknownClientFunction, throwIfUnkownArgsName } from './throw';
-import { AddFieldInput, AnonymousInputFields, InputField, ObjectField, PrismaTypeNames } from './types';
-import { getFields, getLiteralArg, getObjectInputArg, typeToFieldOpts } from './utils';
+import { readFileSync } from 'fs'
+import { arg, enumType, inputObjectType, objectType } from 'gqliteral'
+import { ObjectTypeDef, WrappedType } from 'gqliteral/dist/core'
+import { ArgDefinition } from 'gqliteral/dist/types'
+import { GraphQLFieldResolver } from 'graphql'
+import * as _ from 'lodash'
+import { join } from 'path'
+import {
+  extractTypes,
+  GraphQLEnumObject,
+  GraphQLTypeArgument,
+  GraphQLTypeField,
+  GraphQLTypeObject,
+} from './source-helper'
+import { throwIfUnknownClientFunction, throwIfUnkownArgsName } from './throw'
+import {
+  AddFieldInput,
+  AnonymousInputFields,
+  InputField,
+  ObjectField,
+  PrismaTypeNames,
+  PrismaObject,
+  AnonymousFieldDetails,
+} from './types'
+import {
+  getFields,
+  getLiteralArg,
+  getObjectInputArg,
+  typeToFieldOpts,
+} from './utils'
 
 interface Dictionary<T> {
   [key: string]: T
@@ -142,7 +161,10 @@ function generateDefaultResolver(
   }
 }
 
-function addToGQLiteral<GenTypes = GraphQLiteralGen, TypeName extends string = any>(
+function addToGQLiteral<
+  GenTypes = GraphQLiteralGen,
+  TypeName extends string = any
+>(
   t: ObjectTypeDef<GenTypes, TypeName>,
   typesMap: TypesMap,
   typeName: string,
@@ -375,14 +397,14 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
   }
 }
 
-class PrismaObjectType<
+class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   GenTypes,
-  TypeName extends string
-> extends ObjectTypeDef<GenTypes, TypeName> {
+  TypeName
+> {
   protected typesMap: TypesMap
   protected aliasesMap: AliasMap
-
   protected typesToExport: WrappedType[]
+  public prismaType: PrismaObject<GenTypes, TypeName>
 
   constructor(typeName: string) {
     super(typeName)
@@ -390,6 +412,36 @@ class PrismaObjectType<
     this.typesMap = getTypesMap()
     this.aliasesMap = getAliasesMap()
     this.typesToExport = []
+    this.prismaType = this.genPrismaType() as any
+  }
+
+  public genPrismaType(): AnonymousFieldDetails {
+    const typeName = this.name
+
+    const graphqlType = this.typesMap.types[typeName]
+
+    return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
+      acc[field.name] = {
+        list: field.type.isArray,
+        resolve: generateDefaultResolver(
+          typeName,
+          { [field.name]: field.name },
+          graphqlType,
+        ),
+        description: field.description,
+        args: field.arguments.reduce<Record<string, ArgDefinition>>(
+          (acc, fieldArg) => {
+            acc[fieldArg.name] = arg(fieldArg.type.name as any, {
+              ...typeToFieldOpts(fieldArg.type),
+            })
+            return acc
+          },
+          {},
+        ),
+      }
+
+      return acc
+    }, {})
   }
 
   // TODO: Decide if we use overloads or XOR
@@ -466,12 +518,20 @@ class PrismaObjectType<
 
 export function prismaObjectType<
   GenTypes = GraphQLiteralGen,
-  TypeName extends PrismaTypeNames<GenTypes> = any
+  TypeName extends PrismaTypeNames<GenTypes> = PrismaTypeNames<GenTypes>
 >(
-  typeName: TypeName,
+  typeName:
+    | TypeName
+    | {
+        prismaTypeName: TypeName
+        objectTypeName?: string
+      },
   fn?: (t: PrismaObjectType<GenTypes, TypeName>) => void,
 ): WrappedType[] {
-  const objectType = new PrismaObjectType<GenTypes, TypeName>(typeName)
+  // TODO refactor + make use of `objectTypeName`
+  const realTypeName =
+    typeof typeName === 'string' ? typeName : typeName.prismaTypeName
+  const objectType = new PrismaObjectType<GenTypes, TypeName>(realTypeName)
 
   if (fn === undefined) {
     return [new WrappedType(objectType), ...objectType.prismaFields()]

@@ -1,6 +1,9 @@
+import { ArgDefinition } from 'gqliteral/dist/types'
+
 interface GenTypesShape {
   fields: Record<string, any>
   aliases: Record<string, any>
+  objects: Record<string, any>
 }
 
 export interface ObjectField {
@@ -29,6 +32,15 @@ export type AnonymousInputFields =
   | AnonymousField[]
   | AnonymousAliases
   | AnonymousPickOmitField
+
+export interface AnonymousFieldDetails {
+  [key: string]: {
+    args: Record<string, ArgDefinition>
+    description?: string
+    list: boolean
+    resolve: (root: any, args: any, ctx: any, info?: any) => any
+  }
+}
 
 export type InputField<
   GenTypes = GraphQLiteralGen,
@@ -71,3 +83,12 @@ type XOR<T, U> = (T | U) extends object
 export type AddFieldInput<GenTypes, TypeName extends string> =
   | InputField<GenTypes, TypeName>[]
   | XOR<PickOmitField<GenTypes, TypeName>, AliasesField<GenTypes, TypeName>>
+
+export type PrismaObject<
+  GenTypes,
+  TypeName extends string
+> = GenTypes extends GenTypesShape
+  ? TypeName extends keyof GenTypes['objects']
+    ? GenTypes['objects'][TypeName]
+    : any
+  : any

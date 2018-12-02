@@ -2,8 +2,18 @@ import { prismaObjectType } from '../../../plugin'
 import * as ProductVariant from '../../fragments'
 import { optionsFromVariants } from '../utils'
 
+/**
+ * type Product {
+ *   id: ID!
+ *   name: String!
+ *   brand: Brand!
+ *   options: [Option!]!
+ * }
+ */
 export const Product = prismaObjectType('Product', t => {
-  t.prismaFields()
+  t.prismaFields(['id', 'name'])
+
+  t.field('brand', 'Brand', t.prismaType.brand)
 
   t.field('options', 'Option', {
     list: true,

@@ -58,6 +58,7 @@ export type GraphQLTypeArgument = {
 export type GraphQLTypeField = {
   name: string
   type: GraphQLType
+  description?: string
   arguments: GraphQLTypeArgument[]
 }
 
@@ -204,6 +205,7 @@ function extractTypeFieldsFromObjectType(
         name: fieldNode.name,
         type: fieldType,
         arguments: fieldArguments,
+        description: fieldNode.description === null ? undefined : fieldNode.description,
       })
     },
   )
@@ -220,6 +222,7 @@ function extractTypeFieldsFromInputType(
       name: input.name,
       type: extractTypeLike(schema, input.type),
       arguments: [],
+      description: input.description === null ? undefined : input.description,
     })
   })
   return fields

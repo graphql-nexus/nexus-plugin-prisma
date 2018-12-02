@@ -1,6 +1,14 @@
 import { idArg } from 'gqliteral'
 import { prismaObjectType } from '../../../plugin'
 
+/**
+ * type Query {
+ *   products(...): [Product!]!
+ *   options(...): [Option!]!
+ *   brands(...): [Brand!]!
+ *   collection(...): Collection!
+ * }
+ */
 export const Query = prismaObjectType('Query', t => {
   t.prismaFields({ pick: ['products', 'options', 'brands'] })
 

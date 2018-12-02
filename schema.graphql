@@ -10,19 +10,6 @@ type Attribute {
   value: String!
 }
 
-enum AttributeOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  key_ASC
-  key_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  value_ASC
-  value_DESC
-}
-
 input AttributeWhereInput {
   AND: [AttributeWhereInput!]
   id: ID
@@ -135,17 +122,6 @@ type Collection {
   name: String!
   options: [Option!]!
   products(after: String, before: String, first: Int, last: Int, orderBy: ProductOrderByInput, skip: Int, where: ProductWhereInput): [Product!]!
-}
-
-enum CollectionOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 input CollectionWhereInput {
@@ -312,13 +288,10 @@ input OptionWhereInput {
 }
 
 type Product {
-  attributes(after: String, before: String, first: Int, last: Int, orderBy: AttributeOrderByInput, skip: Int, where: AttributeWhereInput): [Attribute!]!
   brand: Brand!
-  collections(after: String, before: String, first: Int, last: Int, orderBy: CollectionOrderByInput, skip: Int, where: CollectionWhereInput): [Collection!]!
   id: ID!
   name: String!
   options: [Option!]!
-  variants(after: String, before: String, first: Int, last: Int, orderBy: VariantOrderByInput, skip: Int, where: VariantWhereInput): [Variant!]!
 }
 
 enum ProductOrderByInput {
@@ -406,17 +379,6 @@ type Variant {
   id: ID!
   optionValues(after: String, before: String, first: Int, last: Int, orderBy: OptionValueOrderByInput, skip: Int, where: OptionValueWhereInput): [OptionValue!]!
   price: Int
-}
-
-enum VariantOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  id_ASC
-  id_DESC
-  price_ASC
-  price_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 input VariantWhereInput {

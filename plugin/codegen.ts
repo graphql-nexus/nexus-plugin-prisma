@@ -1,7 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { EOL } from 'os'
 import { join } from 'path'
-import { prisma } from '../src/generated/prisma-client'
 import {
   extractTypes,
   GraphQLTypeField,
@@ -34,6 +33,16 @@ export function render(types: GraphQLTypes) {
   return `\
 // GENERATED TYPES FOR PLUGIN. /!\\ DO NOT EDIT MANUALLY
 
+import {
+  ArgDefinition,
+  RootValue,
+  ArgsValue,
+  ContextValue,
+  MaybePromise,
+  ResultValue,
+} from 'gqliteral/dist/types'
+import { GraphQLResolveInfo } from 'graphql'
+
 ${objectTypes.map(renderType).join(EOL)}
 
 export interface PluginTypes {
@@ -45,6 +54,11 @@ ${objectTypes
   aliases: {
 ${objectTypes
     .map(type => `    ${type.name}: ${getTypeAliasesName(type)}`)
+    .join(EOL)}
+  }
+  objects: {
+${objectTypes
+    .map(type => `    ${type.name}: ${getTypeObjectName(type)}`)
     .join(EOL)}
   }
 }
@@ -64,7 +78,37 @@ ${renderFields(type)}
 ${renderFieldsArgs(type)}
 
 ${renderAliasFields(type)}
+
+${renderTypeFieldDetails(type)}
 `
+}
+
+function renderTypeFieldDetails(type: GraphQLTypeObject) {
+  return `\
+export interface ${getTypeObjectName(type)}<GenTypes = GraphQLiteralGen> {
+${type.fields
+    .map(
+      field => `\
+  ${field.name}: {
+    args: ${
+      field.arguments.length > 0
+        ? `Record<${getTypeFieldArgName(type, field)},ArgDefinition>`
+        : '{}'
+    }
+    description: string
+    list: ${field.type.isArray || false}
+    resolve: (root: RootValue<GenTypes, "${
+      type.name
+    }">, args: ArgsValue<GenTypes, "${type.name}", "${
+        field.name
+      }">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "${
+        type.name
+      }", "${field.name}">>;
+  }`,
+    )
+    .join(EOL)}
+}
+  `
 }
 
 function renderFields(type: GraphQLTypeObject) {
@@ -128,6 +172,10 @@ function getExposableObjectsTypeName(type: GraphQLTypeObject) {
 
 function getTypeAliasesName(type: GraphQLTypeObject) {
   return `${type.name}Alias`
+}
+
+function getTypeObjectName(type: GraphQLTypeObject) {
+  return `${type.name}FieldDetails`
 }
 
 // function renderArgs(
