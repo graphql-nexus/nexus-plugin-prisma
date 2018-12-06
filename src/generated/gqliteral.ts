@@ -374,9 +374,9 @@ export type BrandReturnType = prisma.Brand
 
 export type ProductOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
-export type ProductBrandReturnType = BrandReturnType;
-
 export type ProductIdReturnType = string;
+
+export type ProductMySuperBrandReturnType = BrandReturnType;
 
 export type ProductNameReturnType = string;
 
@@ -605,8 +605,8 @@ export interface GraphQLiteralGenReturnTypes {
     products: BrandProductsReturnType;
   };
   Product: {
-    brand: ProductBrandReturnType;
     id: ProductIdReturnType;
+    mySuperBrand: ProductMySuperBrandReturnType;
     name: ProductNameReturnType;
     options: ProductOptionsReturnType;
   };

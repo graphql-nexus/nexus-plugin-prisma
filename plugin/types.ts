@@ -33,14 +33,15 @@ export type AnonymousInputFields =
   | AnonymousAliases
   | AnonymousPickOmitField
 
-export interface AnonymousFieldDetails {
-  [key: string]: {
-    args: Record<string, ArgDefinition>
-    description?: string
-    list: boolean
-    resolve: (root: any, args: any, ctx: any, info?: any) => any
-  }
+export interface AnonymousFieldDetail {
+  prismaFieldName: string
+  args: Record<string, ArgDefinition>
+  description?: string
+  list: boolean
+  resolve: (root: any, args: any, ctx: any, info?: any) => any
 }
+
+export type AnonymousFieldDetails = Record<string, AnonymousFieldDetail>
 
 export type InputField<
   GenTypes = GraphQLiteralGen,

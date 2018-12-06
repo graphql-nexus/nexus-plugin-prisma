@@ -21,6 +21,7 @@ import {
   ObjectField,
   PrismaObject,
   PrismaTypeNames,
+  AnonymousFieldDetail,
 } from './types'
 import {
   getFields,
@@ -353,6 +354,12 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
   }
 }
 
+function isAnonymousFieldDetails(
+  options: any,
+): options is AnonymousFieldDetail {
+  return (options as AnonymousFieldDetail).prismaFieldName !== undefined
+}
+
 class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   GenTypes,
   TypeName
@@ -371,6 +378,29 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     this.prismaType = this.genPrismaType() as any
   }
 
+  field<FieldName extends string>(
+    name: FieldName,
+    type: Types.AllOutputTypes<GenTypes> | Types.BaseScalars,
+    options?: Types.OutputFieldOpts<GenTypes, TypeName, FieldName>,
+  ): void {
+    if (!isAnonymousFieldDetails(options)) {
+      return super.field(name, type, options)
+    }
+    const typeName = this.name
+    const graphqlType = this.typesMap.types[typeName]
+
+    const prismaOptions = {
+      ...options,
+      resolve: generateDefaultResolver(
+        typeName,
+        { [name]: options.prismaFieldName },
+        graphqlType,
+      ),
+    }
+
+    return super.field(name, type, prismaOptions)
+  }
+
   public getTypeConfig(): Types.ObjectTypeConfig {
     return this.typeConfig
   }
@@ -382,12 +412,9 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 
     return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
       acc[field.name] = {
+        prismaFieldName: field.name,
         list: field.type.isArray,
-        resolve: generateDefaultResolver(
-          typeName,
-          { [field.name]: field.name },
-          graphqlType,
-        ),
+        resolve: () => {},
         description: field.description,
         args: field.arguments.reduce<Record<string, ArgDefinition>>(
           (acc, fieldArg) => {
@@ -517,8 +544,7 @@ export function prismaObjectType<
     fn(objectType)
   }
 
-  const config = objectType.getTypeConfig()
-  const typesToExport: WrappedType[] = getTypesToExport(config)
+  const typesToExport = getTypesToExport(objectType.getTypeConfig())
 
   addExportedTypesToGlobalCache(typesToExport)
 

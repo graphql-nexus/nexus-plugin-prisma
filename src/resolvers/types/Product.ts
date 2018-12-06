@@ -13,7 +13,7 @@ import { optionsFromVariants } from '../utils'
 export const Product = prismaObjectType('Product', t => {
   t.prismaFields(['id', 'name'])
 
-  t.field('brand', 'Brand', t.prismaType.brand)
+  t.field('productBrand', 'Brand', t.prismaType.brand)
 
   t.field('options', 'Option', {
     list: true,
