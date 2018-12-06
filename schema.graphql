@@ -286,8 +286,8 @@ input OptionWhereInput {
 }
 
 type Product {
+  brand: Brand!
   id: ID!
-  mySuperBrand: Brand!
   name: String!
   options: [Option!]!
 }

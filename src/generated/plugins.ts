@@ -10,9 +10,11 @@ import {
 } from 'gqliteral/dist/types'
 import { GraphQLResolveInfo } from 'graphql'
 
+import * as prisma from './prisma-client'
+
 // Types for Query
 
-type Query =
+type QueryObject =
   | QueryFields
   | { name: 'attribute', args?: QueryAttributeArgs[] | false, alias?: string  } 
   | { name: 'attributes', args?: QueryAttributesArgs[] | false, alias?: string  } 
@@ -202,140 +204,140 @@ export interface QueryFieldDetails<GenTypes = GraphQLiteralGen> {
     args: Record<QueryAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "attribute">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute | null> | prisma.Attribute | null;
   }
   attributes: {
     args: Record<QueryAttributesArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "attributes">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute[]> | prisma.Attribute[];
   }
   attributesConnection: {
     args: Record<QueryAttributesConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attributesConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "attributesConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "attributesConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AttributeConnection> | prisma.AttributeConnection;
   }
   brand: {
     args: Record<QueryBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "brand">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand | null> | prisma.Brand | null;
   }
   brands: {
     args: Record<QueryBrandsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "brands">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand[]> | prisma.Brand[];
   }
   brandsConnection: {
     args: Record<QueryBrandsConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brandsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "brandsConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "brandsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BrandConnection> | prisma.BrandConnection;
   }
   collection: {
     args: Record<QueryCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "collection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection | null> | prisma.Collection | null;
   }
   collections: {
     args: Record<QueryCollectionsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "collections">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection[]> | prisma.Collection[];
   }
   collectionsConnection: {
     args: Record<QueryCollectionsConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collectionsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "collectionsConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "collectionsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.CollectionConnection> | prisma.CollectionConnection;
   }
   option: {
     args: Record<QueryOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "option">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option | null> | prisma.Option | null;
   }
   options: {
     args: Record<QueryOptionsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "options">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "options">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "options">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option[]> | prisma.Option[];
   }
   optionsConnection: {
     args: Record<QueryOptionsConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "optionsConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionConnection> | prisma.OptionConnection;
   }
   optionValue: {
     args: Record<QueryOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "optionValue">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue | null> | prisma.OptionValue | null;
   }
   optionValues: {
     args: Record<QueryOptionValuesArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "optionValues">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue[]> | prisma.OptionValue[];
   }
   optionValuesConnection: {
     args: Record<QueryOptionValuesConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValuesConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "optionValuesConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "optionValuesConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValueConnection> | prisma.OptionValueConnection;
   }
   product: {
     args: Record<QueryProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "product">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "product">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "product">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product | null> | prisma.Product | null;
   }
   products: {
     args: Record<QueryProductsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "products">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product[]> | prisma.Product[];
   }
   productsConnection: {
     args: Record<QueryProductsConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "productsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "productsConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "productsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.ProductConnection> | prisma.ProductConnection;
   }
   variant: {
     args: Record<QueryVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "variant">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant | null> | prisma.Variant | null;
   }
   variants: {
     args: Record<QueryVariantsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "variants">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant[]> | prisma.Variant[];
   }
   variantsConnection: {
     args: Record<QueryVariantsConnectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variantsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "variantsConnection">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "variantsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.VariantConnection> | prisma.VariantConnection;
   }
   node: {
     args: Record<QueryNodeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Query", "node">>;
+    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Node | null> | prisma.Node | null;
   }
 }
   
 
 // Types for Attribute
 
-type Attribute =
+type AttributeObject =
   | AttributeFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'key', args?: [] | false, alias?: string  } 
@@ -369,32 +371,32 @@ export interface AttributeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Attribute", "id">>;
+    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   key: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "key">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Attribute", "key">>;
+    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "key">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   value: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "value">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Attribute", "value">>;
+    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "value">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   products: {
     args: Record<AttributeProductsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Attribute", "products">>;
+    resolve: (root: RootValue<GenTypes, "Attribute">, args: ArgsValue<GenTypes, "Attribute", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product[]> | prisma.Product[];
   }
 }
   
 
 // Types for Product
 
-type Product =
+type ProductObject =
   | ProductFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -448,44 +450,44 @@ export interface ProductFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "id">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "name">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   brand: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "brand">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand> | prisma.Brand;
   }
   variants: {
     args: Record<ProductVariantsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "variants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "variants">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "variants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant[]> | prisma.Variant[];
   }
   collections: {
     args: Record<ProductCollectionsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "collections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "collections">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "collections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection[]> | prisma.Collection[];
   }
   attributes: {
     args: Record<ProductAttributesArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "attributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Product", "attributes">>;
+    resolve: (root: RootValue<GenTypes, "Product">, args: ArgsValue<GenTypes, "Product", "attributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute[]> | prisma.Attribute[];
   }
 }
   
 
 // Types for Brand
 
-type Brand =
+type BrandObject =
   | BrandFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -517,26 +519,26 @@ export interface BrandFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Brand", "id">>;
+    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Brand", "name">>;
+    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   products: {
     args: Record<BrandProductsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Brand", "products">>;
+    resolve: (root: RootValue<GenTypes, "Brand">, args: ArgsValue<GenTypes, "Brand", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product[]> | prisma.Product[];
   }
 }
   
 
 // Types for Variant
 
-type Variant =
+type VariantObject =
   | VariantFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'optionValues', args?: VariantOptionValuesArgs[] | false, alias?: string  } 
@@ -568,26 +570,26 @@ export interface VariantFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Variant", "id">>;
+    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   optionValues: {
     args: Record<VariantOptionValuesArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "optionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Variant", "optionValues">>;
+    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "optionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue[]> | prisma.OptionValue[];
   }
   price: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "price">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Variant", "price">>;
+    resolve: (root: RootValue<GenTypes, "Variant">, args: ArgsValue<GenTypes, "Variant", "price">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number | null> | number | null;
   }
 }
   
 
 // Types for OptionValue
 
-type OptionValue =
+type OptionValueObject =
   | OptionValueFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -612,26 +614,26 @@ export interface OptionValueFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValue", "id">>;
+    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValue", "name">>;
+    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   option: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValue", "option">>;
+    resolve: (root: RootValue<GenTypes, "OptionValue">, args: ArgsValue<GenTypes, "OptionValue", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option> | prisma.Option;
   }
 }
   
 
 // Types for Option
 
-type Option =
+type OptionObject =
   | OptionFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -663,26 +665,26 @@ export interface OptionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Option", "id">>;
+    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Option", "name">>;
+    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   values: {
     args: Record<OptionValuesArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "values">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Option", "values">>;
+    resolve: (root: RootValue<GenTypes, "Option">, args: ArgsValue<GenTypes, "Option", "values">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue[]> | prisma.OptionValue[];
   }
 }
   
 
 // Types for Collection
 
-type Collection =
+type CollectionObject =
   | CollectionFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -714,26 +716,26 @@ export interface CollectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Collection", "id">>;
+    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Collection", "name">>;
+    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   products: {
     args: Record<CollectionProductsArgs,ArgDefinition>
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Collection", "products">>;
+    resolve: (root: RootValue<GenTypes, "Collection">, args: ArgsValue<GenTypes, "Collection", "products">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product[]> | prisma.Product[];
   }
 }
   
 
 // Types for AttributeConnection
 
-type AttributeConnection =
+type AttributeConnectionObject =
   | AttributeConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -758,26 +760,26 @@ export interface AttributeConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AttributeEdge[]> | prisma.AttributeEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "AttributeConnection">, args: ArgsValue<GenTypes, "AttributeConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateAttribute> | prisma.AggregateAttribute;
   }
 }
   
 
 // Types for PageInfo
 
-type PageInfo =
+type PageInfoObject =
   | PageInfoFields
   | { name: 'hasNextPage', args?: [] | false, alias?: string  } 
   | { name: 'hasPreviousPage', args?: [] | false, alias?: string  } 
@@ -804,32 +806,32 @@ export interface PageInfoFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasNextPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "PageInfo", "hasNextPage">>;
+    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasNextPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
   }
   hasPreviousPage: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasPreviousPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "PageInfo", "hasPreviousPage">>;
+    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasPreviousPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
   }
   startCursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "startCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "PageInfo", "startCursor">>;
+    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "startCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
   }
   endCursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "endCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "PageInfo", "endCursor">>;
+    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "endCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
   }
 }
   
 
 // Types for AttributeEdge
 
-type AttributeEdge =
+type AttributeEdgeObject =
   | AttributeEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -852,20 +854,20 @@ export interface AttributeEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeEdge">, args: ArgsValue<GenTypes, "AttributeEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "AttributeEdge">, args: ArgsValue<GenTypes, "AttributeEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute> | prisma.Attribute;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeEdge">, args: ArgsValue<GenTypes, "AttributeEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "AttributeEdge">, args: ArgsValue<GenTypes, "AttributeEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateAttribute
 
-type AggregateAttribute =
+type AggregateAttributeObject =
   | AggregateAttributeFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -886,14 +888,14 @@ export interface AggregateAttributeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateAttribute">, args: ArgsValue<GenTypes, "AggregateAttribute", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateAttribute", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateAttribute">, args: ArgsValue<GenTypes, "AggregateAttribute", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for BrandConnection
 
-type BrandConnection =
+type BrandConnectionObject =
   | BrandConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -918,26 +920,26 @@ export interface BrandConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BrandEdge[]> | prisma.BrandEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "BrandConnection">, args: ArgsValue<GenTypes, "BrandConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateBrand> | prisma.AggregateBrand;
   }
 }
   
 
 // Types for BrandEdge
 
-type BrandEdge =
+type BrandEdgeObject =
   | BrandEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -960,20 +962,20 @@ export interface BrandEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandEdge">, args: ArgsValue<GenTypes, "BrandEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "BrandEdge">, args: ArgsValue<GenTypes, "BrandEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand> | prisma.Brand;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandEdge">, args: ArgsValue<GenTypes, "BrandEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "BrandEdge">, args: ArgsValue<GenTypes, "BrandEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateBrand
 
-type AggregateBrand =
+type AggregateBrandObject =
   | AggregateBrandFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -994,14 +996,14 @@ export interface AggregateBrandFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateBrand">, args: ArgsValue<GenTypes, "AggregateBrand", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateBrand", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateBrand">, args: ArgsValue<GenTypes, "AggregateBrand", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for CollectionConnection
 
-type CollectionConnection =
+type CollectionConnectionObject =
   | CollectionConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -1026,26 +1028,26 @@ export interface CollectionConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.CollectionEdge[]> | prisma.CollectionEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "CollectionConnection">, args: ArgsValue<GenTypes, "CollectionConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateCollection> | prisma.AggregateCollection;
   }
 }
   
 
 // Types for CollectionEdge
 
-type CollectionEdge =
+type CollectionEdgeObject =
   | CollectionEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -1068,20 +1070,20 @@ export interface CollectionEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionEdge">, args: ArgsValue<GenTypes, "CollectionEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "CollectionEdge">, args: ArgsValue<GenTypes, "CollectionEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection> | prisma.Collection;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionEdge">, args: ArgsValue<GenTypes, "CollectionEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "CollectionEdge">, args: ArgsValue<GenTypes, "CollectionEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateCollection
 
-type AggregateCollection =
+type AggregateCollectionObject =
   | AggregateCollectionFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -1102,14 +1104,14 @@ export interface AggregateCollectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateCollection">, args: ArgsValue<GenTypes, "AggregateCollection", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateCollection", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateCollection">, args: ArgsValue<GenTypes, "AggregateCollection", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for OptionConnection
 
-type OptionConnection =
+type OptionConnectionObject =
   | OptionConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -1134,26 +1136,26 @@ export interface OptionConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionEdge[]> | prisma.OptionEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "OptionConnection">, args: ArgsValue<GenTypes, "OptionConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateOption> | prisma.AggregateOption;
   }
 }
   
 
 // Types for OptionEdge
 
-type OptionEdge =
+type OptionEdgeObject =
   | OptionEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -1176,20 +1178,20 @@ export interface OptionEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionEdge">, args: ArgsValue<GenTypes, "OptionEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "OptionEdge">, args: ArgsValue<GenTypes, "OptionEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option> | prisma.Option;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionEdge">, args: ArgsValue<GenTypes, "OptionEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "OptionEdge">, args: ArgsValue<GenTypes, "OptionEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateOption
 
-type AggregateOption =
+type AggregateOptionObject =
   | AggregateOptionFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -1210,14 +1212,14 @@ export interface AggregateOptionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateOption">, args: ArgsValue<GenTypes, "AggregateOption", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateOption", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateOption">, args: ArgsValue<GenTypes, "AggregateOption", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for OptionValueConnection
 
-type OptionValueConnection =
+type OptionValueConnectionObject =
   | OptionValueConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -1242,26 +1244,26 @@ export interface OptionValueConnectionFieldDetails<GenTypes = GraphQLiteralGen> 
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValueEdge[]> | prisma.OptionValueEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueConnection">, args: ArgsValue<GenTypes, "OptionValueConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateOptionValue> | prisma.AggregateOptionValue;
   }
 }
   
 
 // Types for OptionValueEdge
 
-type OptionValueEdge =
+type OptionValueEdgeObject =
   | OptionValueEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -1284,20 +1286,20 @@ export interface OptionValueEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueEdge">, args: ArgsValue<GenTypes, "OptionValueEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueEdge">, args: ArgsValue<GenTypes, "OptionValueEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue> | prisma.OptionValue;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueEdge">, args: ArgsValue<GenTypes, "OptionValueEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueEdge">, args: ArgsValue<GenTypes, "OptionValueEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateOptionValue
 
-type AggregateOptionValue =
+type AggregateOptionValueObject =
   | AggregateOptionValueFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -1318,14 +1320,14 @@ export interface AggregateOptionValueFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateOptionValue">, args: ArgsValue<GenTypes, "AggregateOptionValue", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateOptionValue", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateOptionValue">, args: ArgsValue<GenTypes, "AggregateOptionValue", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for ProductConnection
 
-type ProductConnection =
+type ProductConnectionObject =
   | ProductConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -1350,26 +1352,26 @@ export interface ProductConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.ProductEdge[]> | prisma.ProductEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "ProductConnection">, args: ArgsValue<GenTypes, "ProductConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateProduct> | prisma.AggregateProduct;
   }
 }
   
 
 // Types for ProductEdge
 
-type ProductEdge =
+type ProductEdgeObject =
   | ProductEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -1392,20 +1394,20 @@ export interface ProductEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductEdge">, args: ArgsValue<GenTypes, "ProductEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "ProductEdge">, args: ArgsValue<GenTypes, "ProductEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product> | prisma.Product;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductEdge">, args: ArgsValue<GenTypes, "ProductEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "ProductEdge">, args: ArgsValue<GenTypes, "ProductEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateProduct
 
-type AggregateProduct =
+type AggregateProductObject =
   | AggregateProductFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -1426,14 +1428,14 @@ export interface AggregateProductFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateProduct">, args: ArgsValue<GenTypes, "AggregateProduct", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateProduct", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateProduct">, args: ArgsValue<GenTypes, "AggregateProduct", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for VariantConnection
 
-type VariantConnection =
+type VariantConnectionObject =
   | VariantConnectionFields
   | { name: 'pageInfo', args?: [] | false, alias?: string  } 
   | { name: 'edges', args?: [] | false, alias?: string  } 
@@ -1458,26 +1460,26 @@ export interface VariantConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantConnection", "pageInfo">>;
+    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantConnection", "edges">>;
+    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.VariantEdge[]> | prisma.VariantEdge[];
   }
   aggregate: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantConnection", "aggregate">>;
+    resolve: (root: RootValue<GenTypes, "VariantConnection">, args: ArgsValue<GenTypes, "VariantConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateVariant> | prisma.AggregateVariant;
   }
 }
   
 
 // Types for VariantEdge
 
-type VariantEdge =
+type VariantEdgeObject =
   | VariantEdgeFields
   | { name: 'node', args?: [] | false, alias?: string  } 
   | { name: 'cursor', args?: [] | false, alias?: string  } 
@@ -1500,20 +1502,20 @@ export interface VariantEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantEdge">, args: ArgsValue<GenTypes, "VariantEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantEdge", "node">>;
+    resolve: (root: RootValue<GenTypes, "VariantEdge">, args: ArgsValue<GenTypes, "VariantEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant> | prisma.Variant;
   }
   cursor: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantEdge">, args: ArgsValue<GenTypes, "VariantEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantEdge", "cursor">>;
+    resolve: (root: RootValue<GenTypes, "VariantEdge">, args: ArgsValue<GenTypes, "VariantEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for AggregateVariant
 
-type AggregateVariant =
+type AggregateVariantObject =
   | AggregateVariantFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -1534,14 +1536,14 @@ export interface AggregateVariantFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AggregateVariant">, args: ArgsValue<GenTypes, "AggregateVariant", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AggregateVariant", "count">>;
+    resolve: (root: RootValue<GenTypes, "AggregateVariant">, args: ArgsValue<GenTypes, "AggregateVariant", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
   }
 }
   
 
 // Types for Mutation
 
-type Mutation =
+type MutationObject =
   | MutationFields
   | { name: 'createAttribute', args?: MutationCreateAttributeArgs[] | false, alias?: string  } 
   | { name: 'updateAttribute', args?: MutationUpdateAttributeArgs[] | false, alias?: string  } 
@@ -1755,260 +1757,260 @@ export interface MutationFieldDetails<GenTypes = GraphQLiteralGen> {
     args: Record<MutationCreateAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createAttribute">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute> | prisma.Attribute;
   }
   updateAttribute: {
     args: Record<MutationUpdateAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateAttribute">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute | null> | prisma.Attribute | null;
   }
   updateManyAttributes: {
     args: Record<MutationUpdateManyAttributesArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyAttributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyAttributes">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyAttributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertAttribute: {
     args: Record<MutationUpsertAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertAttribute">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute> | prisma.Attribute;
   }
   deleteAttribute: {
     args: Record<MutationDeleteAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteAttribute">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteAttribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute | null> | prisma.Attribute | null;
   }
   deleteManyAttributes: {
     args: Record<MutationDeleteManyAttributesArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyAttributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyAttributes">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyAttributes">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createBrand: {
     args: Record<MutationCreateBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createBrand">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand> | prisma.Brand;
   }
   updateBrand: {
     args: Record<MutationUpdateBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateBrand">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand | null> | prisma.Brand | null;
   }
   updateManyBrands: {
     args: Record<MutationUpdateManyBrandsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyBrands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyBrands">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyBrands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertBrand: {
     args: Record<MutationUpsertBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertBrand">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand> | prisma.Brand;
   }
   deleteBrand: {
     args: Record<MutationDeleteBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteBrand">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteBrand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand | null> | prisma.Brand | null;
   }
   deleteManyBrands: {
     args: Record<MutationDeleteManyBrandsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyBrands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyBrands">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyBrands">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createCollection: {
     args: Record<MutationCreateCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createCollection">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection> | prisma.Collection;
   }
   updateCollection: {
     args: Record<MutationUpdateCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateCollection">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection | null> | prisma.Collection | null;
   }
   updateManyCollections: {
     args: Record<MutationUpdateManyCollectionsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyCollections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyCollections">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyCollections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertCollection: {
     args: Record<MutationUpsertCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertCollection">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection> | prisma.Collection;
   }
   deleteCollection: {
     args: Record<MutationDeleteCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteCollection">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteCollection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection | null> | prisma.Collection | null;
   }
   deleteManyCollections: {
     args: Record<MutationDeleteManyCollectionsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyCollections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyCollections">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyCollections">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createOption: {
     args: Record<MutationCreateOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createOption">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option> | prisma.Option;
   }
   updateOption: {
     args: Record<MutationUpdateOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateOption">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option | null> | prisma.Option | null;
   }
   updateManyOptions: {
     args: Record<MutationUpdateManyOptionsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyOptions">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyOptions">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyOptions">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertOption: {
     args: Record<MutationUpsertOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertOption">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option> | prisma.Option;
   }
   deleteOption: {
     args: Record<MutationDeleteOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteOption">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteOption">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option | null> | prisma.Option | null;
   }
   deleteManyOptions: {
     args: Record<MutationDeleteManyOptionsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyOptions">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyOptions">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyOptions">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createOptionValue: {
     args: Record<MutationCreateOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createOptionValue">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue> | prisma.OptionValue;
   }
   updateOptionValue: {
     args: Record<MutationUpdateOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateOptionValue">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue | null> | prisma.OptionValue | null;
   }
   updateManyOptionValues: {
     args: Record<MutationUpdateManyOptionValuesArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyOptionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyOptionValues">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyOptionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertOptionValue: {
     args: Record<MutationUpsertOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertOptionValue">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue> | prisma.OptionValue;
   }
   deleteOptionValue: {
     args: Record<MutationDeleteOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteOptionValue">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteOptionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue | null> | prisma.OptionValue | null;
   }
   deleteManyOptionValues: {
     args: Record<MutationDeleteManyOptionValuesArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyOptionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyOptionValues">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyOptionValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createProduct: {
     args: Record<MutationCreateProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createProduct">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product> | prisma.Product;
   }
   updateProduct: {
     args: Record<MutationUpdateProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateProduct">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product | null> | prisma.Product | null;
   }
   updateManyProducts: {
     args: Record<MutationUpdateManyProductsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyProducts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyProducts">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyProducts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertProduct: {
     args: Record<MutationUpsertProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertProduct">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product> | prisma.Product;
   }
   deleteProduct: {
     args: Record<MutationDeleteProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteProduct">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteProduct">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product | null> | prisma.Product | null;
   }
   deleteManyProducts: {
     args: Record<MutationDeleteManyProductsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyProducts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyProducts">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyProducts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createVariant: {
     args: Record<MutationCreateVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "createVariant">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant> | prisma.Variant;
   }
   updateVariant: {
     args: Record<MutationUpdateVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateVariant">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant | null> | prisma.Variant | null;
   }
   updateManyVariants: {
     args: Record<MutationUpdateManyVariantsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyVariants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "updateManyVariants">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyVariants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertVariant: {
     args: Record<MutationUpsertVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "upsertVariant">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant> | prisma.Variant;
   }
   deleteVariant: {
     args: Record<MutationDeleteVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteVariant">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteVariant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant | null> | prisma.Variant | null;
   }
   deleteManyVariants: {
     args: Record<MutationDeleteManyVariantsArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyVariants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Mutation", "deleteManyVariants">>;
+    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyVariants">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
 }
   
 
 // Types for BatchPayload
 
-type BatchPayload =
+type BatchPayloadObject =
   | BatchPayloadFields
   | { name: 'count', args?: [] | false, alias?: string  } 
 
@@ -2029,14 +2031,14 @@ export interface BatchPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BatchPayload">, args: ArgsValue<GenTypes, "BatchPayload", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BatchPayload", "count">>;
+    resolve: (root: RootValue<GenTypes, "BatchPayload">, args: ArgsValue<GenTypes, "BatchPayload", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<undefined> | undefined;
   }
 }
   
 
 // Types for Subscription
 
-type Subscription =
+type SubscriptionObject =
   | SubscriptionFields
   | { name: 'attribute', args?: SubscriptionAttributeArgs[] | false, alias?: string  } 
   | { name: 'brand', args?: SubscriptionBrandArgs[] | false, alias?: string  } 
@@ -2082,50 +2084,50 @@ export interface SubscriptionFieldDetails<GenTypes = GraphQLiteralGen> {
     args: Record<SubscriptionAttributeArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "attribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "attribute">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "attribute">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AttributeSubscriptionPayload | null> | prisma.AttributeSubscriptionPayload | null;
   }
   brand: {
     args: Record<SubscriptionBrandArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "brand">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "brand">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BrandSubscriptionPayload | null> | prisma.BrandSubscriptionPayload | null;
   }
   collection: {
     args: Record<SubscriptionCollectionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "collection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "collection">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "collection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.CollectionSubscriptionPayload | null> | prisma.CollectionSubscriptionPayload | null;
   }
   option: {
     args: Record<SubscriptionOptionArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "option">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "option">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionSubscriptionPayload | null> | prisma.OptionSubscriptionPayload | null;
   }
   optionValue: {
     args: Record<SubscriptionOptionValueArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "optionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "optionValue">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "optionValue">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValueSubscriptionPayload | null> | prisma.OptionValueSubscriptionPayload | null;
   }
   product: {
     args: Record<SubscriptionProductArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "product">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "product">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "product">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.ProductSubscriptionPayload | null> | prisma.ProductSubscriptionPayload | null;
   }
   variant: {
     args: Record<SubscriptionVariantArgs,ArgDefinition>
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "variant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "Subscription", "variant">>;
+    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "variant">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.VariantSubscriptionPayload | null> | prisma.VariantSubscriptionPayload | null;
   }
 }
   
 
 // Types for AttributeSubscriptionPayload
 
-type AttributeSubscriptionPayload =
+type AttributeSubscriptionPayloadObject =
   | AttributeSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2152,32 +2154,32 @@ export interface AttributeSubscriptionPayloadFieldDetails<GenTypes = GraphQLiter
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Attribute | null> | prisma.Attribute | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributeSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "AttributeSubscriptionPayload">, args: ArgsValue<GenTypes, "AttributeSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AttributePreviousValues | null> | prisma.AttributePreviousValues | null;
   }
 }
   
 
 // Types for AttributePreviousValues
 
-type AttributePreviousValues =
+type AttributePreviousValuesObject =
   | AttributePreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'key', args?: [] | false, alias?: string  } 
@@ -2202,26 +2204,26 @@ export interface AttributePreviousValuesFieldDetails<GenTypes = GraphQLiteralGen
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributePreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   key: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "key">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributePreviousValues", "key">>;
+    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "key">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   value: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "value">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "AttributePreviousValues", "value">>;
+    resolve: (root: RootValue<GenTypes, "AttributePreviousValues">, args: ArgsValue<GenTypes, "AttributePreviousValues", "value">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for BrandSubscriptionPayload
 
-type BrandSubscriptionPayload =
+type BrandSubscriptionPayloadObject =
   | BrandSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2248,32 +2250,32 @@ export interface BrandSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGe
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Brand | null> | prisma.Brand | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "BrandSubscriptionPayload">, args: ArgsValue<GenTypes, "BrandSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BrandPreviousValues | null> | prisma.BrandPreviousValues | null;
   }
 }
   
 
 // Types for BrandPreviousValues
 
-type BrandPreviousValues =
+type BrandPreviousValuesObject =
   | BrandPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -2296,20 +2298,20 @@ export interface BrandPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandPreviousValues">, args: ArgsValue<GenTypes, "BrandPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandPreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "BrandPreviousValues">, args: ArgsValue<GenTypes, "BrandPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "BrandPreviousValues">, args: ArgsValue<GenTypes, "BrandPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "BrandPreviousValues", "name">>;
+    resolve: (root: RootValue<GenTypes, "BrandPreviousValues">, args: ArgsValue<GenTypes, "BrandPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for CollectionSubscriptionPayload
 
-type CollectionSubscriptionPayload =
+type CollectionSubscriptionPayloadObject =
   | CollectionSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2336,32 +2338,32 @@ export interface CollectionSubscriptionPayloadFieldDetails<GenTypes = GraphQLite
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Collection | null> | prisma.Collection | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "CollectionSubscriptionPayload">, args: ArgsValue<GenTypes, "CollectionSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.CollectionPreviousValues | null> | prisma.CollectionPreviousValues | null;
   }
 }
   
 
 // Types for CollectionPreviousValues
 
-type CollectionPreviousValues =
+type CollectionPreviousValuesObject =
   | CollectionPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -2384,20 +2386,20 @@ export interface CollectionPreviousValuesFieldDetails<GenTypes = GraphQLiteralGe
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionPreviousValues">, args: ArgsValue<GenTypes, "CollectionPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionPreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "CollectionPreviousValues">, args: ArgsValue<GenTypes, "CollectionPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "CollectionPreviousValues">, args: ArgsValue<GenTypes, "CollectionPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "CollectionPreviousValues", "name">>;
+    resolve: (root: RootValue<GenTypes, "CollectionPreviousValues">, args: ArgsValue<GenTypes, "CollectionPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for OptionSubscriptionPayload
 
-type OptionSubscriptionPayload =
+type OptionSubscriptionPayloadObject =
   | OptionSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2424,32 +2426,32 @@ export interface OptionSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralG
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Option | null> | prisma.Option | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "OptionSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionPreviousValues | null> | prisma.OptionPreviousValues | null;
   }
 }
   
 
 // Types for OptionPreviousValues
 
-type OptionPreviousValues =
+type OptionPreviousValuesObject =
   | OptionPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -2472,20 +2474,20 @@ export interface OptionPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionPreviousValues">, args: ArgsValue<GenTypes, "OptionPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionPreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "OptionPreviousValues">, args: ArgsValue<GenTypes, "OptionPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionPreviousValues">, args: ArgsValue<GenTypes, "OptionPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionPreviousValues", "name">>;
+    resolve: (root: RootValue<GenTypes, "OptionPreviousValues">, args: ArgsValue<GenTypes, "OptionPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for OptionValueSubscriptionPayload
 
-type OptionValueSubscriptionPayload =
+type OptionValueSubscriptionPayloadObject =
   | OptionValueSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2512,32 +2514,32 @@ export interface OptionValueSubscriptionPayloadFieldDetails<GenTypes = GraphQLit
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValue | null> | prisma.OptionValue | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValueSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "OptionValueSubscriptionPayload">, args: ArgsValue<GenTypes, "OptionValueSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.OptionValuePreviousValues | null> | prisma.OptionValuePreviousValues | null;
   }
 }
   
 
 // Types for OptionValuePreviousValues
 
-type OptionValuePreviousValues =
+type OptionValuePreviousValuesObject =
   | OptionValuePreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -2560,20 +2562,20 @@ export interface OptionValuePreviousValuesFieldDetails<GenTypes = GraphQLiteralG
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValuePreviousValues">, args: ArgsValue<GenTypes, "OptionValuePreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValuePreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "OptionValuePreviousValues">, args: ArgsValue<GenTypes, "OptionValuePreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "OptionValuePreviousValues">, args: ArgsValue<GenTypes, "OptionValuePreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "OptionValuePreviousValues", "name">>;
+    resolve: (root: RootValue<GenTypes, "OptionValuePreviousValues">, args: ArgsValue<GenTypes, "OptionValuePreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for ProductSubscriptionPayload
 
-type ProductSubscriptionPayload =
+type ProductSubscriptionPayloadObject =
   | ProductSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2600,32 +2602,32 @@ export interface ProductSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteral
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Product | null> | prisma.Product | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "ProductSubscriptionPayload">, args: ArgsValue<GenTypes, "ProductSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.ProductPreviousValues | null> | prisma.ProductPreviousValues | null;
   }
 }
   
 
 // Types for ProductPreviousValues
 
-type ProductPreviousValues =
+type ProductPreviousValuesObject =
   | ProductPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'name', args?: [] | false, alias?: string  } 
@@ -2648,20 +2650,20 @@ export interface ProductPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> 
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductPreviousValues">, args: ArgsValue<GenTypes, "ProductPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductPreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "ProductPreviousValues">, args: ArgsValue<GenTypes, "ProductPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   name: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "ProductPreviousValues">, args: ArgsValue<GenTypes, "ProductPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "ProductPreviousValues", "name">>;
+    resolve: (root: RootValue<GenTypes, "ProductPreviousValues">, args: ArgsValue<GenTypes, "ProductPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
 }
   
 
 // Types for VariantSubscriptionPayload
 
-type VariantSubscriptionPayload =
+type VariantSubscriptionPayloadObject =
   | VariantSubscriptionPayloadFields
   | { name: 'mutation', args?: [] | false, alias?: string  } 
   | { name: 'node', args?: [] | false, alias?: string  } 
@@ -2688,32 +2690,32 @@ export interface VariantSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteral
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantSubscriptionPayload", "mutation">>;
+    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantSubscriptionPayload", "node">>;
+    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Variant | null> | prisma.Variant | null;
   }
   updatedFields: {
     args: {}
     description: string
     list: true
-    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantSubscriptionPayload", "updatedFields">>;
+    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
   }
   previousValues: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantSubscriptionPayload", "previousValues">>;
+    resolve: (root: RootValue<GenTypes, "VariantSubscriptionPayload">, args: ArgsValue<GenTypes, "VariantSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.VariantPreviousValues | null> | prisma.VariantPreviousValues | null;
   }
 }
   
 
 // Types for VariantPreviousValues
 
-type VariantPreviousValues =
+type VariantPreviousValuesObject =
   | VariantPreviousValuesFields
   | { name: 'id', args?: [] | false, alias?: string  } 
   | { name: 'price', args?: [] | false, alias?: string  } 
@@ -2736,13 +2738,13 @@ export interface VariantPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> 
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantPreviousValues">, args: ArgsValue<GenTypes, "VariantPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantPreviousValues", "id">>;
+    resolve: (root: RootValue<GenTypes, "VariantPreviousValues">, args: ArgsValue<GenTypes, "VariantPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
   }
   price: {
     args: {}
     description: string
     list: false
-    resolve: (root: RootValue<GenTypes, "VariantPreviousValues">, args: ArgsValue<GenTypes, "VariantPreviousValues", "price">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "VariantPreviousValues", "price">>;
+    resolve: (root: RootValue<GenTypes, "VariantPreviousValues">, args: ArgsValue<GenTypes, "VariantPreviousValues", "price">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number | null> | number | null;
   }
 }
   
@@ -2750,53 +2752,53 @@ export interface VariantPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> 
 
 export interface PluginTypes {
   fields: {
-    Query: Query
-    Attribute: Attribute
-    Product: Product
-    Brand: Brand
-    Variant: Variant
-    OptionValue: OptionValue
-    Option: Option
-    Collection: Collection
-    AttributeConnection: AttributeConnection
-    PageInfo: PageInfo
-    AttributeEdge: AttributeEdge
-    AggregateAttribute: AggregateAttribute
-    BrandConnection: BrandConnection
-    BrandEdge: BrandEdge
-    AggregateBrand: AggregateBrand
-    CollectionConnection: CollectionConnection
-    CollectionEdge: CollectionEdge
-    AggregateCollection: AggregateCollection
-    OptionConnection: OptionConnection
-    OptionEdge: OptionEdge
-    AggregateOption: AggregateOption
-    OptionValueConnection: OptionValueConnection
-    OptionValueEdge: OptionValueEdge
-    AggregateOptionValue: AggregateOptionValue
-    ProductConnection: ProductConnection
-    ProductEdge: ProductEdge
-    AggregateProduct: AggregateProduct
-    VariantConnection: VariantConnection
-    VariantEdge: VariantEdge
-    AggregateVariant: AggregateVariant
-    Mutation: Mutation
-    BatchPayload: BatchPayload
-    Subscription: Subscription
-    AttributeSubscriptionPayload: AttributeSubscriptionPayload
-    AttributePreviousValues: AttributePreviousValues
-    BrandSubscriptionPayload: BrandSubscriptionPayload
-    BrandPreviousValues: BrandPreviousValues
-    CollectionSubscriptionPayload: CollectionSubscriptionPayload
-    CollectionPreviousValues: CollectionPreviousValues
-    OptionSubscriptionPayload: OptionSubscriptionPayload
-    OptionPreviousValues: OptionPreviousValues
-    OptionValueSubscriptionPayload: OptionValueSubscriptionPayload
-    OptionValuePreviousValues: OptionValuePreviousValues
-    ProductSubscriptionPayload: ProductSubscriptionPayload
-    ProductPreviousValues: ProductPreviousValues
-    VariantSubscriptionPayload: VariantSubscriptionPayload
-    VariantPreviousValues: VariantPreviousValues
+    Query: QueryObject
+    Attribute: AttributeObject
+    Product: ProductObject
+    Brand: BrandObject
+    Variant: VariantObject
+    OptionValue: OptionValueObject
+    Option: OptionObject
+    Collection: CollectionObject
+    AttributeConnection: AttributeConnectionObject
+    PageInfo: PageInfoObject
+    AttributeEdge: AttributeEdgeObject
+    AggregateAttribute: AggregateAttributeObject
+    BrandConnection: BrandConnectionObject
+    BrandEdge: BrandEdgeObject
+    AggregateBrand: AggregateBrandObject
+    CollectionConnection: CollectionConnectionObject
+    CollectionEdge: CollectionEdgeObject
+    AggregateCollection: AggregateCollectionObject
+    OptionConnection: OptionConnectionObject
+    OptionEdge: OptionEdgeObject
+    AggregateOption: AggregateOptionObject
+    OptionValueConnection: OptionValueConnectionObject
+    OptionValueEdge: OptionValueEdgeObject
+    AggregateOptionValue: AggregateOptionValueObject
+    ProductConnection: ProductConnectionObject
+    ProductEdge: ProductEdgeObject
+    AggregateProduct: AggregateProductObject
+    VariantConnection: VariantConnectionObject
+    VariantEdge: VariantEdgeObject
+    AggregateVariant: AggregateVariantObject
+    Mutation: MutationObject
+    BatchPayload: BatchPayloadObject
+    Subscription: SubscriptionObject
+    AttributeSubscriptionPayload: AttributeSubscriptionPayloadObject
+    AttributePreviousValues: AttributePreviousValuesObject
+    BrandSubscriptionPayload: BrandSubscriptionPayloadObject
+    BrandPreviousValues: BrandPreviousValuesObject
+    CollectionSubscriptionPayload: CollectionSubscriptionPayloadObject
+    CollectionPreviousValues: CollectionPreviousValuesObject
+    OptionSubscriptionPayload: OptionSubscriptionPayloadObject
+    OptionPreviousValues: OptionPreviousValuesObject
+    OptionValueSubscriptionPayload: OptionValueSubscriptionPayloadObject
+    OptionValuePreviousValues: OptionValuePreviousValuesObject
+    ProductSubscriptionPayload: ProductSubscriptionPayloadObject
+    ProductPreviousValues: ProductPreviousValuesObject
+    VariantSubscriptionPayload: VariantSubscriptionPayloadObject
+    VariantPreviousValues: VariantPreviousValuesObject
   }
   aliases: {
     Query: QueryAlias

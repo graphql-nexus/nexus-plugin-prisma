@@ -15,19 +15,16 @@ export function codegen(/* schemaPath: string */) {
   const schemaPath =
     '/Users/flavian/Projects/prisma/woopwoop/src/generated/prisma.graphql'
   const typeDefs = readFileSync(schemaPath).toString()
-
   const types = extractTypes(typeDefs)
-
-  const typesToRender = render(types)
-
+  const typesToRender = render(schemaPath, types)
   const outputPath = join(__dirname, '../src/generated/plugins.ts')
 
   writeFileSync(outputPath, typesToRender)
-
   console.log('Types generated at plugin.ts')
 }
 
-export function render(types: GraphQLTypes) {
+// TODO: Dynamically resolve prisma-client import path
+export function render(schemaPath: string, types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
 
   return `\
@@ -42,6 +39,8 @@ import {
   ResultValue,
 } from 'gqliteral/dist/types'
 import { GraphQLResolveInfo } from 'graphql'
+
+import * as prisma from './prisma-client'
 
 ${objectTypes.map(renderType).join(EOL)}
 
@@ -101,9 +100,9 @@ ${type.fields
       type.name
     }">, args: ArgsValue<GenTypes, "${type.name}", "${
         field.name
-      }">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => MaybePromise<ResultValue<GenTypes, "${
-        type.name
-      }", "${field.name}">>;
+      }">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => ${renderResolverReturnType(
+        field,
+      )};
   }`,
     )
     .join(EOL)}
@@ -154,6 +153,31 @@ interface ${getTypeAliasesName(type)} {
 }`
 }
 
+function renderResolverReturnType(field: GraphQLTypeField) {
+  const graphqlToTypescript: Record<string, string> = {
+    String: 'string',
+    Boolean: 'boolean',
+    ID: 'string',
+    Int: 'number',
+    Float: 'number',
+    DateTime: 'string',
+  }
+
+  let returnType = field.type.isScalar
+    ? graphqlToTypescript[field.type.name]
+    : `prisma.${field.type.name}`
+
+  if (field.type.isArray) {
+    returnType += '[]'
+  }
+
+  if (!field.type.isRequired) {
+    returnType += ' | null'
+  }
+
+  return `Promise<${returnType}> | ${returnType}`
+}
+
 function getExposableFieldsTypeName(type: GraphQLTypeObject) {
   return `${type.name}Fields`
 }
@@ -167,7 +191,7 @@ function getTypeFieldArgName(type: GraphQLTypeObject, field: GraphQLTypeField) {
 }
 
 function getExposableObjectsTypeName(type: GraphQLTypeObject) {
-  return `${type.name}`
+  return `${type.name}Object`
 }
 
 function getTypeAliasesName(type: GraphQLTypeObject) {
