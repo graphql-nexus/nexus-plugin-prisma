@@ -34,7 +34,8 @@ export type AnonymousInputFields =
   | AnonymousPickOmitField
 
 export interface AnonymousFieldDetail {
-  prismaFieldName: string
+  // Internal field to properly resolve aliased field
+  $prismaFieldName: string
   args: Record<string, ArgDefinition>
   description?: string
   list: boolean

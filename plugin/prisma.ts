@@ -357,7 +357,7 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
 function isAnonymousFieldDetails(
   options: any,
 ): options is AnonymousFieldDetail {
-  return (options as AnonymousFieldDetail).prismaFieldName !== undefined
+  return (options as AnonymousFieldDetail).$prismaFieldName !== undefined
 }
 
 class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
@@ -393,7 +393,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
       ...options,
       resolve: generateDefaultResolver(
         typeName,
-        { [name]: options.prismaFieldName },
+        { [name]: options.$prismaFieldName },
         graphqlType,
       ),
     }
@@ -412,7 +412,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 
     return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
       acc[field.name] = {
-        prismaFieldName: field.name,
+        $prismaFieldName: field.name,
         list: field.type.isArray,
         resolve: () => {},
         description: field.description,
