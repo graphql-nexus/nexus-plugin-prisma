@@ -1,13 +1,14 @@
 {
   "name": "plugin",
   "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src",
     "codegen": "ts-node-dev ./plugin/codegen"
   },
   "dependencies": {
     "apollo-server": "^2.2.2",
-    "gqliteral": "^0.3.0",
+    "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
     "lodash": "^4.17.11",
     "prisma-client-lib": "^1.20.7",

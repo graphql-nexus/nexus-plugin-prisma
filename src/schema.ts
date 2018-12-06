@@ -48,22 +48,17 @@ export const schema = makeSchema({
     typegen: path.join(__dirname, './generated/gqliteral.ts'),
   },
 
-  typegen: {
-    imports: {
-      prisma: path.join(__dirname, './generated/prisma-client/index.ts'),
-      ctx: path.join(__dirname, './context.ts'),
-    },
-
+  typegenAutoConfig: {
+    sources: [
+      {
+        module: path.join(__dirname, './generated/prisma-client/index.ts'),
+        alias: 'prisma',
+      },
+      {
+        module: path.join(__dirname, './context.ts'),
+        alias: 'ctx',
+      },
+    ],
     contextType: 'ctx.Context',
-
-    rootTypes: {
-      Product: 'prisma.Product',
-      Brand: 'prisma.Brand',
-      Option: 'prisma.Option',
-      Attribute: 'prisma.Attribute',
-      Collection: 'prisma.Collection',
-      OptionValue: 'prisma.OptionValue',
-      Variant: 'prisma.Variant',
-    },
   },
 })
