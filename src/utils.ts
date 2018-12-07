@@ -21,6 +21,7 @@ export interface ScalarToObjectInputArg {
   Float: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
   Int: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
   ID: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
+  DateTime: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
 }
 
 const scalarToObjectInputArg: ScalarToObjectInputArg = {
@@ -29,6 +30,7 @@ const scalarToObjectInputArg: ScalarToObjectInputArg = {
   Float: (arg, name, opts) => arg.float(name, opts),
   Int: (arg, name, opts) => arg.int(name, opts),
   ID: (arg, name, opts) => arg.id(name, opts),
+  DateTime: (arg, name, opts) => arg.field(name, 'DateTime' as any, opts),
 }
 
 export interface ScalarToLiteralArg {
@@ -37,6 +39,7 @@ export interface ScalarToLiteralArg {
   Float: (opts: ArgOpts) => ArgDefinition
   Int: (opts: ArgOpts) => ArgDefinition
   ID: (opts: ArgOpts) => ArgDefinition
+  DateTime: (opts: ArgOpts) => ArgDefinition
 }
 
 const scalarToLiteralArg: ScalarToLiteralArg = {
@@ -45,6 +48,7 @@ const scalarToLiteralArg: ScalarToLiteralArg = {
   Float: opts => arg('Float', opts),
   Int: opts => arg('Int', opts),
   ID: opts => arg('ID', opts),
+  DateTime: opts => arg('DateTime' as any, opts),
 }
 
 export function getObjectInputArg(

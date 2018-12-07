@@ -1,15 +1,16 @@
 import { readFileSync, existsSync } from 'fs'
 import * as path from 'path'
-import { arg, enumType, inputObjectType } from 'gqliteral'
+import { arg, enumType, inputObjectType, scalarType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
 import { ArgDefinition, FieldDef } from 'gqliteral/dist/types'
-import { GraphQLFieldResolver } from 'graphql'
+import { GraphQLFieldResolver, Kind } from 'graphql'
 import * as _ from 'lodash'
 import {
   extractTypes,
   GraphQLEnumObject,
   GraphQLTypeField,
   GraphQLTypeObject,
+  GraphQLType,
 } from './source-helper'
 import { throwIfUnknownClientFunction } from './throw'
 import {
@@ -32,6 +33,8 @@ export interface TypesMap {
   types: Dictionary<GraphQLTypeObject>
   enums: Dictionary<GraphQLEnumObject>
 }
+
+const BASE_SCALARS = ['String', 'Boolean', 'Int', 'Float', 'ID']
 
 function buildTypesMap(schemaPath: string): TypesMap {
   const typeDefs = readFileSync(schemaPath).toString()
@@ -106,11 +109,13 @@ function generateDefaultResolver(
       }
 
       // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
-      if (
-        typeName === 'Mutation' &&
-        (fieldName.startsWith('create') || fieldName.startsWith('delete'))
-      ) {
+      if (typeName === 'Mutation' && fieldName.startsWith('create')) {
         args = args.data
+      }
+
+      // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
+      if (typeName === 'Mutation' && fieldName.startsWith('delete')) {
+        args = args.where
       }
 
       return ctx[contextClientName][fieldName](args)
@@ -164,18 +169,22 @@ function exportInputObjectType(
 
   const inputObject = inputObjectType(inputType.name, arg => {
     inputType.fields.forEach(field => {
-      if (field.type.isScalar) {
+      if (isBaseScalar(field.type)) {
         return getObjectInputArg(arg, field, typeToFieldOpts(field.type))
       }
 
       if (!seen[field.type.name]) {
-        typesToExport.push(
-          ...exportInputObjectType(
-            typesMap.types[field.type.name],
-            typesMap,
-            seen,
-          ),
-        )
+        if (field.type.isScalar && field.type.name === 'DateTime') {
+          typesToExport.push(exportDateTimeScalar())
+        } else {
+          typesToExport.push(
+            ...exportInputObjectType(
+              typesMap.types[field.type.name],
+              typesMap,
+              seen,
+            ),
+          )
+        }
       }
 
       arg.field(field.name, field.type.name as any, typeToFieldOpts(field.type))
@@ -187,6 +196,27 @@ function exportInputObjectType(
 
 function exportEnumType(enumObject: GraphQLEnumObject) {
   return enumType(enumObject.name, enumObject.values)
+}
+
+function exportDateTimeScalar(): WrappedType {
+  return scalarType('DateTime', {
+    parseValue(value) {
+      return new Date(value)
+    },
+    serialize(value) {
+      return value.getTime()
+    },
+    parseLiteral(ast) {
+      if (ast.kind === Kind.INT) {
+        return new Date(ast.value)
+      }
+      return null
+    },
+  })
+}
+
+function isBaseScalar(type: GraphQLType) {
+  return type.isScalar && BASE_SCALARS.includes(type.name)
 }
 
 function filterArgsToExpose(
@@ -245,9 +275,11 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
 }
 
 function isAnonymousFieldDetails(
-  options: any,
+  options?: any,
 ): options is AnonymousFieldDetail {
-  return (options as AnonymousFieldDetail).$prismaFieldName !== undefined
+  return (
+    options && (options as AnonymousFieldDetail).$prismaFieldName !== undefined
+  )
 }
 
 interface PrismaConfig {
@@ -358,6 +390,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
           graphqlType,
           this.config.contextClientName,
         ),
+        nullable: !field.type.isRequired,
         description: field.description,
         args: field.arguments.reduce<Record<string, ArgDefinition>>(
           (acc, fieldArg) => {
@@ -399,17 +432,35 @@ function getTypesToExport(
       ) as string[]
     })
     .filter(typeName => {
+      const graphqlType = typesMap.types[typeName]
+
       return (
-        typesMap.types[typeName] !== undefined && !exportedTypesMap[typeName]
+        graphqlType !== undefined &&
+        (!exportedTypesMap[typeName] || !isBaseScalar(graphqlType.type as any))
       )
     })
     .uniq()
     .flatMap(typeName => {
-      const isInput = typesMap.types[typeName].type.isInput
-      const type = isInput ? typesMap.types[typeName] : typesMap.enums[typeName]
-      return isInput
-        ? exportInputObjectType(type as GraphQLTypeObject, typesMap, {})
-        : exportEnumType(type as GraphQLEnumObject)
+      const graphqlType = typesMap.types[typeName]
+
+      if (graphqlType.type.isInput) {
+        return exportInputObjectType(
+          graphqlType as GraphQLTypeObject,
+          typesMap,
+          {},
+        )
+      }
+
+      if (graphqlType.type.isEnum) {
+        return exportEnumType(typesMap.enums[typeName])
+      }
+
+      if (graphqlType.type.isScalar && graphqlType.type.name === 'DateTime') {
+        console.log('LALALALA')
+        return exportDateTimeScalar()
+      }
+
+      throw new Error('Unsupported type')
     })
     .filter(t => exportedTypesMap[t.type.name] === undefined)
     .uniqBy(t => t.type.name) // TODO: Optimize by sharing the `seen` typeMap in `exportInputObjectType`

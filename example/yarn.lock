@@ -220,9 +220,9 @@
   integrity sha512-XIB0ZCaFZmWUHAa9dBqP5UKXXHwuukmVlP+XcyU94dui2k+l2lG+CHAbt2ffenHPUqoIs5Beh8Pdf2YEq/CZ7A==
 
 "@types/range-parser@*":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
-  integrity sha512-HtKGu+qG1NPvYe1z7ezLsyIaXYyi8SoAVqWDZgDQ8dLrsZvSzUNCwZyfX33uhWxL/SU0ZDQZ3nwZ0nimt507Kw==
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
+  integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
 
 "@types/serve-static@*":
   version "1.13.2"
@@ -4349,10 +4349,10 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus-prisma@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.3.tgz#267409581d89b4952b80bd77f4cfbdaea1c36a56"
-  integrity sha512-lm11u/7wGoEQoUOK37lOhhHWAAZXZ8U/Yu0dFmi+/4NYZlZHGEOhi12+9TrqjtUWU/HFY20BqivGJoHrq+IulA==
+nexus-prisma@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.7.tgz#17a8513fdf988ea6b2372f8aca37841c729fe6af"
+  integrity sha512-rO0wszjP5LRIJbh+lCe+CTO+wMtsuSjBTSJAPBr9q5d2KLAoDQIblNmk2WGX/hqjD+zi6lARrvLQHKV7KkekSw==
   dependencies:
     gqliteral "^0.4.0"
     graphql "^14.0.2"
@@ -5197,7 +5197,7 @@ prisma-yml@1.22.2:
     scuid "^1.0.2"
     yaml-ast-parser "^0.0.40"
 
-prisma@^1.20.7:
+prisma@^1.22.2:
   version "1.22.2"
   resolved "https://registry.yarnpkg.com/prisma/-/prisma-1.22.2.tgz#4e78e8c9245d6a6d81ff119e1c7ca46e5ad36074"
   integrity sha512-ViE5CEfU/kTOC03FS66E0ILtdPMiqbhd2jzGGcnTQn1JsTAx5OFzXqRt4gSUJtxGlBuJ8UV87sQbCTKs24lObA==

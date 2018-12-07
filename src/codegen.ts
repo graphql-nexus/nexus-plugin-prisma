@@ -56,9 +56,9 @@ ${objectTypes
   }
 }
 
-// declare global {
-//   interface GraphQLiteralGen extends PluginTypes {}
-// }
+declare global {
+  interface GraphQLiteralGen extends PluginTypes {}
+}
   `
 }
 
@@ -88,6 +88,7 @@ ${type.fields
     }
     description: string
     list: ${field.type.isArray || false}
+    nullable: ${!field.type.isRequired}
     resolve: (root: RootValue<GenTypes, "${
       type.name
     }">, args: ArgsValue<GenTypes, "${type.name}", "${

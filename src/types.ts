@@ -27,6 +27,7 @@ export interface AnonymousFieldDetail {
   args: Record<string, ArgDefinition>
   description?: string
   list: boolean
+  nullable: boolean
   resolve: (root: any, args: any, ctx: any, info?: any) => any
 }
 
