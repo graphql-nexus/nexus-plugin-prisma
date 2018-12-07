@@ -8,28 +8,21 @@ import * as _ from 'lodash'
 import {
   extractTypes,
   GraphQLEnumObject,
-  GraphQLTypeArgument,
   GraphQLTypeField,
   GraphQLTypeObject,
 } from './source-helper'
-import { throwIfUnknownClientFunction, throwIfUnkownArgsName } from './throw'
+import { throwIfUnknownClientFunction } from './throw'
 import {
   AddFieldInput,
   AnonymousFieldDetails,
   InputField,
-  ObjectField,
   PrismaObject,
   PrismaTypeNames,
   AnonymousFieldDetail,
   PickInputField,
   FilterInputField,
 } from './types'
-import {
-  getFields,
-  getLiteralArg,
-  getObjectInputArg,
-  typeToFieldOpts,
-} from './utils'
+import { getFields, getObjectInputArg, typeToFieldOpts } from './utils'
 
 interface Dictionary<T> {
   [key: string]: T
@@ -63,28 +56,6 @@ function buildTypesMap(schemaPath: string): TypesMap {
   )
 
   return { types, enums }
-}
-
-function addFieldsTo(
-  t: PrismaObjectType<any, any>,
-  fields: ObjectField[],
-  typesMap: TypesMap,
-  aliasesMap: AliasMap,
-  contextClientName: string,
-): void {
-  const typeName = t.name
-  const graphqlType = typesMap.types[typeName]
-
-  t.defaultResolver(
-    generateDefaultResolver(
-      typeName,
-      aliasesMap[typeName],
-      graphqlType,
-      contextClientName,
-    ),
-  )
-
-  fields.forEach(field => addToGQLiteral(t, typesMap, typeName, field))
 }
 
 function generateDefaultResolver(
@@ -148,33 +119,7 @@ function generateDefaultResolver(
   }
 }
 
-function addToGQLiteral<
-  GenTypes = GraphQLiteralGen,
-  TypeName extends string = any
->(
-  t: ObjectTypeDef<GenTypes, TypeName>,
-  typesMap: TypesMap,
-  typeName: string,
-  field: ObjectField,
-): void {
-  const fieldName = field.alias === undefined ? field.name : field.alias
-  const graphqlField = findPrismaType(typesMap, typeName, field.name)
-
-  const { args } = exposeArgs({
-    typeName,
-    fieldName: graphqlField.name,
-    args: graphqlField.arguments,
-    argsNameToExpose: field.args as string[] | undefined,
-    typesMap,
-  })
-
-  t.field(fieldName, graphqlField.type.name as any, {
-    ...typeToFieldOpts(graphqlField.type),
-    args: field.args === false ? undefined : args,
-  })
-}
-
-function findPrismaType(
+function findPrismaFieldType(
   typesMap: TypesMap,
   typeName: string,
   fieldName: string,
@@ -182,7 +127,7 @@ function findPrismaType(
   const graphqlType = typesMap.types[typeName]
 
   if (graphqlType === undefined) {
-    throw new Error('Type not found in Prisma API')
+    throw new Error(`Type '${typeName}' not found in Prisma API`)
   }
 
   const graphqlField = graphqlType.fields.find(
@@ -190,7 +135,7 @@ function findPrismaType(
   )
 
   if (graphqlField === undefined) {
-    throw new Error(`Field ${fieldName} not found in type ${typeName}`)
+    throw new Error(`Field ${typeName}.${fieldName} not found in Prisma API`)
   }
 
   return graphqlField
@@ -232,80 +177,31 @@ function exportEnumType(enumObject: GraphQLEnumObject) {
   return enumType(enumObject.name, enumObject.values)
 }
 
-interface ExposeArgsOutput {
-  args: Dictionary<ArgDefinition>
-  typesToExport: WrappedType[]
-}
-
-interface ExposerArgsInput {
-  typeName: string
-  fieldName: string
-  args: GraphQLTypeArgument[]
-  argsNameToExpose: string[] | undefined
-  typesMap: TypesMap
-}
-
-function exposeArgs(input: ExposerArgsInput): ExposeArgsOutput {
-  const { typeName, fieldName, args, argsNameToExpose } = input
-  let fieldArguments = []
-
-  if (argsNameToExpose !== undefined && argsNameToExpose.length > 0) {
-    throwIfUnkownArgsName(typeName, fieldName, args, argsNameToExpose)
-
-    fieldArguments = args.filter(arg => argsNameToExpose.includes(arg.name))
-  } else {
-    fieldArguments = args
+function filterArgsToExpose(
+  allArgs: Record<string, ArgDefinition>,
+  argsToExpose: string[] | false | undefined,
+) {
+  if (!argsToExpose) {
+    return allArgs
   }
 
-  const typesToExport: WrappedType[] = []
-
-  const gqliteralArgs = fieldArguments.reduce<Dictionary<ArgDefinition>>(
-    (acc, fieldArg) => {
-      if (fieldArg.type.isScalar) {
-        acc[fieldArg.name] = getLiteralArg(
-          fieldArg.type.name,
-          typeToFieldOpts(fieldArg.type),
-        )
-        return acc
+  return Object.keys(allArgs).reduce<Record<string, ArgDefinition>>(
+    (acc, argName) => {
+      if (argsToExpose.includes(argName)) {
+        return {
+          ...acc,
+          [argName]: allArgs[argName],
+        }
       }
-
-      acc[fieldArg.name] = arg(
-        fieldArg.type.name as any,
-        typeToFieldOpts(fieldArg.type),
-      )
 
       return acc
     },
     {},
   )
-
-  return {
-    args: gqliteralArgs,
-    typesToExport,
-  }
-}
-
-// function relayConnection(field: string) {
-//   const Edge = objectType(`${field}Edge`, t => {
-//     t.id('id')
-//     t.field('node', field)
-//   })
-//   const Connection = objectType(`${field}Connection`, t => {
-//     t.field('edges', `${field}Edge`)
-//   })
-
-//   return [PageInfo, Edge, Connection]
-// }
-
-interface AliasMap {
-  [typeName: string]: {
-    [fieldName: string]: string
-  }
 }
 
 // TODO: Fix this
 let __typesMapCache: TypesMap | null = null
-let __aliasesMapCache = {}
 let __exportedTypesMap: Dictionary<boolean> = {}
 
 function getTypesMap(schemaPath: string) {
@@ -314,10 +210,6 @@ function getTypesMap(schemaPath: string) {
   }
 
   return __typesMapCache
-}
-
-function getAliasesMap() {
-  return __aliasesMapCache
 }
 
 function getExportedTypesMap(): Dictionary<boolean> {
@@ -356,19 +248,18 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   TypeName
 > {
   protected typesMap: TypesMap
-  protected aliasesMap: AliasMap
-  public prismaType: PrismaObject<GenTypes, TypeName>
   protected config: PrismaConfig
+  public prismaType: PrismaObject<GenTypes, TypeName>
 
   constructor(typeName: string) {
     super(typeName)
+
     this.config = {
-      schemaPath: path.join(__dirname, '../src/generated/prisma.graphql'),
+      schemaPath: path.join(process.cwd(), './src/generated/prisma.graphql'),
       contextClientName: 'prisma',
     }
     this.typesMap = getTypesMap(this.config.schemaPath)
-    this.aliasesMap = getAliasesMap()
-    this.prismaType = this.genPrismaType() as any
+    this.prismaType = this.generatePrismaTypes() as any
   }
 
   public prismaFields(inputFields?: InputField<GenTypes, TypeName>[]): void
@@ -379,15 +270,21 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 
     const fields = getFields(inputFields, typeName, this.typesMap)
 
-    this.addFieldsToAliasMap(typeName, fields)
+    fields.forEach(field => {
+      const fieldName = field.alias === undefined ? field.name : field.alias
+      const fieldType = findPrismaFieldType(
+        this.typesMap,
+        this.name,
+        field.name,
+      )
+      const opts: AnonymousFieldDetail = this.prismaType[fieldType.name]
+      const args = filterArgsToExpose(opts.args, field.args)
 
-    addFieldsTo(
-      this,
-      fields,
-      this.typesMap,
-      this.aliasesMap,
-      this.config.contextClientName,
-    )
+      this.field(fieldName, fieldType.type.name as any, {
+        ...opts,
+        args,
+      })
+    })
   }
 
   public field<FieldName extends string>(
@@ -411,7 +308,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
       ),
     }
 
-    return super.field(name, type, prismaOptions)
+    super.field(name, type, prismaOptions)
   }
 
   public getTypeConfig(): Types.ObjectTypeConfig {
@@ -422,25 +319,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     return this.typesMap
   }
 
-  protected addFieldsToAliasMap(typeName: string, fields: ObjectField[]) {
-    const aliasesToFieldName = fields.reduce<Dictionary<string>>(
-      (acc, field) => {
-        const aliasName = field.alias !== undefined ? field.alias : field.name
-
-        acc[aliasName] = field.name
-
-        return acc
-      },
-      {},
-    )
-
-    this.aliasesMap[typeName] = {
-      ...this.aliasesMap[typeName],
-      ...aliasesToFieldName,
-    }
-  }
-
-  protected genPrismaType(): AnonymousFieldDetails {
+  protected generatePrismaTypes(): AnonymousFieldDetails {
     const typeName = this.name
 
     const graphqlType = this.typesMap.types[typeName]
@@ -486,6 +365,8 @@ function getTypesToExport(
   typeConfig: Types.ObjectTypeConfig,
   typesMap: TypesMap,
 ): WrappedType[] {
+  const exportedTypesMap = getExportedTypesMap()
+
   return _(typeConfig.fields)
     .filter(field => isFieldDef(field))
     .flatMap(field => {
@@ -495,8 +376,7 @@ function getTypesToExport(
     })
     .filter(typeName => {
       return (
-        typesMap.types[typeName] !== undefined &&
-        !getExportedTypesMap()[typeName]
+        typesMap.types[typeName] !== undefined && !exportedTypesMap[typeName]
       )
     })
     .uniq()
@@ -507,7 +387,7 @@ function getTypesToExport(
         ? exportInputObjectType(type as GraphQLTypeObject, typesMap, {})
         : exportEnumType(type as GraphQLEnumObject)
     })
-    .filter(t => getExportedTypesMap()[t.type.name] === undefined)
+    .filter(t => exportedTypesMap[t.type.name] === undefined)
     .uniqBy(t => t.type.name) // TODO: Optimize by sharing the `seen` typeMap in `exportInputObjectType`
     .value()
 }

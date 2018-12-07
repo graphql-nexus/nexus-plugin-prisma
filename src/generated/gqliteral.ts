@@ -66,17 +66,9 @@ export interface QueryProductsArgs {
   where?: ProductWhereInput;
 }
 
-export interface QueryRootType {
-  brands: any[];
-  options: any[];
-  products: any[];
-}
+export type QueryRootType = {};
 
-export type QueryReturnType = {
-  brands: MaybeThunkArgs<MaybePromise<any[]>, QueryBrandsArgs>;
-  options: MaybeThunkArgs<MaybePromise<any[]>, QueryOptionsArgs>;
-  products: MaybeThunkArgs<MaybePromise<any[]>, QueryProductsArgs>;
-}
+export type QueryReturnType = {};
 
 export type BrandOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
@@ -544,7 +536,7 @@ export interface VariantOptionValuesArgs {
   where?: OptionValueWhereInput;
 }
 
-export type VariantPriceReturnType = null | number;
+export type VariantPriceReturnType = number;
 
 export type VariantRootType = prisma.Variant;
 

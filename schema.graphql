@@ -376,7 +376,7 @@ input UpdateVariantInput {
 type Variant {
   id: ID!
   optionValues(after: String, before: String, first: Int, last: Int, orderBy: OptionValueOrderByInput, skip: Int, where: OptionValueWhereInput): [OptionValue!]!
-  price: Int
+  price: Int!
 }
 
 input VariantWhereInput {
