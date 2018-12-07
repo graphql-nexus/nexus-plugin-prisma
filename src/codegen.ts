@@ -16,15 +16,15 @@ export function codegen(/* schemaPath: string */) {
     '/Users/flavian/Projects/prisma/woopwoop/src/generated/prisma.graphql'
   const typeDefs = readFileSync(schemaPath).toString()
   const types = extractTypes(typeDefs)
-  const typesToRender = render(schemaPath, types)
-  const outputPath = join(__dirname, '../src/generated/plugins.ts')
+  const typesToRender = render(/*schemaPath, */ types)
+  const outputPath = join(process.cwd(), './src/generated/plugins.ts')
 
   writeFileSync(outputPath, typesToRender)
   console.log('Types generated at plugin.ts')
 }
 
 // TODO: Dynamically resolve prisma-client import path
-export function render(schemaPath: string, types: GraphQLTypes) {
+export function render(/*schemaPath: string,*/ types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
 
   return `\

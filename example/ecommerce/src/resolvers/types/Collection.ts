@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { prismaObjectType } from '../../../plugin'
+import { prismaObjectType } from '../../../src'
 import * as ProductVariant from '../../fragments/ProductVariant'
 import { optionsFromVariants } from '../utils'
 

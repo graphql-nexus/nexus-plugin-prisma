@@ -1,6 +1,6 @@
 import * as path from 'path'
 import * as allTypes from './resolvers'
-import { buildPrismaSchema } from '../plugin'
+import { buildPrismaSchema } from '../../../src'
 
 /**
  * Finally, we construct our schema (whose starting query type is the query

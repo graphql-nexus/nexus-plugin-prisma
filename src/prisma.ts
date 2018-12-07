@@ -87,7 +87,7 @@ function generateDefaultResolver(
 
     // Resolve top-level
     if (typeName === 'Query' || typeName === 'Mutation') {
-      throwIfUnknownClientFunction(fieldName, typeName, ctx, info)
+      throwIfUnknownClientFunction(fieldName, typeName, ctx, contextClientName, info)
 
       // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
       if (
@@ -112,7 +112,7 @@ function generateDefaultResolver(
 
     const parentName = info.parentType.toString().toLowerCase()
 
-    throwIfUnknownClientFunction(parentName, typeName, ctx, info)
+    throwIfUnknownClientFunction(parentName, typeName, ctx, contextClientName, info)
 
     // FIXME: It can very well be something else than `id` (depending on the @unique field)
     return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)

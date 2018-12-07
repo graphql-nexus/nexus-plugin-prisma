@@ -1,5 +1,5 @@
 import { arg, idArg, inputObjectType } from 'gqliteral'
-import { prismaObjectType } from '../../../plugin'
+import { prismaObjectType } from '../../../src'
 import { VariantCreateInput } from '../../generated/prisma-client'
 
 export const UniqueInput = inputObjectType('UniqueInput', t => {

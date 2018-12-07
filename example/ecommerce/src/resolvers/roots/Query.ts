@@ -1,5 +1,5 @@
 import { idArg } from 'gqliteral'
-import { prismaObjectType } from '../../../plugin'
+import { prismaObjectType } from '../../../src'
 
 /**
  * type Query {

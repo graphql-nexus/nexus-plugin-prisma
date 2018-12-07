@@ -1,5 +1,4 @@
 import { GraphQLResolveInfo } from 'graphql'
-import { Context } from '../src/context'
 import { TypesMap } from './prisma'
 import { GraphQLTypeArgument, GraphQLTypeObject } from './source-helper'
 import { ObjectField } from './types'
@@ -50,11 +49,12 @@ export function throwIfUnknownFields(
 export function throwIfUnknownClientFunction(
   fieldName: string,
   typeName: string,
-  ctx: Context,
+  ctx: any,
+  contextClientName: string,
   info: GraphQLResolveInfo,
 ) {
   // @ts-ignore
-  if (ctx.prisma[fieldName] === undefined) {
+  if (ctx[contextClientName][fieldName] === undefined) {
     throw new Error(
       `Unknown prisma-client function for field ${typeName}.${info.fieldName}`,
     )

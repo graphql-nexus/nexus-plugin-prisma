@@ -1,21 +1,19 @@
 {
-  "name": "nexus-prisma-plugin",
-  "version": "0.0.1",
+  "name": "ecommerce-example",
+  "version": "0.0.0",
   "license": "MIT",
-  "main": "dist/index.js",
-  "files": [
-    "dist",
-    "README.md"
-  ],
   "scripts": {
-    "prepublish": "rm -rf example/node_modules && npm test && npm run build",
-    "build": "tsc --declaration",
-    "watch": "tsc -w"
+    "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src",
+    "codegen": "ts-node-dev ./plugin/codegen"
   },
   "dependencies": {
+    "apollo-server": "^2.2.2",
     "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "prisma-client-lib": "^1.20.7",
+    "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.30"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",

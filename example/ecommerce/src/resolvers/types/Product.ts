@@ -1,4 +1,4 @@
-import { prismaObjectType } from '../../../plugin'
+import { prismaObjectType } from '../../../src'
 import * as ProductVariant from '../../fragments'
 import { optionsFromVariants } from '../utils'
 

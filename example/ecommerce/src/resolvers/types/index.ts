@@ -1,4 +1,4 @@
-import { prismaObjectType } from '../../../plugin'
+import { prismaObjectType } from '../../../src'
 
 export const Brand = prismaObjectType('Brand')
 export const Variant = prismaObjectType('Variant')

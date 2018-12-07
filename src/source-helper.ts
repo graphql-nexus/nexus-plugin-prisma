@@ -205,7 +205,8 @@ function extractTypeFieldsFromObjectType(
         name: fieldNode.name,
         type: fieldType,
         arguments: fieldArguments,
-        description: fieldNode.description === null ? undefined : fieldNode.description,
+        description:
+          fieldNode.description === null ? undefined : fieldNode.description,
       })
     },
   )
@@ -306,30 +307,5 @@ function extractGraphQLEnums(schema: GraphQLSchema) {
         })
       }
     })
-  return types
-}
-
-function extractGraphQLUnions(schema: GraphQLSchema) {
-  const types: GraphQLUnionObject[] = []
-  Object.values(schema.getTypeMap()).forEach((node: GraphQLNamedType) => {
-    if (node instanceof GraphQLUnionType) {
-      const unionTypes = node.getTypes().map((t: GraphQLObjectType) => {
-        return extractTypeLike(schema, t)
-      })
-      types.push({
-        name: node.name,
-        type: {
-          name: node.name,
-          isObject: false,
-          isInput: false,
-          isEnum: false,
-          isUnion: true,
-          isScalar: false,
-          isInterface: false,
-        },
-        types: unionTypes,
-      })
-    }
-  })
   return types
 }

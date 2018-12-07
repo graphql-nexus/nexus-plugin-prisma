@@ -1,19 +1,36 @@
-import { ApolloServer } from 'apollo-server'
-import { Context } from './context'
-import { prisma } from './generated/prisma-client'
-import { schema } from './schema'
+import { makeSchemaWithMetadata } from 'gqliteral'
+import { PrismaSchemaConfig } from './types'
+import { SchemaBuilder, Metadata } from 'gqliteral/dist/core'
 
-const server = new ApolloServer({
-  schema,
-  context: {
-    prisma,
-  } as Context,
-})
+export { prismaObjectType } from './prisma'
 
-const port = 4000
+class PrismaSchemaBuilder extends SchemaBuilder {
+  constructor(metadata: Metadata, config: PrismaSchemaConfig) {
+    super(metadata, config)
+  }
 
-server.listen({ port }, () =>
-  console.log(
-    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`,
-  ),
-)
+  public getConfig() {
+    return this.config
+  }
+}
+
+export function buildPrismaSchema(options: PrismaSchemaConfig) {
+  const { schema, metadata } = makeSchemaWithMetadata(
+    options,
+    PrismaSchemaBuilder,
+  )
+
+  // Only in development envs do we want to worry about regenerating the
+  // schema definition and/or generated types.
+  const {
+    shouldGenerateArtifacts = process.env.NODE_ENV !== 'production',
+  } = options
+
+  if (shouldGenerateArtifacts) {
+    // Generating in the next tick allows us to use the schema
+    // in the optional thunk for the typegen config
+    metadata.generateArtifacts(schema)
+  }
+
+  return schema
+}
