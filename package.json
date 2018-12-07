@@ -1,5 +1,5 @@
 {
-  "name": "nexus-prisma-plugin",
+  "name": "nexus-prisma",
   "version": "0.0.1",
   "main": "dist/index.js",
   "license": "MIT",
