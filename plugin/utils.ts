@@ -10,9 +10,9 @@ import {
 import { throwIfUnknownFields } from './throw'
 import {
   AnonymousField,
-  AnonymousInputFields,
-  AnonymousPickOmitField,
   ObjectField,
+  AddFieldInput,
+  PickInputField,
 } from './types'
 
 export interface ScalarToObjectInputArg {
@@ -89,8 +89,8 @@ export function getAllFields(
   )
 }
 
-function isDefaultInput(
-  inputFields: AnonymousInputFields | undefined,
+function isDefaultInput<GenTypes, TypeName extends string>(
+  inputFields: AddFieldInput<GenTypes, TypeName> | undefined,
 ): boolean {
   return (
     inputFields === undefined ||
@@ -98,39 +98,69 @@ function isDefaultInput(
   )
 }
 
-export function getFields(
-  inputFields: AnonymousInputFields | undefined,
+export function getFields<GenTypes, TypeName extends string>(
+  inputFields: AddFieldInput<GenTypes, TypeName> | undefined,
   typeName: string,
   typesMap: TypesMap,
 ): ObjectField[] {
   const fields = isDefaultInput(inputFields)
     ? getAllFields(typeName, typesMap)
-    : normalizeFields(inputFields as AnonymousInputFields)
+    : extractFields(
+        inputFields as AddFieldInput<GenTypes, TypeName>,
+        typeName,
+        typesMap,
+      )
+  const normalizedFields = normalizeFields(fields)
 
   const graphqlType = getGraphQLType(typeName, typesMap)
 
   // Make sure all the fields exists
-  throwIfUnknownFields(graphqlType, fields, typeName)
+  throwIfUnknownFields(graphqlType, normalizedFields, typeName)
 
-  return fields
+  return normalizedFields
 }
 
-export function normalizeFields(fields: AnonymousInputFields): ObjectField[] {
-  let fieldsToMap: AnonymousField[] = []
+function isPickInputField<
+  GenTypes = GraphQLiteralGen,
+  TypeName extends string = any
+>(arg: any): arg is PickInputField<GenTypes, TypeName> {
+  return (arg as PickInputField<GenTypes, TypeName>).pick !== undefined
+}
 
+function extractFields<
+  GenTypes = GraphQLiteralGen,
+  TypeName extends string = any
+>(
+  fields: AddFieldInput<GenTypes, TypeName>,
+  typeName: string,
+  typesMap: TypesMap,
+): AnonymousField[] {
   if (Array.isArray(fields)) {
-    fieldsToMap = fields
-  } else {
-    if (fields.omit) {
-      throw new Error('Omit not yet implemented')
-    }
-
-    if (fields.pick) {
-      fieldsToMap = fields.pick
-    }
+    return fields as AnonymousField[]
   }
 
-  return fieldsToMap.map(f => {
+  if (isPickInputField<GenTypes>(fields)) {
+    return fields.pick as AnonymousField[]
+  }
+
+  const prismaFieldsNames = getAllFields(typeName, typesMap).map(f => f.name) // typeName = "Product"
+
+  if (Array.isArray(fields.filter)) {
+    const fieldsToFilter = fields.filter as ObjectField[]
+    const fieldsNamesToFilter = fieldsToFilter.map(f =>
+      typeof f === 'string' ? f : f.name,
+    )
+
+    return prismaFieldsNames.filter(
+      fieldName => !fieldsNamesToFilter.includes(fieldName),
+    )
+  } else {
+    return fields.filter(prismaFieldsNames)
+  }
+}
+
+export function normalizeFields(fields: AnonymousField[]): ObjectField[] {
+  return fields.map(f => {
     if (typeof f === 'string') {
       return {
         name: f,

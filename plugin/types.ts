@@ -40,20 +40,31 @@ export type InputField<
     : AnonymousField
   : AnonymousField
 
+export type MyType<
+  GenTypes = GraphQLiteralGen,
+  TypeName extends string = any
+> = GenTypes extends GenTypesShape
+    ? Extract<keyof GenTypes['fields'], string>
+    : string
+
 export type PrismaTypeNames<
   GenTypes = GraphQLiteralGen
 > = GenTypes extends GenTypesShape
   ? Extract<keyof GenTypes['fields'], string>
   : string
 
-export interface PickOmitField<GenTypes, TypeName extends string> {
-  omit?: InputField<GenTypes, TypeName>[]
-  pick?: InputField<GenTypes, TypeName>[]
+export interface PickInputField<GenTypes, TypeName extends string> {
+  pick: InputField<GenTypes, TypeName>[]
+}
+
+export interface FilterInputField<GenTypes, TypeName extends string> {
+  filter: ((fields: string[]) => string[]) | InputField<GenTypes, TypeName>[]
 }
 
 export type AddFieldInput<GenTypes, TypeName extends string> =
   | InputField<GenTypes, TypeName>[]
-  | PickOmitField<GenTypes, TypeName>
+  | PickInputField<GenTypes, TypeName>
+  | FilterInputField<GenTypes, TypeName>
 
 export type PrismaObject<
   GenTypes,

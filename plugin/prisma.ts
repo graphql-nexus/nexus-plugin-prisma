@@ -16,13 +16,13 @@ import { throwIfUnknownClientFunction, throwIfUnkownArgsName } from './throw'
 import {
   AddFieldInput,
   AnonymousFieldDetails,
-  AnonymousInputFields,
   InputField,
   ObjectField,
   PrismaObject,
   PrismaTypeNames,
   AnonymousFieldDetail,
-  PickOmitField,
+  PickInputField,
+  FilterInputField,
 } from './types'
 import {
   getFields,
@@ -65,24 +65,6 @@ function buildTypesMap(schemaPath: string): TypesMap {
   return { types, enums }
 }
 
-function hidePrismaFields<
-  GenTypes = GraphQLiteralGen,
-  TypeName extends string = any
->(
-  t: ObjectTypeDef<GenTypes, TypeName>,
-  typesMap: TypesMap,
-  inputFields?: InputField<GenTypes, TypeName>[],
-) {
-  // const typeName = t.name
-  // const graphqlType = getGraphQLType(typeName, typesMap)
-  // const fields = getFields(inputFields, typeName, typesMap)
-  // const fieldsNamesToHide = fields.map(f => f.name)
-  // const fieldsToHide = graphqlType.fields
-  //   .filter(f => !fieldsNamesToHide.includes(f.name))
-  //   .map(field => field.name)
-  //  addFieldsTo(t, typesMap, fieldsToHide as InputField<GenTypes, TypeName>[])
-}
-
 function addFieldsTo(
   t: ObjectTypeDef<any, any>,
   fields: ObjectField[],
@@ -96,9 +78,7 @@ function addFieldsTo(
     generateDefaultResolver(typeName, aliasesMap[typeName], graphqlType),
   )
 
-  fields.forEach(field =>
-    addToGQLiteral(t, typesMap, typeName, aliasesMap, field),
-  )
+  fields.forEach(field => addToGQLiteral(t, typesMap, typeName, field))
 }
 
 function generateDefaultResolver(
@@ -168,7 +148,6 @@ function addToGQLiteral<
   t: ObjectTypeDef<GenTypes, TypeName>,
   typesMap: TypesMap,
   typeName: string,
-  aliasesMap: AliasMap,
   field: ObjectField,
 ): void {
   const fieldName = field.alias === undefined ? field.name : field.alias
@@ -260,7 +239,7 @@ interface ExposerArgsInput {
 }
 
 function exposeArgs(input: ExposerArgsInput): ExposeArgsOutput {
-  const { typeName, fieldName, args, argsNameToExpose, typesMap } = input
+  const { typeName, fieldName, args, argsNameToExpose } = input
   let fieldArguments = []
 
   if (argsNameToExpose !== undefined && argsNameToExpose.length > 0) {
@@ -367,7 +346,6 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 > {
   protected typesMap: TypesMap
   protected aliasesMap: AliasMap
-  protected typesToExport: WrappedType[]
   public prismaType: PrismaObject<GenTypes, TypeName>
 
   constructor(typeName: string) {
@@ -375,7 +353,6 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 
     this.typesMap = getTypesMap()
     this.aliasesMap = getAliasesMap()
-    this.typesToExport = []
     this.prismaType = this.genPrismaType() as any
   }
 
@@ -432,32 +409,17 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     }, {})
   }
 
-  public prismaFields(
-    inputFields?: InputField<GenTypes, TypeName>[],
-  ): void
-  public prismaFields(
-    pickOmitField: PickOmitField<GenTypes, TypeName>,
-  ): void
+  public prismaFields(inputFields?: InputField<GenTypes, TypeName>[]): void
+  public prismaFields(pickFields: PickInputField<GenTypes, TypeName>): void
+  public prismaFields(filterFields: FilterInputField<GenTypes, TypeName>): void
   public prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>): void {
     const typeName = this.name
 
-    const fields = getFields(
-      inputFields as AnonymousInputFields,
-      typeName,
-      this.typesMap,
-    )
+    const fields = getFields(inputFields, typeName, this.typesMap)
 
     this.addFieldsToAliasMap(typeName, fields)
 
     addFieldsTo(this, fields, this.typesMap, this.aliasesMap)
-  }
-
-  protected addToTypesToExport(typesToExport: WrappedType[]) {
-    this.typesToExport.push(...typesToExport)
-  }
-
-  public getTypesToExport() {
-    return this.typesToExport
   }
 
   protected addFieldsToAliasMap(typeName: string, fields: ObjectField[]) {
@@ -489,8 +451,8 @@ function isFieldDef(field: any): field is FieldDef {
 }
 
 // TODO: Optimize this heavy function
-function getTypesToExport(config: Types.ObjectTypeConfig): WrappedType[] {
-  return _(config.fields)
+function getTypesToExport(typeConfig: Types.ObjectTypeConfig): WrappedType[] {
+  return _(typeConfig.fields)
     .filter(field => isFieldDef(field))
     .flatMap(field => {
       return Object.values(((<FieldDef>field).config as any).args).map(
@@ -535,14 +497,15 @@ export function prismaObjectType<
     typeof typeName === 'string' ? typeName : typeName.prismaTypeName
   const objectType = new PrismaObjectType<GenTypes, TypeName>(realTypeName)
 
+  // mutate objectType
   if (fn === undefined) {
     objectType.prismaFields()
   } else {
-    // mutate objectType
     fn(objectType)
   }
 
-  const typesToExport = getTypesToExport(objectType.getTypeConfig())
+  const typeConfig = objectType.getTypeConfig()
+  const typesToExport = getTypesToExport(typeConfig)
 
   addExportedTypesToGlobalCache(typesToExport)
 

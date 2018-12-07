@@ -17,7 +17,7 @@ export const Product = prismaObjectType('Product', t => {
 
   t.field('options', 'Option', {
     list: true,
-    resolve: async (parent, args, ctx) => {
+    resolve: async (parent, _, ctx) => {
       const { variants } = await ctx.prisma
         .product({ id: parent.id })
         .$fragment<ProductVariant.Type>(ProductVariant.fragment)
