@@ -1,12 +1,21 @@
 {
   "name": "nexus-prisma-plugin",
   "version": "0.0.1",
-  "license": "MIT",
   "main": "dist/index.js",
+  "license": "MIT",
   "files": [
     "dist",
     "README.md"
   ],
+  "author": "Prisma",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prisma/nexus-prisma-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prisma/nexus-prisma-plugin/issues"
+  },
+  "homepage": "https://github.com/prisma/nexus-prisma-plugin#readme",
   "scripts": {
     "prepublish": "rm -rf example/node_modules && npm test && npm run build",
     "build": "tsc --declaration",
