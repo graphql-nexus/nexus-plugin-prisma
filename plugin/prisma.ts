@@ -1,10 +1,10 @@
 import { readFileSync } from 'fs'
+import * as path from 'path'
 import { arg, enumType, inputObjectType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
 import { ArgDefinition, FieldDef } from 'gqliteral/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
-import { join } from 'path'
 import {
   extractTypes,
   GraphQLEnumObject,
@@ -66,16 +66,22 @@ function buildTypesMap(schemaPath: string): TypesMap {
 }
 
 function addFieldsTo(
-  t: ObjectTypeDef<any, any>,
+  t: PrismaObjectType<any, any>,
   fields: ObjectField[],
   typesMap: TypesMap,
   aliasesMap: AliasMap,
+  contextClientName: string,
 ): void {
   const typeName = t.name
   const graphqlType = typesMap.types[typeName]
 
   t.defaultResolver(
-    generateDefaultResolver(typeName, aliasesMap[typeName], graphqlType),
+    generateDefaultResolver(
+      typeName,
+      aliasesMap[typeName],
+      graphqlType,
+      contextClientName,
+    ),
   )
 
   fields.forEach(field => addToGQLiteral(t, typesMap, typeName, field))
@@ -85,6 +91,7 @@ function generateDefaultResolver(
   typeName: string,
   aliasesToFieldName: Dictionary<string>,
   graphqlType: GraphQLTypeObject,
+  contextClientName: string,
 ): GraphQLFieldResolver<any, any, Dictionary<any>> {
   return (root, args, ctx, info) => {
     if (typeName === 'Subscription') {
@@ -129,7 +136,7 @@ function generateDefaultResolver(
         args = args.data
       }
 
-      return ctx.prisma[fieldName](args)
+      return ctx[contextClientName][fieldName](args)
     }
 
     const parentName = info.parentType.toString().toLowerCase()
@@ -137,7 +144,7 @@ function generateDefaultResolver(
     throwIfUnknownClientFunction(parentName, typeName, ctx, info)
 
     // FIXME: It can very well be something else than `id` (depending on the @unique field)
-    return ctx.prisma[parentName]({ id: root.id })[fieldName](args)
+    return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)
   }
 }
 
@@ -301,9 +308,8 @@ let __typesMapCache: TypesMap | null = null
 let __aliasesMapCache = {}
 let __exportedTypesMap: Dictionary<boolean> = {}
 
-function getTypesMap() {
+function getTypesMap(schemaPath: string) {
   if (__typesMapCache === null) {
-    const schemaPath = join(__dirname, '../src/generated/prisma.graphql')
     __typesMapCache = buildTypesMap(schemaPath)
   }
 
@@ -340,6 +346,11 @@ function isAnonymousFieldDetails(
   return (options as AnonymousFieldDetail).$prismaFieldName !== undefined
 }
 
+interface PrismaConfig {
+  schemaPath: string
+  contextClientName: string
+}
+
 class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   GenTypes,
   TypeName
@@ -347,16 +358,39 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   protected typesMap: TypesMap
   protected aliasesMap: AliasMap
   public prismaType: PrismaObject<GenTypes, TypeName>
+  protected config: PrismaConfig
 
   constructor(typeName: string) {
     super(typeName)
-
-    this.typesMap = getTypesMap()
+    this.config = {
+      schemaPath: path.join(__dirname, '../src/generated/prisma.graphql'),
+      contextClientName: 'prisma',
+    }
+    this.typesMap = getTypesMap(this.config.schemaPath)
     this.aliasesMap = getAliasesMap()
     this.prismaType = this.genPrismaType() as any
   }
 
-  field<FieldName extends string>(
+  public prismaFields(inputFields?: InputField<GenTypes, TypeName>[]): void
+  public prismaFields(pickFields: PickInputField<GenTypes, TypeName>): void
+  public prismaFields(filterFields: FilterInputField<GenTypes, TypeName>): void
+  public prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>): void {
+    const typeName = this.name
+
+    const fields = getFields(inputFields, typeName, this.typesMap)
+
+    this.addFieldsToAliasMap(typeName, fields)
+
+    addFieldsTo(
+      this,
+      fields,
+      this.typesMap,
+      this.aliasesMap,
+      this.config.contextClientName,
+    )
+  }
+
+  public field<FieldName extends string>(
     name: FieldName,
     type: Types.AllOutputTypes<GenTypes> | Types.BaseScalars,
     options?: Types.OutputFieldOpts<GenTypes, TypeName, FieldName>,
@@ -373,6 +407,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
         typeName,
         { [name]: options.$prismaFieldName },
         graphqlType,
+        this.config.contextClientName,
       ),
     }
 
@@ -383,43 +418,8 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     return this.typeConfig
   }
 
-  public genPrismaType(): AnonymousFieldDetails {
-    const typeName = this.name
-
-    const graphqlType = this.typesMap.types[typeName]
-
-    return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
-      acc[field.name] = {
-        $prismaFieldName: field.name,
-        list: field.type.isArray,
-        resolve: () => {},
-        description: field.description,
-        args: field.arguments.reduce<Record<string, ArgDefinition>>(
-          (acc, fieldArg) => {
-            acc[fieldArg.name] = arg(fieldArg.type.name as any, {
-              ...typeToFieldOpts(fieldArg.type),
-            })
-            return acc
-          },
-          {},
-        ),
-      }
-
-      return acc
-    }, {})
-  }
-
-  public prismaFields(inputFields?: InputField<GenTypes, TypeName>[]): void
-  public prismaFields(pickFields: PickInputField<GenTypes, TypeName>): void
-  public prismaFields(filterFields: FilterInputField<GenTypes, TypeName>): void
-  public prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>): void {
-    const typeName = this.name
-
-    const fields = getFields(inputFields, typeName, this.typesMap)
-
-    this.addFieldsToAliasMap(typeName, fields)
-
-    addFieldsTo(this, fields, this.typesMap, this.aliasesMap)
+  public getTypesMap() {
+    return this.typesMap
   }
 
   protected addFieldsToAliasMap(typeName: string, fields: ObjectField[]) {
@@ -439,6 +439,37 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
       ...aliasesToFieldName,
     }
   }
+
+  protected genPrismaType(): AnonymousFieldDetails {
+    const typeName = this.name
+
+    const graphqlType = this.typesMap.types[typeName]
+
+    return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
+      acc[field.name] = {
+        $prismaFieldName: field.name,
+        list: field.type.isArray,
+        resolve: generateDefaultResolver(
+          typeName,
+          { [field.name]: field.name },
+          graphqlType,
+          this.config.contextClientName,
+        ),
+        description: field.description,
+        args: field.arguments.reduce<Record<string, ArgDefinition>>(
+          (acc, fieldArg) => {
+            acc[fieldArg.name] = arg(fieldArg.type.name as any, {
+              ...typeToFieldOpts(fieldArg.type),
+            })
+            return acc
+          },
+          {},
+        ),
+      }
+
+      return acc
+    }, {})
+  }
 }
 
 function isFieldDef(field: any): field is FieldDef {
@@ -451,7 +482,10 @@ function isFieldDef(field: any): field is FieldDef {
 }
 
 // TODO: Optimize this heavy function
-function getTypesToExport(typeConfig: Types.ObjectTypeConfig): WrappedType[] {
+function getTypesToExport(
+  typeConfig: Types.ObjectTypeConfig,
+  typesMap: TypesMap,
+): WrappedType[] {
   return _(typeConfig.fields)
     .filter(field => isFieldDef(field))
     .flatMap(field => {
@@ -461,18 +495,16 @@ function getTypesToExport(typeConfig: Types.ObjectTypeConfig): WrappedType[] {
     })
     .filter(typeName => {
       return (
-        getTypesMap().types[typeName] !== undefined &&
+        typesMap.types[typeName] !== undefined &&
         !getExportedTypesMap()[typeName]
       )
     })
     .uniq()
     .flatMap(typeName => {
-      const isInput = getTypesMap().types[typeName].type.isInput
-      const type = isInput
-        ? getTypesMap().types[typeName]
-        : getTypesMap().enums[typeName]
+      const isInput = typesMap.types[typeName].type.isInput
+      const type = isInput ? typesMap.types[typeName] : typesMap.enums[typeName]
       return isInput
-        ? exportInputObjectType(type as GraphQLTypeObject, getTypesMap(), {})
+        ? exportInputObjectType(type as GraphQLTypeObject, typesMap, {})
         : exportEnumType(type as GraphQLEnumObject)
     })
     .filter(t => getExportedTypesMap()[t.type.name] === undefined)
@@ -504,8 +536,9 @@ export function prismaObjectType<
     fn(objectType)
   }
 
+  const typesMap = objectType.getTypesMap()
   const typeConfig = objectType.getTypeConfig()
-  const typesToExport = getTypesToExport(typeConfig)
+  const typesToExport = getTypesToExport(typeConfig, typesMap)
 
   addExportedTypesToGlobalCache(typesToExport)
 

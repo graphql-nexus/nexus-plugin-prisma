@@ -1,4 +1,5 @@
 import { ArgDefinition } from 'gqliteral/dist/types'
+import { core } from 'gqliteral'
 
 interface GenTypesShape {
   fields: Record<string, any>
@@ -40,13 +41,6 @@ export type InputField<
     : AnonymousField
   : AnonymousField
 
-export type MyType<
-  GenTypes = GraphQLiteralGen,
-  TypeName extends string = any
-> = GenTypes extends GenTypesShape
-    ? Extract<keyof GenTypes['fields'], string>
-    : string
-
 export type PrismaTypeNames<
   GenTypes = GraphQLiteralGen
 > = GenTypes extends GenTypesShape
@@ -74,3 +68,10 @@ export type PrismaObject<
     ? GenTypes['fieldsDetails'][TypeName]
     : any
   : any
+
+export interface PrismaSchemaConfig extends core.Types.SchemaConfig {
+  prisma: {
+    schemaPath: string
+    contextClientName: string
+  }
+}
