@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import * as path from 'path'
 import { arg, enumType, inputObjectType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
@@ -254,8 +254,15 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   constructor(typeName: string) {
     super(typeName)
 
+    // TODO: Fix this once we have access to the config
+    const schemaPath = path.join(process.cwd(), './src/generated/prisma.graphql')
+
+    if (!existsSync(schemaPath)) {
+      throw new Error('prisma.graphql should be located in ./src/generated/prisma.graphql')
+    }
+
     this.config = {
-      schemaPath: path.join(process.cwd(), './src/generated/prisma.graphql'),
+      schemaPath,
       contextClientName: 'prisma',
     }
     this.typesMap = getTypesMap(this.config.schemaPath)
