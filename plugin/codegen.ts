@@ -28,7 +28,7 @@ export function render(schemaPath: string, types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
 
   return `\
-// GENERATED TYPES FOR PLUGIN. /!\\ DO NOT EDIT MANUALLY
+// GENERATED TYPES FOR PRISMA PLUGIN. /!\\ DO NOT EDIT MANUALLY
 
 import {
   ArgDefinition,
@@ -50,12 +50,7 @@ ${objectTypes
     .map(type => `    ${type.name}: ${getExposableObjectsTypeName(type)}`)
     .join(EOL)}
   }
-  aliases: {
-${objectTypes
-    .map(type => `    ${type.name}: ${getTypeAliasesName(type)}`)
-    .join(EOL)}
-  }
-  objects: {
+  fieldsDetails: {
 ${objectTypes
     .map(type => `    ${type.name}: ${getTypeObjectName(type)}`)
     .join(EOL)}
@@ -75,8 +70,6 @@ function renderType(type: GraphQLTypeObject) {
 ${renderFields(type)}
 
 ${renderFieldsArgs(type)}
-
-${renderAliasFields(type)}
 
 ${renderTypeFieldDetails(type)}
 `
@@ -145,14 +138,6 @@ type ${getTypeFieldArgName(type, f)} =
 ${f.arguments.map(arg => `  | '${arg.name}'`).join(EOL)}`
 }
 
-function renderAliasFields(type: GraphQLTypeObject) {
-  return `\
-interface ${getTypeAliasesName(type)} {
-  name: ${getExposableFieldsTypeName(type)}
-  alias: string
-}`
-}
-
 function renderResolverReturnType(field: GraphQLTypeField) {
   const graphqlToTypescript: Record<string, string> = {
     String: 'string',
@@ -192,10 +177,6 @@ function getTypeFieldArgName(type: GraphQLTypeObject, field: GraphQLTypeField) {
 
 function getExposableObjectsTypeName(type: GraphQLTypeObject) {
   return `${type.name}Object`
-}
-
-function getTypeAliasesName(type: GraphQLTypeObject) {
-  return `${type.name}Alias`
 }
 
 function getTypeObjectName(type: GraphQLTypeObject) {

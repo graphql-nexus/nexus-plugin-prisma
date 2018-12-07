@@ -9,7 +9,6 @@ import {
 } from './source-helper'
 import { throwIfUnknownFields } from './throw'
 import {
-  AnonymousAliases,
   AnonymousField,
   AnonymousInputFields,
   AnonymousPickOmitField,
@@ -116,32 +115,18 @@ export function getFields(
   return fields
 }
 
-function isPickOmitField(
-  arg: AnonymousInputFields,
-): arg is AnonymousPickOmitField {
-  return (
-    (arg as AnonymousPickOmitField).pick !== undefined ||
-    (arg as AnonymousPickOmitField).omit !== undefined
-  )
-}
-
-function isAliasField(arg: AnonymousInputFields): arg is AnonymousAliases {
-  return (arg as AnonymousAliases).aliases !== undefined
-}
-
 export function normalizeFields(fields: AnonymousInputFields): ObjectField[] {
   let fieldsToMap: AnonymousField[] = []
 
   if (Array.isArray(fields)) {
     fieldsToMap = fields
   } else {
-    if (isPickOmitField(fields) && fields.omit) {
+    if (fields.omit) {
       throw new Error('Omit not yet implemented')
     }
-    if (isPickOmitField(fields) && fields.pick) {
+
+    if (fields.pick) {
       fieldsToMap = fields.pick
-    } else if (isAliasField(fields)) {
-      fieldsToMap = fields.aliases
     }
   }
 

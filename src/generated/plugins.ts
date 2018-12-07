@@ -1,4 +1,4 @@
-// GENERATED TYPES FOR PLUGIN. /!\ DO NOT EDIT MANUALLY
+// GENERATED TYPES FOR PRISMA PLUGIN. /!\ DO NOT EDIT MANUALLY
 
 import {
   ArgDefinition,
@@ -194,11 +194,6 @@ type QueryNodeArgs =
   | 'id'
   
 
-interface QueryAlias {
-  name: QueryFields
-  alias: string
-}
-
 export interface QueryFieldDetails<GenTypes = GraphQLiteralGen> {
   attribute: {
     args: Record<QueryAttributeArgs,ArgDefinition>
@@ -361,11 +356,6 @@ type AttributeProductsArgs =
   | 'last'
   
 
-interface AttributeAlias {
-  name: AttributeFields
-  alias: string
-}
-
 export interface AttributeFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -440,11 +430,6 @@ type ProductAttributesArgs =
   | 'last'
   
 
-interface ProductAlias {
-  name: ProductFields
-  alias: string
-}
-
 export interface ProductFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -509,11 +494,6 @@ type BrandProductsArgs =
   | 'last'
   
 
-interface BrandAlias {
-  name: BrandFields
-  alias: string
-}
-
 export interface BrandFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -560,11 +540,6 @@ type VariantOptionValuesArgs =
   | 'last'
   
 
-interface VariantAlias {
-  name: VariantFields
-  alias: string
-}
-
 export interface VariantFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -603,11 +578,6 @@ type OptionValueFields =
 
 
   
-
-interface OptionValueAlias {
-  name: OptionValueFields
-  alias: string
-}
 
 export interface OptionValueFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
@@ -655,11 +625,6 @@ type OptionValuesArgs =
   | 'last'
   
 
-interface OptionAlias {
-  name: OptionFields
-  alias: string
-}
-
 export interface OptionFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -706,11 +671,6 @@ type CollectionProductsArgs =
   | 'last'
   
 
-interface CollectionAlias {
-  name: CollectionFields
-  alias: string
-}
-
 export interface CollectionFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -749,11 +709,6 @@ type AttributeConnectionFields =
 
 
   
-
-interface AttributeConnectionAlias {
-  name: AttributeConnectionFields
-  alias: string
-}
 
 export interface AttributeConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -795,11 +750,6 @@ type PageInfoFields =
 
 
   
-
-interface PageInfoAlias {
-  name: PageInfoFields
-  alias: string
-}
 
 export interface PageInfoFieldDetails<GenTypes = GraphQLiteralGen> {
   hasNextPage: {
@@ -844,11 +794,6 @@ type AttributeEdgeFields =
 
   
 
-interface AttributeEdgeAlias {
-  name: AttributeEdgeFields
-  alias: string
-}
-
 export interface AttributeEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -878,11 +823,6 @@ type AggregateAttributeFields =
 
   
 
-interface AggregateAttributeAlias {
-  name: AggregateAttributeFields
-  alias: string
-}
-
 export interface AggregateAttributeFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -909,11 +849,6 @@ type BrandConnectionFields =
 
 
   
-
-interface BrandConnectionAlias {
-  name: BrandConnectionFields
-  alias: string
-}
 
 export interface BrandConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -952,11 +887,6 @@ type BrandEdgeFields =
 
   
 
-interface BrandEdgeAlias {
-  name: BrandEdgeFields
-  alias: string
-}
-
 export interface BrandEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -986,11 +916,6 @@ type AggregateBrandFields =
 
   
 
-interface AggregateBrandAlias {
-  name: AggregateBrandFields
-  alias: string
-}
-
 export interface AggregateBrandFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -1017,11 +942,6 @@ type CollectionConnectionFields =
 
 
   
-
-interface CollectionConnectionAlias {
-  name: CollectionConnectionFields
-  alias: string
-}
 
 export interface CollectionConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -1060,11 +980,6 @@ type CollectionEdgeFields =
 
   
 
-interface CollectionEdgeAlias {
-  name: CollectionEdgeFields
-  alias: string
-}
-
 export interface CollectionEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -1094,11 +1009,6 @@ type AggregateCollectionFields =
 
   
 
-interface AggregateCollectionAlias {
-  name: AggregateCollectionFields
-  alias: string
-}
-
 export interface AggregateCollectionFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -1125,11 +1035,6 @@ type OptionConnectionFields =
 
 
   
-
-interface OptionConnectionAlias {
-  name: OptionConnectionFields
-  alias: string
-}
 
 export interface OptionConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -1168,11 +1073,6 @@ type OptionEdgeFields =
 
   
 
-interface OptionEdgeAlias {
-  name: OptionEdgeFields
-  alias: string
-}
-
 export interface OptionEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -1202,11 +1102,6 @@ type AggregateOptionFields =
 
   
 
-interface AggregateOptionAlias {
-  name: AggregateOptionFields
-  alias: string
-}
-
 export interface AggregateOptionFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -1233,11 +1128,6 @@ type OptionValueConnectionFields =
 
 
   
-
-interface OptionValueConnectionAlias {
-  name: OptionValueConnectionFields
-  alias: string
-}
 
 export interface OptionValueConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -1276,11 +1166,6 @@ type OptionValueEdgeFields =
 
   
 
-interface OptionValueEdgeAlias {
-  name: OptionValueEdgeFields
-  alias: string
-}
-
 export interface OptionValueEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -1310,11 +1195,6 @@ type AggregateOptionValueFields =
 
   
 
-interface AggregateOptionValueAlias {
-  name: AggregateOptionValueFields
-  alias: string
-}
-
 export interface AggregateOptionValueFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -1341,11 +1221,6 @@ type ProductConnectionFields =
 
 
   
-
-interface ProductConnectionAlias {
-  name: ProductConnectionFields
-  alias: string
-}
 
 export interface ProductConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -1384,11 +1259,6 @@ type ProductEdgeFields =
 
   
 
-interface ProductEdgeAlias {
-  name: ProductEdgeFields
-  alias: string
-}
-
 export interface ProductEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -1418,11 +1288,6 @@ type AggregateProductFields =
 
   
 
-interface AggregateProductAlias {
-  name: AggregateProductFields
-  alias: string
-}
-
 export interface AggregateProductFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -1449,11 +1314,6 @@ type VariantConnectionFields =
 
 
   
-
-interface VariantConnectionAlias {
-  name: VariantConnectionFields
-  alias: string
-}
 
 export interface VariantConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -1492,11 +1352,6 @@ type VariantEdgeFields =
 
   
 
-interface VariantEdgeAlias {
-  name: VariantEdgeFields
-  alias: string
-}
-
 export interface VariantEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
     args: {}
@@ -1525,11 +1380,6 @@ type AggregateVariantFields =
 
 
   
-
-interface AggregateVariantAlias {
-  name: AggregateVariantFields
-  alias: string
-}
 
 export interface AggregateVariantFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
@@ -1746,11 +1596,6 @@ type MutationDeleteVariantArgs =
 type MutationDeleteManyVariantsArgs =
   | 'where'
   
-
-interface MutationAlias {
-  name: MutationFields
-  alias: string
-}
 
 export interface MutationFieldDetails<GenTypes = GraphQLiteralGen> {
   createAttribute: {
@@ -2021,11 +1866,6 @@ type BatchPayloadFields =
 
   
 
-interface BatchPayloadAlias {
-  name: BatchPayloadFields
-  alias: string
-}
-
 export interface BatchPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
     args: {}
@@ -2073,11 +1913,6 @@ type SubscriptionProductArgs =
 type SubscriptionVariantArgs =
   | 'where'
   
-
-interface SubscriptionAlias {
-  name: SubscriptionFields
-  alias: string
-}
 
 export interface SubscriptionFieldDetails<GenTypes = GraphQLiteralGen> {
   attribute: {
@@ -2144,11 +1979,6 @@ type AttributeSubscriptionPayloadFields =
 
   
 
-interface AttributeSubscriptionPayloadAlias {
-  name: AttributeSubscriptionPayloadFields
-  alias: string
-}
-
 export interface AttributeSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
     args: {}
@@ -2194,11 +2024,6 @@ type AttributePreviousValuesFields =
 
   
 
-interface AttributePreviousValuesAlias {
-  name: AttributePreviousValuesFields
-  alias: string
-}
-
 export interface AttributePreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2239,11 +2064,6 @@ type BrandSubscriptionPayloadFields =
 
 
   
-
-interface BrandSubscriptionPayloadAlias {
-  name: BrandSubscriptionPayloadFields
-  alias: string
-}
 
 export interface BrandSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2288,11 +2108,6 @@ type BrandPreviousValuesFields =
 
   
 
-interface BrandPreviousValuesAlias {
-  name: BrandPreviousValuesFields
-  alias: string
-}
-
 export interface BrandPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2327,11 +2142,6 @@ type CollectionSubscriptionPayloadFields =
 
 
   
-
-interface CollectionSubscriptionPayloadAlias {
-  name: CollectionSubscriptionPayloadFields
-  alias: string
-}
 
 export interface CollectionSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2376,11 +2186,6 @@ type CollectionPreviousValuesFields =
 
   
 
-interface CollectionPreviousValuesAlias {
-  name: CollectionPreviousValuesFields
-  alias: string
-}
-
 export interface CollectionPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2415,11 +2220,6 @@ type OptionSubscriptionPayloadFields =
 
 
   
-
-interface OptionSubscriptionPayloadAlias {
-  name: OptionSubscriptionPayloadFields
-  alias: string
-}
 
 export interface OptionSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2464,11 +2264,6 @@ type OptionPreviousValuesFields =
 
   
 
-interface OptionPreviousValuesAlias {
-  name: OptionPreviousValuesFields
-  alias: string
-}
-
 export interface OptionPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2503,11 +2298,6 @@ type OptionValueSubscriptionPayloadFields =
 
 
   
-
-interface OptionValueSubscriptionPayloadAlias {
-  name: OptionValueSubscriptionPayloadFields
-  alias: string
-}
 
 export interface OptionValueSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2552,11 +2342,6 @@ type OptionValuePreviousValuesFields =
 
   
 
-interface OptionValuePreviousValuesAlias {
-  name: OptionValuePreviousValuesFields
-  alias: string
-}
-
 export interface OptionValuePreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2591,11 +2376,6 @@ type ProductSubscriptionPayloadFields =
 
 
   
-
-interface ProductSubscriptionPayloadAlias {
-  name: ProductSubscriptionPayloadFields
-  alias: string
-}
 
 export interface ProductSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2640,11 +2420,6 @@ type ProductPreviousValuesFields =
 
   
 
-interface ProductPreviousValuesAlias {
-  name: ProductPreviousValuesFields
-  alias: string
-}
-
 export interface ProductPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
@@ -2679,11 +2454,6 @@ type VariantSubscriptionPayloadFields =
 
 
   
-
-interface VariantSubscriptionPayloadAlias {
-  name: VariantSubscriptionPayloadFields
-  alias: string
-}
 
 export interface VariantSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   mutation: {
@@ -2727,11 +2497,6 @@ type VariantPreviousValuesFields =
 
 
   
-
-interface VariantPreviousValuesAlias {
-  name: VariantPreviousValuesFields
-  alias: string
-}
 
 export interface VariantPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
@@ -2800,56 +2565,7 @@ export interface PluginTypes {
     VariantSubscriptionPayload: VariantSubscriptionPayloadObject
     VariantPreviousValues: VariantPreviousValuesObject
   }
-  aliases: {
-    Query: QueryAlias
-    Attribute: AttributeAlias
-    Product: ProductAlias
-    Brand: BrandAlias
-    Variant: VariantAlias
-    OptionValue: OptionValueAlias
-    Option: OptionAlias
-    Collection: CollectionAlias
-    AttributeConnection: AttributeConnectionAlias
-    PageInfo: PageInfoAlias
-    AttributeEdge: AttributeEdgeAlias
-    AggregateAttribute: AggregateAttributeAlias
-    BrandConnection: BrandConnectionAlias
-    BrandEdge: BrandEdgeAlias
-    AggregateBrand: AggregateBrandAlias
-    CollectionConnection: CollectionConnectionAlias
-    CollectionEdge: CollectionEdgeAlias
-    AggregateCollection: AggregateCollectionAlias
-    OptionConnection: OptionConnectionAlias
-    OptionEdge: OptionEdgeAlias
-    AggregateOption: AggregateOptionAlias
-    OptionValueConnection: OptionValueConnectionAlias
-    OptionValueEdge: OptionValueEdgeAlias
-    AggregateOptionValue: AggregateOptionValueAlias
-    ProductConnection: ProductConnectionAlias
-    ProductEdge: ProductEdgeAlias
-    AggregateProduct: AggregateProductAlias
-    VariantConnection: VariantConnectionAlias
-    VariantEdge: VariantEdgeAlias
-    AggregateVariant: AggregateVariantAlias
-    Mutation: MutationAlias
-    BatchPayload: BatchPayloadAlias
-    Subscription: SubscriptionAlias
-    AttributeSubscriptionPayload: AttributeSubscriptionPayloadAlias
-    AttributePreviousValues: AttributePreviousValuesAlias
-    BrandSubscriptionPayload: BrandSubscriptionPayloadAlias
-    BrandPreviousValues: BrandPreviousValuesAlias
-    CollectionSubscriptionPayload: CollectionSubscriptionPayloadAlias
-    CollectionPreviousValues: CollectionPreviousValuesAlias
-    OptionSubscriptionPayload: OptionSubscriptionPayloadAlias
-    OptionPreviousValues: OptionPreviousValuesAlias
-    OptionValueSubscriptionPayload: OptionValueSubscriptionPayloadAlias
-    OptionValuePreviousValues: OptionValuePreviousValuesAlias
-    ProductSubscriptionPayload: ProductSubscriptionPayloadAlias
-    ProductPreviousValues: ProductPreviousValuesAlias
-    VariantSubscriptionPayload: VariantSubscriptionPayloadAlias
-    VariantPreviousValues: VariantPreviousValuesAlias
-  }
-  objects: {
+  fieldsDetails: {
     Query: QueryFieldDetails
     Attribute: AttributeFieldDetails
     Product: ProductFieldDetails

@@ -22,6 +22,7 @@ import {
   PrismaObject,
   PrismaTypeNames,
   AnonymousFieldDetail,
+  PickOmitField,
 } from './types'
 import {
   getFields,
@@ -431,16 +432,12 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     }, {})
   }
 
-  // TODO: Decide if we use overloads or XOR
-  // public prismaFields(
-  //   inputFields?: InputField<GenTypes, TypeName>[],
-  // ): GQLiteralNamedType[]
-  // public prismaFields(
-  //   aliasesField: AliasesField<GenTypes, TypeName>,
-  // ): GQLiteralNamedType[]
-  // public prismaFields(
-  //   pickOmitField: PickOmitField<GenTypes, TypeName>,
-  // ): GQLiteralNamedType[]
+  public prismaFields(
+    inputFields?: InputField<GenTypes, TypeName>[],
+  ): void
+  public prismaFields(
+    pickOmitField: PickOmitField<GenTypes, TypeName>,
+  ): void
   public prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>): void {
     const typeName = this.name
 
@@ -516,6 +513,7 @@ function getTypesToExport(config: Types.ObjectTypeConfig): WrappedType[] {
         ? exportInputObjectType(type as GraphQLTypeObject, getTypesMap(), {})
         : exportEnumType(type as GraphQLEnumObject)
     })
+    .filter(t => getExportedTypesMap()[t.type.name] === undefined)
     .uniqBy(t => t.type.name) // TODO: Optimize by sharing the `seen` typeMap in `exportInputObjectType`
     .value()
 }
