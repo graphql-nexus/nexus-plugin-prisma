@@ -87,7 +87,13 @@ function generateDefaultResolver(
 
     // Resolve top-level
     if (typeName === 'Query' || typeName === 'Mutation') {
-      throwIfUnknownClientFunction(fieldName, typeName, ctx, contextClientName, info)
+      throwIfUnknownClientFunction(
+        fieldName,
+        typeName,
+        ctx,
+        contextClientName,
+        info,
+      )
 
       // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
       if (
@@ -112,7 +118,13 @@ function generateDefaultResolver(
 
     const parentName = info.parentType.toString().toLowerCase()
 
-    throwIfUnknownClientFunction(parentName, typeName, ctx, contextClientName, info)
+    throwIfUnknownClientFunction(
+      parentName,
+      typeName,
+      ctx,
+      contextClientName,
+      info,
+    )
 
     // FIXME: It can very well be something else than `id` (depending on the @unique field)
     return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)
@@ -255,10 +267,15 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     super(typeName)
 
     // TODO: Fix this once we have access to the config
-    const schemaPath = path.join(process.cwd(), './src/generated/prisma.graphql')
+    const schemaPath = path.join(
+      process.cwd(),
+      './src/generated/prisma.graphql',
+    )
 
     if (!existsSync(schemaPath)) {
-      throw new Error('prisma.graphql should be located in ./src/generated/prisma.graphql')
+      throw new Error(
+        'prisma.graphql should be located in ./src/generated/prisma.graphql',
+      )
     }
 
     this.config = {

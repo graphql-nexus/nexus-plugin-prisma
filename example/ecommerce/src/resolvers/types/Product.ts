@@ -1,4 +1,4 @@
-import { prismaObjectType } from '../../../src'
+import { prismaObjectType } from 'nexus-prisma'
 import * as ProductVariant from '../../fragments'
 import { optionsFromVariants } from '../utils'
 
@@ -11,9 +11,7 @@ import { optionsFromVariants } from '../utils'
  * }
  */
 export const Product = prismaObjectType('Product', t => {
-  t.prismaFields(['id', 'name'])
-
-  t.field('brand', 'Brand', t.prismaType.brand)
+  t.prismaFields(['id', 'name', 'brand'])
 
   t.field('options', 'Option', {
     list: true,

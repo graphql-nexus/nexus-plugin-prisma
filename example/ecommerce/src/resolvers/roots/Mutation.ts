@@ -1,5 +1,5 @@
 import { arg, idArg, inputObjectType } from 'gqliteral'
-import { prismaObjectType } from '../../../src'
+import { prismaObjectType } from 'nexus-prisma'
 import { VariantCreateInput } from '../../generated/prisma-client'
 
 export const UniqueInput = inputObjectType('UniqueInput', t => {
@@ -29,6 +29,7 @@ export const UpdateVariantInput = inputObjectType('UpdateVariantInput', t => {
 export const UpdateProductInput = inputObjectType('UpdateProductInput', t => {
   t.id('id', { required: true })
   t.string('name', { required: true })
+
   t.field('brand', 'UniqueInput', { required: true })
   t.field('attributesIds', 'UniqueInput', { required: true, list: true })
   t.field('variants', 'UpdateVariantInput', { required: true, list: true })
@@ -94,7 +95,7 @@ export const Mutation = prismaObjectType('Mutation', t => {
     args: {
       data: arg('UpdateProductInput', { required: true }),
     },
-    resolve: async (parent, { data }, ctx) => {
+    resolve: async () => {
       throw new Error('updateProduct resolve not implemented yet')
     },
   })

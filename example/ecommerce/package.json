@@ -7,13 +7,17 @@
     "codegen": "ts-node-dev ./plugin/codegen"
   },
   "dependencies": {
-    "apollo-server": "^2.2.2",
+    "apollo-server": "^2.2.6",
     "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
     "lodash": "^4.17.11",
     "prisma-client-lib": "^1.20.7",
-    "ts-node": "^7.0.1",
-    "ts-node-dev": "^1.0.0-pre.30"
+    "nexus-prisma": "^0.0.3"
+  },
+  "resolutions": {
+    "nexus-prisma/graphql": "^14.0.2",
+    "apollo-server/graphql": "^14.0.2",
+    "prisma-client-lib": "^14.0.2"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
@@ -22,6 +26,8 @@
     "prettier": "^1.15.2",
     "prisma": "^1.20.7",
     "ts-jest": "^23.10.4",
+    "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.30",
     "typescript": "^3.1.6"
   },
   "prettier": {
