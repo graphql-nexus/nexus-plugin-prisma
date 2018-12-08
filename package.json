@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/prisma/nexus-prisma-plugin.git"
   },
+  "bin": {
+    "nexus-codegen": "dist/codegen.js"
+  },
   "bugs": {
     "url": "https://github.com/prisma/nexus-prisma-plugin/issues"
   },
