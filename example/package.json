@@ -6,17 +6,17 @@
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src"
   },
   "dependencies": {
-    "graphql": "^14.0.2",
-    "graphql-nexus": "^0.1.1",
-    "graphql-yoga": "^1.16.7",
-    "nexus-prisma": "^0.0.9",
-    "prisma-client-lib": "^1.23.0-beta3"
+    "graphql": "14.0.2",
+    "graphql-nexus": "0.1.1",
+    "graphql-yoga": "1.16.7",
+    "nexus-prisma": "0.0.9",
+    "prisma-client-lib": "1.23.0-test.3"
   },
   "devDependencies": {
-    "@types/graphql": "^14.0.3",
-    "@types/node": "^10.12.12",
-    "ts-node-dev": "^1.0.0-pre.30",
-    "typescript": "^3.1.6"
+    "@types/graphql": "14.0.3",
+    "@types/node": "10.12.12",
+    "ts-node-dev": "1.0.0-pre.31",
+    "typescript": "3.2.2"
   },
   "prettier": {
     "singleQuote": true,
