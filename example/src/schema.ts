@@ -20,6 +20,11 @@ export const schema = buildPrismaSchema({
     typegen: path.join(__dirname, './generated/gqliteral.ts'),
   },
 
+  nullability: {
+    input: false,
+    inputList: false,
+  },
+
   typegenAutoConfig: {
     sources: [
       {

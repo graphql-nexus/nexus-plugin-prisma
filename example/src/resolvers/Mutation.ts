@@ -5,7 +5,7 @@ export const Mutation = prismaObjectType('Mutation', t => {
   t.field('deletePost', 'Post', {
     ...t.prismaType.deletePost,
     args: {
-      id: idArg({ required: true }),
+      id: idArg(),
     },
     resolve: (parent, args, ctx) => {
       // TODO: this is not working
@@ -21,8 +21,8 @@ export const Mutation = prismaObjectType('Mutation', t => {
 
   t.field('signupUser', 'User', {
     args: {
-      name: stringArg({ required: true }),
-      email: stringArg({ required: true }),
+      name: stringArg(),
+      email: stringArg(),
     },
     resolve: (parent, { name, email }, ctx) => {
       return ctx.prisma.createUser({ name, email })
@@ -31,9 +31,9 @@ export const Mutation = prismaObjectType('Mutation', t => {
 
   t.field('createDraft', 'Post', {
     args: {
-      title: stringArg({ required: true }),
-      content: stringArg({ required: true }),
-      authorEmail: stringArg({ required: true }),
+      title: stringArg(),
+      content: stringArg(),
+      authorEmail: stringArg(),
     },
     resolve: (parent, { title, content, authorEmail }, ctx) => {
       return ctx.prisma.createPost({
@@ -46,7 +46,7 @@ export const Mutation = prismaObjectType('Mutation', t => {
 
   t.field('publish', 'Post', {
     args: {
-      id: idArg({ required: true }),
+      id: idArg(),
     },
     resolve: (parent, { id }, ctx) => {
       return ctx.prisma.updatePost({
