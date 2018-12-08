@@ -34,13 +34,13 @@
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "devDependencies": {
-    "@types/graphql": "^14.0.3",
-    "@types/lodash": "^4.14.118",
-    "jest": "^23.6.0",
-    "prettier": "^1.15.2",
-    "prisma": "^1.20.7",
-    "ts-jest": "^23.10.4",
-    "typescript": "^3.1.6"
+    "@types/graphql": "14.0.3",
+    "@types/lodash": "4.14.118",
+    "jest": "23.6.0",
+    "prettier": "1.15.3",
+    "prisma": "1.22.2",
+    "ts-jest": "23.10.5",
+    "typescript": "3.2.2"
   },
   "prettier": {
     "singleQuote": true,
