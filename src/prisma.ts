@@ -3,7 +3,7 @@ import * as path from 'path'
 import { arg, enumType, inputObjectType, scalarType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
 import { ArgDefinition, FieldDef } from 'gqliteral/dist/types'
-import { GraphQLFieldResolver, Kind } from 'graphql'
+import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
 import {
   extractTypes,
@@ -200,17 +200,8 @@ function exportEnumType(enumObject: GraphQLEnumObject) {
 
 function exportDateTimeScalar(): WrappedType {
   return scalarType('DateTime', {
-    parseValue(value) {
-      return new Date(value)
-    },
     serialize(value) {
-      return value.getTime()
-    },
-    parseLiteral(ast) {
-      if (ast.kind === Kind.INT) {
-        return new Date(ast.value)
-      }
-      return null
+      return value
     },
   })
 }
@@ -456,7 +447,6 @@ function getTypesToExport(
       }
 
       if (graphqlType.type.isScalar && graphqlType.type.name === 'DateTime') {
-        console.log('LALALALA')
         return exportDateTimeScalar()
       }
 
