@@ -15,18 +15,16 @@
     "prisma-client-lib": "^1.20.7"
   },
   "resolutions": {
-    "nexus-prisma/graphql": "^14.0.2",
-    "apollo-server/graphql": "^14.0.2",
-    "prisma-client-lib": "^14.0.2"
+    "nexus-prisma/graphql": "*",
+    "apollo-server/graphql": "*",
+    "prisma-client-lib": "*"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
     "@types/lodash": "^4.14.118",
     "jest": "^23.6.0",
     "prettier": "^1.15.2",
-    "prisma": "^1.22.2",
     "ts-jest": "^23.10.4",
-    "ts-node": "^7.0.1",
     "ts-node-dev": "^1.0.0-pre.30",
     "typescript": "^3.1.6"
   },
