@@ -27,10 +27,10 @@ export const schema = buildPrismaSchema({
         alias: 'prisma',
       },
       {
-        module: path.join(__dirname, './context.ts'),
-        alias: 'ctx',
+        module: path.join(__dirname, './types.ts'),
+        alias: 'types',
       },
     ],
-    contextType: 'ctx.Context',
+    contextType: 'types.Context',
   },
 })

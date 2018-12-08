@@ -10,21 +10,11 @@
     "apollo-server": "^2.2.6",
     "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
-    "lodash": "^4.17.11",
     "nexus-prisma": "^0.0.7",
     "prisma-client-lib": "^1.20.7"
   },
-  "resolutions": {
-    "nexus-prisma/graphql": "*",
-    "apollo-server/graphql": "*",
-    "prisma-client-lib": "*"
-  },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
-    "@types/lodash": "^4.14.118",
-    "jest": "^23.6.0",
-    "prettier": "^1.15.2",
-    "ts-jest": "^23.10.4",
     "ts-node-dev": "^1.0.0-pre.30",
     "typescript": "^3.1.6"
   },

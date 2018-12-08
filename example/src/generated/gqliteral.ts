@@ -5,7 +5,7 @@
  * For better typings, you should provide configuration for how to lookup 
  * the types. See the documentation for "typegenAutoConfig"
  */
-import * as ctx from "../context"
+import * as types from "../types"
 import * as prisma from "./prisma-client/index"
 
 declare global {
@@ -293,7 +293,7 @@ export interface GraphQLiteralGenTypes {
   argTypes: GraphQLiteralGenArgTypes;
   backingTypes: GraphQLiteralGenRootTypes;
   returnTypes: GraphQLiteralGenReturnTypes;
-  context: ctx.Context;
+  context: types.Context;
   enums: {
     PostOrderByInput: PostOrderByInput;
   };

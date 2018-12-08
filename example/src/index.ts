@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server'
-import { Context } from './context'
+import { Context } from './types'
 import { prisma } from './generated/prisma-client'
 import { schema } from './schema'
 
