@@ -1,3 +1,3 @@
-# nexus-prisma-plugin
+# nexus-prisma
 
-[![Edit plugin](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/Weakky/woopwoop/tree/master/?module=%2Fsrc%2Fgqliteral%2Ftypes%2Fquery.ts)
+[![Edit plugin](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/prisma/nexus-prisma/tree/master/example?module=%2Fsrc%2Fresolvers%2Fquery.ts)
