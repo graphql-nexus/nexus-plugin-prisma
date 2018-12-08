@@ -16,13 +16,21 @@ import * as prisma from './prisma-client'
 
 type QueryObject =
   | QueryFields
-  | { name: 'post', args?: QueryPostArgs[] | false, alias?: string  } 
-  | { name: 'posts', args?: QueryPostsArgs[] | false, alias?: string  } 
-  | { name: 'postsConnection', args?: QueryPostsConnectionArgs[] | false, alias?: string  } 
-  | { name: 'user', args?: QueryUserArgs[] | false, alias?: string  } 
-  | { name: 'users', args?: QueryUsersArgs[] | false, alias?: string  } 
-  | { name: 'usersConnection', args?: QueryUsersConnectionArgs[] | false, alias?: string  } 
-  | { name: 'node', args?: QueryNodeArgs[] | false, alias?: string  } 
+  | { name: 'post'; args?: QueryPostArgs[] | false; alias?: string }
+  | { name: 'posts'; args?: QueryPostsArgs[] | false; alias?: string }
+  | {
+      name: 'postsConnection'
+      args?: QueryPostsConnectionArgs[] | false
+      alias?: string
+    }
+  | { name: 'user'; args?: QueryUserArgs[] | false; alias?: string }
+  | { name: 'users'; args?: QueryUsersArgs[] | false; alias?: string }
+  | {
+      name: 'usersConnection'
+      args?: QueryUsersConnectionArgs[] | false
+      alias?: string
+    }
+  | { name: 'node'; args?: QueryNodeArgs[] | false; alias?: string }
 
 type QueryFields =
   | 'post'
@@ -33,9 +41,7 @@ type QueryFields =
   | 'usersConnection'
   | 'node'
 
-
-type QueryPostArgs =
-  | 'where'
+type QueryPostArgs = 'where'
 type QueryPostsArgs =
   | 'where'
   | 'orderBy'
@@ -52,8 +58,7 @@ type QueryPostsConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryUserArgs =
-  | 'where'
+type QueryUserArgs = 'where'
 type QueryUsersArgs =
   | 'where'
   | 'orderBy'
@@ -70,74 +75,106 @@ type QueryUsersConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryNodeArgs =
-  | 'id'
-  
+type QueryNodeArgs = 'id'
 
 export interface QueryFieldDetails<GenTypes = GraphQLiteralGen> {
   post: {
-    args: Record<QueryPostArgs,ArgDefinition>
+    args: Record<QueryPostArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "post">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post | null> | prisma.Post | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'post'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   posts: {
-    args: Record<QueryPostsArgs,ArgDefinition>
+    args: Record<QueryPostsArgs, ArgDefinition>
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "posts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post[]> | prisma.Post[];
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'posts'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post[]> | prisma.Post[]
   }
   postsConnection: {
-    args: Record<QueryPostsConnectionArgs,ArgDefinition>
+    args: Record<QueryPostsConnectionArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "postsConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PostConnection> | prisma.PostConnection;
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'postsConnection'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.PostConnection> | prisma.PostConnection
   }
   user: {
-    args: Record<QueryUserArgs,ArgDefinition>
+    args: Record<QueryUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "user">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User | null> | prisma.User | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'user'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   users: {
-    args: Record<QueryUsersArgs,ArgDefinition>
+    args: Record<QueryUsersArgs, ArgDefinition>
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "users">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User[]> | prisma.User[];
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'users'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User[]> | prisma.User[]
   }
   usersConnection: {
-    args: Record<QueryUsersConnectionArgs,ArgDefinition>
+    args: Record<QueryUsersConnectionArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "usersConnection">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.UserConnection> | prisma.UserConnection;
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'usersConnection'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.UserConnection> | prisma.UserConnection
   }
   node: {
-    args: Record<QueryNodeArgs,ArgDefinition>
+    args: Record<QueryNodeArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Query">, args: ArgsValue<GenTypes, "Query", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Node | null> | prisma.Node | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Query'>,
+      args: ArgsValue<GenTypes, 'Query', 'node'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Node | null> | prisma.Node | null
   }
 }
-  
 
 // Types for Post
 
 type PostObject =
   | PostFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'published', args?: [] | false, alias?: string  } 
-  | { name: 'title', args?: [] | false, alias?: string  } 
-  | { name: 'content', args?: [] | false, alias?: string  } 
-  | { name: 'author', args?: [] | false, alias?: string  } 
+  | { name: 'id'; args?: [] | false; alias?: string }
+  | { name: 'createdAt'; args?: [] | false; alias?: string }
+  | { name: 'updatedAt'; args?: [] | false; alias?: string }
+  | { name: 'published'; args?: [] | false; alias?: string }
+  | { name: 'title'; args?: [] | false; alias?: string }
+  | { name: 'content'; args?: [] | false; alias?: string }
+  | { name: 'author'; args?: [] | false; alias?: string }
 
 type PostFields =
   | 'id'
@@ -148,78 +185,103 @@ type PostFields =
   | 'content'
   | 'author'
 
-
-
-  
-
 export interface PostFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'id'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   createdAt: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "createdAt">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'createdAt'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   updatedAt: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "updatedAt">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'updatedAt'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   published: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "published">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'published'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<boolean> | boolean
   }
   title: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "title">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'title'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   content: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "content">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'content'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
   author: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Post">, args: ArgsValue<GenTypes, "Post", "author">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User> | prisma.User;
+    resolve: (
+      root: RootValue<GenTypes, 'Post'>,
+      args: ArgsValue<GenTypes, 'Post', 'author'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User> | prisma.User
   }
 }
-  
 
 // Types for User
 
 type UserObject =
   | UserFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'email', args?: [] | false, alias?: string  } 
-  | { name: 'name', args?: [] | false, alias?: string  } 
-  | { name: 'posts', args?: UserPostsArgs[] | false, alias?: string  } 
+  | { name: 'id'; args?: [] | false; alias?: string }
+  | { name: 'email'; args?: [] | false; alias?: string }
+  | { name: 'name'; args?: [] | false; alias?: string }
+  | { name: 'posts'; args?: UserPostsArgs[] | false; alias?: string }
 
-type UserFields =
-  | 'id'
-  | 'email'
-  | 'name'
-  | 'posts'
-
+type UserFields = 'id' | 'email' | 'name' | 'posts'
 
 type UserPostsArgs =
   | 'where'
@@ -229,7 +291,6 @@ type UserPostsArgs =
   | 'before'
   | 'first'
   | 'last'
-  
 
 export interface UserFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
@@ -237,48 +298,60 @@ export interface UserFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "User">, args: ArgsValue<GenTypes, "User", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'User'>,
+      args: ArgsValue<GenTypes, 'User', 'id'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   email: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "User">, args: ArgsValue<GenTypes, "User", "email">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'User'>,
+      args: ArgsValue<GenTypes, 'User', 'email'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   name: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "User">, args: ArgsValue<GenTypes, "User", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'User'>,
+      args: ArgsValue<GenTypes, 'User', 'name'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
   posts: {
-    args: Record<UserPostsArgs,ArgDefinition>
+    args: Record<UserPostsArgs, ArgDefinition>
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "User">, args: ArgsValue<GenTypes, "User", "posts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post[]> | prisma.Post[];
+    resolve: (
+      root: RootValue<GenTypes, 'User'>,
+      args: ArgsValue<GenTypes, 'User', 'posts'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post[]> | prisma.Post[]
   }
 }
-  
 
 // Types for PostConnection
 
 type PostConnectionObject =
   | PostConnectionFields
-  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
-  | { name: 'edges', args?: [] | false, alias?: string  } 
-  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+  | { name: 'pageInfo'; args?: [] | false; alias?: string }
+  | { name: 'edges'; args?: [] | false; alias?: string }
+  | { name: 'aggregate'; args?: [] | false; alias?: string }
 
-type PostConnectionFields =
-  | 'pageInfo'
-  | 'edges'
-  | 'aggregate'
-
-
-
-  
+type PostConnectionFields = 'pageInfo' | 'edges' | 'aggregate'
 
 export interface PostConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -286,33 +359,47 @@ export interface PostConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostConnection">, args: ArgsValue<GenTypes, "PostConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
+    resolve: (
+      root: RootValue<GenTypes, 'PostConnection'>,
+      args: ArgsValue<GenTypes, 'PostConnection', 'pageInfo'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
     args: {}
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostConnection">, args: ArgsValue<GenTypes, "PostConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PostEdge[]> | prisma.PostEdge[];
+    resolve: (
+      root: RootValue<GenTypes, 'PostConnection'>,
+      args: ArgsValue<GenTypes, 'PostConnection', 'edges'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.PostEdge[]> | prisma.PostEdge[]
   }
   aggregate: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostConnection">, args: ArgsValue<GenTypes, "PostConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregatePost> | prisma.AggregatePost;
+    resolve: (
+      root: RootValue<GenTypes, 'PostConnection'>,
+      args: ArgsValue<GenTypes, 'PostConnection', 'aggregate'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.AggregatePost> | prisma.AggregatePost
   }
 }
-  
 
 // Types for PageInfo
 
 type PageInfoObject =
   | PageInfoFields
-  | { name: 'hasNextPage', args?: [] | false, alias?: string  } 
-  | { name: 'hasPreviousPage', args?: [] | false, alias?: string  } 
-  | { name: 'startCursor', args?: [] | false, alias?: string  } 
-  | { name: 'endCursor', args?: [] | false, alias?: string  } 
+  | { name: 'hasNextPage'; args?: [] | false; alias?: string }
+  | { name: 'hasPreviousPage'; args?: [] | false; alias?: string }
+  | { name: 'startCursor'; args?: [] | false; alias?: string }
+  | { name: 'endCursor'; args?: [] | false; alias?: string }
 
 type PageInfoFields =
   | 'hasNextPage'
@@ -320,56 +407,65 @@ type PageInfoFields =
   | 'startCursor'
   | 'endCursor'
 
-
-
-  
-
 export interface PageInfoFieldDetails<GenTypes = GraphQLiteralGen> {
   hasNextPage: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasNextPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
+    resolve: (
+      root: RootValue<GenTypes, 'PageInfo'>,
+      args: ArgsValue<GenTypes, 'PageInfo', 'hasNextPage'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<boolean> | boolean
   }
   hasPreviousPage: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "hasPreviousPage">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
+    resolve: (
+      root: RootValue<GenTypes, 'PageInfo'>,
+      args: ArgsValue<GenTypes, 'PageInfo', 'hasPreviousPage'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<boolean> | boolean
   }
   startCursor: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "startCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'PageInfo'>,
+      args: ArgsValue<GenTypes, 'PageInfo', 'startCursor'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
   endCursor: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "PageInfo">, args: ArgsValue<GenTypes, "PageInfo", "endCursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'PageInfo'>,
+      args: ArgsValue<GenTypes, 'PageInfo', 'endCursor'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
 }
-  
 
 // Types for PostEdge
 
 type PostEdgeObject =
   | PostEdgeFields
-  | { name: 'node', args?: [] | false, alias?: string  } 
-  | { name: 'cursor', args?: [] | false, alias?: string  } 
+  | { name: 'node'; args?: [] | false; alias?: string }
+  | { name: 'cursor'; args?: [] | false; alias?: string }
 
-type PostEdgeFields =
-  | 'node'
-  | 'cursor'
-
-
-
-  
+type PostEdgeFields = 'node' | 'cursor'
 
 export interface PostEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
@@ -377,30 +473,34 @@ export interface PostEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostEdge">, args: ArgsValue<GenTypes, "PostEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post> | prisma.Post;
+    resolve: (
+      root: RootValue<GenTypes, 'PostEdge'>,
+      args: ArgsValue<GenTypes, 'PostEdge', 'node'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post> | prisma.Post
   }
   cursor: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostEdge">, args: ArgsValue<GenTypes, "PostEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'PostEdge'>,
+      args: ArgsValue<GenTypes, 'PostEdge', 'cursor'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
 }
-  
 
 // Types for AggregatePost
 
 type AggregatePostObject =
   | AggregatePostFields
-  | { name: 'count', args?: [] | false, alias?: string  } 
+  | { name: 'count'; args?: [] | false; alias?: string }
 
-type AggregatePostFields =
-  | 'count'
-
-
-
-  
+type AggregatePostFields = 'count'
 
 export interface AggregatePostFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
@@ -408,27 +508,24 @@ export interface AggregatePostFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "AggregatePost">, args: ArgsValue<GenTypes, "AggregatePost", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
+    resolve: (
+      root: RootValue<GenTypes, 'AggregatePost'>,
+      args: ArgsValue<GenTypes, 'AggregatePost', 'count'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<number> | number
   }
 }
-  
 
 // Types for UserConnection
 
 type UserConnectionObject =
   | UserConnectionFields
-  | { name: 'pageInfo', args?: [] | false, alias?: string  } 
-  | { name: 'edges', args?: [] | false, alias?: string  } 
-  | { name: 'aggregate', args?: [] | false, alias?: string  } 
+  | { name: 'pageInfo'; args?: [] | false; alias?: string }
+  | { name: 'edges'; args?: [] | false; alias?: string }
+  | { name: 'aggregate'; args?: [] | false; alias?: string }
 
-type UserConnectionFields =
-  | 'pageInfo'
-  | 'edges'
-  | 'aggregate'
-
-
-
-  
+type UserConnectionFields = 'pageInfo' | 'edges' | 'aggregate'
 
 export interface UserConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
   pageInfo: {
@@ -436,39 +533,47 @@ export interface UserConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserConnection">, args: ArgsValue<GenTypes, "UserConnection", "pageInfo">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PageInfo> | prisma.PageInfo;
+    resolve: (
+      root: RootValue<GenTypes, 'UserConnection'>,
+      args: ArgsValue<GenTypes, 'UserConnection', 'pageInfo'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
     args: {}
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserConnection">, args: ArgsValue<GenTypes, "UserConnection", "edges">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.UserEdge[]> | prisma.UserEdge[];
+    resolve: (
+      root: RootValue<GenTypes, 'UserConnection'>,
+      args: ArgsValue<GenTypes, 'UserConnection', 'edges'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.UserEdge[]> | prisma.UserEdge[]
   }
   aggregate: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserConnection">, args: ArgsValue<GenTypes, "UserConnection", "aggregate">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.AggregateUser> | prisma.AggregateUser;
+    resolve: (
+      root: RootValue<GenTypes, 'UserConnection'>,
+      args: ArgsValue<GenTypes, 'UserConnection', 'aggregate'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.AggregateUser> | prisma.AggregateUser
   }
 }
-  
 
 // Types for UserEdge
 
 type UserEdgeObject =
   | UserEdgeFields
-  | { name: 'node', args?: [] | false, alias?: string  } 
-  | { name: 'cursor', args?: [] | false, alias?: string  } 
+  | { name: 'node'; args?: [] | false; alias?: string }
+  | { name: 'cursor'; args?: [] | false; alias?: string }
 
-type UserEdgeFields =
-  | 'node'
-  | 'cursor'
-
-
-
-  
+type UserEdgeFields = 'node' | 'cursor'
 
 export interface UserEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
   node: {
@@ -476,30 +581,34 @@ export interface UserEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserEdge">, args: ArgsValue<GenTypes, "UserEdge", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User> | prisma.User;
+    resolve: (
+      root: RootValue<GenTypes, 'UserEdge'>,
+      args: ArgsValue<GenTypes, 'UserEdge', 'node'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User> | prisma.User
   }
   cursor: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserEdge">, args: ArgsValue<GenTypes, "UserEdge", "cursor">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'UserEdge'>,
+      args: ArgsValue<GenTypes, 'UserEdge', 'cursor'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
 }
-  
 
 // Types for AggregateUser
 
 type AggregateUserObject =
   | AggregateUserFields
-  | { name: 'count', args?: [] | false, alias?: string  } 
+  | { name: 'count'; args?: [] | false; alias?: string }
 
-type AggregateUserFields =
-  | 'count'
-
-
-
-  
+type AggregateUserFields = 'count'
 
 export interface AggregateUserFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
@@ -507,27 +616,79 @@ export interface AggregateUserFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "AggregateUser">, args: ArgsValue<GenTypes, "AggregateUser", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<number> | number;
+    resolve: (
+      root: RootValue<GenTypes, 'AggregateUser'>,
+      args: ArgsValue<GenTypes, 'AggregateUser', 'count'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<number> | number
   }
 }
-  
 
 // Types for Mutation
 
 type MutationObject =
   | MutationFields
-  | { name: 'createPost', args?: MutationCreatePostArgs[] | false, alias?: string  } 
-  | { name: 'updatePost', args?: MutationUpdatePostArgs[] | false, alias?: string  } 
-  | { name: 'updateManyPosts', args?: MutationUpdateManyPostsArgs[] | false, alias?: string  } 
-  | { name: 'upsertPost', args?: MutationUpsertPostArgs[] | false, alias?: string  } 
-  | { name: 'deletePost', args?: MutationDeletePostArgs[] | false, alias?: string  } 
-  | { name: 'deleteManyPosts', args?: MutationDeleteManyPostsArgs[] | false, alias?: string  } 
-  | { name: 'createUser', args?: MutationCreateUserArgs[] | false, alias?: string  } 
-  | { name: 'updateUser', args?: MutationUpdateUserArgs[] | false, alias?: string  } 
-  | { name: 'updateManyUsers', args?: MutationUpdateManyUsersArgs[] | false, alias?: string  } 
-  | { name: 'upsertUser', args?: MutationUpsertUserArgs[] | false, alias?: string  } 
-  | { name: 'deleteUser', args?: MutationDeleteUserArgs[] | false, alias?: string  } 
-  | { name: 'deleteManyUsers', args?: MutationDeleteManyUsersArgs[] | false, alias?: string  } 
+  | {
+      name: 'createPost'
+      args?: MutationCreatePostArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'updatePost'
+      args?: MutationUpdatePostArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'updateManyPosts'
+      args?: MutationUpdateManyPostsArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'upsertPost'
+      args?: MutationUpsertPostArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'deletePost'
+      args?: MutationDeletePostArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'deleteManyPosts'
+      args?: MutationDeleteManyPostsArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'createUser'
+      args?: MutationCreateUserArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'updateUser'
+      args?: MutationUpdateUserArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'updateManyUsers'
+      args?: MutationUpdateManyUsersArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'upsertUser'
+      args?: MutationUpsertUserArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'deleteUser'
+      args?: MutationDeleteUserArgs[] | false
+      alias?: string
+    }
+  | {
+      name: 'deleteManyUsers'
+      args?: MutationDeleteManyUsersArgs[] | false
+      alias?: string
+    }
 
 type MutationFields =
   | 'createPost'
@@ -543,141 +704,173 @@ type MutationFields =
   | 'deleteUser'
   | 'deleteManyUsers'
 
-
-type MutationCreatePostArgs =
-  | 'data'
-type MutationUpdatePostArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManyPostsArgs =
-  | 'data'
-  | 'where'
-type MutationUpsertPostArgs =
-  | 'where'
-  | 'create'
-  | 'update'
-type MutationDeletePostArgs =
-  | 'where'
-type MutationDeleteManyPostsArgs =
-  | 'where'
-type MutationCreateUserArgs =
-  | 'data'
-type MutationUpdateUserArgs =
-  | 'data'
-  | 'where'
-type MutationUpdateManyUsersArgs =
-  | 'data'
-  | 'where'
-type MutationUpsertUserArgs =
-  | 'where'
-  | 'create'
-  | 'update'
-type MutationDeleteUserArgs =
-  | 'where'
-type MutationDeleteManyUsersArgs =
-  | 'where'
-  
+type MutationCreatePostArgs = 'data'
+type MutationUpdatePostArgs = 'data' | 'where'
+type MutationUpdateManyPostsArgs = 'data' | 'where'
+type MutationUpsertPostArgs = 'where' | 'create' | 'update'
+type MutationDeletePostArgs = 'where'
+type MutationDeleteManyPostsArgs = 'where'
+type MutationCreateUserArgs = 'data'
+type MutationUpdateUserArgs = 'data' | 'where'
+type MutationUpdateManyUsersArgs = 'data' | 'where'
+type MutationUpsertUserArgs = 'where' | 'create' | 'update'
+type MutationDeleteUserArgs = 'where'
+type MutationDeleteManyUsersArgs = 'where'
 
 export interface MutationFieldDetails<GenTypes = GraphQLiteralGen> {
   createPost: {
-    args: Record<MutationCreatePostArgs,ArgDefinition>
+    args: Record<MutationCreatePostArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createPost">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post> | prisma.Post;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'createPost'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post> | prisma.Post
   }
   updatePost: {
-    args: Record<MutationUpdatePostArgs,ArgDefinition>
+    args: Record<MutationUpdatePostArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updatePost">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post | null> | prisma.Post | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'updatePost'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updateManyPosts: {
-    args: Record<MutationUpdateManyPostsArgs,ArgDefinition>
+    args: Record<MutationUpdateManyPostsArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyPosts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'updateManyPosts'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertPost: {
-    args: Record<MutationUpsertPostArgs,ArgDefinition>
+    args: Record<MutationUpsertPostArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertPost">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post> | prisma.Post;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'upsertPost'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post> | prisma.Post
   }
   deletePost: {
-    args: Record<MutationDeletePostArgs,ArgDefinition>
+    args: Record<MutationDeletePostArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deletePost">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post | null> | prisma.Post | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'deletePost'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   deleteManyPosts: {
-    args: Record<MutationDeleteManyPostsArgs,ArgDefinition>
+    args: Record<MutationDeleteManyPostsArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyPosts">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'deleteManyPosts'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   createUser: {
-    args: Record<MutationCreateUserArgs,ArgDefinition>
+    args: Record<MutationCreateUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "createUser">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User> | prisma.User;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'createUser'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User> | prisma.User
   }
   updateUser: {
-    args: Record<MutationUpdateUserArgs,ArgDefinition>
+    args: Record<MutationUpdateUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateUser">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User | null> | prisma.User | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'updateUser'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   updateManyUsers: {
-    args: Record<MutationUpdateManyUsersArgs,ArgDefinition>
+    args: Record<MutationUpdateManyUsersArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "updateManyUsers">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'updateManyUsers'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertUser: {
-    args: Record<MutationUpsertUserArgs,ArgDefinition>
+    args: Record<MutationUpsertUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "upsertUser">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User> | prisma.User;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'upsertUser'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User> | prisma.User
   }
   deleteUser: {
-    args: Record<MutationDeleteUserArgs,ArgDefinition>
+    args: Record<MutationDeleteUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteUser">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User | null> | prisma.User | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'deleteUser'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   deleteManyUsers: {
-    args: Record<MutationDeleteManyUsersArgs,ArgDefinition>
+    args: Record<MutationDeleteManyUsersArgs, ArgDefinition>
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "Mutation">, args: ArgsValue<GenTypes, "Mutation", "deleteManyUsers">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    resolve: (
+      root: RootValue<GenTypes, 'Mutation'>,
+      args: ArgsValue<GenTypes, 'Mutation', 'deleteManyUsers'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
 }
-  
 
 // Types for BatchPayload
 
 type BatchPayloadObject =
   | BatchPayloadFields
-  | { name: 'count', args?: [] | false, alias?: string  } 
+  | { name: 'count'; args?: [] | false; alias?: string }
 
-type BatchPayloadFields =
-  | 'count'
-
-
-
-  
+type BatchPayloadFields = 'count'
 
 export interface BatchPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
   count: {
@@ -685,55 +878,68 @@ export interface BatchPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "BatchPayload">, args: ArgsValue<GenTypes, "BatchPayload", "count">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<undefined> | undefined;
+    resolve: (
+      root: RootValue<GenTypes, 'BatchPayload'>,
+      args: ArgsValue<GenTypes, 'BatchPayload', 'count'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<undefined> | undefined
   }
 }
-  
 
 // Types for Subscription
 
 type SubscriptionObject =
   | SubscriptionFields
-  | { name: 'post', args?: SubscriptionPostArgs[] | false, alias?: string  } 
-  | { name: 'user', args?: SubscriptionUserArgs[] | false, alias?: string  } 
+  | { name: 'post'; args?: SubscriptionPostArgs[] | false; alias?: string }
+  | { name: 'user'; args?: SubscriptionUserArgs[] | false; alias?: string }
 
-type SubscriptionFields =
-  | 'post'
-  | 'user'
+type SubscriptionFields = 'post' | 'user'
 
-
-type SubscriptionPostArgs =
-  | 'where'
-type SubscriptionUserArgs =
-  | 'where'
-  
+type SubscriptionPostArgs = 'where'
+type SubscriptionUserArgs = 'where'
 
 export interface SubscriptionFieldDetails<GenTypes = GraphQLiteralGen> {
   post: {
-    args: Record<SubscriptionPostArgs,ArgDefinition>
+    args: Record<SubscriptionPostArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "post">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PostSubscriptionPayload | null> | prisma.PostSubscriptionPayload | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Subscription'>,
+      args: ArgsValue<GenTypes, 'Subscription', 'post'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) =>
+      | Promise<prisma.PostSubscriptionPayload | null>
+      | prisma.PostSubscriptionPayload
+      | null
   }
   user: {
-    args: Record<SubscriptionUserArgs,ArgDefinition>
+    args: Record<SubscriptionUserArgs, ArgDefinition>
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "Subscription">, args: ArgsValue<GenTypes, "Subscription", "user">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null;
+    resolve: (
+      root: RootValue<GenTypes, 'Subscription'>,
+      args: ArgsValue<GenTypes, 'Subscription', 'user'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) =>
+      | Promise<prisma.UserSubscriptionPayload | null>
+      | prisma.UserSubscriptionPayload
+      | null
   }
 }
-  
 
 // Types for PostSubscriptionPayload
 
 type PostSubscriptionPayloadObject =
   | PostSubscriptionPayloadFields
-  | { name: 'mutation', args?: [] | false, alias?: string  } 
-  | { name: 'node', args?: [] | false, alias?: string  } 
-  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
-  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+  | { name: 'mutation'; args?: [] | false; alias?: string }
+  | { name: 'node'; args?: [] | false; alias?: string }
+  | { name: 'updatedFields'; args?: [] | false; alias?: string }
+  | { name: 'previousValues'; args?: [] | false; alias?: string }
 
 type PostSubscriptionPayloadFields =
   | 'mutation'
@@ -741,52 +947,72 @@ type PostSubscriptionPayloadFields =
   | 'updatedFields'
   | 'previousValues'
 
-
-
-  
-
-export interface PostSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostSubscriptionPayloadFieldDetails<
+  GenTypes = GraphQLiteralGen
+> {
   mutation: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostSubscriptionPayload">, args: ArgsValue<GenTypes, "PostSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
+    resolve: (
+      root: RootValue<GenTypes, 'PostSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'PostSubscriptionPayload', 'mutation'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "PostSubscriptionPayload">, args: ArgsValue<GenTypes, "PostSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.Post | null> | prisma.Post | null;
+    resolve: (
+      root: RootValue<GenTypes, 'PostSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'PostSubscriptionPayload', 'node'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updatedFields: {
     args: {}
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostSubscriptionPayload">, args: ArgsValue<GenTypes, "PostSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
+    resolve: (
+      root: RootValue<GenTypes, 'PostSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'PostSubscriptionPayload', 'updatedFields'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string[]> | string[]
   }
   previousValues: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "PostSubscriptionPayload">, args: ArgsValue<GenTypes, "PostSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.PostPreviousValues | null> | prisma.PostPreviousValues | null;
+    resolve: (
+      root: RootValue<GenTypes, 'PostSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'PostSubscriptionPayload', 'previousValues'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) =>
+      | Promise<prisma.PostPreviousValues | null>
+      | prisma.PostPreviousValues
+      | null
   }
 }
-  
 
 // Types for PostPreviousValues
 
 type PostPreviousValuesObject =
   | PostPreviousValuesFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'createdAt', args?: [] | false, alias?: string  } 
-  | { name: 'updatedAt', args?: [] | false, alias?: string  } 
-  | { name: 'published', args?: [] | false, alias?: string  } 
-  | { name: 'title', args?: [] | false, alias?: string  } 
-  | { name: 'content', args?: [] | false, alias?: string  } 
+  | { name: 'id'; args?: [] | false; alias?: string }
+  | { name: 'createdAt'; args?: [] | false; alias?: string }
+  | { name: 'updatedAt'; args?: [] | false; alias?: string }
+  | { name: 'published'; args?: [] | false; alias?: string }
+  | { name: 'title'; args?: [] | false; alias?: string }
+  | { name: 'content'; args?: [] | false; alias?: string }
 
 type PostPreviousValuesFields =
   | 'id'
@@ -796,64 +1022,89 @@ type PostPreviousValuesFields =
   | 'title'
   | 'content'
 
-
-
-  
-
 export interface PostPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'id'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   createdAt: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "createdAt">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'createdAt'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   updatedAt: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "updatedAt">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'updatedAt'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   published: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "published">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<boolean> | boolean;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'published'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<boolean> | boolean
   }
   title: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "title">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'title'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   content: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "PostPreviousValues">, args: ArgsValue<GenTypes, "PostPreviousValues", "content">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'PostPreviousValues'>,
+      args: ArgsValue<GenTypes, 'PostPreviousValues', 'content'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
 }
-  
 
 // Types for UserSubscriptionPayload
 
 type UserSubscriptionPayloadObject =
   | UserSubscriptionPayloadFields
-  | { name: 'mutation', args?: [] | false, alias?: string  } 
-  | { name: 'node', args?: [] | false, alias?: string  } 
-  | { name: 'updatedFields', args?: [] | false, alias?: string  } 
-  | { name: 'previousValues', args?: [] | false, alias?: string  } 
+  | { name: 'mutation'; args?: [] | false; alias?: string }
+  | { name: 'node'; args?: [] | false; alias?: string }
+  | { name: 'updatedFields'; args?: [] | false; alias?: string }
+  | { name: 'previousValues'; args?: [] | false; alias?: string }
 
 type UserSubscriptionPayloadFields =
   | 'mutation'
@@ -861,58 +1112,71 @@ type UserSubscriptionPayloadFields =
   | 'updatedFields'
   | 'previousValues'
 
-
-
-  
-
-export interface UserSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserSubscriptionPayloadFieldDetails<
+  GenTypes = GraphQLiteralGen
+> {
   mutation: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserSubscriptionPayload">, args: ArgsValue<GenTypes, "UserSubscriptionPayload", "mutation">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.MutationType> | prisma.MutationType;
+    resolve: (
+      root: RootValue<GenTypes, 'UserSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'UserSubscriptionPayload', 'mutation'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "UserSubscriptionPayload">, args: ArgsValue<GenTypes, "UserSubscriptionPayload", "node">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.User | null> | prisma.User | null;
+    resolve: (
+      root: RootValue<GenTypes, 'UserSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'UserSubscriptionPayload', 'node'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   updatedFields: {
     args: {}
     description: string
     list: true
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserSubscriptionPayload">, args: ArgsValue<GenTypes, "UserSubscriptionPayload", "updatedFields">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string[]> | string[];
+    resolve: (
+      root: RootValue<GenTypes, 'UserSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'UserSubscriptionPayload', 'updatedFields'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string[]> | string[]
   }
   previousValues: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "UserSubscriptionPayload">, args: ArgsValue<GenTypes, "UserSubscriptionPayload", "previousValues">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<prisma.UserPreviousValues | null> | prisma.UserPreviousValues | null;
+    resolve: (
+      root: RootValue<GenTypes, 'UserSubscriptionPayload'>,
+      args: ArgsValue<GenTypes, 'UserSubscriptionPayload', 'previousValues'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) =>
+      | Promise<prisma.UserPreviousValues | null>
+      | prisma.UserPreviousValues
+      | null
   }
 }
-  
 
 // Types for UserPreviousValues
 
 type UserPreviousValuesObject =
   | UserPreviousValuesFields
-  | { name: 'id', args?: [] | false, alias?: string  } 
-  | { name: 'email', args?: [] | false, alias?: string  } 
-  | { name: 'name', args?: [] | false, alias?: string  } 
+  | { name: 'id'; args?: [] | false; alias?: string }
+  | { name: 'email'; args?: [] | false; alias?: string }
+  | { name: 'name'; args?: [] | false; alias?: string }
 
-type UserPreviousValuesFields =
-  | 'id'
-  | 'email'
-  | 'name'
-
-
-
-  
+type UserPreviousValuesFields = 'id' | 'email' | 'name'
 
 export interface UserPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
   id: {
@@ -920,25 +1184,38 @@ export interface UserPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserPreviousValues">, args: ArgsValue<GenTypes, "UserPreviousValues", "id">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'UserPreviousValues'>,
+      args: ArgsValue<GenTypes, 'UserPreviousValues', 'id'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   email: {
     args: {}
     description: string
     list: false
     nullable: false
-    resolve: (root: RootValue<GenTypes, "UserPreviousValues">, args: ArgsValue<GenTypes, "UserPreviousValues", "email">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string> | string;
+    resolve: (
+      root: RootValue<GenTypes, 'UserPreviousValues'>,
+      args: ArgsValue<GenTypes, 'UserPreviousValues', 'email'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string> | string
   }
   name: {
     args: {}
     description: string
     list: false
     nullable: true
-    resolve: (root: RootValue<GenTypes, "UserPreviousValues">, args: ArgsValue<GenTypes, "UserPreviousValues", "name">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => Promise<string | null> | string | null;
+    resolve: (
+      root: RootValue<GenTypes, 'UserPreviousValues'>,
+      args: ArgsValue<GenTypes, 'UserPreviousValues', 'name'>,
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo,
+    ) => Promise<string | null> | string | null
   }
 }
-  
-
 
 export interface PluginTypes {
   fields: {
@@ -984,4 +1261,3 @@ export interface PluginTypes {
 declare global {
   interface GraphQLiteralGen extends PluginTypes {}
 }
-  
