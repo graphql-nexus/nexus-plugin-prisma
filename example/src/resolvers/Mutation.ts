@@ -5,11 +5,15 @@ export const Mutation = prismaObjectType('Mutation', t => {
   t.field('deletePost', 'Post', {
     ...t.prismaType.deletePost,
     args: {
-      id: idArg()
+      id: idArg(),
     },
     resolve: (parent, args, ctx) => {
-      return t.prismaType.deletePost.resolve(parent, { where: { id: args.id } }, ctx)
-    }
+      return t.prismaType.deletePost.resolve(
+        parent,
+        { where: { id: args.id } },
+        ctx,
+      )
+    },
   })
 
   t.field('signupUser', 'User', {

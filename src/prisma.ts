@@ -1,7 +1,11 @@
 import { existsSync, readFileSync } from 'fs'
 import { arg, enumType, inputObjectType, scalarType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
-import { ArgDefinition, FieldDef } from 'gqliteral/dist/types'
+import {
+  ArgDefinition,
+  FieldDef,
+  OutputFieldConfig,
+} from 'gqliteral/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
 import * as path from 'path'
@@ -23,7 +27,15 @@ import {
   PrismaOutputOptsMap,
   PrismaTypeNames,
 } from './types'
-import { getFields, getObjectInputArg, typeToFieldOpts } from './utils'
+import {
+  getFields,
+  getObjectInputArg,
+  isCreateMutation,
+  isDeleteMutation,
+  isNotArrayOrConnectionType,
+  typeToFieldOpts,
+  isConnectionTypeName,
+} from './utils'
 
 interface Dictionary<T> {
   [key: string]: T
@@ -67,6 +79,8 @@ function generateDefaultResolver(
   contextClientName: string,
 ): GraphQLFieldResolver<any, any, Dictionary<any>> {
   return (root, args, ctx, info) => {
+    const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
+
     if (typeName === 'Subscription') {
       throw new Error('Subscription not supported yet')
     }
@@ -77,8 +91,7 @@ function generateDefaultResolver(
       return root[fieldName]
     }
 
-    // Resolve top-level
-    if (typeName === 'Query' || typeName === 'Mutation') {
+    if (isTopLevel) {
       throwIfUnknownClientFunction(
         fieldName,
         typeName,
@@ -87,30 +100,35 @@ function generateDefaultResolver(
         info,
       )
 
-      // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
       if (
-        !fieldToResolve.type.isArray &&
-        !fieldToResolve.type.name.endsWith('Connection') &&
-        fieldToResolve.type.name !== 'Connection' &&
-        typeName === 'Query'
+        isNotArrayOrConnectionType(fieldToResolve) ||
+        isCreateMutation(typeName, fieldName)
       ) {
         args = args.where
       }
 
-      // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
-      if (typeName === 'Mutation' && fieldName.startsWith('create')) {
-        args = args.data
-      }
-
-      // FIXME: FIND A BETTER/SAFER WAY TO HANDLE THAT
-      if (typeName === 'Mutation' && fieldName.startsWith('delete')) {
+      if (isDeleteMutation(typeName, fieldName)) {
         args = args.where
       }
 
       return ctx[contextClientName][fieldName](args)
     }
 
-    const parentName = info.parentType.toString().toLowerCase()
+    if (isConnectionTypeName(typeName)) {
+      // returns `pageInfo` and `edges` queries by the client
+      return root[fieldName]
+    }
+
+    // fields inside `edges` are queried as well, we can simply return them
+    if (
+      typeName.endsWith('Edge') &&
+      typeName !== 'Edge' &&
+      (fieldName === 'node' || fieldName === 'cursor')
+    ) {
+      return root[fieldName]
+    }
+
+    const parentName = _.camelCase(typeName)
 
     throwIfUnknownClientFunction(
       parentName,
@@ -356,23 +374,27 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 }
 
 function isFieldDef(field: any): field is FieldDef {
-  return (
-    field.item &&
-    field.item === 'FIELD' &&
-    field.config &&
-    field.config.args !== undefined
-  )
+  return field.item && field.item === 'FIELD'
+}
+
+function isOutputFieldConfig(config: any): config is OutputFieldConfig {
+  return config && config.args !== undefined
 }
 
 // TODO: Optimize this heavy function
-function getTypesToExport(
+function getInputTypesToExport(
   typeConfig: Types.ObjectTypeConfig,
   typesMap: TypesMap,
 ): WrappedType[] {
   const exportedTypesMap = getExportedTypesMap()
 
   return _(typeConfig.fields)
-    .filter(field => isFieldDef(field))
+    .filter(
+      field =>
+        isFieldDef(field) &&
+        isOutputFieldConfig(field.config) &&
+        field.config.args !== undefined,
+    )
     .flatMap(field => {
       return Object.values(((<FieldDef>field).config as any).args).map(
         (arg: any) => arg.type,
@@ -413,6 +435,44 @@ function getTypesToExport(
     .value()
 }
 
+function createRelayConnectionType(typeName: string) {
+  const [normalTypeName] = typeName.split('Connection')
+  const edgeTypeName = `${normalTypeName}Edge`
+
+  return [
+    ...prismaObjectType(typeName, t => {
+      t.prismaFields(['edges', 'pageInfo'])
+    }),
+    ...prismaObjectType(edgeTypeName),
+  ]
+}
+
+function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
+  const exportedTypesMap = getExportedTypesMap()
+
+  const connectionTypes = _(typeConfig.fields)
+    .filter(
+      field =>
+        isFieldDef(field) &&
+        isOutputFieldConfig(field.config) &&
+        isConnectionTypeName(field.config.type) &&
+        exportedTypesMap[field.config.type] === undefined,
+    )
+    .flatMap((field: any) => {
+      return createRelayConnectionType(field.config.type)
+    })
+    .value()
+
+  if (
+    connectionTypes.length > 0 &&
+    exportedTypesMap['PageInfo'] === undefined
+  ) {
+    connectionTypes.push(...prismaObjectType('PageInfo'))
+  }
+
+  return connectionTypes
+}
+
 export function prismaObjectType<
   GenTypes = GraphQLiteralGen,
   TypeName extends PrismaTypeNames<GenTypes> = PrismaTypeNames<GenTypes>
@@ -439,9 +499,14 @@ export function prismaObjectType<
 
   const typesMap = objectType.getTypesMap()
   const typeConfig = objectType.getTypeConfig()
-  const typesToExport = getTypesToExport(typeConfig, typesMap)
+  const inputTypesToExport = getInputTypesToExport(typeConfig, typesMap)
+  const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
 
-  addExportedTypesToGlobalCache(typesToExport)
+  addExportedTypesToGlobalCache(inputTypesToExport)
 
-  return [new WrappedType(objectType), ...typesToExport]
+  return [
+    new WrappedType(objectType),
+    ...inputTypesToExport,
+    ...connectionTypesToExport,
+  ]
 }

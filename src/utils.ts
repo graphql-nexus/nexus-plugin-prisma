@@ -177,3 +177,23 @@ export function getGraphQLType(typeName: string, typesMap: TypesMap) {
 
   return graphQLType
 }
+
+export function isDeleteMutation(typeName: string, fieldName: string): boolean {
+  return typeName === 'Mutation' && fieldName.startsWith('delete')
+}
+
+export function isCreateMutation(typeName: string, fieldName: string): boolean {
+  return typeName === 'Mutation' && fieldName.startsWith('create')
+}
+
+export function isNotArrayOrConnectionType(
+  fieldToResolve: GraphQLTypeField,
+): boolean {
+  return (
+    !fieldToResolve.type.isArray && !isConnectionTypeName(fieldToResolve.type.name)
+  )
+}
+
+export function isConnectionTypeName(typeName: string): boolean {
+  return typeName.endsWith('Connection') && typeName !== 'Connection'
+}

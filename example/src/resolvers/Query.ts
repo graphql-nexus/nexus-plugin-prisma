@@ -1,5 +1,5 @@
-import { prismaObjectType } from 'nexus-prisma'
 import { stringArg } from 'gqliteral'
+import { prismaObjectType } from 'nexus-prisma'
 
 export const Query = prismaObjectType('Query', t => {
   t.prismaFields(['post'])
