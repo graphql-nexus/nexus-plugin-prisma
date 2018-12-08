@@ -68,17 +68,10 @@ export function getLiteralArg(typeName: string, opts: ArgOpts) {
 }
 
 export function typeToFieldOpts(type: GraphQLType): FieldOpts {
-  let output: FieldOpts = {}
-
-  if (!type.isRequired) {
-    output.nullable = true
+  return {
+    list: type.isArray,
+    nullable: !type.isRequired,
   }
-
-  if (type.isArray) {
-    output.list = true
-  }
-
-  return output
 }
 
 export function getAllFields(

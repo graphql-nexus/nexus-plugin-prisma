@@ -21,9 +21,7 @@ export interface AnonymousPickOmitField {
 
 export type AnonymousInputFields = AnonymousField[] | AnonymousPickOmitField
 
-export interface AnonymousFieldDetail {
-  // Internal field to properly resolve aliased field
-  $prismaFieldName: string
+export interface PrismaOutputOpts {
   args: Record<string, ArgDefinition>
   description?: string
   list: boolean
@@ -31,7 +29,7 @@ export interface AnonymousFieldDetail {
   resolve: (root: any, args: any, ctx: any, info?: any) => any
 }
 
-export type AnonymousFieldDetails = Record<string, AnonymousFieldDetail>
+export type PrismaOutputOptsMap = Record<string, PrismaOutputOpts>
 
 export type InputField<
   GenTypes = GraphQLiteralGen,

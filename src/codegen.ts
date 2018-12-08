@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { readFileSync, writeFileSync } from 'fs'
 import { EOL } from 'os'
 import { join } from 'path'
@@ -6,42 +8,43 @@ import {
   GraphQLTypeField,
   GraphQLTypeObject,
   GraphQLTypes,
+  GraphQLTypeArgument,
+  GraphQLType,
 } from './source-helper'
 
 codegen()
-process.exit(0)
 
 export function codegen(/* schemaPath: string */) {
   const schemaPath = join(process.cwd(), './src/generated/prisma.graphql')
   const typeDefs = readFileSync(schemaPath).toString()
   const types = extractTypes(typeDefs)
   const typesToRender = render(/*schemaPath, */ types)
-  const outputPath = join(process.cwd(), './src/generated/plugins.ts')
+  const outputPath = join(process.cwd(), './src/generated/nexus-prisma.ts')
 
   writeFileSync(outputPath, typesToRender)
-  console.log('Types generated at src/generated/plugin.ts')
+  console.log('Types generated at src/generated/nexus-prisma.ts')
 }
 
 // TODO: Dynamically resolve prisma-client import path
 export function render(/*schemaPath: string,*/ types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
+  const inputTypes = types.types.filter(t => t.type.isInput)
 
   return `\
 // GENERATED TYPES FOR PRISMA PLUGIN. /!\\ DO NOT EDIT MANUALLY
 
 import {
   ArgDefinition,
-  RootValue,
-  ArgsValue,
   ContextValue,
-  MaybePromise,
-  ResultValue,
+  RootValue,
 } from 'gqliteral/dist/types'
 import { GraphQLResolveInfo } from 'graphql'
 
 import * as prisma from './prisma-client'
 
 ${objectTypes.map(renderType).join(EOL)}
+
+${inputTypes.map(renderInputType).join(EOL)}
 
 export interface PluginTypes {
   fields: {
@@ -83,23 +86,32 @@ ${type.fields
   ${field.name}: {
     args: ${
       field.arguments.length > 0
-        ? `Record<${getTypeFieldArgName(type, field)},ArgDefinition>`
+        ? `Record<${getTypeFieldArgName(type, field)}, ArgDefinition>`
         : '{}'
     }
     description: string
     list: ${field.type.isArray || false}
     nullable: ${!field.type.isRequired}
-    resolve: (root: RootValue<GenTypes, "${
-      type.name
-    }">, args: ArgsValue<GenTypes, "${type.name}", "${
-        field.name
-      }">, context: ContextValue<GenTypes>, info?: GraphQLResolveInfo) => ${renderResolverReturnType(
-        field,
-      )};
+    resolve: (
+      root: RootValue<GenTypes, "${type.name}">,
+      args: ${renderResolverArgs(field)},
+      context: ContextValue<GenTypes>,
+      info?: GraphQLResolveInfo
+    ) => ${renderResolverReturnType(field)};
   }`,
     )
     .join(EOL)}
 }
+  `
+}
+
+function renderResolverArgs(field: GraphQLTypeField) {
+  return `{\
+ ${field.arguments
+   .map(
+     arg => `${arg.name}${arg.type.isRequired ? '' : '?'}: ${getTSType(arg)}`,
+   )
+   .join(', ')} }\
   `
 }
 
@@ -138,7 +150,7 @@ type ${getTypeFieldArgName(type, f)} =
 ${f.arguments.map(arg => `  | '${arg.name}'`).join(EOL)}`
 }
 
-function renderResolverReturnType(field: GraphQLTypeField) {
+function getTSType(graphqlType: GraphQLTypeField | GraphQLTypeArgument) {
   const graphqlToTypescript: Record<string, string> = {
     String: 'string',
     Boolean: 'boolean',
@@ -148,19 +160,46 @@ function renderResolverReturnType(field: GraphQLTypeField) {
     DateTime: 'string',
   }
 
-  let returnType = field.type.isScalar
-    ? graphqlToTypescript[field.type.name]
-    : `prisma.${field.type.name}`
+  let returnType = ''
 
-  if (field.type.isArray) {
+  if (graphqlType.type.isScalar) {
+    returnType = graphqlToTypescript[graphqlType.type.name]
+  } else if (graphqlType.type.isInput) {
+    returnType = getInputTypeName(graphqlType.type)
+  } else {
+    returnType = `prisma.${graphqlType.type.name}`
+  }
+
+  if (graphqlType.type.isArray) {
     returnType += '[]'
   }
 
-  if (!field.type.isRequired) {
+  if (!graphqlType.type.isRequired) {
     returnType += ' | null'
   }
 
+  return returnType
+}
+
+function renderResolverReturnType(field: GraphQLTypeField) {
+  const returnType = getTSType(field)
+
   return `Promise<${returnType}> | ${returnType}`
+}
+
+function renderInputType(input: GraphQLTypeObject) {
+  return `\
+export interface ${getInputTypeName(input)} {
+${input.fields
+    .map(
+      field =>
+        `  ${field.name}${field.type.isRequired ? '' : '?'}: ${getTSType(
+          field,
+        )}`,
+    )
+    .join(EOL)}
+}
+  `
 }
 
 function getExposableFieldsTypeName(type: GraphQLTypeObject) {
@@ -183,47 +222,6 @@ function getTypeObjectName(type: GraphQLTypeObject) {
   return `${type.name}FieldDetails`
 }
 
-// function renderArgs(
-//   field: GraphQLTypeField,
-//   isMutation = false,
-//   isTopLevel = false,
-// ) {
-//   const { arguments: args } = field
-//   const hasArgs = args.length > 0
-
-//   const allOptional = args.reduce((acc, curr) => {
-//     if (!acc) {
-//       return false
-//     }
-
-//     return !curr.type.isRequired
-//   }, true)
-
-//   // hard-coded for Prisma ease-of-use
-//   if (isMutation && field.name.startsWith('create')) {
-//     return `data${allOptional ? '?' : ''}: ${this.renderInputFieldTypeHelper(
-//       args[0],
-//       isMutation,
-//     )}`
-//   } else if (
-//     (isMutation && field.name.startsWith('delete')) || // either it's a delete mutation
-//     (!isMutation &&
-//       isTopLevel &&
-//       args.length === 1 &&
-//       (isObjectType(field.type) || isObjectType((field.type as any).ofType))) // or a top-level single query
-//   ) {
-//     return `where${allOptional ? '?' : ''}: ${this.renderInputFieldTypeHelper(
-//       args[0],
-//       isMutation,
-//     )}`
-//   }
-
-//   return `args${allOptional ? '?' : ''}: {${hasArgs ? ' ' : ''}${args
-//     .map(
-//       a =>
-//         `${this.renderFieldName(a, false)}${
-//           isNonNullType(a.type) ? '' : '?'
-//         }: ${this.renderInputFieldTypeHelper(a, isMutation)}`,
-//     )
-//     .join(', ')}${args.length > 0 ? ' ' : ''}}`
-// }
+function getInputTypeName(type: GraphQLTypeObject | GraphQLType) {
+  return `${type.name}`
+}

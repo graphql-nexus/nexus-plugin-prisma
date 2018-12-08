@@ -5,18 +5,11 @@ export const Mutation = prismaObjectType('Mutation', t => {
   t.field('deletePost', 'Post', {
     ...t.prismaType.deletePost,
     args: {
-      id: idArg(),
+      id: idArg()
     },
     resolve: (parent, args, ctx) => {
-      // TODO: this is not working
-      // "Variable '$where' expected value of type 'PostWhereUniqueInput!' but value is undefined.
-      // Reason: Expected non-null value, found null. (line 1, column 11):\nmutation ($where: PostWhereUniqueInput!)
-      return t.prismaType.deletePost.resolve(
-        parent,
-        { where: { id: args.id } } as any,
-        ctx,
-      )
-    },
+      return t.prismaType.deletePost.resolve(parent, { where: { id: args.id } }, ctx)
+    }
   })
 
   t.field('signupUser', 'User', {

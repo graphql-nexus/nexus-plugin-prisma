@@ -1,27 +1,27 @@
-import { readFileSync, existsSync } from 'fs'
-import * as path from 'path'
+import { existsSync, readFileSync } from 'fs'
 import { arg, enumType, inputObjectType, scalarType } from 'gqliteral'
 import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
 import { ArgDefinition, FieldDef } from 'gqliteral/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
+import * as path from 'path'
 import {
   extractTypes,
   GraphQLEnumObject,
+  GraphQLType,
   GraphQLTypeField,
   GraphQLTypeObject,
-  GraphQLType,
 } from './source-helper'
 import { throwIfUnknownClientFunction } from './throw'
 import {
   AddFieldInput,
-  AnonymousFieldDetails,
-  InputField,
-  PrismaObject,
-  PrismaTypeNames,
-  AnonymousFieldDetail,
-  PickInputField,
   FilterInputField,
+  InputField,
+  PickInputField,
+  PrismaObject,
+  PrismaOutputOpts,
+  PrismaOutputOptsMap,
+  PrismaTypeNames,
 } from './types'
 import { getFields, getObjectInputArg, typeToFieldOpts } from './utils'
 
@@ -63,8 +63,7 @@ function buildTypesMap(schemaPath: string): TypesMap {
 
 function generateDefaultResolver(
   typeName: string,
-  aliasesToFieldName: Dictionary<string>,
-  graphqlType: GraphQLTypeObject,
+  fieldToResolve: GraphQLTypeField,
   contextClientName: string,
 ): GraphQLFieldResolver<any, any, Dictionary<any>> {
   return (root, args, ctx, info) => {
@@ -72,17 +71,7 @@ function generateDefaultResolver(
       throw new Error('Subscription not supported yet')
     }
 
-    const fieldName = aliasesToFieldName[info.fieldName]
-
-    if (fieldName === undefined) {
-      throw new Error(`Unknown field name in ${typeName}.${info.fieldName}`)
-    }
-
-    const fieldToResolve = graphqlType.fields.find(f => f.name === fieldName)
-
-    if (fieldToResolve === undefined) {
-      throw new Error(`Unknown field name in ${typeName}.${info.fieldName}`)
-    }
+    const fieldName = fieldToResolve.name
 
     if (fieldToResolve.type.isScalar) {
       return root[fieldName]
@@ -265,14 +254,6 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
   }
 }
 
-function isAnonymousFieldDetails(
-  options?: any,
-): options is AnonymousFieldDetail {
-  return (
-    options && (options as AnonymousFieldDetail).$prismaFieldName !== undefined
-  )
-}
-
 interface PrismaConfig {
   schemaPath: string
   contextClientName: string
@@ -324,7 +305,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
         this.name,
         field.name,
       )
-      const opts: AnonymousFieldDetail = this.prismaType[fieldType.name]
+      const opts: PrismaOutputOpts = this.prismaType[fieldType.name]
       const args = filterArgsToExpose(opts.args, field.args)
 
       this.field(fieldName, fieldType.type.name as any, {
@@ -332,30 +313,6 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
         args,
       })
     })
-  }
-
-  public field<FieldName extends string>(
-    name: FieldName,
-    type: Types.AllOutputTypes<GenTypes> | Types.BaseScalars,
-    options?: Types.OutputFieldOpts<GenTypes, TypeName, FieldName>,
-  ): void {
-    if (!isAnonymousFieldDetails(options)) {
-      return super.field(name, type, options)
-    }
-    const typeName = this.name
-    const graphqlType = this.typesMap.types[typeName]
-
-    const prismaOptions = {
-      ...options,
-      resolve: generateDefaultResolver(
-        typeName,
-        { [name]: options.$prismaFieldName },
-        graphqlType,
-        this.config.contextClientName,
-      ),
-    }
-
-    super.field(name, type, prismaOptions)
   }
 
   public getTypeConfig(): Types.ObjectTypeConfig {
@@ -366,31 +323,30 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
     return this.typesMap
   }
 
-  protected generatePrismaTypes(): AnonymousFieldDetails {
+  protected generatePrismaTypes(): PrismaOutputOptsMap {
     const typeName = this.name
 
     const graphqlType = this.typesMap.types[typeName]
 
-    return graphqlType.fields.reduce<AnonymousFieldDetails>((acc, field) => {
+    return graphqlType.fields.reduce<PrismaOutputOptsMap>((acc, field) => {
       acc[field.name] = {
-        $prismaFieldName: field.name,
         list: field.type.isArray,
-        resolve: generateDefaultResolver(
-          typeName,
-          { [field.name]: field.name },
-          graphqlType,
-          this.config.contextClientName,
-        ),
         nullable: !field.type.isRequired,
         description: field.description,
         args: field.arguments.reduce<Record<string, ArgDefinition>>(
           (acc, fieldArg) => {
-            acc[fieldArg.name] = arg(fieldArg.type.name as any, {
-              ...typeToFieldOpts(fieldArg.type),
-            })
+            acc[fieldArg.name] = arg(
+              fieldArg.type.name as any,
+              typeToFieldOpts(fieldArg.type),
+            )
             return acc
           },
           {},
+        ),
+        resolve: generateDefaultResolver(
+          typeName,
+          field,
+          this.config.contextClientName,
         ),
       }
 
