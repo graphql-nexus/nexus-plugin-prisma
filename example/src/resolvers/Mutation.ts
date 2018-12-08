@@ -39,11 +39,7 @@ export const Mutation = prismaObjectType('Mutation', t => {
       return ctx.prisma.createPost({
         title,
         content,
-        author: {
-          connect: {
-            email: authorEmail,
-          },
-        },
+        author: { connect: { email: authorEmail } },
       })
     },
   })
@@ -54,12 +50,8 @@ export const Mutation = prismaObjectType('Mutation', t => {
     },
     resolve: (parent, { id }, ctx) => {
       return ctx.prisma.updatePost({
-        where: {
-          id,
-        },
-        data: {
-          published: true,
-        },
+        where: { id },
+        data: { published: true },
       })
     },
   })
