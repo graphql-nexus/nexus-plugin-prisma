@@ -17,7 +17,7 @@ export const schema = buildPrismaSchema({
 
   outputs: {
     schema: path.join(__dirname, '../schema.graphql'),
-    typegen: path.join(__dirname, './generated/gqliteral.ts'),
+    typegen: path.join(__dirname, './generated/nexus.ts'),
   },
 
   nullability: {
