@@ -10,7 +10,7 @@
     "apollo-server": "^2.2.6",
     "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
-    "nexus-prisma": "^0.0.7",
+    "nexus-prisma": "^0.0.8",
     "prisma-client-lib": "^1.20.7"
   },
   "devDependencies": {
