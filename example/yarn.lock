@@ -1153,9 +1153,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-nexus-prisma@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.8.tgz#c729518436510f85b4f8a3725f9b6e61b304c505"
+nexus-prisma@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.9.tgz#f8efdd095b4049812fba52d6c78accbb5c0004f5"
   dependencies:
     gqliteral "^0.4.0"
     lodash "^4.17.11"
