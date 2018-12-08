@@ -6,9 +6,9 @@
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src"
   },
   "dependencies": {
-    "apollo-server": "^2.2.6",
-    "gqliteral": "^0.4.0",
     "graphql": "^14.0.2",
+    "graphql-nexus": "^0.1.1",
+    "graphql-yoga": "^1.16.7",
     "nexus-prisma": "^0.0.8",
     "prisma-client-lib": "^1.23.0-beta3"
   },
