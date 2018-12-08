@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "esnext", "esnext.asynciterable"],
     "sourceMap": true,
-    "rootDir": "./src",
     "outDir": "dist",
     "strict": true,
-    "skipLibCheck": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true
-  },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules", "generated", "example", "examples"]
+    "lib": ["esnext", "dom"]
+  }
 }
