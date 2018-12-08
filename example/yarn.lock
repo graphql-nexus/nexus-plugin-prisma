@@ -1445,13 +1445,12 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus-prisma@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.7.tgz#17a8513fdf988ea6b2372f8aca37841c729fe6af"
-  integrity sha512-rO0wszjP5LRIJbh+lCe+CTO+wMtsuSjBTSJAPBr9q5d2KLAoDQIblNmk2WGX/hqjD+zi6lARrvLQHKV7KkekSw==
+nexus-prisma@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.8.tgz#c729518436510f85b4f8a3725f9b6e61b304c505"
+  integrity sha512-tR5nzSIliLlW5bYyd+UBLHqnfnuR4jbIN1EfQpR1TCyWzx7cW1tWHGZhJlsLBZTqzNLrCuHW3XJmhvzlg2U90w==
   dependencies:
     gqliteral "^0.4.0"
-    graphql "^14.0.2"
     lodash "^4.17.11"
 
 node-emoji@^1.4.1:

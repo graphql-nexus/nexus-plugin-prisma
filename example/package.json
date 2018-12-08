@@ -1,10 +1,9 @@
 {
-  "name": "ecommerce-example",
+  "name": "example",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src",
-    "codegen": "ts-node-dev ./plugin/codegen"
+    "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src"
   },
   "dependencies": {
     "apollo-server": "^2.2.6",
