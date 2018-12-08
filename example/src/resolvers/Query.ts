@@ -22,12 +22,8 @@ export const Query = prismaObjectType('Query', t => {
       return ctx.prisma.posts({
         where: {
           OR: [
-            {
-              title_contains: searchString,
-            },
-            {
-              content_contains: searchString,
-            },
+            { title_contains: searchString },
+            { content_contains: searchString },
           ],
         },
       })
