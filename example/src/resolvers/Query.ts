@@ -16,7 +16,7 @@ export const Query = prismaObjectType('Query', t => {
   t.field('filterPosts', 'Post', {
     list: true,
     args: {
-      searchString: stringArg({ required: true }),
+      searchString: stringArg(),
     },
     resolve: (parent, { searchString }, ctx) => {
       return ctx.prisma.posts({
