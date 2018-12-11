@@ -28,7 +28,7 @@
     "unlink-example": "yarn unlink && cd example/ && rm -rf node_modules/graphql node_modules/nexus-prisma  && yarn --force"
   },
   "dependencies": {
-    "gqliteral": "^0.4.0",
+    "nexus": "^0.5.1",
     "lodash": "^4.17.11"
   },
   "peerDependencies": {

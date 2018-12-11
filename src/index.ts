@@ -1,6 +1,6 @@
-import { makeSchemaWithMetadata } from 'gqliteral'
+import { makeSchemaWithMetadata } from 'nexus'
 import { PrismaSchemaConfig } from './types'
-import { SchemaBuilder, Metadata } from 'gqliteral/dist/core'
+import { SchemaBuilder, Metadata } from 'nexus/dist/core'
 
 export { prismaObjectType } from './prisma'
 

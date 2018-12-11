@@ -1,6 +1,6 @@
-import { arg } from 'gqliteral'
-import { InputObjectTypeDef } from 'gqliteral/dist/core'
-import { ArgDefinition, ArgOpts, FieldOpts } from 'gqliteral/dist/types'
+import { arg } from 'nexus'
+import { InputObjectTypeDef } from 'nexus/dist/core'
+import { ArgDefinition, ArgOpts, FieldOpts } from 'nexus/dist/types'
 import { TypesMap } from './prisma'
 import {
   GraphQLScalarType,
@@ -118,14 +118,14 @@ export function getFields<GenTypes, TypeName extends string>(
 }
 
 function isPickInputField<
-  GenTypes = GraphQLiteralGen,
+  GenTypes = GraphQLNexusGen,
   TypeName extends string = any
 >(arg: any): arg is PickInputField<GenTypes, TypeName> {
   return (arg as PickInputField<GenTypes, TypeName>).pick !== undefined
 }
 
 function extractFields<
-  GenTypes = GraphQLiteralGen,
+  GenTypes = GraphQLNexusGen,
   TypeName extends string = any
 >(
   fields: AddFieldInput<GenTypes, TypeName>,

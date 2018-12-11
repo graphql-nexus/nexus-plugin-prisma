@@ -37,7 +37,7 @@ import {
   ArgDefinition,
   ContextValue,
   RootValue,
-} from 'gqliteral/dist/types'
+} from 'nexus/dist/types'
 import { GraphQLResolveInfo } from 'graphql'
 
 import * as prisma from './prisma-client'
@@ -60,7 +60,7 @@ ${objectTypes
 }
 
 declare global {
-  interface GraphQLiteralGen extends PluginTypes {}
+  interface GraphQLNexusGen extends PluginTypes {}
 }
   `
 }
@@ -79,7 +79,7 @@ ${renderTypeFieldDetails(type)}
 
 function renderTypeFieldDetails(type: GraphQLTypeObject) {
   return `\
-export interface ${getTypeObjectName(type)}<GenTypes = GraphQLiteralGen> {
+export interface ${getTypeObjectName(type)}<GenTypes = GraphQLNexusGen> {
 ${type.fields
     .map(
       field => `\

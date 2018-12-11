@@ -1,5 +1,5 @@
 import { prismaObjectType } from 'nexus-prisma'
-import { idArg, stringArg } from 'graphql-nexus'
+import { idArg, stringArg } from 'nexus'
 
 export const Mutation = prismaObjectType('Mutation', t => {
   t.field('deletePost', 'Post', {

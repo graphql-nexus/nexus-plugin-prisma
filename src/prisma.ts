@@ -1,11 +1,11 @@
 import { existsSync, readFileSync } from 'fs'
-import { arg, enumType, inputObjectType, scalarType } from 'gqliteral'
-import { ObjectTypeDef, Types, WrappedType } from 'gqliteral/dist/core'
+import { arg, enumType, inputObjectType, scalarType } from 'nexus'
+import { ObjectTypeDef, Types, WrappedType } from 'nexus/dist/core'
 import {
   ArgDefinition,
   FieldDef,
   OutputFieldConfig,
-} from 'gqliteral/dist/types'
+} from 'nexus/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
 import * as path from 'path'
@@ -474,7 +474,7 @@ function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
 }
 
 export function prismaObjectType<
-  GenTypes = GraphQLiteralGen,
+  GenTypes = GraphQLNexusGen,
   TypeName extends PrismaTypeNames<GenTypes> = PrismaTypeNames<GenTypes>
 >(
   typeName:

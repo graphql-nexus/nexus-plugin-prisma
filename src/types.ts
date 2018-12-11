@@ -1,5 +1,5 @@
-import { ArgDefinition } from 'gqliteral/dist/types'
-import { core } from 'gqliteral'
+import { ArgDefinition } from 'nexus/dist/types'
+import { core } from 'nexus'
 
 interface GenTypesShape {
   fields: Record<string, any>
@@ -32,7 +32,7 @@ export interface PrismaOutputOpts {
 export type PrismaOutputOptsMap = Record<string, PrismaOutputOpts>
 
 export type InputField<
-  GenTypes = GraphQLiteralGen,
+  GenTypes = GraphQLNexusGen,
   TypeName extends string = any
 > = GenTypes extends GenTypesShape
   ? TypeName extends keyof GenTypes['fields']
@@ -41,7 +41,7 @@ export type InputField<
   : AnonymousField
 
 export type PrismaTypeNames<
-  GenTypes = GraphQLiteralGen
+  GenTypes = GraphQLNexusGen
 > = GenTypes extends GenTypesShape
   ? Extract<keyof GenTypes['fields'], string>
   : string

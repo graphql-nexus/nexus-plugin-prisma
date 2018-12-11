@@ -4,7 +4,7 @@ import {
   ArgDefinition,
   ContextValue,
   RootValue,
-} from 'gqliteral/dist/types'
+} from 'nexus/dist/types'
 import { GraphQLResolveInfo } from 'graphql'
 
 import * as prisma from './prisma-client'
@@ -71,7 +71,7 @@ type QueryNodeArgs =
   | 'id'
   
 
-export interface QueryFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface QueryFieldDetails<GenTypes = GraphQLNexusGen> {
   post: {
     args: Record<QueryPostArgs, ArgDefinition>
     description: string
@@ -184,7 +184,7 @@ type PostFields =
 
   
 
-export interface PostFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostFieldDetails<GenTypes = GraphQLNexusGen> {
   id: {
     args: {}
     description: string
@@ -298,7 +298,7 @@ type UserPostsArgs =
   | 'last'
   
 
-export interface UserFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserFieldDetails<GenTypes = GraphQLNexusGen> {
   id: {
     args: {}
     description: string
@@ -367,7 +367,7 @@ type PostConnectionFields =
 
   
 
-export interface PostConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostConnectionFieldDetails<GenTypes = GraphQLNexusGen> {
   pageInfo: {
     args: {}
     description: string
@@ -426,7 +426,7 @@ type PageInfoFields =
 
   
 
-export interface PageInfoFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PageInfoFieldDetails<GenTypes = GraphQLNexusGen> {
   hasNextPage: {
     args: {}
     description: string
@@ -493,7 +493,7 @@ type PostEdgeFields =
 
   
 
-export interface PostEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostEdgeFieldDetails<GenTypes = GraphQLNexusGen> {
   node: {
     args: {}
     description: string
@@ -534,7 +534,7 @@ type AggregatePostFields =
 
   
 
-export interface AggregatePostFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface AggregatePostFieldDetails<GenTypes = GraphQLNexusGen> {
   count: {
     args: {}
     description: string
@@ -567,7 +567,7 @@ type UserConnectionFields =
 
   
 
-export interface UserConnectionFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserConnectionFieldDetails<GenTypes = GraphQLNexusGen> {
   pageInfo: {
     args: {}
     description: string
@@ -622,7 +622,7 @@ type UserEdgeFields =
 
   
 
-export interface UserEdgeFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserEdgeFieldDetails<GenTypes = GraphQLNexusGen> {
   node: {
     args: {}
     description: string
@@ -663,7 +663,7 @@ type AggregateUserFields =
 
   
 
-export interface AggregateUserFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface AggregateUserFieldDetails<GenTypes = GraphQLNexusGen> {
   count: {
     args: {}
     description: string
@@ -745,7 +745,7 @@ type MutationDeleteManyUsersArgs =
   | 'where'
   
 
-export interface MutationFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface MutationFieldDetails<GenTypes = GraphQLNexusGen> {
   createPost: {
     args: Record<MutationCreatePostArgs, ArgDefinition>
     description: string
@@ -906,7 +906,7 @@ type BatchPayloadFields =
 
   
 
-export interface BatchPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface BatchPayloadFieldDetails<GenTypes = GraphQLNexusGen> {
   count: {
     args: {}
     description: string
@@ -940,7 +940,7 @@ type SubscriptionUserArgs =
   | 'where'
   
 
-export interface SubscriptionFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface SubscriptionFieldDetails<GenTypes = GraphQLNexusGen> {
   post: {
     args: Record<SubscriptionPostArgs, ArgDefinition>
     description: string
@@ -987,7 +987,7 @@ type PostSubscriptionPayloadFields =
 
   
 
-export interface PostSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostSubscriptionPayloadFieldDetails<GenTypes = GraphQLNexusGen> {
   mutation: {
     args: {}
     description: string
@@ -1062,7 +1062,7 @@ type PostPreviousValuesFields =
 
   
 
-export interface PostPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface PostPreviousValuesFieldDetails<GenTypes = GraphQLNexusGen> {
   id: {
     args: {}
     description: string
@@ -1157,7 +1157,7 @@ type UserSubscriptionPayloadFields =
 
   
 
-export interface UserSubscriptionPayloadFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserSubscriptionPayloadFieldDetails<GenTypes = GraphQLNexusGen> {
   mutation: {
     args: {}
     description: string
@@ -1226,7 +1226,7 @@ type UserPreviousValuesFields =
 
   
 
-export interface UserPreviousValuesFieldDetails<GenTypes = GraphQLiteralGen> {
+export interface UserPreviousValuesFieldDetails<GenTypes = GraphQLNexusGen> {
   id: {
     args: {}
     description: string
@@ -1639,6 +1639,6 @@ export interface PluginTypes {
 }
 
 declare global {
-  interface GraphQLiteralGen extends PluginTypes {}
+  interface GraphQLNexusGen extends PluginTypes {}
 }
   
