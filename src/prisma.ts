@@ -1,14 +1,9 @@
 import { existsSync, readFileSync } from 'fs'
 import { arg, enumType, inputObjectType, scalarType } from 'nexus'
 import { ObjectTypeDef, Types, WrappedType } from 'nexus/dist/core'
-import {
-  ArgDefinition,
-  FieldDef,
-  OutputFieldConfig,
-} from 'nexus/dist/types'
+import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
-import * as path from 'path'
 import {
   extractTypes,
   GraphQLEnumObject,
@@ -26,6 +21,7 @@ import {
   PrismaOutputOpts,
   PrismaOutputOptsMap,
   PrismaTypeNames,
+  PrismaSchemaConfig,
 } from './types'
 import {
   getFields,
@@ -36,6 +32,7 @@ import {
   typeToFieldOpts,
   isConnectionTypeName,
 } from './utils'
+import { PrismaSchemaBuilder } from '.'
 
 interface Dictionary<T> {
   [key: string]: T
@@ -272,39 +269,24 @@ function addExportedTypesToGlobalCache(types: WrappedType[]): void {
   }
 }
 
-interface PrismaConfig {
-  schemaPath: string
-  contextClientName: string
-}
-
 class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   GenTypes,
   TypeName
 > {
   protected typesMap: TypesMap
-  protected config: PrismaConfig
   public prismaType: PrismaObject<GenTypes, TypeName>
 
-  constructor(typeName: string) {
+  constructor(
+    protected typeName: string,
+    protected config: PrismaSchemaConfig,
+  ) {
     super(typeName)
 
-    // TODO: Fix this once we have access to the config
-    const schemaPath = path.join(
-      process.cwd(),
-      './src/generated/prisma.graphql',
-    )
-
-    if (!existsSync(schemaPath)) {
-      throw new Error(
-        'prisma.graphql should be located in ./src/generated/prisma.graphql',
-      )
+    if (!existsSync(config.prisma.schemaPath)) {
+      throw new Error('Prisma GraphQL API not found')
     }
 
-    this.config = {
-      schemaPath,
-      contextClientName: 'prisma',
-    }
-    this.typesMap = getTypesMap(this.config.schemaPath)
+    this.typesMap = getTypesMap(config.prisma.schemaPath)
     this.prismaType = this.generatePrismaTypes() as any
   }
 
@@ -364,7 +346,7 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
         resolve: generateDefaultResolver(
           typeName,
           field,
-          this.config.contextClientName,
+          this.config.prisma.contextClientName,
         ),
       }
 
@@ -435,19 +417,25 @@ function getInputTypesToExport(
     .value()
 }
 
-function createRelayConnectionType(typeName: string) {
+function createRelayConnectionType(
+  typeName: string,
+  schema: PrismaSchemaBuilder,
+) {
   const [normalTypeName] = typeName.split('Connection')
   const edgeTypeName = `${normalTypeName}Edge`
 
   return [
     ...prismaObjectType(typeName, t => {
       t.prismaFields(['edges', 'pageInfo'])
-    }),
-    ...prismaObjectType(edgeTypeName),
+    })(schema),
+    ...prismaObjectType(edgeTypeName)(schema),
   ]
 }
 
-function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
+function getRelayConnectionTypesToExport(
+  typeConfig: Types.ObjectTypeConfig,
+  schema: PrismaSchemaBuilder,
+) {
   const exportedTypesMap = getExportedTypesMap()
 
   const connectionTypes = _(typeConfig.fields)
@@ -458,16 +446,16 @@ function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
         isConnectionTypeName(field.config.type) &&
         exportedTypesMap[field.config.type] === undefined,
     )
-    .flatMap((field: any) => {
-      return createRelayConnectionType(field.config.type)
-    })
+    .flatMap((field: any) =>
+      createRelayConnectionType(field.config.type, schema),
+    )
     .value()
 
   if (
     connectionTypes.length > 0 &&
     exportedTypesMap['PageInfo'] === undefined
   ) {
-    connectionTypes.push(...prismaObjectType('PageInfo'))
+    connectionTypes.push(...prismaObjectType('PageInfo')(schema))
   }
 
   return connectionTypes
@@ -484,29 +472,37 @@ export function prismaObjectType<
         objectTypeName?: string
       },
   fn?: (t: PrismaObjectType<GenTypes, TypeName>) => void,
-): WrappedType[] {
-  // TODO refactor + make use of `objectTypeName`
-  const realTypeName =
-    typeof typeName === 'string' ? typeName : typeName.prismaTypeName
-  const objectType = new PrismaObjectType<GenTypes, TypeName>(realTypeName)
+): (schema: PrismaSchemaBuilder) => WrappedType[] {
+  return schema => {
+    // TODO refactor + make use of `objectTypeName`
+    const realTypeName =
+      typeof typeName === 'string' ? typeName : typeName.prismaTypeName
+    const objectType = new PrismaObjectType<GenTypes, TypeName>(
+      realTypeName,
+      schema.getConfig(),
+    )
 
-  // mutate objectType
-  if (fn === undefined) {
-    objectType.prismaFields()
-  } else {
-    fn(objectType)
+    // mutate objectType
+    if (fn === undefined) {
+      objectType.prismaFields()
+    } else {
+      fn(objectType)
+    }
+
+    const typesMap = objectType.getTypesMap()
+    const typeConfig = objectType.getTypeConfig()
+    const inputTypesToExport = getInputTypesToExport(typeConfig, typesMap)
+    const connectionTypesToExport = getRelayConnectionTypesToExport(
+      typeConfig,
+      schema,
+    )
+
+    addExportedTypesToGlobalCache(inputTypesToExport)
+
+    return [
+      new WrappedType(objectType),
+      ...inputTypesToExport,
+      ...connectionTypesToExport,
+    ]
   }
-
-  const typesMap = objectType.getTypesMap()
-  const typeConfig = objectType.getTypeConfig()
-  const inputTypesToExport = getInputTypesToExport(typeConfig, typesMap)
-  const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
-
-  addExportedTypesToGlobalCache(inputTypesToExport)
-
-  return [
-    new WrappedType(objectType),
-    ...inputTypesToExport,
-    ...connectionTypesToExport,
-  ]
 }

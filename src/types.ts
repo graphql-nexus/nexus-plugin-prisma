@@ -1,5 +1,4 @@
-import { ArgDefinition } from 'nexus/dist/types'
-import { core } from 'nexus'
+import { ArgDefinition, SchemaConfig } from 'nexus/dist/types'
 
 interface GenTypesShape {
   fields: Record<string, any>
@@ -68,7 +67,7 @@ export type PrismaObject<
     : any
   : any
 
-export interface PrismaSchemaConfig extends core.Types.SchemaConfig {
+export interface PrismaSchemaConfig extends SchemaConfig {
   prisma: {
     schemaPath: string
     contextClientName: string

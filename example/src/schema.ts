@@ -11,7 +11,7 @@ export const schema = buildPrismaSchema({
   types: allTypes,
 
   prisma: {
-    schemaPath: '__PRISMA__SCHEMA__PATH__',
+    schemaPath: path.join(__dirname, './generated/prisma.graphql'),
     contextClientName: 'prisma',
   },
 

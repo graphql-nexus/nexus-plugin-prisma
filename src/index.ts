@@ -4,12 +4,15 @@ import { SchemaBuilder, Metadata } from 'nexus/dist/core'
 
 export { prismaObjectType } from './prisma'
 
-class PrismaSchemaBuilder extends SchemaBuilder {
-  constructor(metadata: Metadata, config: PrismaSchemaConfig) {
+export class PrismaSchemaBuilder extends SchemaBuilder {
+  constructor(
+    protected metadata: Metadata,
+    protected config: PrismaSchemaConfig,
+  ) {
     super(metadata, config)
   }
 
-  public getConfig() {
+  public getConfig(): PrismaSchemaConfig {
     return this.config
   }
 }
