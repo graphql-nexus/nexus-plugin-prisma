@@ -1334,10 +1334,10 @@ nexus-prisma@0.0.11:
     lodash "^4.17.11"
     nexus "^0.5.1"
 
-nexus@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.6.1.tgz#2b4f281626e8535246eba299e4effc8a537ad321"
-  integrity sha512-ydMxcf7LE1P63F+KmYK/19SgSllYr2s+tqkvtEuaSfrsIq2VxjO3GP8rdcvD+v5V4yFJi5IWtKE5KX65WOM8+A==
+nexus@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.6.2.tgz#d6901aacf36f59420fe56df31182fa37534906fd"
+  integrity sha512-Ax/zIdmgyvsIRAqLjdp5BCsm4H6y+2QCA2+AQGpX/f0E0k4pL64chny9W5t1vMBUtnjG5f5vBM3XE66Y7BQTgA==
   dependencies:
     tslib "^1.9.3"
 
