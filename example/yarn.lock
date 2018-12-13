@@ -1326,10 +1326,10 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus-prisma@0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.10.tgz#4cef1e868b27f99acc79c36d1b542cca9e2d386f"
-  integrity sha512-efU22q3KOLnE4YqQAqNpg2OVeC6EVmNqsmP8TvEpm3dngZ8lsPFpq8CONs8zUBPGl5Ax9KK6sKH1Fqorn8XCCw==
+nexus-prisma@0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.11.tgz#3345bb10cefe8077a7120a76643f8e495e2852b1"
+  integrity sha512-U5Ns1kD/jEwo5Roo8CMQmuGkf3ZWOuSurkwdjql4jhYJuL/+UYmHezi5kKhc4jeg1yo+GOEZ6vBfF7vpx9SNjA==
   dependencies:
     lodash "^4.17.11"
     nexus "^0.5.1"
