@@ -10,6 +10,7 @@ import {
   GraphQLTypes,
   GraphQLTypeArgument,
   GraphQLType,
+  GraphQLEnumObject,
 } from './source-helper'
 
 codegen()
@@ -29,6 +30,7 @@ export function codegen(/* schemaPath: string */) {
 export function render(/*schemaPath: string,*/ types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
   const inputTypes = types.types.filter(t => t.type.isInput)
+  const enumTypes = types.enums
 
   return `\
 // GENERATED TYPES FOR PRISMA PLUGIN. /!\\ DO NOT EDIT MANUALLY
@@ -46,6 +48,8 @@ ${objectTypes.map(renderType).join(EOL)}
 
 ${inputTypes.map(renderInputType).join(EOL)}
 
+${renderEnumTypes(enumTypes)}
+
 export interface PluginTypes {
   fields: {
 ${objectTypes
@@ -57,6 +61,7 @@ ${objectTypes
     .map(type => `    ${type.name}: ${getTypeObjectName(type)}`)
     .join(EOL)}
   }
+  enumTypesNames: ${getEnumTypesName()}
 }
 
 declare global {
@@ -202,6 +207,13 @@ ${input.fields
   `
 }
 
+function renderEnumTypes(enums: GraphQLEnumObject[]): string {
+  return `\
+export type ${getEnumTypesName()} =
+${enums.map(e => `  | '${e.name}'`).join(EOL)}
+  `
+}
+
 function getExposableFieldsTypeName(type: GraphQLTypeObject) {
   return `${type.name}Fields`
 }
@@ -224,4 +236,8 @@ function getTypeObjectName(type: GraphQLTypeObject) {
 
 function getInputTypeName(type: GraphQLTypeObject | GraphQLType) {
   return `${type.name}`
+}
+
+function getEnumTypesName(): string {
+  return 'enumTypesNames'
 }

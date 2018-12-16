@@ -3,6 +3,7 @@ import { ArgDefinition, SchemaConfig } from 'nexus/dist/types'
 interface GenTypesShape {
   fields: Record<string, any>
   fieldsDetails: Record<string, any>
+  enumTypesNames: string
 }
 
 export interface ObjectField {
@@ -43,6 +44,12 @@ export type PrismaTypeNames<
   GenTypes = GraphQLNexusGen
 > = GenTypes extends GenTypesShape
   ? Extract<keyof GenTypes['fields'], string>
+  : string
+
+  export type PrismaEnumTypeNames<
+  GenTypes = GraphQLNexusGen
+> = GenTypes extends GenTypesShape
+  ? GenTypes['enumTypesNames']
   : string
 
 export interface PickInputField<GenTypes, TypeName extends string> {

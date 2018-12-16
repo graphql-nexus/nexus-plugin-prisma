@@ -22,6 +22,7 @@ import {
   PrismaOutputOptsMap,
   PrismaTypeNames,
   PrismaSchemaConfig,
+  PrismaEnumTypeNames,
 } from './types'
 import {
   getFields,
@@ -180,6 +181,8 @@ function exportInputObjectType(
       if (!seen[field.type.name]) {
         if (field.type.isScalar && field.type.name === 'DateTime') {
           typesToExport.push(exportDateTimeScalar())
+        } else if (field.type.isEnum) {
+          typesToExport.push(exportEnumType(typesMap.enums[field.type.name]))
         } else {
           typesToExport.push(
             ...exportInputObjectType(
@@ -497,12 +500,37 @@ export function prismaObjectType<
       schema,
     )
 
-    addExportedTypesToGlobalCache(inputTypesToExport)
+    addExportedTypesToGlobalCache([
+      ...inputTypesToExport,
+      ...connectionTypesToExport,
+    ])
 
     return [
       new WrappedType(objectType),
       ...inputTypesToExport,
       ...connectionTypesToExport,
     ]
+  }
+}
+
+export function prismaEnumType<GenTypes = GraphQLNexusGen>(
+  typeName: PrismaEnumTypeNames<GenTypes>,
+): (schema: PrismaSchemaBuilder) => WrappedType | undefined {
+  return schema => {
+    const typesMap = getTypesMap(schema.getConfig().prisma.schemaPath)
+
+    const graphqlEnumType = typesMap.enums[typeName as string]
+
+    if (graphqlEnumType === undefined) {
+      throw new Error(`Unknown enum '${typeName}' in Prisma API`)
+    }
+
+    const exportedTypesMap = getExportedTypesMap()
+
+    if (exportedTypesMap[typeName as string]) {
+      return
+    }
+
+    return enumType(typeName as string, graphqlEnumType.values)
   }
 }
