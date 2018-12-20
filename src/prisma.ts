@@ -33,7 +33,6 @@ import {
   typeToFieldOpts,
   isConnectionTypeName,
 } from './utils'
-import { PrismaSchemaBuilder } from '.'
 
 interface Dictionary<T> {
   [key: string]: T
@@ -420,25 +419,19 @@ function getInputTypesToExport(
     .value()
 }
 
-function createRelayConnectionType(
-  typeName: string,
-  schema: PrismaSchemaBuilder,
-) {
+function createRelayConnectionType(typeName: string) {
   const [normalTypeName] = typeName.split('Connection')
   const edgeTypeName = `${normalTypeName}Edge`
 
   return [
-    ...prismaObjectType(typeName, t => {
+    prismaObjectType(typeName, t => {
       t.prismaFields(['edges', 'pageInfo'])
-    })(schema),
-    ...prismaObjectType(edgeTypeName)(schema),
+    }),
+    prismaObjectType(edgeTypeName),
   ]
 }
 
-function getRelayConnectionTypesToExport(
-  typeConfig: Types.ObjectTypeConfig,
-  schema: PrismaSchemaBuilder,
-) {
+function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
   const exportedTypesMap = getExportedTypesMap()
 
   const connectionTypes = _(typeConfig.fields)
@@ -449,16 +442,14 @@ function getRelayConnectionTypesToExport(
         isConnectionTypeName(field.config.type) &&
         exportedTypesMap[field.config.type] === undefined,
     )
-    .flatMap((field: any) =>
-      createRelayConnectionType(field.config.type, schema),
-    )
+    .flatMap((field: any) => createRelayConnectionType(field.config.type))
     .value()
 
   if (
     connectionTypes.length > 0 &&
     exportedTypesMap['PageInfo'] === undefined
   ) {
-    connectionTypes.push(...prismaObjectType('PageInfo')(schema))
+    connectionTypes.push(prismaObjectType('PageInfo'))
   }
 
   return connectionTypes
@@ -475,8 +466,8 @@ export function prismaObjectType<
         objectTypeName?: string
       },
   fn?: (t: PrismaObjectType<GenTypes, TypeName>) => void,
-): (schema: PrismaSchemaBuilder) => WrappedType[] {
-  return schema => {
+): WrappedType {
+  return new WrappedType((schema: any) => {
     // TODO refactor + make use of `objectTypeName`
     const realTypeName =
       typeof typeName === 'string' ? typeName : typeName.prismaTypeName
@@ -495,10 +486,7 @@ export function prismaObjectType<
     const typesMap = objectType.getTypesMap()
     const typeConfig = objectType.getTypeConfig()
     const inputTypesToExport = getInputTypesToExport(typeConfig, typesMap)
-    const connectionTypesToExport = getRelayConnectionTypesToExport(
-      typeConfig,
-      schema,
-    )
+    const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
 
     addExportedTypesToGlobalCache([
       ...inputTypesToExport,
@@ -509,14 +497,14 @@ export function prismaObjectType<
       new WrappedType(objectType),
       ...inputTypesToExport,
       ...connectionTypesToExport,
-    ]
-  }
+    ] as any
+  })
 }
 
 export function prismaEnumType<GenTypes = GraphQLNexusGen>(
   typeName: PrismaEnumTypeNames<GenTypes>,
-): (schema: PrismaSchemaBuilder) => WrappedType | undefined {
-  return schema => {
+): WrappedType {
+  return new WrappedType((schema: any) => {
     const typesMap = getTypesMap(schema.getConfig().prisma.schemaPath)
 
     const graphqlEnumType = typesMap.enums[typeName as string]
@@ -531,6 +519,6 @@ export function prismaEnumType<GenTypes = GraphQLNexusGen>(
       return
     }
 
-    return enumType(typeName as string, graphqlEnumType.values)
-  }
+    return enumType(typeName as string, graphqlEnumType.values) as any
+  })
 }

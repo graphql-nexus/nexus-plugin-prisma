@@ -13,16 +13,16 @@ declare global {
 }
 
 // Maybe Promise
-type MaybePromise<T> = T | PromiseLike<T>;
+export type MaybePromise<T> = T | PromiseLike<T>;
 
 // Maybe Promise List
-type MaybePromiseList<T> = Array<MaybePromise<T>>;
+export type MaybePromiseList<T> = Array<MaybePromise<T>>;
 
 // Maybe Thunk
-type MaybeThunk<T> = T | (() => T);
+export type MaybeThunk<T> = T | (() => T);
 
 // Maybe Thunk, with args
-type MaybeThunkArgs<T, A> = T | ((args?: A) => T);
+export type MaybeThunkArgs<T, A> = T | ((args?: A) => T);
 
 export type QueryFeedReturnType = MaybePromiseList<Post_ReturnType>;
 
@@ -69,13 +69,13 @@ export type UserNameReturnType = null | string;
 export type UserPostsReturnType = MaybePromiseList<Post_ReturnType>;
 
 export interface UserPostsArgs {
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
-  orderBy?: PostOrderByInput;
-  skip?: number;
-  where?: PostWhereInput;
+  after?: null | string;
+  before?: null | string;
+  first?: null | number;
+  last?: null | number;
+  orderBy?: null | PostOrderByInput;
+  skip?: null | number;
+  where?: null | PostWhereInput;
 }
 
 export type UserRootType = prisma.User;
@@ -84,126 +84,126 @@ export type User_ReturnType = prisma.User
 
 export type PostOrderByInput = "content_ASC" | "content_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "published_ASC" | "published_DESC" | "title_ASC" | "title_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
-interface PostWhereInput {
+export interface PostWhereInput {
   AND: PostWhereInput[];
-  author?: UserWhereInput;
-  content?: string;
-  content_contains?: string;
-  content_ends_with?: string;
-  content_gt?: string;
-  content_gte?: string;
+  author?: null | UserWhereInput;
+  content?: null | string;
+  content_contains?: null | string;
+  content_ends_with?: null | string;
+  content_gt?: null | string;
+  content_gte?: null | string;
   content_in: string[];
-  content_lt?: string;
-  content_lte?: string;
-  content_not?: string;
-  content_not_contains?: string;
-  content_not_ends_with?: string;
+  content_lt?: null | string;
+  content_lte?: null | string;
+  content_not?: null | string;
+  content_not_contains?: null | string;
+  content_not_ends_with?: null | string;
   content_not_in: string[];
-  content_not_starts_with?: string;
-  content_starts_with?: string;
-  createdAt?: unknown;
-  createdAt_gt?: unknown;
-  createdAt_gte?: unknown;
+  content_not_starts_with?: null | string;
+  content_starts_with?: null | string;
+  createdAt?: null | unknown;
+  createdAt_gt?: null | unknown;
+  createdAt_gte?: null | unknown;
   createdAt_in: unknown[];
-  createdAt_lt?: unknown;
-  createdAt_lte?: unknown;
-  createdAt_not?: unknown;
+  createdAt_lt?: null | unknown;
+  createdAt_lte?: null | unknown;
+  createdAt_not?: null | unknown;
   createdAt_not_in: unknown[];
-  id?: string;
-  id_contains?: string;
-  id_ends_with?: string;
-  id_gt?: string;
-  id_gte?: string;
+  id?: null | string;
+  id_contains?: null | string;
+  id_ends_with?: null | string;
+  id_gt?: null | string;
+  id_gte?: null | string;
   id_in: string[];
-  id_lt?: string;
-  id_lte?: string;
-  id_not?: string;
-  id_not_contains?: string;
-  id_not_ends_with?: string;
+  id_lt?: null | string;
+  id_lte?: null | string;
+  id_not?: null | string;
+  id_not_contains?: null | string;
+  id_not_ends_with?: null | string;
   id_not_in: string[];
-  id_not_starts_with?: string;
-  id_starts_with?: string;
+  id_not_starts_with?: null | string;
+  id_starts_with?: null | string;
   NOT: PostWhereInput[];
   OR: PostWhereInput[];
-  published?: boolean;
-  published_not?: boolean;
-  title?: string;
-  title_contains?: string;
-  title_ends_with?: string;
-  title_gt?: string;
-  title_gte?: string;
+  published?: null | boolean;
+  published_not?: null | boolean;
+  title?: null | string;
+  title_contains?: null | string;
+  title_ends_with?: null | string;
+  title_gt?: null | string;
+  title_gte?: null | string;
   title_in: string[];
-  title_lt?: string;
-  title_lte?: string;
-  title_not?: string;
-  title_not_contains?: string;
-  title_not_ends_with?: string;
+  title_lt?: null | string;
+  title_lte?: null | string;
+  title_not?: null | string;
+  title_not_contains?: null | string;
+  title_not_ends_with?: null | string;
   title_not_in: string[];
-  title_not_starts_with?: string;
-  title_starts_with?: string;
-  updatedAt?: unknown;
-  updatedAt_gt?: unknown;
-  updatedAt_gte?: unknown;
+  title_not_starts_with?: null | string;
+  title_starts_with?: null | string;
+  updatedAt?: null | unknown;
+  updatedAt_gt?: null | unknown;
+  updatedAt_gte?: null | unknown;
   updatedAt_in: unknown[];
-  updatedAt_lt?: unknown;
-  updatedAt_lte?: unknown;
-  updatedAt_not?: unknown;
+  updatedAt_lt?: null | unknown;
+  updatedAt_lte?: null | unknown;
+  updatedAt_not?: null | unknown;
   updatedAt_not_in: unknown[];
 }
 
-interface UserWhereInput {
+export interface UserWhereInput {
   AND: UserWhereInput[];
-  email?: string;
-  email_contains?: string;
-  email_ends_with?: string;
-  email_gt?: string;
-  email_gte?: string;
+  email?: null | string;
+  email_contains?: null | string;
+  email_ends_with?: null | string;
+  email_gt?: null | string;
+  email_gte?: null | string;
   email_in: string[];
-  email_lt?: string;
-  email_lte?: string;
-  email_not?: string;
-  email_not_contains?: string;
-  email_not_ends_with?: string;
+  email_lt?: null | string;
+  email_lte?: null | string;
+  email_not?: null | string;
+  email_not_contains?: null | string;
+  email_not_ends_with?: null | string;
   email_not_in: string[];
-  email_not_starts_with?: string;
-  email_starts_with?: string;
-  id?: string;
-  id_contains?: string;
-  id_ends_with?: string;
-  id_gt?: string;
-  id_gte?: string;
+  email_not_starts_with?: null | string;
+  email_starts_with?: null | string;
+  id?: null | string;
+  id_contains?: null | string;
+  id_ends_with?: null | string;
+  id_gt?: null | string;
+  id_gte?: null | string;
   id_in: string[];
-  id_lt?: string;
-  id_lte?: string;
-  id_not?: string;
-  id_not_contains?: string;
-  id_not_ends_with?: string;
+  id_lt?: null | string;
+  id_lte?: null | string;
+  id_not?: null | string;
+  id_not_contains?: null | string;
+  id_not_ends_with?: null | string;
   id_not_in: string[];
-  id_not_starts_with?: string;
-  id_starts_with?: string;
-  name?: string;
-  name_contains?: string;
-  name_ends_with?: string;
-  name_gt?: string;
-  name_gte?: string;
+  id_not_starts_with?: null | string;
+  id_starts_with?: null | string;
+  name?: null | string;
+  name_contains?: null | string;
+  name_ends_with?: null | string;
+  name_gt?: null | string;
+  name_gte?: null | string;
   name_in: string[];
-  name_lt?: string;
-  name_lte?: string;
-  name_not?: string;
-  name_not_contains?: string;
-  name_not_ends_with?: string;
+  name_lt?: null | string;
+  name_lte?: null | string;
+  name_not?: null | string;
+  name_not_contains?: null | string;
+  name_not_ends_with?: null | string;
   name_not_in: string[];
-  name_not_starts_with?: string;
-  name_starts_with?: string;
+  name_not_starts_with?: null | string;
+  name_starts_with?: null | string;
   NOT: UserWhereInput[];
   OR: UserWhereInput[];
-  posts_every?: PostWhereInput;
-  posts_none?: PostWhereInput;
-  posts_some?: PostWhereInput;
+  posts_every?: null | PostWhereInput;
+  posts_none?: null | PostWhereInput;
+  posts_some?: null | PostWhereInput;
 }
 
-interface PostWhereUniqueInput {
-  id?: string;
+export interface PostWhereUniqueInput {
+  id?: null | string;
 }
 
 export type MutationCreateDraftReturnType = Post_ReturnType;
@@ -313,9 +313,9 @@ export interface GraphQLNexusGenTypes {
     Boolean: any;
   };
   inputObjects: {
-    PostWhereInput: any;
-    UserWhereInput: any;
-    PostWhereUniqueInput: any;
+    PostWhereInput: PostWhereInput;
+    UserWhereInput: UserWhereInput;
+    PostWhereUniqueInput: PostWhereUniqueInput;
   };
   allInputTypes: 
     | Extract<keyof GraphQLNexusGenTypes['inputObjects'], string>
