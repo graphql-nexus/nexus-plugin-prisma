@@ -1331,25 +1331,18 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus-prisma@0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.11.tgz#3345bb10cefe8077a7120a76643f8e495e2852b1"
-  integrity sha512-U5Ns1kD/jEwo5Roo8CMQmuGkf3ZWOuSurkwdjql4jhYJuL/+UYmHezi5kKhc4jeg1yo+GOEZ6vBfF7vpx9SNjA==
+nexus-prisma@0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.12.tgz#1d57c66fb8d00c9f11809985214b3ac919b02a50"
+  integrity sha512-38PoOa5QXFz7tIhf9Bg1lIUbbKBPJz9/bERaK6aB4x1U+EnySqPSjCTrX/52cT2dMXFaWFNFVLQXeOusRIC6Pg==
   dependencies:
     lodash "^4.17.11"
-    nexus "^0.5.1"
+    nexus "^0.6.0"
 
-nexus@0.6.2:
+nexus@0.6.2, nexus@^0.6.0:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.6.2.tgz#d6901aacf36f59420fe56df31182fa37534906fd"
   integrity sha512-Ax/zIdmgyvsIRAqLjdp5BCsm4H6y+2QCA2+AQGpX/f0E0k4pL64chny9W5t1vMBUtnjG5f5vBM3XE66Y7BQTgA==
-  dependencies:
-    tslib "^1.9.3"
-
-nexus@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.5.1.tgz#2ffd108430da994c8dd94c7a9a4797496475826d"
-  integrity sha512-Lfnb2e+w/ke7JbkBJqkfiU80Ww62lsZRzbQNFu9GNTAxrB1CDsH/8/uIwRkV8wTtLPufYnKBEMjoZ70+TB+Ezw==
   dependencies:
     tslib "^1.9.3"
 
