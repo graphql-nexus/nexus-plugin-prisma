@@ -13,7 +13,7 @@
     "prisma-client-lib": "1.23.2"
   },
   "devDependencies": {
-    "@types/graphql": "14.0.3",
+    "@types/graphql": "14.0.4",
     "@types/node": "10.12.18",
     "ts-node-dev": "1.0.0-pre.32",
     "typescript": "3.2.2"
