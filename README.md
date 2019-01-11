@@ -71,7 +71,7 @@ However, `prismaObjectType` adds a special method to the `t` object for you to e
 
 **All the fields exposed using `nexus-prisma` are automatically resolved. No code is needed besides which fields you want to expose.**
 
-**Signature** (simplied types)
+**Signature** (simplified types)
 
 ```ts
 interface Field {
