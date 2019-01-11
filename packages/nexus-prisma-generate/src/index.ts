@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { EOL } from 'os'
 import { join } from 'path'
 import {
@@ -17,6 +17,12 @@ codegen()
 
 function codegen(/* schemaPath: string */) {
   const schemaPath = join(process.cwd(), './src/generated/prisma.graphql')
+
+  if (!existsSync(schemaPath)) {
+    console.log(`Prisma schema wasn\'t found in ${schemaPath}`)
+    process.exit(1)
+  }
+
   const typeDefs = readFileSync(schemaPath).toString()
   const types = extractTypes(typeDefs)
   const typesToRender = render(/*schemaPath, */ types)
