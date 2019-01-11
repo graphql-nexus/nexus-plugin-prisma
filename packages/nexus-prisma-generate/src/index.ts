@@ -15,7 +15,7 @@ import {
 
 codegen()
 
-export function codegen(/* schemaPath: string */) {
+function codegen(/* schemaPath: string */) {
   const schemaPath = join(process.cwd(), './src/generated/prisma.graphql')
   const typeDefs = readFileSync(schemaPath).toString()
   const types = extractTypes(typeDefs)
@@ -27,7 +27,7 @@ export function codegen(/* schemaPath: string */) {
 }
 
 // TODO: Dynamically resolve prisma-client import path
-export function render(/*schemaPath: string,*/ types: GraphQLTypes) {
+function render(/*schemaPath: string,*/ types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
   const inputTypes = types.types.filter(t => t.type.isInput)
   const enumTypes = types.enums

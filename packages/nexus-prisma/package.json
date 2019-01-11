@@ -1,0 +1,50 @@
+{
+  "name": "nexus-prisma",
+  "version": "0.0.12",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "author": "Prisma",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prisma/nexus-prisma-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prisma/nexus-prisma-plugin/issues"
+  },
+  "homepage": "https://github.com/prisma/nexus-prisma-plugin#readme",
+  "scripts": {
+    "prepublish": "rm -rf example/node_modules && npm test && npm run build",
+    "build": "tsc --declaration",
+    "watch": "tsc -d -w",
+    "link-example": "yarn link && cd example && yarn link nexus-prisma && cd node_modules && rm -rf graphql && ln -s ../../node_modules/graphql/ ./graphql",
+    "unlink-example": "yarn unlink && cd example/ && rm -rf node_modules/graphql node_modules/nexus-prisma  && yarn --force"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "nexus": "^0.6.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "14.0.4",
+    "@types/lodash": "4.14.119",
+    "jest": "23.6.0",
+    "prettier": "1.15.3",
+    "prisma": "1.24.0",
+    "ts-jest": "23.10.5",
+    "typescript": "3.2.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "printWidth": 80,
+    "trailingComma": "all",
+    "semi": false
+  }
+}

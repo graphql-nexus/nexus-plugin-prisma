@@ -6,7 +6,7 @@ A Nexus plugin for Prisma
 
 [Nexus](https://graphql-nexus.com/) is a library that helps you build your GraphQL schema in a programmatic way versus using the SDL syntax. While SDL might seem more concise at first, defining your schema in a programmatic way allows you to leverage the power of the language to solve lots of common problems faced with SDL.
 
-At Prisma, we think that approach (named *"resolver-first"* instead of *"schema-first"*) gives lots of benefits while using Prisma as well, solving many problems users were facing while using the SDL approach (like importing types...)
+At Prisma, we think that approach (named _"resolver-first"_ instead of _"schema-first"_) gives lots of benefits while using Prisma as well, solving many problems users were facing while using the SDL approach (like importing types...)
 
 If you want to give it a quick look, check it out here:
 
@@ -34,24 +34,24 @@ Edit your `prisma.yml` file, and add the following:
 ```yml
 hooks:
   post-deploy:
-  - yarn nexus-codegen # Runs the codegen tool from nexus-prisma
-    
+    - npx nexus-prisma-generate # Runs the codegen tool from nexus-prisma
+
 generate:
   - generator: graphql-schema
     output: ../src/generated/
 ```
 
-Then run `prisma deploy` or `yarn nexus-codegen`. This will generate TS types based on the Prisma GraphQL API.
+Then run `prisma deploy` or `npx nexus-prisma-generate`. This will generate TS types based on the Prisma GraphQL API.
 
 Once done, you can start using the library as so (assuming you have a `User` type in your datamodel):
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-    
+
 export const User = prismaObjectType('User') // Or any other type exposed in your Prisma GraphQL API
 ```
 
-- *NOTE*: When passing no function as second parameter, `prismaObjectType` will expose **all the fields** of your type.
+- _NOTE_: When passing no function as second parameter, `prismaObjectType` will expose **all the fields** of your type.
 
 ## API
 
@@ -59,7 +59,7 @@ export const User = prismaObjectType('User') // Or any other type exposed in you
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-    
+
 export const Query = prismaObjectType('Query', t => {
   t.string('hello')
 })
@@ -77,7 +77,7 @@ However, `prismaObjectType` adds a special method to the `t` object for you to e
 interface Field {
   name: string // Name of the field you want to expose
   alias: string // Name of the alias of you want to give the field
-  args: string[] // Arguments of the field you want to expose 
+  args: string[] // Arguments of the field you want to expose
 }
 
 /**
@@ -105,7 +105,7 @@ In its simplest usage, `t.prismaFields()` expects as input the list of name of f
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-    
+
 export const Mutation = prismaObjectType('Mutation', t => {
   t.prismaFields(['createUser', 'deleteUser']) // Expose 'createUser' and 'deleteUser' mutation from your Prisma GraphQL API
   t.string('hello') // Add other custom fields
@@ -116,7 +116,7 @@ Alternatively, you can also customise the way you want them exposed using object
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-    
+
 export const Query = prismaObjectType('Query', t => {
   t.prismaFields(['createUser', { name: 'deleteUser', alias: 'removeUser' }]) // Expose 'createUser' and 'deleteUser' ( as 'removeUser') mutations from your Prisma GraphQL API
   t.int('age') // Expose other custom fields
@@ -127,7 +127,7 @@ To expose all fields from a type without having to enumerate them, you can also 
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-    
+
 export const User = prismaObjectType('User', t => {
   t.prismaFields() // Exposes all fields of 'User' object type
 })
@@ -135,4 +135,3 @@ export const User = prismaObjectType('User', t => {
 // Or the following
 export const User = prismaObjectType('User')
 ```
-
