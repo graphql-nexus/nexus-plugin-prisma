@@ -1597,6 +1597,12 @@ export interface UserSubscriptionWhereInput {
 }
   
 
+export type enumTypesNames =
+  | 'PostOrderByInput'
+  | 'UserOrderByInput'
+  | 'MutationType'
+  
+
 export interface PluginTypes {
   fields: {
     Query: QueryObject
@@ -1636,6 +1642,7 @@ export interface PluginTypes {
     UserSubscriptionPayload: UserSubscriptionPayloadFieldDetails
     UserPreviousValues: UserPreviousValuesFieldDetails
   }
+  enumTypesNames: enumTypesNames
 }
 
 declare global {
