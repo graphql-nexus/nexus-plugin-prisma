@@ -62,6 +62,11 @@
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.0.4.tgz#d71a75967cd93c33eaea32b626b362ce0f2b2ae9"
   integrity sha512-gI98ANelzzpq7lZzuYCUJg8LZDjQc7ekj7cxoWt8RezOKaVaAyK27U6AHa9LEqikP1NUhyi8blQQkHYHVRZ7Tg==
 
+"@types/js-yaml@^3.11.4":
+  version "3.11.4"
+  resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.11.4.tgz#c4323304673278b8406bccb63bbf577342dbbdba"
+  integrity sha512-a42nbZzOlxbH3ORDg/brU+zlRQS8mSvZCEY4Xery66/NIA7yX4T9qk6yL9qpw4AhgwzEgc1XIhHRnivQW+zlkw==
+
 "@types/lodash@4.14.119":
   version "4.14.119"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.119.tgz#be847e5f4bc3e35e46d041c394ead8b603ad8b39"
@@ -3047,7 +3052,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-yaml@^3.10.0, js-yaml@^3.7.0, js-yaml@^3.9.1:
+js-yaml@^3.10.0, js-yaml@^3.12.1, js-yaml@^3.7.0, js-yaml@^3.9.1:
   version "3.12.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.1.tgz#295c8632a18a23e054cf5c9d3cecafe678167600"
   integrity sha512-um46hB9wNOKlwkHgiuyEVAybXBjwFUV0Z/RaHJblRd9DXltue9FTYvzCr9ErQrK9Adz5MU4gHWVaNUfdmrC8qA==
@@ -4498,7 +4503,7 @@ prisma-db-introspection@1.24.0:
     scuid "^1.0.2"
     uppercamelcase "^3.0.0"
 
-prisma-generate-schema@1.24.0:
+prisma-generate-schema@1.24.0, prisma-generate-schema@^1.24.0:
   version "1.24.0"
   resolved "https://registry.yarnpkg.com/prisma-generate-schema/-/prisma-generate-schema-1.24.0.tgz#8c670aaee12bae6218eadfc293bb3e3185831e4d"
   integrity sha512-NhWhCn7+NUMIbVHkJ1LzZPGxAH9T3VKXzUV+wRzrszUiVc6/KZc3ENMxadDNN/3mHYuB8yBccM7//XQ1pBnw8g==

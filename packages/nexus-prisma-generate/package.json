@@ -25,9 +25,12 @@
     "watch": "tsc -d -w"
   },
   "dependencies": {
-    "graphql": "14.0.2"
+    "graphql": "14.0.2",
+    "js-yaml": "^3.12.1",
+    "prisma-generate-schema": "^1.24.0"
   },
   "devDependencies": {
+    "@types/js-yaml": "^3.11.4",
     "@types/node": "10.12.18",
     "jest": "23.6.0",
     "prettier": "1.15.3",

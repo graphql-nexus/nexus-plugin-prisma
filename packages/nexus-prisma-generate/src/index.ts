@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { writeFileSync } from 'fs'
 import { EOL } from 'os'
 import { join } from 'path'
 import {
@@ -12,20 +12,14 @@ import {
   GraphQLType,
   GraphQLEnumObject,
 } from './source-helper'
+import { findDatamodelAndComputeSchema } from './config'
 
-codegen()
+run()
 
-function codegen(/* schemaPath: string */) {
-  const schemaPath = join(process.cwd(), './src/generated/prisma.graphql')
-
-  if (!existsSync(schemaPath)) {
-    console.log(`Prisma schema wasn\'t found in ${schemaPath}`)
-    process.exit(1)
-  }
-
-  const typeDefs = readFileSync(schemaPath).toString()
-  const types = extractTypes(typeDefs)
-  const typesToRender = render(/*schemaPath, */ types)
+function run() {
+  const schema = findDatamodelAndComputeSchema()
+  const types = extractTypes(schema)
+  const typesToRender = render(types)
   const outputPath = join(process.cwd(), './src/generated/nexus-prisma.ts')
 
   writeFileSync(outputPath, typesToRender)
@@ -33,7 +27,7 @@ function codegen(/* schemaPath: string */) {
 }
 
 // TODO: Dynamically resolve prisma-client import path
-function render(/*schemaPath: string,*/ types: GraphQLTypes) {
+function render(types: GraphQLTypes) {
   const objectTypes = types.types.filter(t => t.type.isObject)
   const inputTypes = types.types.filter(t => t.type.isInput)
   const enumTypes = types.enums
