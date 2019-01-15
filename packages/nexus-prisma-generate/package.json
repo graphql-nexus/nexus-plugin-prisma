@@ -25,7 +25,7 @@
     "watch": "tsc -d -w"
   },
   "dependencies": {
-    "graphql": "14.0.2",
+    "graphql": "14.1.0",
     "js-yaml": "3.12.1",
     "prisma-generate-schema": "1.24.0"
   },
