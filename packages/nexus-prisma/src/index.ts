@@ -1,6 +1,7 @@
 import { makeSchemaWithMetadata } from 'nexus'
 import { PrismaSchemaConfig } from './types'
 import { SchemaBuilder, Metadata } from 'nexus/dist/core'
+import { invalidateCache } from './prisma'
 
 export { prismaObjectType, prismaEnumType } from './prisma'
 
@@ -34,6 +35,8 @@ export function buildPrismaSchema(options: PrismaSchemaConfig) {
     // in the optional thunk for the typegen config
     metadata.generateArtifacts(schema)
   }
+
+  invalidateCache()
 
   return schema
 }

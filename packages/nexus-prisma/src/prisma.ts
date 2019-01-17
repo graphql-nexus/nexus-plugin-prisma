@@ -255,6 +255,11 @@ function getExportedTypesMap(): Dictionary<boolean> {
   return __exportedTypesMap
 }
 
+export function invalidateCache() {
+  __typesMapCache = null
+  __exportedTypesMap = {}
+}
+
 // Prevent from exporting the same type twice
 function addExportedTypesToGlobalCache(types: WrappedType[]): void {
   if (types.length === 0) {
