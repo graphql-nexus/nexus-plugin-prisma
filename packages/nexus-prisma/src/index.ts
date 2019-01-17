@@ -18,7 +18,7 @@ export class PrismaSchemaBuilder extends SchemaBuilder {
   }
 }
 
-export function buildPrismaSchema(options: PrismaSchemaConfig) {
+export function makePrismaSchema(options: PrismaSchemaConfig) {
   const { schema, metadata } = makeSchemaWithMetadata(
     options,
     PrismaSchemaBuilder,
@@ -36,6 +36,8 @@ export function buildPrismaSchema(options: PrismaSchemaConfig) {
     metadata.generateArtifacts(schema)
   }
 
+  // Invalidate cache after building the schema so that
+  // we do not take into account the cache on next call
   invalidateCache()
 
   return schema
