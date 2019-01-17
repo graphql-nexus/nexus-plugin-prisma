@@ -1,13 +1,13 @@
 import * as path from 'path'
 import * as allTypes from './resolvers'
-import { buildPrismaSchema } from 'nexus-prisma'
+import { makePrismaSchema } from 'nexus-prisma'
 
 /**
  * Finally, we construct our schema (whose starting query type is the query
  * type we defined above) and export it.
  */
 
-export const schema = buildPrismaSchema({
+export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
