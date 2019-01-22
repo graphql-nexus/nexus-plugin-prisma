@@ -10,7 +10,7 @@ At Prisma, we think that approach (named _"resolver-first"_ instead of _"schema-
 
 If you want to give it a quick look, check it out here:
 
-![](https://codesandbox.io/static/img/play-codesandbox.svg)
+[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/prisma/nexus-prisma/tree/master/example)
 
 ## Features
 
