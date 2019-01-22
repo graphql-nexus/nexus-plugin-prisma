@@ -1,7 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "build": "cd packages/nexus-prisma && yarn build && cd ../nexus-prisma-generate && yarn build"
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna clean",
+    "build": "lerna exec -- npm run build"
   },
   "workspaces": [
     "packages/*"
@@ -11,5 +13,8 @@
     "trailingComma": "all",
     "singleQuote": true
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.10.6"
+  }
 }

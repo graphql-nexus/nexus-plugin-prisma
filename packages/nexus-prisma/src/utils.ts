@@ -1,17 +1,17 @@
 import { arg } from 'nexus'
 import { InputObjectTypeDef } from 'nexus/dist/core'
 import { ArgDefinition, ArgOpts, FieldOpts } from 'nexus/dist/types'
-import { TypesMap } from './prisma'
 import {
   GraphQLScalarType,
   GraphQLType,
   GraphQLTypeField,
+  TypesMap,
 } from './source-helper'
 import { throwIfUnknownFields } from './throw'
 import {
+  AddFieldInput,
   AnonymousField,
   ObjectField,
-  AddFieldInput,
   PickInputField,
 } from './types'
 
@@ -190,10 +190,14 @@ export function isNotArrayOrConnectionType(
   fieldToResolve: GraphQLTypeField,
 ): boolean {
   return (
-    !fieldToResolve.type.isArray && !isConnectionTypeName(fieldToResolve.type.name)
+    !fieldToResolve.type.isArray &&
+    !isConnectionTypeName(fieldToResolve.type.name)
   )
 }
 
 export function isConnectionTypeName(typeName: string): boolean {
   return typeName.endsWith('Connection') && typeName !== 'Connection'
 }
+
+export const isObject = (obj: any): boolean =>
+  obj !== null && typeof obj === 'object'

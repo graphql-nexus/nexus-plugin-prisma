@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql'
-import { TypesMap } from './prisma'
+import { TypesMap } from './source-helper'
 import { GraphQLTypeArgument, GraphQLTypeObject } from './source-helper'
 import { ObjectField } from './types'
 

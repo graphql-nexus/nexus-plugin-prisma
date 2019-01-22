@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.0.14",
+  "version": "0.0.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "prepublish": "rm -rf example/node_modules && npm test && npm run build",
     "build": "tsc --declaration",
     "watch": "tsc -d -w",
-    "link-example": "yarn link && cd example && yarn link nexus-prisma && cd node_modules && rm -rf graphql && ln -s ../../node_modules/graphql/ ./graphql",
+    "link-example": "yarn link && cd ../../example && yarn link nexus-prisma && cd node_modules && rm -rf graphql && ln -s ../packages/nexus-prisma/node_modules/graphql/ ./graphql",
     "unlink-example": "yarn unlink && cd example/ && rm -rf node_modules/graphql node_modules/nexus-prisma  && yarn --force"
   },
   "dependencies": {
