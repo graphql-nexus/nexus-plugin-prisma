@@ -17,7 +17,7 @@ export const Query = prismaObjectType('Query', t => {
     list: true,
     args: {
       searchString: stringArg(),
-    },
+    },    
     resolve: (parent, { searchString }, ctx) => {
       return ctx.prisma.posts({
         where: {

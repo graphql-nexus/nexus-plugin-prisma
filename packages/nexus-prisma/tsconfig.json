@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
     "lib": ["esnext", "esnext.asynciterable"],
     "sourceMap": true,
     "rootDir": "./src",
@@ -10,5 +12,5 @@
     "noUnusedLocals": true
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules", "generated", "example", "examples"]
+  "exclude": ["node_modules"]
 }

@@ -5,7 +5,7 @@
  * For better typings, you should provide configuration for how to lookup 
  * the types. See the documentation for "typegenAutoConfig"
  */
-import * as types from "../types"
+import * as ctx from "../context"
 import * as prisma from "./prisma-client/index"
 
 declare global {
@@ -37,8 +37,6 @@ export type QueryPostReturnType = null | Post_ReturnType;
 export interface QueryPostArgs {
   where: PostWhereUniqueInput;
 }
-
-export type QueryRootType = {};
 
 export type Query_ReturnType = {};
 
@@ -233,8 +231,6 @@ export interface MutationSignupUserArgs {
   name: string;
 }
 
-export type MutationRootType = {};
-
 export type Mutation_ReturnType = {};
 
 export interface GraphQLNexusGenArgTypes {
@@ -254,10 +250,10 @@ export interface GraphQLNexusGenArgTypes {
 }
 
 export interface GraphQLNexusGenRootTypes {
-  Query: QueryRootType;
+  Query: {};
   Post: PostRootType;
   User: UserRootType;
-  Mutation: MutationRootType;
+  Mutation: {};
 }
 
 export interface GraphQLNexusGenReturnTypes {
@@ -293,15 +289,15 @@ export interface GraphQLNexusGenTypes {
   argTypes: GraphQLNexusGenArgTypes;
   backingTypes: GraphQLNexusGenRootTypes;
   returnTypes: GraphQLNexusGenReturnTypes;
-  context: types.Context;
+  context: ctx.Context;
   enums: {
     PostOrderByInput: PostOrderByInput;
   };
   objects: {
-    Query: QueryRootType;
+    Query: {};
     Post: PostRootType;
     User: UserRootType;
-    Mutation: MutationRootType;
+    Mutation: {};
   };
   interfaces: {};
   unions: {};

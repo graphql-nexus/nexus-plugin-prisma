@@ -3,7 +3,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap && yarn graphql-once",
     "graphql-once": "rm -rf ./node_modules/graphql ./packages/nexus-prisma/node_modules/graphql && mv ./example/node_modules/graphql ./node_modules/graphql",
-    "clean": "lerna clean",
+    "clean": "lerna clean -y",
+    "reset": "yarn clean && yarn bootstrap",
     "build": "lerna exec -- npm run build"
   },
   "workspaces": [
