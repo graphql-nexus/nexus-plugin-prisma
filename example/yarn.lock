@@ -1218,7 +1218,7 @@ lodash.toarray@^4.4.0:
   resolved "https://registry.yarnpkg.com/lodash.toarray/-/lodash.toarray-4.4.0.tgz#24c4bfcd6b2fba38bfd0594db1179d8e9b656561"
   integrity sha1-JMS/zWsvuji/0FlNsRedjptlZWE=
 
-lodash@^4.17.4:
+lodash@^4.17.11, lodash@^4.17.4:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -1352,12 +1352,15 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus-prisma@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.0.tgz#4d1665fe341d403e9503c0249931f08e2c419769"
-  integrity sha512-ejuSK4HgFU6+blFz94MnI3dxZs+kKxLkKDiIamJtdpIRNagkyIk47xvcpXXPKHRuj7ptYFSGIA7Ib8buPDMSSQ==
+nexus-prisma@0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.15.tgz#3262c960228a6335d5ff980bc35d7faa3b2782af"
+  integrity sha512-3QEc6/BibdNHs7jQE93QVTd3eVqQKLEPmk6KvztoFLmkv5NHI06qhWU8GhkRfiyBD7kyVNSJDinUsATh6E5P0g==
+  dependencies:
+    lodash "^4.17.11"
+    nexus "^0.6.0"
 
-nexus@0.6.2:
+nexus@0.6.2, nexus@^0.6.0:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.6.2.tgz#d6901aacf36f59420fe56df31182fa37534906fd"
   integrity sha512-Ax/zIdmgyvsIRAqLjdp5BCsm4H6y+2QCA2+AQGpX/f0E0k4pL64chny9W5t1vMBUtnjG5f5vBM3XE66Y7BQTgA==
