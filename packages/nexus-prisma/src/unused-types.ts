@@ -1,3 +1,4 @@
+// Borrowed from https://github.com/AEB-labs/graphql-transformer
 import {
   getNamedType,
   GraphQLInterfaceType,
