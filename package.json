@@ -1,7 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "build": "cd packages/nexus-prisma && yarn build && cd ../nexus-prisma-generate && yarn build"
+    "bootstrap": "lerna bootstrap && yarn graphql-once",
+    "graphql-once": "rm -rf ./node_modules/graphql ./packages/nexus-prisma/node_modules/graphql && mv ./example/node_modules/graphql ./node_modules/graphql",
+    "clean": "lerna clean",
+    "build": "lerna exec -- npm run build"
   },
   "workspaces": [
     "packages/*"
@@ -11,5 +14,8 @@
     "trailingComma": "all",
     "singleQuote": true
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.10.6"
+  }
 }

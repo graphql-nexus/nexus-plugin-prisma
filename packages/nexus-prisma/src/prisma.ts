@@ -1,16 +1,9 @@
-import { existsSync, readFileSync } from 'fs'
-import { arg, enumType, inputObjectType, scalarType } from 'nexus'
+import { arg, enumType, inputObjectType, scalarType, objectType } from 'nexus'
 import { ObjectTypeDef, Types, WrappedType } from 'nexus/dist/core'
 import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
 import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
-import {
-  extractTypes,
-  GraphQLEnumObject,
-  GraphQLType,
-  GraphQLTypeField,
-  GraphQLTypeObject,
-} from './source-helper'
+import { GraphQLEnumObject, GraphQLTypeField, TypesMap } from './source-helper'
 import { throwIfUnknownClientFunction } from './throw'
 import {
   AddFieldInput,
@@ -26,48 +19,17 @@ import {
 } from './types'
 import {
   getFields,
-  getObjectInputArg,
   isCreateMutation,
   isDeleteMutation,
   isNotArrayOrConnectionType,
   typeToFieldOpts,
   isConnectionTypeName,
 } from './utils'
+import { PrismaSchemaBuilder } from '.'
+import { isObject } from 'util'
 
 interface Dictionary<T> {
   [key: string]: T
-}
-
-export interface TypesMap {
-  types: Dictionary<GraphQLTypeObject>
-  enums: Dictionary<GraphQLEnumObject>
-}
-
-const BASE_SCALARS = ['String', 'Boolean', 'Int', 'Float', 'ID']
-
-function buildTypesMap(schemaPath: string): TypesMap {
-  const typeDefs = readFileSync(schemaPath).toString()
-  const gqlTypes = extractTypes(typeDefs)
-
-  const types = gqlTypes.types.reduce<Dictionary<GraphQLTypeObject>>(
-    (acc, type) => {
-      acc[type.name] = type
-
-      return acc
-    },
-    {},
-  )
-
-  const enums = gqlTypes.enums.reduce<Dictionary<GraphQLEnumObject>>(
-    (acc, enumObject) => {
-      acc[enumObject.name] = enumObject
-
-      return acc
-    },
-    {},
-  )
-
-  return { types, enums }
 }
 
 function generateDefaultResolver(
@@ -101,7 +63,7 @@ function generateDefaultResolver(
         isNotArrayOrConnectionType(fieldToResolve) ||
         isCreateMutation(typeName, fieldName)
       ) {
-        args = args.where
+        args = args.data
       }
 
       if (isDeleteMutation(typeName, fieldName)) {
@@ -162,58 +124,8 @@ function findPrismaFieldType(
   return graphqlField
 }
 
-function exportInputObjectType(
-  inputType: GraphQLTypeObject,
-  typesMap: TypesMap,
-  seen: Dictionary<boolean>,
-): WrappedType[] {
-  seen[inputType.name] = true
-
-  const typesToExport: WrappedType[] = []
-
-  const inputObject = inputObjectType(inputType.name, arg => {
-    inputType.fields.forEach(field => {
-      if (isBaseScalar(field.type)) {
-        return getObjectInputArg(arg, field, typeToFieldOpts(field.type))
-      }
-
-      if (!seen[field.type.name]) {
-        if (field.type.isScalar && field.type.name === 'DateTime') {
-          typesToExport.push(exportDateTimeScalar())
-        } else if (field.type.isEnum) {
-          typesToExport.push(exportEnumType(typesMap.enums[field.type.name]))
-        } else {
-          typesToExport.push(
-            ...exportInputObjectType(
-              typesMap.types[field.type.name],
-              typesMap,
-              seen,
-            ),
-          )
-        }
-      }
-
-      arg.field(field.name, field.type.name as any, typeToFieldOpts(field.type))
-    })
-  })
-
-  return [...typesToExport, inputObject]
-}
-
 function exportEnumType(enumObject: GraphQLEnumObject) {
   return enumType(enumObject.name, enumObject.values)
-}
-
-function exportDateTimeScalar(): WrappedType {
-  return scalarType('DateTime', {
-    serialize(value) {
-      return value
-    },
-  })
-}
-
-function isBaseScalar(type: GraphQLType) {
-  return type.isScalar && BASE_SCALARS.includes(type.name)
 }
 
 function filterArgsToExpose(
@@ -239,61 +151,19 @@ function filterArgsToExpose(
   )
 }
 
-// TODO: Fix this
-let __typesMapCache: TypesMap | null = null
-let __exportedTypesMap: Dictionary<boolean> = {}
-
-function getTypesMap(schemaPath: string) {
-  if (__typesMapCache === null) {
-    __typesMapCache = buildTypesMap(schemaPath)
-  }
-
-  return __typesMapCache
-}
-
-function getExportedTypesMap(): Dictionary<boolean> {
-  return __exportedTypesMap
-}
-
-export function invalidateCache() {
-  __typesMapCache = null
-  __exportedTypesMap = {}
-}
-
-// Prevent from exporting the same type twice
-function addExportedTypesToGlobalCache(types: WrappedType[]): void {
-  if (types.length === 0) {
-    return
-  }
-
-  __exportedTypesMap = {
-    ...__exportedTypesMap,
-    ...types.reduce<Dictionary<boolean>>((acc, t) => {
-      acc[t.type.name] = true
-
-      return acc
-    }, {}),
-  }
-}
-
 class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
   GenTypes,
   TypeName
 > {
-  protected typesMap: TypesMap
   public prismaType: PrismaObject<GenTypes, TypeName>
 
   constructor(
     protected typeName: string,
     protected config: PrismaSchemaConfig,
+    protected typesMap: TypesMap,
   ) {
     super(typeName)
 
-    if (!existsSync(config.prisma.schemaPath)) {
-      throw new Error('Prisma GraphQL API not found')
-    }
-
-    this.typesMap = getTypesMap(config.prisma.schemaPath)
     this.prismaType = this.generatePrismaTypes() as any
   }
 
@@ -324,10 +194,6 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
 
   public getTypeConfig(): Types.ObjectTypeConfig {
     return this.typeConfig
-  }
-
-  public getTypesMap() {
-    return this.typesMap
   }
 
   protected generatePrismaTypes(): PrismaOutputOptsMap {
@@ -370,60 +236,6 @@ function isOutputFieldConfig(config: any): config is OutputFieldConfig {
   return config && config.args !== undefined
 }
 
-// TODO: Optimize this heavy function
-function getInputTypesToExport(
-  typeConfig: Types.ObjectTypeConfig,
-  typesMap: TypesMap,
-): WrappedType[] {
-  const exportedTypesMap = getExportedTypesMap()
-
-  return _(typeConfig.fields)
-    .filter(
-      field =>
-        isFieldDef(field) &&
-        isOutputFieldConfig(field.config) &&
-        field.config.args !== undefined,
-    )
-    .flatMap(field => {
-      return Object.values(((<FieldDef>field).config as any).args).map(
-        (arg: any) => arg.type,
-      ) as string[]
-    })
-    .filter(typeName => {
-      const graphqlType = typesMap.types[typeName]
-
-      return (
-        graphqlType !== undefined &&
-        (!exportedTypesMap[typeName] || !isBaseScalar(graphqlType.type as any))
-      )
-    })
-    .uniq()
-    .flatMap(typeName => {
-      const graphqlType = typesMap.types[typeName]
-
-      if (graphqlType.type.isInput) {
-        return exportInputObjectType(
-          graphqlType as GraphQLTypeObject,
-          typesMap,
-          {},
-        )
-      }
-
-      if (graphqlType.type.isEnum) {
-        return exportEnumType(typesMap.enums[typeName])
-      }
-
-      if (graphqlType.type.isScalar && graphqlType.type.name === 'DateTime') {
-        return exportDateTimeScalar()
-      }
-
-      throw new Error('Unsupported type')
-    })
-    .filter(t => exportedTypesMap[t.type.name] === undefined)
-    .uniqBy(t => t.type.name) // TODO: Optimize by sharing the `seen` typeMap in `exportInputObjectType`
-    .value()
-}
-
 function createRelayConnectionType(typeName: string) {
   const [normalTypeName] = typeName.split('Connection')
   const edgeTypeName = `${normalTypeName}Edge`
@@ -437,27 +249,95 @@ function createRelayConnectionType(typeName: string) {
 }
 
 function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
-  const exportedTypesMap = getExportedTypesMap()
-
   const connectionTypes = _(typeConfig.fields)
     .filter(
       field =>
         isFieldDef(field) &&
         isOutputFieldConfig(field.config) &&
-        isConnectionTypeName(field.config.type) &&
-        exportedTypesMap[field.config.type] === undefined,
+        isConnectionTypeName(field.config.type),
     )
     .flatMap((field: any) => createRelayConnectionType(field.config.type))
     .value()
 
-  if (
-    connectionTypes.length > 0 &&
-    exportedTypesMap['PageInfo'] === undefined
-  ) {
-    connectionTypes.push(prismaObjectType('PageInfo'))
-  }
-
   return connectionTypes
+}
+
+function getAllInputEnumTypes(typesMap: TypesMap): WrappedType[] {
+  const types = Object.values(typesMap.types)
+  const enums = Object.values(typesMap.enums)
+
+  const inputTypes = types
+    .filter(t => t.type.isInput)
+    .map(inputType => {
+      return inputObjectType(inputType.name, t => {
+        inputType.fields.forEach(field => {
+          t.field(
+            field.name,
+            field.type.name as any,
+            typeToFieldOpts(field.type),
+          )
+        })
+      })
+    })
+
+  const enumTypes = enums.map(enumObject => exportEnumType(enumObject))
+  const pageInfo = objectType('PageInfo', t => {
+    t.boolean('hasNextPage')
+    t.boolean('hasPreviousPage')
+    t.string('startCursor')
+    t.string('endCursor')
+  })
+  const longScalar = scalarType('Long', {
+    serialize(value) {
+      return value
+    },
+  })
+  const dateTimeScalar = scalarType('DateTime', {
+    serialize(value) {
+      return value
+    },
+  })
+  const batchPayload = objectType('BatchPayload', t => {
+    t.field('count', 'Long' as any)
+  })
+  const node = objectType('Node', t => {
+    t.id('id')
+  })
+
+  return [
+    ...inputTypes,
+    ...enumTypes,
+    dateTimeScalar,
+    longScalar,
+    batchPayload,
+    node,
+    pageInfo,
+  ]
+}
+
+/**
+ * Add all the scalar/enums/input types from prisma to `types`
+ * @param types The `makeSchema.types` option
+ */
+export function withPrismaTypes(types: any) {
+  return new WrappedType((schemaBuilder: any) => {
+    const schema = schemaBuilder as PrismaSchemaBuilder
+    const typesMap = schema.getPrismaTypesMap()
+
+    if (!types) {
+      return [] as any
+    }
+
+    if (Array.isArray(types)) {
+      return [...types, ...getAllInputEnumTypes(typesMap)]
+    }
+
+    if (isObject(types)) {
+      return [...Object.values(types), ...getAllInputEnumTypes(typesMap)]
+    }
+
+    return [types, ...getAllInputEnumTypes(typesMap)]
+  })
 }
 
 export function prismaObjectType<
@@ -472,13 +352,15 @@ export function prismaObjectType<
       },
   fn?: (t: PrismaObjectType<GenTypes, TypeName>) => void,
 ): WrappedType {
-  return new WrappedType((schema: any) => {
+  return new WrappedType((schemaBuilder: any) => {
+    const schema = schemaBuilder as PrismaSchemaBuilder
     // TODO refactor + make use of `objectTypeName`
     const realTypeName =
       typeof typeName === 'string' ? typeName : typeName.prismaTypeName
     const objectType = new PrismaObjectType<GenTypes, TypeName>(
       realTypeName,
       schema.getConfig(),
+      schema.getPrismaTypesMap(),
     )
 
     // mutate objectType
@@ -488,40 +370,26 @@ export function prismaObjectType<
       fn(objectType)
     }
 
-    const typesMap = objectType.getTypesMap()
     const typeConfig = objectType.getTypeConfig()
-    const inputTypesToExport = getInputTypesToExport(typeConfig, typesMap)
     const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
 
-    addExportedTypesToGlobalCache([
-      ...inputTypesToExport,
-      ...connectionTypesToExport,
-    ])
+    const output = [new WrappedType(objectType), ...connectionTypesToExport]
 
-    return [
-      new WrappedType(objectType),
-      ...inputTypesToExport,
-      ...connectionTypesToExport,
-    ] as any
+    return output as any
   })
 }
 
 export function prismaEnumType<GenTypes = GraphQLNexusGen>(
   typeName: PrismaEnumTypeNames<GenTypes>,
 ): WrappedType {
-  return new WrappedType((schema: any) => {
-    const typesMap = getTypesMap(schema.getConfig().prisma.schemaPath)
+  return new WrappedType((schemaBuilder: any) => {
+    const schema = schemaBuilder as PrismaSchemaBuilder
+    const typesMap = schema.getPrismaTypesMap()
 
     const graphqlEnumType = typesMap.enums[typeName as string]
 
     if (graphqlEnumType === undefined) {
       throw new Error(`Unknown enum '${typeName}' in Prisma API`)
-    }
-
-    const exportedTypesMap = getExportedTypesMap()
-
-    if (exportedTypesMap[typeName as string]) {
-      return
     }
 
     return enumType(typeName as string, graphqlEnumType.values) as any

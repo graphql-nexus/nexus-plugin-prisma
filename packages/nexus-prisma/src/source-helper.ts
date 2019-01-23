@@ -17,21 +17,29 @@ import {
   GraphQLUnionType,
   parse,
 } from 'graphql'
+import { readFileSync } from 'fs'
 
 /** Our own GraphQL schema/types abstraction. */
-export type GraphQLTypes = {
-  types: GraphQLTypeObject[]
-  enums: GraphQLEnumObject[]
+export type TypesMap = {
+  types: Record<string, GraphQLTypeObject>
+  enums: Record<string, GraphQLEnumObject>
   // unions: GraphQLUnionObject[];
 }
 
 /** Converts typeDefs, e.g. the raw SDL string, into our `GraphQLTypes`. */
-export function extractTypes(typeDefs: string): GraphQLTypes {
+export function extractTypes(schemaPath: string): TypesMap {
+  const typeDefs = readFileSync(schemaPath).toString()
   const schema = buildASTSchema(parse(typeDefs))
 
   return {
-    types: extractGraphQLTypes(schema),
-    enums: extractGraphQLEnums(schema),
+    types: extractGraphQLTypes(schema).reduce(
+      (acc, type) => ({ ...acc, [type.name]: type }),
+      {},
+    ),
+    enums: extractGraphQLEnums(schema).reduce(
+      (acc, type) => ({ ...acc, [type.name]: type }),
+      {},
+    ),
   }
 }
 
