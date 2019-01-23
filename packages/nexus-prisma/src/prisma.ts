@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { arg, enumType, inputObjectType, objectType, scalarType, core } from 'nexus'
 import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
 import { isObject } from 'util'
@@ -17,7 +16,7 @@ import {
   PrismaSchemaConfig,
   PrismaTypeNames,
 } from './types'
-import { getFields, isConnectionTypeName, typeToFieldOpts } from './utils'
+import { getFields, isConnectionTypeName, typeToFieldOpts, flatMap } from './utils'
 
 function findPrismaFieldType(
   typesMap: TypesMap,
@@ -173,17 +172,15 @@ function createRelayConnectionType(typeName: string) {
 }
 
 function getRelayConnectionTypesToExport(typeConfig: core.Types.ObjectTypeConfig) {
-  const connectionTypes = _(typeConfig.fields)
-    .filter(
-      field =>
-        isFieldDef(field) &&
-        isOutputFieldConfig(field.config) &&
-        isConnectionTypeName(field.config.type),
-    )
-    .flatMap((field: any) => createRelayConnectionType(field.config.type))
-    .value()
+  const connectionTypes = typeConfig.fields
+  .filter(
+    field =>
+      isFieldDef(field) &&
+      isOutputFieldConfig(field.config) &&
+      isConnectionTypeName(field.config.type),
+  )
 
-  return connectionTypes
+  return flatMap(connectionTypes, (field: any) => createRelayConnectionType(field.config.type))
 }
 
 function getAllInputEnumTypes(typesMap: TypesMap): core.WrappedType[] {

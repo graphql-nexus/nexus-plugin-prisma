@@ -1,5 +1,4 @@
 import { GraphQLFieldResolver } from 'graphql'
-import { camelCase } from 'lodash'
 import { GraphQLTypeField } from './source-helper'
 import { throwIfUnknownClientFunction } from './throw'
 import {
@@ -8,6 +7,7 @@ import {
   isDeleteMutation,
   isNotArrayOrConnectionType,
 } from './utils'
+const camelCase = require('camelcase')
 
 export function generateDefaultResolver(
   typeName: string,
