@@ -1,4 +1,4 @@
-import { ArgDefinition, SchemaConfig } from 'nexus/dist/types'
+import { core } from 'nexus'
 
 interface GenTypesShape {
   fields: Record<string, any>
@@ -22,7 +22,7 @@ export interface AnonymousPickOmitField {
 export type AnonymousInputFields = AnonymousField[] | AnonymousPickOmitField
 
 export interface PrismaOutputOpts {
-  args: Record<string, ArgDefinition>
+  args: Record<string, core.Types.ArgDefinition>
   description?: string
   list: boolean
   nullable: boolean
@@ -46,11 +46,9 @@ export type PrismaTypeNames<
   ? Extract<keyof GenTypes['fields'], string>
   : string
 
-  export type PrismaEnumTypeNames<
+export type PrismaEnumTypeNames<
   GenTypes = GraphQLNexusGen
-> = GenTypes extends GenTypesShape
-  ? GenTypes['enumTypesNames']
-  : string
+> = GenTypes extends GenTypesShape ? GenTypes['enumTypesNames'] : string
 
 export interface PickInputField<GenTypes, TypeName extends string> {
   pick: InputField<GenTypes, TypeName>[]
@@ -74,7 +72,8 @@ export type PrismaObject<
     : any
   : any
 
-export interface PrismaSchemaConfig extends SchemaConfig {
+export interface PrismaSchemaConfig extends core.Types.BuilderConfig {
+  types: any
   prisma: {
     schemaPath: string
     contextClientName: string

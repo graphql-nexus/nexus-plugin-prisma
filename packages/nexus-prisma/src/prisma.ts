@@ -1,106 +1,23 @@
-import { arg, enumType, inputObjectType, scalarType, objectType } from 'nexus'
-import { ObjectTypeDef, Types, WrappedType } from 'nexus/dist/core'
-import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
-import { GraphQLFieldResolver } from 'graphql'
 import * as _ from 'lodash'
+import { arg, enumType, inputObjectType, objectType, scalarType, core } from 'nexus'
+import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
+import { isObject } from 'util'
+import { PrismaSchemaBuilder } from '.'
+import { generateDefaultResolver } from './resolver'
 import { GraphQLEnumObject, GraphQLTypeField, TypesMap } from './source-helper'
-import { throwIfUnknownClientFunction } from './throw'
 import {
   AddFieldInput,
   FilterInputField,
   InputField,
   PickInputField,
+  PrismaEnumTypeNames,
   PrismaObject,
   PrismaOutputOpts,
   PrismaOutputOptsMap,
-  PrismaTypeNames,
   PrismaSchemaConfig,
-  PrismaEnumTypeNames,
+  PrismaTypeNames,
 } from './types'
-import {
-  getFields,
-  isCreateMutation,
-  isDeleteMutation,
-  isNotArrayOrConnectionType,
-  typeToFieldOpts,
-  isConnectionTypeName,
-} from './utils'
-import { PrismaSchemaBuilder } from '.'
-import { isObject } from 'util'
-
-interface Dictionary<T> {
-  [key: string]: T
-}
-
-function generateDefaultResolver(
-  typeName: string,
-  fieldToResolve: GraphQLTypeField,
-  contextClientName: string,
-): GraphQLFieldResolver<any, any, Dictionary<any>> {
-  return (root, args, ctx, info) => {
-    const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
-
-    if (typeName === 'Subscription') {
-      throw new Error('Subscription not supported yet')
-    }
-
-    const fieldName = fieldToResolve.name
-
-    if (fieldToResolve.type.isScalar) {
-      return root[fieldName]
-    }
-
-    if (isTopLevel) {
-      throwIfUnknownClientFunction(
-        fieldName,
-        typeName,
-        ctx,
-        contextClientName,
-        info,
-      )
-
-      if (
-        isNotArrayOrConnectionType(fieldToResolve) ||
-        isCreateMutation(typeName, fieldName)
-      ) {
-        args = args.data
-      }
-
-      if (isDeleteMutation(typeName, fieldName)) {
-        args = args.where
-      }
-
-      return ctx[contextClientName][fieldName](args)
-    }
-
-    if (isConnectionTypeName(typeName)) {
-      // returns `pageInfo` and `edges` queries by the client
-      return root[fieldName]
-    }
-
-    // fields inside `edges` are queried as well, we can simply return them
-    if (
-      typeName.endsWith('Edge') &&
-      typeName !== 'Edge' &&
-      (fieldName === 'node' || fieldName === 'cursor')
-    ) {
-      return root[fieldName]
-    }
-
-    const parentName = _.camelCase(typeName)
-
-    throwIfUnknownClientFunction(
-      parentName,
-      typeName,
-      ctx,
-      contextClientName,
-      info,
-    )
-
-    // FIXME: It can very well be something else than `id` (depending on the @unique field)
-    return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)
-  }
-}
+import { getFields, isConnectionTypeName, typeToFieldOpts } from './utils'
 
 function findPrismaFieldType(
   typesMap: TypesMap,
@@ -128,20 +45,20 @@ function exportEnumType(enumObject: GraphQLEnumObject) {
   return enumType(enumObject.name, enumObject.values)
 }
 
-function filterArgsToExpose(
-  allArgs: Record<string, ArgDefinition>,
-  argsToExpose: string[] | false | undefined,
+function whitelistArgs(
+  args: Record<string, ArgDefinition>,
+  whitelist: string[] | false | undefined,
 ) {
-  if (!argsToExpose) {
-    return allArgs
+  if (!whitelist) {
+    return args
   }
 
-  return Object.keys(allArgs).reduce<Record<string, ArgDefinition>>(
+  return Object.keys(args).reduce<Record<string, ArgDefinition>>(
     (acc, argName) => {
-      if (argsToExpose.includes(argName)) {
+      if (whitelist.includes(argName)) {
         return {
           ...acc,
-          [argName]: allArgs[argName],
+          [argName]: args[argName],
         }
       }
 
@@ -151,7 +68,7 @@ function filterArgsToExpose(
   )
 }
 
-class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
+class PrismaObjectType<GenTypes, TypeName extends string> extends core.ObjectTypeDef<
   GenTypes,
   TypeName
 > {
@@ -183,16 +100,23 @@ class PrismaObjectType<GenTypes, TypeName extends string> extends ObjectTypeDef<
         field.name,
       )
       const opts: PrismaOutputOpts = this.prismaType[fieldType.name]
-      const args = filterArgsToExpose(opts.args, field.args)
+      const args = whitelistArgs(opts.args, field.args)
 
-      this.field(fieldName, fieldType.type.name as any, {
-        ...opts,
-        args,
+      // Same as this.field(fieldName, fieldType.type.name, { ...opts, args })
+      // But typings are too strict
+      this.typeConfig.fields.push({
+        item: core.Types.NodeType.FIELD,
+        config: {
+          name: fieldName,
+          type: fieldType.type.name,
+          ...opts,
+          args,
+        },
       })
     })
   }
 
-  public getTypeConfig(): Types.ObjectTypeConfig {
+  public getTypeConfig(): core.Types.ObjectTypeConfig {
     return this.typeConfig
   }
 
@@ -242,13 +166,13 @@ function createRelayConnectionType(typeName: string) {
 
   return [
     prismaObjectType(typeName, t => {
-      t.prismaFields(['edges', 'pageInfo'])
+      t.prismaFields(['edges', 'pageInfo']) // Do not expose aggregate field
     }),
     prismaObjectType(edgeTypeName),
   ]
 }
 
-function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
+function getRelayConnectionTypesToExport(typeConfig: core.Types.ObjectTypeConfig) {
   const connectionTypes = _(typeConfig.fields)
     .filter(
       field =>
@@ -262,7 +186,7 @@ function getRelayConnectionTypesToExport(typeConfig: Types.ObjectTypeConfig) {
   return connectionTypes
 }
 
-function getAllInputEnumTypes(typesMap: TypesMap): WrappedType[] {
+function getAllInputEnumTypes(typesMap: TypesMap): core.WrappedType[] {
   const types = Object.values(typesMap.types)
   const enums = Object.values(typesMap.enums)
 
@@ -281,37 +205,37 @@ function getAllInputEnumTypes(typesMap: TypesMap): WrappedType[] {
     })
 
   const enumTypes = enums.map(enumObject => exportEnumType(enumObject))
-  const pageInfo = objectType('PageInfo', t => {
-    t.boolean('hasNextPage')
-    t.boolean('hasPreviousPage')
-    t.string('startCursor')
-    t.string('endCursor')
+  const pageInfoType = objectType('PageInfo', t => {
+    t.boolean('hasNextPage' as any)
+    t.boolean('hasPreviousPage' as any)
+    t.string('startCursor' as any)
+    t.string('endCursor' as any)
   })
-  const longScalar = scalarType('Long', {
+  const longScalarType = scalarType('Long', {
     serialize(value) {
       return value
     },
   })
-  const dateTimeScalar = scalarType('DateTime', {
+  const dateTimeScalarType = scalarType('DateTime', {
     serialize(value) {
       return value
     },
   })
-  const batchPayload = objectType('BatchPayload', t => {
-    t.field('count', 'Long' as any)
+  const batchPayloadType = objectType('BatchPayload', t => {
+    t.field('count' as any, 'Long' as any)
   })
-  const node = objectType('Node', t => {
-    t.id('id')
+  const nodeType = objectType('Node', t => {
+    t.id('id' as any)
   })
 
   return [
     ...inputTypes,
     ...enumTypes,
-    dateTimeScalar,
-    longScalar,
-    batchPayload,
-    node,
-    pageInfo,
+    dateTimeScalarType,
+    longScalarType,
+    batchPayloadType,
+    nodeType,
+    pageInfoType,
   ]
 }
 
@@ -320,7 +244,7 @@ function getAllInputEnumTypes(typesMap: TypesMap): WrappedType[] {
  * @param types The `makeSchema.types` option
  */
 export function withPrismaTypes(types: any) {
-  return new WrappedType((schemaBuilder: any) => {
+  return new core.WrappedType((schemaBuilder: any) => {
     const schema = schemaBuilder as PrismaSchemaBuilder
     const typesMap = schema.getPrismaTypesMap()
 
@@ -351,8 +275,8 @@ export function prismaObjectType<
         objectTypeName?: string
       },
   fn?: (t: PrismaObjectType<GenTypes, TypeName>) => void,
-): WrappedType {
-  return new WrappedType((schemaBuilder: any) => {
+): core.WrappedType {
+  return new core.WrappedType((schemaBuilder: any) => {
     const schema = schemaBuilder as PrismaSchemaBuilder
     // TODO refactor + make use of `objectTypeName`
     const realTypeName =
@@ -373,7 +297,7 @@ export function prismaObjectType<
     const typeConfig = objectType.getTypeConfig()
     const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
 
-    const output = [new WrappedType(objectType), ...connectionTypesToExport]
+    const output = [new core.WrappedType(objectType), ...connectionTypesToExport]
 
     return output as any
   })
@@ -381,8 +305,8 @@ export function prismaObjectType<
 
 export function prismaEnumType<GenTypes = GraphQLNexusGen>(
   typeName: PrismaEnumTypeNames<GenTypes>,
-): WrappedType {
-  return new WrappedType((schemaBuilder: any) => {
+): core.WrappedType {
+  return new core.WrappedType((schemaBuilder: any) => {
     const schema = schemaBuilder as PrismaSchemaBuilder
     const typesMap = schema.getPrismaTypesMap()
 

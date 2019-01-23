@@ -1,6 +1,5 @@
 import { existsSync } from 'fs'
-import { makeSchemaWithMetadata } from 'nexus'
-import { Metadata, SchemaBuilder } from 'nexus/dist/core'
+import { makeSchemaWithMetadata, core } from 'nexus'
 import { withPrismaTypes } from './prisma'
 import { extractTypes, TypesMap } from './source-helper'
 import { PrismaSchemaConfig } from './types'
@@ -8,11 +7,11 @@ import { removeUnusedTypesFromSchema } from './unused-types'
 
 export { prismaEnumType, prismaObjectType } from './prisma'
 
-export class PrismaSchemaBuilder extends SchemaBuilder {
+export class PrismaSchemaBuilder extends core.SchemaBuilder {
   private prismaTypesMap: TypesMap | null = null
 
   constructor(
-    protected metadata: Metadata,
+    protected metadata: core.Metadata,
     protected config: PrismaSchemaConfig,
   ) {
     super(metadata, config)
