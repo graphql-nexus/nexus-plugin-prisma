@@ -24,10 +24,12 @@ export type MaybeThunk<T> = T | (() => T);
 // Maybe Thunk, with args
 export type MaybeThunkArgs<T, A> = T | ((args?: A) => T);
 
-export type QueryNodeReturnType = null | Node_ReturnType;
+export type QueryFeedReturnType = MaybePromiseList<Post_ReturnType>;
 
-export interface QueryNodeArgs {
-  id: string;
+export type QueryFilterPostsReturnType = MaybePromiseList<Post_ReturnType>;
+
+export interface QueryFilterPostsArgs {
+  searchString: string;
 }
 
 export type QueryPostReturnType = null | Post_ReturnType;
@@ -36,73 +38,9 @@ export interface QueryPostArgs {
   where: PostWhereUniqueInput;
 }
 
-export type QueryPostsReturnType = MaybePromiseList<Post_ReturnType>;
-
-export interface QueryPostsArgs {
-  after?: null | string;
-  before?: null | string;
-  first?: null | number;
-  last?: null | number;
-  orderBy?: null | PostOrderByInput;
-  skip?: null | number;
-  where?: null | PostWhereInput;
-}
-
-export type QueryPostsConnectionReturnType = PostConnection_ReturnType;
-
-export interface QueryPostsConnectionArgs {
-  after?: null | string;
-  before?: null | string;
-  first?: null | number;
-  last?: null | number;
-  orderBy?: null | PostOrderByInput;
-  skip?: null | number;
-  where?: null | PostWhereInput;
-}
-
-export type QueryUserReturnType = null | User_ReturnType;
-
-export interface QueryUserArgs {
-  where: UserWhereUniqueInput;
-}
-
-export type QueryUsersReturnType = MaybePromiseList<User_ReturnType>;
-
-export interface QueryUsersArgs {
-  after?: null | string;
-  before?: null | string;
-  first?: null | number;
-  last?: null | number;
-  orderBy?: null | UserOrderByInput;
-  skip?: null | number;
-  where?: null | UserWhereInput;
-}
-
-export type QueryUsersConnectionReturnType = UserConnection_ReturnType;
-
-export interface QueryUsersConnectionArgs {
-  after?: null | string;
-  before?: null | string;
-  first?: null | number;
-  last?: null | number;
-  orderBy?: null | UserOrderByInput;
-  skip?: null | number;
-  where?: null | UserWhereInput;
-}
-
 export type QueryRootType = {};
 
 export type Query_ReturnType = {};
-
-export type NodeIdReturnType = string;
-
-export type NodeRootType = prisma.Node;
-
-export type Node_ReturnType = prisma.Node
-
-export interface PostWhereUniqueInput {
-  id?: null | string;
-}
 
 export type PostAuthorReturnType = User_ReturnType;
 
@@ -264,382 +202,69 @@ export interface UserWhereInput {
   posts_some?: null | PostWhereInput;
 }
 
-export type PostConnectionEdgesReturnType = MaybePromiseList<PostEdge_ReturnType>;
-
-export type PostConnectionPageInfoReturnType = PageInfo_ReturnType;
-
-export type PostConnectionRootType = prisma.PostConnection;
-
-export type PostConnection_ReturnType = prisma.PostConnection
-
-export type PostEdgeCursorReturnType = string;
-
-export type PostEdgeNodeReturnType = Post_ReturnType;
-
-export type PostEdgeRootType = prisma.PostEdge;
-
-export type PostEdge_ReturnType = prisma.PostEdge
-
-export type PageInfoEndCursorReturnType = string;
-
-export type PageInfoHasNextPageReturnType = boolean;
-
-export type PageInfoHasPreviousPageReturnType = boolean;
-
-export type PageInfoStartCursorReturnType = string;
-
-export type PageInfoRootType = prisma.PageInfo;
-
-export type PageInfo_ReturnType = prisma.PageInfo
-
-export interface UserWhereUniqueInput {
-  email?: null | string;
+export interface PostWhereUniqueInput {
   id?: null | string;
 }
 
-export type UserOrderByInput = "createdAt_ASC" | "createdAt_DESC" | "email_ASC" | "email_DESC" | "id_ASC" | "id_DESC" | "name_ASC" | "name_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
+export type MutationCreateDraftReturnType = Post_ReturnType;
 
-export type UserConnectionEdgesReturnType = MaybePromiseList<UserEdge_ReturnType>;
-
-export type UserConnectionPageInfoReturnType = PageInfo_ReturnType;
-
-export type UserConnectionRootType = prisma.UserConnection;
-
-export type UserConnection_ReturnType = prisma.UserConnection
-
-export type UserEdgeCursorReturnType = string;
-
-export type UserEdgeNodeReturnType = User_ReturnType;
-
-export type UserEdgeRootType = prisma.UserEdge;
-
-export type UserEdge_ReturnType = prisma.UserEdge
-
-export type MutationCreatePostReturnType = Post_ReturnType;
-
-export interface MutationCreatePostArgs {
-  data: PostCreateInput;
-}
-
-export type MutationCreateUserReturnType = User_ReturnType;
-
-export interface MutationCreateUserArgs {
-  data: UserCreateInput;
-}
-
-export type MutationDeleteManyPostsReturnType = BatchPayload_ReturnType;
-
-export interface MutationDeleteManyPostsArgs {
-  where?: null | PostWhereInput;
-}
-
-export type MutationDeleteManyUsersReturnType = BatchPayload_ReturnType;
-
-export interface MutationDeleteManyUsersArgs {
-  where?: null | UserWhereInput;
+export interface MutationCreateDraftArgs {
+  authorEmail: string;
+  content: string;
+  title: string;
 }
 
 export type MutationDeletePostReturnType = null | Post_ReturnType;
 
 export interface MutationDeletePostArgs {
-  where: PostWhereUniqueInput;
+  id: string;
 }
 
-export type MutationDeleteUserReturnType = null | User_ReturnType;
+export type MutationPublishReturnType = Post_ReturnType;
 
-export interface MutationDeleteUserArgs {
-  where: UserWhereUniqueInput;
+export interface MutationPublishArgs {
+  id: string;
 }
 
-export type MutationUpdateManyPostsReturnType = BatchPayload_ReturnType;
+export type MutationSignupUserReturnType = User_ReturnType;
 
-export interface MutationUpdateManyPostsArgs {
-  data: PostUpdateManyMutationInput;
-  where?: null | PostWhereInput;
-}
-
-export type MutationUpdateManyUsersReturnType = BatchPayload_ReturnType;
-
-export interface MutationUpdateManyUsersArgs {
-  data: UserUpdateManyMutationInput;
-  where?: null | UserWhereInput;
-}
-
-export type MutationUpdatePostReturnType = null | Post_ReturnType;
-
-export interface MutationUpdatePostArgs {
-  data: PostUpdateInput;
-  where: PostWhereUniqueInput;
-}
-
-export type MutationUpdateUserReturnType = null | User_ReturnType;
-
-export interface MutationUpdateUserArgs {
-  data: UserUpdateInput;
-  where: UserWhereUniqueInput;
-}
-
-export type MutationUpsertPostReturnType = Post_ReturnType;
-
-export interface MutationUpsertPostArgs {
-  create: PostCreateInput;
-  update: PostUpdateInput;
-  where: PostWhereUniqueInput;
-}
-
-export type MutationUpsertUserReturnType = User_ReturnType;
-
-export interface MutationUpsertUserArgs {
-  create: UserCreateInput;
-  update: UserUpdateInput;
-  where: UserWhereUniqueInput;
+export interface MutationSignupUserArgs {
+  email: string;
+  name: string;
 }
 
 export type MutationRootType = {};
 
 export type Mutation_ReturnType = {};
 
-export interface PostCreateInput {
-  author: UserCreateOneWithoutPostsInput;
-  content?: null | string;
-  published?: null | boolean;
-  title: string;
-}
-
-export interface UserCreateOneWithoutPostsInput {
-  connect?: null | UserWhereUniqueInput;
-  create?: null | UserCreateWithoutPostsInput;
-}
-
-export interface UserCreateWithoutPostsInput {
-  email: string;
-  name?: null | string;
-}
-
-export interface UserCreateInput {
-  email: string;
-  name?: null | string;
-  posts?: null | PostCreateManyWithoutAuthorInput;
-}
-
-export interface PostCreateManyWithoutAuthorInput {
-  connect: PostWhereUniqueInput[];
-  create: PostCreateWithoutAuthorInput[];
-}
-
-export interface PostCreateWithoutAuthorInput {
-  content?: null | string;
-  published?: null | boolean;
-  title: string;
-}
-
-export type BatchPayloadCountReturnType = prisma.Long;
-
-export type BatchPayloadRootType = prisma.BatchPayload;
-
-export type BatchPayload_ReturnType = prisma.BatchPayload
-
-export interface PostUpdateManyMutationInput {
-  content?: null | string;
-  published?: null | boolean;
-  title?: null | string;
-}
-
-export interface UserUpdateManyMutationInput {
-  email?: null | string;
-  name?: null | string;
-}
-
-export interface PostUpdateInput {
-  author?: null | UserUpdateOneRequiredWithoutPostsInput;
-  content?: null | string;
-  published?: null | boolean;
-  title?: null | string;
-}
-
-export interface UserUpdateOneRequiredWithoutPostsInput {
-  connect?: null | UserWhereUniqueInput;
-  create?: null | UserCreateWithoutPostsInput;
-  update?: null | UserUpdateWithoutPostsDataInput;
-  upsert?: null | UserUpsertWithoutPostsInput;
-}
-
-export interface UserUpdateWithoutPostsDataInput {
-  email?: null | string;
-  name?: null | string;
-}
-
-export interface UserUpsertWithoutPostsInput {
-  create: UserCreateWithoutPostsInput;
-  update: UserUpdateWithoutPostsDataInput;
-}
-
-export interface UserUpdateInput {
-  email?: null | string;
-  name?: null | string;
-  posts?: null | PostUpdateManyWithoutAuthorInput;
-}
-
-export interface PostUpdateManyWithoutAuthorInput {
-  connect: PostWhereUniqueInput[];
-  create: PostCreateWithoutAuthorInput[];
-  delete: PostWhereUniqueInput[];
-  deleteMany: PostScalarWhereInput[];
-  disconnect: PostWhereUniqueInput[];
-  update: PostUpdateWithWhereUniqueWithoutAuthorInput[];
-  updateMany: PostUpdateManyWithWhereNestedInput[];
-  upsert: PostUpsertWithWhereUniqueWithoutAuthorInput[];
-}
-
-export interface PostScalarWhereInput {
-  AND: PostScalarWhereInput[];
-  content?: null | string;
-  content_contains?: null | string;
-  content_ends_with?: null | string;
-  content_gt?: null | string;
-  content_gte?: null | string;
-  content_in: string[];
-  content_lt?: null | string;
-  content_lte?: null | string;
-  content_not?: null | string;
-  content_not_contains?: null | string;
-  content_not_ends_with?: null | string;
-  content_not_in: string[];
-  content_not_starts_with?: null | string;
-  content_starts_with?: null | string;
-  createdAt?: null | unknown;
-  createdAt_gt?: null | unknown;
-  createdAt_gte?: null | unknown;
-  createdAt_in: unknown[];
-  createdAt_lt?: null | unknown;
-  createdAt_lte?: null | unknown;
-  createdAt_not?: null | unknown;
-  createdAt_not_in: unknown[];
-  id?: null | string;
-  id_contains?: null | string;
-  id_ends_with?: null | string;
-  id_gt?: null | string;
-  id_gte?: null | string;
-  id_in: string[];
-  id_lt?: null | string;
-  id_lte?: null | string;
-  id_not?: null | string;
-  id_not_contains?: null | string;
-  id_not_ends_with?: null | string;
-  id_not_in: string[];
-  id_not_starts_with?: null | string;
-  id_starts_with?: null | string;
-  NOT: PostScalarWhereInput[];
-  OR: PostScalarWhereInput[];
-  published?: null | boolean;
-  published_not?: null | boolean;
-  title?: null | string;
-  title_contains?: null | string;
-  title_ends_with?: null | string;
-  title_gt?: null | string;
-  title_gte?: null | string;
-  title_in: string[];
-  title_lt?: null | string;
-  title_lte?: null | string;
-  title_not?: null | string;
-  title_not_contains?: null | string;
-  title_not_ends_with?: null | string;
-  title_not_in: string[];
-  title_not_starts_with?: null | string;
-  title_starts_with?: null | string;
-  updatedAt?: null | unknown;
-  updatedAt_gt?: null | unknown;
-  updatedAt_gte?: null | unknown;
-  updatedAt_in: unknown[];
-  updatedAt_lt?: null | unknown;
-  updatedAt_lte?: null | unknown;
-  updatedAt_not?: null | unknown;
-  updatedAt_not_in: unknown[];
-}
-
-export interface PostUpdateWithWhereUniqueWithoutAuthorInput {
-  data: PostUpdateWithoutAuthorDataInput;
-  where: PostWhereUniqueInput;
-}
-
-export interface PostUpdateWithoutAuthorDataInput {
-  content?: null | string;
-  published?: null | boolean;
-  title?: null | string;
-}
-
-export interface PostUpdateManyWithWhereNestedInput {
-  data: PostUpdateManyDataInput;
-  where: PostScalarWhereInput;
-}
-
-export interface PostUpdateManyDataInput {
-  content?: null | string;
-  published?: null | boolean;
-  title?: null | string;
-}
-
-export interface PostUpsertWithWhereUniqueWithoutAuthorInput {
-  create: PostCreateWithoutAuthorInput;
-  update: PostUpdateWithoutAuthorDataInput;
-  where: PostWhereUniqueInput;
-}
-
 export interface GraphQLNexusGenArgTypes {
   Query: {
-    node: QueryNodeArgs;
+    filterPosts: QueryFilterPostsArgs;
     post: QueryPostArgs;
-    posts: QueryPostsArgs;
-    postsConnection: QueryPostsConnectionArgs;
-    user: QueryUserArgs;
-    users: QueryUsersArgs;
-    usersConnection: QueryUsersConnectionArgs;
   };
   User: {
     posts: UserPostsArgs;
   };
   Mutation: {
-    createPost: MutationCreatePostArgs;
-    createUser: MutationCreateUserArgs;
-    deleteManyPosts: MutationDeleteManyPostsArgs;
-    deleteManyUsers: MutationDeleteManyUsersArgs;
+    createDraft: MutationCreateDraftArgs;
     deletePost: MutationDeletePostArgs;
-    deleteUser: MutationDeleteUserArgs;
-    updateManyPosts: MutationUpdateManyPostsArgs;
-    updateManyUsers: MutationUpdateManyUsersArgs;
-    updatePost: MutationUpdatePostArgs;
-    updateUser: MutationUpdateUserArgs;
-    upsertPost: MutationUpsertPostArgs;
-    upsertUser: MutationUpsertUserArgs;
+    publish: MutationPublishArgs;
+    signupUser: MutationSignupUserArgs;
   };
 }
 
 export interface GraphQLNexusGenRootTypes {
   Query: QueryRootType;
-  Node: NodeRootType;
   Post: PostRootType;
   User: UserRootType;
-  PostConnection: PostConnectionRootType;
-  PostEdge: PostEdgeRootType;
-  PageInfo: PageInfoRootType;
-  UserConnection: UserConnectionRootType;
-  UserEdge: UserEdgeRootType;
   Mutation: MutationRootType;
-  BatchPayload: BatchPayloadRootType;
 }
 
 export interface GraphQLNexusGenReturnTypes {
   Query: {
-    node: QueryNodeReturnType;
+    feed: QueryFeedReturnType;
+    filterPosts: QueryFilterPostsReturnType;
     post: QueryPostReturnType;
-    posts: QueryPostsReturnType;
-    postsConnection: QueryPostsConnectionReturnType;
-    user: QueryUserReturnType;
-    users: QueryUsersReturnType;
-    usersConnection: QueryUsersConnectionReturnType;
-  };
-  Node: {
-    id: NodeIdReturnType;
   };
   Post: {
     author: PostAuthorReturnType;
@@ -656,44 +281,11 @@ export interface GraphQLNexusGenReturnTypes {
     name: UserNameReturnType;
     posts: UserPostsReturnType;
   };
-  PostConnection: {
-    edges: PostConnectionEdgesReturnType;
-    pageInfo: PostConnectionPageInfoReturnType;
-  };
-  PostEdge: {
-    cursor: PostEdgeCursorReturnType;
-    node: PostEdgeNodeReturnType;
-  };
-  PageInfo: {
-    endCursor: PageInfoEndCursorReturnType;
-    hasNextPage: PageInfoHasNextPageReturnType;
-    hasPreviousPage: PageInfoHasPreviousPageReturnType;
-    startCursor: PageInfoStartCursorReturnType;
-  };
-  UserConnection: {
-    edges: UserConnectionEdgesReturnType;
-    pageInfo: UserConnectionPageInfoReturnType;
-  };
-  UserEdge: {
-    cursor: UserEdgeCursorReturnType;
-    node: UserEdgeNodeReturnType;
-  };
   Mutation: {
-    createPost: MutationCreatePostReturnType;
-    createUser: MutationCreateUserReturnType;
-    deleteManyPosts: MutationDeleteManyPostsReturnType;
-    deleteManyUsers: MutationDeleteManyUsersReturnType;
+    createDraft: MutationCreateDraftReturnType;
     deletePost: MutationDeletePostReturnType;
-    deleteUser: MutationDeleteUserReturnType;
-    updateManyPosts: MutationUpdateManyPostsReturnType;
-    updateManyUsers: MutationUpdateManyUsersReturnType;
-    updatePost: MutationUpdatePostReturnType;
-    updateUser: MutationUpdateUserReturnType;
-    upsertPost: MutationUpsertPostReturnType;
-    upsertUser: MutationUpsertUserReturnType;
-  };
-  BatchPayload: {
-    count: BatchPayloadCountReturnType;
+    publish: MutationPublishReturnType;
+    signupUser: MutationSignupUserReturnType;
   };
 }
 
@@ -704,56 +296,26 @@ export interface GraphQLNexusGenTypes {
   context: types.Context;
   enums: {
     PostOrderByInput: PostOrderByInput;
-    UserOrderByInput: UserOrderByInput;
   };
   objects: {
     Query: QueryRootType;
-    Node: NodeRootType;
     Post: PostRootType;
     User: UserRootType;
-    PostConnection: PostConnectionRootType;
-    PostEdge: PostEdgeRootType;
-    PageInfo: PageInfoRootType;
-    UserConnection: UserConnectionRootType;
-    UserEdge: UserEdgeRootType;
     Mutation: MutationRootType;
-    BatchPayload: BatchPayloadRootType;
   };
   interfaces: {};
   unions: {};
   scalars: {
-    ID: any;
     String: any;
+    ID: any;
     Int: any;
     DateTime: any;
     Boolean: any;
-    Long: any;
   };
   inputObjects: {
-    PostWhereUniqueInput: PostWhereUniqueInput;
     PostWhereInput: PostWhereInput;
     UserWhereInput: UserWhereInput;
-    UserWhereUniqueInput: UserWhereUniqueInput;
-    PostCreateInput: PostCreateInput;
-    UserCreateOneWithoutPostsInput: UserCreateOneWithoutPostsInput;
-    UserCreateWithoutPostsInput: UserCreateWithoutPostsInput;
-    UserCreateInput: UserCreateInput;
-    PostCreateManyWithoutAuthorInput: PostCreateManyWithoutAuthorInput;
-    PostCreateWithoutAuthorInput: PostCreateWithoutAuthorInput;
-    PostUpdateManyMutationInput: PostUpdateManyMutationInput;
-    UserUpdateManyMutationInput: UserUpdateManyMutationInput;
-    PostUpdateInput: PostUpdateInput;
-    UserUpdateOneRequiredWithoutPostsInput: UserUpdateOneRequiredWithoutPostsInput;
-    UserUpdateWithoutPostsDataInput: UserUpdateWithoutPostsDataInput;
-    UserUpsertWithoutPostsInput: UserUpsertWithoutPostsInput;
-    UserUpdateInput: UserUpdateInput;
-    PostUpdateManyWithoutAuthorInput: PostUpdateManyWithoutAuthorInput;
-    PostScalarWhereInput: PostScalarWhereInput;
-    PostUpdateWithWhereUniqueWithoutAuthorInput: PostUpdateWithWhereUniqueWithoutAuthorInput;
-    PostUpdateWithoutAuthorDataInput: PostUpdateWithoutAuthorDataInput;
-    PostUpdateManyWithWhereNestedInput: PostUpdateManyWithWhereNestedInput;
-    PostUpdateManyDataInput: PostUpdateManyDataInput;
-    PostUpsertWithWhereUniqueWithoutAuthorInput: PostUpsertWithWhereUniqueWithoutAuthorInput;
+    PostWhereUniqueInput: PostWhereUniqueInput;
   };
   allInputTypes: 
     | Extract<keyof GraphQLNexusGenTypes['inputObjects'], string>
