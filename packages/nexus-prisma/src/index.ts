@@ -4,6 +4,7 @@ import { withPrismaTypes } from './prisma'
 import { extractTypes, TypesMap } from './source-helper'
 import { PrismaSchemaConfig } from './types'
 import { removeUnusedTypesFromSchema } from './unused-types'
+import { GraphQLSchema } from 'graphql'
 
 export { prismaEnumType, prismaObjectType } from './prisma'
 
@@ -45,7 +46,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
   }
 }
 
-export function makePrismaSchema(options: PrismaSchemaConfig) {
+export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
   options.types = withPrismaTypes(options.types)
 
   const { schema, metadata } = makeSchemaWithMetadata(

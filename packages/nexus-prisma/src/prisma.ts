@@ -1,6 +1,12 @@
-import { arg, enumType, inputObjectType, objectType, scalarType, core } from 'nexus'
+import {
+  arg,
+  enumType,
+  inputObjectType,
+  objectType,
+  scalarType,
+  core,
+} from 'nexus'
 import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
-import { isObject } from 'util'
 import { PrismaSchemaBuilder } from '.'
 import { generateDefaultResolver } from './resolver'
 import { GraphQLEnumObject, GraphQLTypeField, TypesMap } from './source-helper'
@@ -16,7 +22,12 @@ import {
   PrismaSchemaConfig,
   PrismaTypeNames,
 } from './types'
-import { getFields, isConnectionTypeName, typeToFieldOpts, flatMap } from './utils'
+import {
+  getFields,
+  isConnectionTypeName,
+  typeToFieldOpts,
+  flatMap,
+} from './utils'
 
 function findPrismaFieldType(
   typesMap: TypesMap,
@@ -67,10 +78,10 @@ function whitelistArgs(
   )
 }
 
-class PrismaObjectType<GenTypes, TypeName extends string> extends core.ObjectTypeDef<
+class PrismaObjectType<
   GenTypes,
-  TypeName
-> {
+  TypeName extends string
+> extends core.ObjectTypeDef<GenTypes, TypeName> {
   public prismaType: PrismaObject<GenTypes, TypeName>
 
   constructor(
@@ -171,16 +182,19 @@ function createRelayConnectionType(typeName: string) {
   ]
 }
 
-function getRelayConnectionTypesToExport(typeConfig: core.Types.ObjectTypeConfig) {
-  const connectionTypes = typeConfig.fields
-  .filter(
+function getRelayConnectionTypesToExport(
+  typeConfig: core.Types.ObjectTypeConfig,
+) {
+  const connectionTypes = typeConfig.fields.filter(
     field =>
       isFieldDef(field) &&
       isOutputFieldConfig(field.config) &&
       isConnectionTypeName(field.config.type),
   )
 
-  return flatMap(connectionTypes, (field: any) => createRelayConnectionType(field.config.type))
+  return flatMap(connectionTypes, (field: any) =>
+    createRelayConnectionType(field.config.type),
+  )
 }
 
 function getAllInputEnumTypes(typesMap: TypesMap): core.WrappedType[] {
@@ -245,19 +259,7 @@ export function withPrismaTypes(types: any) {
     const schema = schemaBuilder as PrismaSchemaBuilder
     const typesMap = schema.getPrismaTypesMap()
 
-    if (!types) {
-      return [] as any
-    }
-
-    if (Array.isArray(types)) {
-      return [...types, ...getAllInputEnumTypes(typesMap)]
-    }
-
-    if (isObject(types)) {
-      return [...Object.values(types), ...getAllInputEnumTypes(typesMap)]
-    }
-
-    return [types, ...getAllInputEnumTypes(typesMap)]
+    return [types, ...getAllInputEnumTypes(typesMap)] as any
   })
 }
 
@@ -294,7 +296,10 @@ export function prismaObjectType<
     const typeConfig = objectType.getTypeConfig()
     const connectionTypesToExport = getRelayConnectionTypesToExport(typeConfig)
 
-    const output = [new core.WrappedType(objectType), ...connectionTypesToExport]
+    const output = [
+      new core.WrappedType(objectType),
+      ...connectionTypesToExport,
+    ]
 
     return output as any
   })
@@ -313,6 +318,6 @@ export function prismaEnumType<GenTypes = GraphQLNexusGen>(
       throw new Error(`Unknown enum '${typeName}' in Prisma API`)
     }
 
-    return enumType(typeName as string, graphqlEnumType.values) as any
+    return enumType(typeName as string, graphqlEnumType.values)
   })
 }
