@@ -31,11 +31,14 @@
   },
   "devDependencies": {
     "@types/graphql": "14.0.5",
+    "@types/jest": "^23.3.13",
     "@types/lodash": "4.14.120",
-    "jest": "23.6.0",
+    "graphql-tag": "^2.10.1",
+    "jest": "^24.0.0",
     "prettier": "1.16.1",
     "prisma": "1.24.0",
-    "ts-jest": "23.10.5",
+    "prisma-client-lib": "^1.25.3",
+    "ts-jest": "^23.10.5",
     "typescript": "3.2.4"
   },
   "prettier": {

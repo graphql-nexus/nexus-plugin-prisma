@@ -9,7 +9,8 @@
     "strict": true,
     "skipLibCheck": true,
     "noUnusedParameters": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "resolveJsonModule": true
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["node_modules"]
