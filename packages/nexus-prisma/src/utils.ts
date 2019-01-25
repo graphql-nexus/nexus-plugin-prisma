@@ -179,11 +179,19 @@ export function getGraphQLType(typeName: string, typesMap: TypesMap) {
 }
 
 export function isDeleteMutation(typeName: string, fieldName: string): boolean {
-  return typeName === 'Mutation' && fieldName.startsWith('delete')
+  return (
+    typeName === 'Mutation' &&
+    fieldName.startsWith('delete') &&
+    fieldName !== 'delete'
+  )
 }
 
 export function isCreateMutation(typeName: string, fieldName: string): boolean {
-  return typeName === 'Mutation' && fieldName.startsWith('create')
+  return (
+    typeName === 'Mutation' &&
+    fieldName.startsWith('create') &&
+    fieldName !== 'create'
+  )
 }
 
 export function isNotArrayOrConnectionType(
@@ -202,6 +210,9 @@ export function isConnectionTypeName(typeName: string): boolean {
 export const isObject = (obj: any): boolean =>
   obj !== null && typeof obj === 'object'
 
-export function flatMap<T, U>(array: T[], callbackfn: (value: T, index: number, array: T[]) => U[]): U[] {
-  return Array.prototype.concat(...array.map(callbackfn));
+export function flatMap<T, U>(
+  array: T[],
+  callbackfn: (value: T, index: number, array: T[]) => U[],
+): U[] {
+  return Array.prototype.concat(...array.map(callbackfn))
 }
