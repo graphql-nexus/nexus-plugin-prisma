@@ -37,14 +37,14 @@ export function generateDefaultResolver(
         info,
       )
 
-      if (
-        isNotArrayOrConnectionType(fieldToResolve) ||
-        isCreateMutation(typeName, fieldName)
-      ) {
+      if (isCreateMutation(typeName, fieldName)) {
         args = args.data
-      }
-
-      if (isDeleteMutation(typeName, fieldName)) {
+      } else if (isDeleteMutation(typeName, fieldName)) {
+        args = args.where
+      } else if ( // If is "findOne" query (eg: `user`, or `post`)
+        isNotArrayOrConnectionType(fieldToResolve) &&
+        (typeName !== 'Node' && fieldName !== 'node')
+      ) {
         args = args.where
       }
 
