@@ -68,7 +68,7 @@ export function generateDefaultResolver(
     const parentName = camelCase(typeName)
 
     throwIfUnknownClientFunction(
-      fieldName,
+      parentName,
       typeName,
       ctx,
       contextClientName,
