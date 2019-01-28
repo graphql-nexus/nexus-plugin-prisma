@@ -27,7 +27,7 @@
   "dependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
     "js-yaml": "3.12.1",
-    "prisma-generate-schema": "1.24.0"
+    "prisma-generate-schema": "1.25.4"
   },
   "devDependencies": {
     "@types/js-yaml": "3.12.0",
