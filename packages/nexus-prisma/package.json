@@ -37,7 +37,7 @@
     "jest": "^24.0.0",
     "prettier": "1.16.1",
     "prisma": "1.24.0",
-    "prisma-client-lib": "^1.25.3",
+    "prisma-client-lib": "1.25.4",
     "ts-jest": "^23.10.5",
     "typescript": "3.2.4"
   },
