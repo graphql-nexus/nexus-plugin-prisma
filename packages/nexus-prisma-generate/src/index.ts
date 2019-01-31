@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { writeFileSync, existsSync, lstatSync, mkdirSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync } from 'fs'
 import { EOL } from 'os'
 import { join, relative, dirname } from 'path'
 import * as meow from 'meow'
@@ -44,7 +44,6 @@ function main(cli: meow.Result) {
     console.log('No valid `output` was found. Must point to a .ts file')
     process.exit(1)
   }
-
 
   const rootPath = findRootDirectory()
   const schema = findDatamodelAndComputeSchema()
