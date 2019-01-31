@@ -35,7 +35,19 @@ export interface QueryFilterPostsArgs {
 export type QueryPostReturnType = null | Post_ReturnType;
 
 export interface QueryPostArgs {
-  where: PostWhereUniqueInput;
+  where?: null | PostWhereUniqueInput;
+}
+
+export type QueryPostsConnectionReturnType = PostConnection_ReturnType;
+
+export interface QueryPostsConnectionArgs {
+  after: string;
+  before: string;
+  first: number;
+  last: number;
+  orderBy: PostOrderByInput;
+  skip: number;
+  where: PostWhereInput;
 }
 
 export type Query_ReturnType = {};
@@ -67,13 +79,13 @@ export type UserNameReturnType = null | string;
 export type UserPostsReturnType = MaybePromiseList<Post_ReturnType>;
 
 export interface UserPostsArgs {
-  after?: null | string;
-  before?: null | string;
-  first?: null | number;
-  last?: null | number;
-  orderBy?: null | PostOrderByInput;
-  skip?: null | number;
-  where?: null | PostWhereInput;
+  after: string[];
+  before: string[];
+  first: number[];
+  last: number[];
+  orderBy: PostOrderByInput[];
+  skip: number[];
+  where: PostWhereInput[];
 }
 
 export type UserRootType = prisma.User;
@@ -83,46 +95,46 @@ export type User_ReturnType = prisma.User
 export type PostOrderByInput = "content_ASC" | "content_DESC" | "createdAt_ASC" | "createdAt_DESC" | "id_ASC" | "id_DESC" | "published_ASC" | "published_DESC" | "title_ASC" | "title_DESC" | "updatedAt_ASC" | "updatedAt_DESC";
 
 export interface PostWhereInput {
-  AND: PostWhereInput[];
+  AND?: null | PostWhereInput[];
   author?: null | UserWhereInput;
   content?: null | string;
   content_contains?: null | string;
   content_ends_with?: null | string;
   content_gt?: null | string;
   content_gte?: null | string;
-  content_in: string[];
+  content_in?: null | string[];
   content_lt?: null | string;
   content_lte?: null | string;
   content_not?: null | string;
   content_not_contains?: null | string;
   content_not_ends_with?: null | string;
-  content_not_in: string[];
+  content_not_in?: null | string[];
   content_not_starts_with?: null | string;
   content_starts_with?: null | string;
   createdAt?: null | unknown;
   createdAt_gt?: null | unknown;
   createdAt_gte?: null | unknown;
-  createdAt_in: unknown[];
+  createdAt_in?: null | unknown[];
   createdAt_lt?: null | unknown;
   createdAt_lte?: null | unknown;
   createdAt_not?: null | unknown;
-  createdAt_not_in: unknown[];
+  createdAt_not_in?: null | unknown[];
   id?: null | string;
   id_contains?: null | string;
   id_ends_with?: null | string;
   id_gt?: null | string;
   id_gte?: null | string;
-  id_in: string[];
+  id_in?: null | string[];
   id_lt?: null | string;
   id_lte?: null | string;
   id_not?: null | string;
   id_not_contains?: null | string;
   id_not_ends_with?: null | string;
-  id_not_in: string[];
+  id_not_in?: null | string[];
   id_not_starts_with?: null | string;
   id_starts_with?: null | string;
-  NOT: PostWhereInput[];
-  OR: PostWhereInput[];
+  NOT?: null | PostWhereInput[];
+  OR?: null | PostWhereInput[];
   published?: null | boolean;
   published_not?: null | boolean;
   title?: null | string;
@@ -130,39 +142,39 @@ export interface PostWhereInput {
   title_ends_with?: null | string;
   title_gt?: null | string;
   title_gte?: null | string;
-  title_in: string[];
+  title_in?: null | string[];
   title_lt?: null | string;
   title_lte?: null | string;
   title_not?: null | string;
   title_not_contains?: null | string;
   title_not_ends_with?: null | string;
-  title_not_in: string[];
+  title_not_in?: null | string[];
   title_not_starts_with?: null | string;
   title_starts_with?: null | string;
   updatedAt?: null | unknown;
   updatedAt_gt?: null | unknown;
   updatedAt_gte?: null | unknown;
-  updatedAt_in: unknown[];
+  updatedAt_in?: null | unknown[];
   updatedAt_lt?: null | unknown;
   updatedAt_lte?: null | unknown;
   updatedAt_not?: null | unknown;
-  updatedAt_not_in: unknown[];
+  updatedAt_not_in?: null | unknown[];
 }
 
 export interface UserWhereInput {
-  AND: UserWhereInput[];
+  AND?: null | UserWhereInput[];
   email?: null | string;
   email_contains?: null | string;
   email_ends_with?: null | string;
   email_gt?: null | string;
   email_gte?: null | string;
-  email_in: string[];
+  email_in?: null | string[];
   email_lt?: null | string;
   email_lte?: null | string;
   email_not?: null | string;
   email_not_contains?: null | string;
   email_not_ends_with?: null | string;
-  email_not_in: string[];
+  email_not_in?: null | string[];
   email_not_starts_with?: null | string;
   email_starts_with?: null | string;
   id?: null | string;
@@ -170,13 +182,13 @@ export interface UserWhereInput {
   id_ends_with?: null | string;
   id_gt?: null | string;
   id_gte?: null | string;
-  id_in: string[];
+  id_in?: null | string[];
   id_lt?: null | string;
   id_lte?: null | string;
   id_not?: null | string;
   id_not_contains?: null | string;
   id_not_ends_with?: null | string;
-  id_not_in: string[];
+  id_not_in?: null | string[];
   id_not_starts_with?: null | string;
   id_starts_with?: null | string;
   name?: null | string;
@@ -184,17 +196,17 @@ export interface UserWhereInput {
   name_ends_with?: null | string;
   name_gt?: null | string;
   name_gte?: null | string;
-  name_in: string[];
+  name_in?: null | string[];
   name_lt?: null | string;
   name_lte?: null | string;
   name_not?: null | string;
   name_not_contains?: null | string;
   name_not_ends_with?: null | string;
-  name_not_in: string[];
+  name_not_in?: null | string[];
   name_not_starts_with?: null | string;
   name_starts_with?: null | string;
-  NOT: UserWhereInput[];
-  OR: UserWhereInput[];
+  NOT?: null | UserWhereInput[];
+  OR?: null | UserWhereInput[];
   posts_every?: null | PostWhereInput;
   posts_none?: null | PostWhereInput;
   posts_some?: null | PostWhereInput;
@@ -203,6 +215,34 @@ export interface UserWhereInput {
 export interface PostWhereUniqueInput {
   id?: null | string;
 }
+
+export type PostConnectionEdgesReturnType = MaybePromiseList<PostEdge_ReturnType>;
+
+export type PostConnectionPageInfoReturnType = PageInfo_ReturnType;
+
+export type PostConnectionRootType = prisma.PostConnection;
+
+export type PostConnection_ReturnType = prisma.PostConnection
+
+export type PostEdgeCursorReturnType = string;
+
+export type PostEdgeNodeReturnType = Post_ReturnType;
+
+export type PostEdgeRootType = prisma.PostEdge;
+
+export type PostEdge_ReturnType = prisma.PostEdge
+
+export type PageInfoEndCursorReturnType = null | string;
+
+export type PageInfoHasNextPageReturnType = boolean;
+
+export type PageInfoHasPreviousPageReturnType = boolean;
+
+export type PageInfoStartCursorReturnType = null | string;
+
+export type PageInfoRootType = prisma.PageInfo;
+
+export type PageInfo_ReturnType = prisma.PageInfo
 
 export type MutationCreateDraftReturnType = Post_ReturnType;
 
@@ -237,6 +277,7 @@ export interface GraphQLNexusGenArgTypes {
   Query: {
     filterPosts: QueryFilterPostsArgs;
     post: QueryPostArgs;
+    postsConnection: QueryPostsConnectionArgs;
   };
   User: {
     posts: UserPostsArgs;
@@ -253,6 +294,9 @@ export interface GraphQLNexusGenRootTypes {
   Query: {};
   Post: PostRootType;
   User: UserRootType;
+  PostConnection: PostConnectionRootType;
+  PostEdge: PostEdgeRootType;
+  PageInfo: PageInfoRootType;
   Mutation: {};
 }
 
@@ -261,6 +305,7 @@ export interface GraphQLNexusGenReturnTypes {
     feed: QueryFeedReturnType;
     filterPosts: QueryFilterPostsReturnType;
     post: QueryPostReturnType;
+    postsConnection: QueryPostsConnectionReturnType;
   };
   Post: {
     author: PostAuthorReturnType;
@@ -276,6 +321,20 @@ export interface GraphQLNexusGenReturnTypes {
     id: UserIdReturnType;
     name: UserNameReturnType;
     posts: UserPostsReturnType;
+  };
+  PostConnection: {
+    edges: PostConnectionEdgesReturnType;
+    pageInfo: PostConnectionPageInfoReturnType;
+  };
+  PostEdge: {
+    cursor: PostEdgeCursorReturnType;
+    node: PostEdgeNodeReturnType;
+  };
+  PageInfo: {
+    endCursor: PageInfoEndCursorReturnType;
+    hasNextPage: PageInfoHasNextPageReturnType;
+    hasPreviousPage: PageInfoHasPreviousPageReturnType;
+    startCursor: PageInfoStartCursorReturnType;
   };
   Mutation: {
     createDraft: MutationCreateDraftReturnType;
@@ -297,6 +356,9 @@ export interface GraphQLNexusGenTypes {
     Query: {};
     Post: PostRootType;
     User: UserRootType;
+    PostConnection: PostConnectionRootType;
+    PostEdge: PostEdgeRootType;
+    PageInfo: PageInfoRootType;
     Mutation: {};
   };
   interfaces: {};

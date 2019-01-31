@@ -1,15 +1,14 @@
-import { existsSync } from 'fs'
-import { makeSchemaWithMetadata, core } from 'nexus'
+import { existsSync, readFileSync } from 'fs'
+import { buildSchema, GraphQLSchema } from 'graphql'
+import { core, makeSchemaWithMetadata } from 'nexus'
 import { withPrismaTypes } from './prisma'
-import { extractTypes, TypesMap } from './source-helper'
 import { PrismaSchemaConfig } from './types'
 import { removeUnusedTypesFromSchema } from './unused-types'
-import { GraphQLSchema } from 'graphql'
 
 export { prismaEnumType, prismaObjectType } from './prisma'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
-  private prismaTypesMap: TypesMap | null = null
+  private prismaTypesMap: GraphQLSchema | null = null
 
   constructor(
     protected metadata: core.Metadata,
@@ -37,9 +36,11 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
     return this.config
   }
 
-  public getPrismaTypesMap() {
+  public getPrismaSchema() {
     if (!this.prismaTypesMap) {
-      this.prismaTypesMap = extractTypes(this.config.prisma.schemaPath)
+      const typeDefs = readFileSync(this.config.prisma.schemaPath).toString()
+
+      this.prismaTypesMap = buildSchema(typeDefs)
     }
 
     return this.prismaTypesMap
@@ -47,6 +48,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
 }
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
+  console.log('WITH GRAPHQL ONLY')
   options.types = withPrismaTypes(options.types)
 
   const { schema, metadata } = makeSchemaWithMetadata(

@@ -2,7 +2,7 @@ import { stringArg } from 'nexus'
 import { prismaObjectType } from 'nexus-prisma'
 
 export const Query = prismaObjectType('Query', t => {
-  t.prismaFields(['post'])
+  t.prismaFields(['post', 'postsConnection'])
 
   t.field('feed', 'Post', {
     list: true,

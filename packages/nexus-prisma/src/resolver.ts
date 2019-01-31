@@ -1,5 +1,4 @@
-import { GraphQLFieldResolver } from 'graphql'
-import { GraphQLTypeField } from './source-helper'
+import { GraphQLFieldResolver, GraphQLField, isScalarType } from 'graphql'
 import { throwIfUnknownClientFunction } from './throw'
 import {
   isConnectionTypeName,
@@ -11,7 +10,7 @@ const camelCase = require('camelcase')
 
 export function generateDefaultResolver(
   typeName: string,
-  fieldToResolve: GraphQLTypeField,
+  fieldToResolve: GraphQLField<any, any>,
   contextClientName: string,
 ): GraphQLFieldResolver<any, any> {
   return (root, args, ctx, info) => {
@@ -23,7 +22,7 @@ export function generateDefaultResolver(
 
     const fieldName = fieldToResolve.name
 
-    if (fieldToResolve.type.isScalar) {
+    if (isScalarType(fieldToResolve.type)) {
       return root[fieldName]
     }
 
@@ -41,7 +40,8 @@ export function generateDefaultResolver(
         args = args.data
       } else if (isDeleteMutation(typeName, fieldName)) {
         args = args.where
-      } else if ( // If is "findOne" query (eg: `user`, or `post`)
+      } else if (
+        // If is "findOne" query (eg: `user`, or `post`)
         isNotArrayOrConnectionType(fieldToResolve) &&
         (typeName !== 'Node' && fieldName !== 'node')
       ) {

@@ -6,6 +6,7 @@ import {
   GraphQLSchema,
   GraphQLType,
   GraphQLUnionType,
+  isObjectType,
 } from 'graphql'
 
 export function removeUnusedTypesFromSchema(
@@ -16,9 +17,7 @@ export function removeUnusedTypesFromSchema(
     schema.getMutationType(),
     schema.getSubscriptionType(),
   ])
-  const objectTypes = Object.values(schema.getTypeMap()).filter(
-    type => type instanceof GraphQLObjectType,
-  ) as GraphQLObjectType[]
+  const objectTypes = Object.values(schema.getTypeMap()).filter(isObjectType)
 
   return new GraphQLSchema({
     query: schema.getQueryType(),

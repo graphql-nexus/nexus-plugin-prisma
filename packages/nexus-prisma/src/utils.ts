@@ -1,12 +1,5 @@
-import { arg } from 'nexus'
-import { InputObjectTypeDef } from 'nexus/dist/core'
-import { ArgDefinition, ArgOpts, FieldOpts } from 'nexus/dist/types'
-import {
-  GraphQLScalarType,
-  GraphQLType,
-  GraphQLTypeField,
-  TypesMap,
-} from './source-helper'
+import { GraphQLField, GraphQLSchema } from 'graphql'
+import { isListOrNullable, getTypeName, findObjectType } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
@@ -15,73 +8,14 @@ import {
   PickInputField,
 } from './types'
 
-export interface ScalarToObjectInputArg {
-  String: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-  Boolean: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-  Float: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-  Int: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-  ID: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-  DateTime: (arg: InputObjectTypeDef, name: string, opts: ArgOpts) => void
-}
-
-const scalarToObjectInputArg: ScalarToObjectInputArg = {
-  String: (arg, name, opts) => arg.string(name, opts),
-  Boolean: (arg, name, opts) => arg.boolean(name, opts),
-  Float: (arg, name, opts) => arg.float(name, opts),
-  Int: (arg, name, opts) => arg.int(name, opts),
-  ID: (arg, name, opts) => arg.id(name, opts),
-  DateTime: (arg, name, opts) => arg.field(name, 'DateTime' as any, opts),
-}
-
-export interface ScalarToLiteralArg {
-  String: (opts: ArgOpts) => ArgDefinition
-  Boolean: (opts: ArgOpts) => ArgDefinition
-  Float: (opts: ArgOpts) => ArgDefinition
-  Int: (opts: ArgOpts) => ArgDefinition
-  ID: (opts: ArgOpts) => ArgDefinition
-  DateTime: (opts: ArgOpts) => ArgDefinition
-}
-
-const scalarToLiteralArg: ScalarToLiteralArg = {
-  String: opts => arg('String', opts),
-  Boolean: opts => arg('Boolean', opts),
-  Float: opts => arg('Float', opts),
-  Int: opts => arg('Int', opts),
-  ID: opts => arg('ID', opts),
-  DateTime: opts => arg('DateTime' as any, opts),
-}
-
-export function getObjectInputArg(
-  arg: InputObjectTypeDef,
-  field: GraphQLTypeField,
-  opts: ArgOpts,
-) {
-  const scalarTypeName = field.type.name as GraphQLScalarType
-
-  return scalarToObjectInputArg[scalarTypeName](arg, field.name, opts)
-}
-
-export function getLiteralArg(typeName: string, opts: ArgOpts) {
-  const scalarTypeName = typeName as GraphQLScalarType
-
-  return scalarToLiteralArg[scalarTypeName](opts)
-}
-
-export function typeToFieldOpts(type: GraphQLType): FieldOpts {
-  return {
-    list: type.isArray,
-    nullable: !type.isRequired,
-  }
-}
-
 export function getAllFields(
   typeName: string,
-  typesMap: TypesMap,
+  schema: GraphQLSchema,
 ): ObjectField[] {
-  return getGraphQLType(typeName, typesMap).fields.map(
-    field =>
+  return Object.keys(findObjectType(typeName, schema).getFields()).map(
+    fieldName =>
       ({
-        name: field.name,
+        name: fieldName,
       } as ObjectField),
   )
 }
@@ -98,21 +32,21 @@ function isDefaultInput<GenTypes, TypeName extends string>(
 export function getFields<GenTypes, TypeName extends string>(
   inputFields: AddFieldInput<GenTypes, TypeName> | undefined,
   typeName: string,
-  typesMap: TypesMap,
+  schema: GraphQLSchema,
 ): ObjectField[] {
   const fields = isDefaultInput(inputFields)
-    ? getAllFields(typeName, typesMap)
+    ? getAllFields(typeName, schema)
     : extractFields(
         inputFields as AddFieldInput<GenTypes, TypeName>,
         typeName,
-        typesMap,
+        schema,
       )
   const normalizedFields = normalizeFields(fields)
 
-  const graphqlType = getGraphQLType(typeName, typesMap)
+  const objectType = findObjectType(typeName, schema)
 
   // Make sure all the fields exists
-  throwIfUnknownFields(graphqlType, normalizedFields, typeName)
+  throwIfUnknownFields(objectType, normalizedFields, typeName)
 
   return normalizedFields
 }
@@ -130,7 +64,7 @@ function extractFields<
 >(
   fields: AddFieldInput<GenTypes, TypeName>,
   typeName: string,
-  typesMap: TypesMap,
+  schema: GraphQLSchema,
 ): AnonymousField[] {
   if (Array.isArray(fields)) {
     return fields as AnonymousField[]
@@ -140,7 +74,7 @@ function extractFields<
     return fields.pick as AnonymousField[]
   }
 
-  const prismaFieldsNames = getAllFields(typeName, typesMap).map(f => f.name) // typeName = "Product"
+  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name) // typeName = "Product"
 
   if (Array.isArray(fields.filter)) {
     const fieldsToFilter = fields.filter as ObjectField[]
@@ -168,16 +102,6 @@ export function normalizeFields(fields: AnonymousField[]): ObjectField[] {
   })
 }
 
-export function getGraphQLType(typeName: string, typesMap: TypesMap) {
-  const graphQLType = typesMap.types[typeName]
-
-  if (graphQLType === undefined) {
-    throw new Error(`Type ${typeName} not found`)
-  }
-
-  return graphQLType
-}
-
 export function isDeleteMutation(typeName: string, fieldName: string): boolean {
   return (
     typeName === 'Mutation' &&
@@ -195,12 +119,10 @@ export function isCreateMutation(typeName: string, fieldName: string): boolean {
 }
 
 export function isNotArrayOrConnectionType(
-  fieldToResolve: GraphQLTypeField,
+  fieldToResolve: GraphQLField<any, any>,
 ): boolean {
-  return (
-    !fieldToResolve.type.isArray &&
-    !isConnectionTypeName(fieldToResolve.type.name)
-  )
+  const { list } = isListOrNullable(fieldToResolve.type)
+  return !list && !isConnectionTypeName(getTypeName(fieldToResolve.type))
 }
 
 export function isConnectionTypeName(typeName: string): boolean {

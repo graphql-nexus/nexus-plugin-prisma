@@ -1,15 +1,16 @@
 import {
-  arg,
-  enumType,
-  inputObjectType,
-  objectType,
-  scalarType,
-  core,
-} from 'nexus'
+  GraphQLNamedType,
+  GraphQLObjectType,
+  GraphQLSchema,
+  isEnumType,
+  isInputObjectType,
+  isScalarType,
+} from 'graphql'
+import { arg, core } from 'nexus'
 import { ArgDefinition, FieldDef, OutputFieldConfig } from 'nexus/dist/types'
 import { PrismaSchemaBuilder } from '.'
+import { findObjectTypeField, getTypeName, isListOrNullable } from './graphql'
 import { generateDefaultResolver } from './resolver'
-import { GraphQLEnumObject, GraphQLTypeField, TypesMap } from './source-helper'
 import {
   AddFieldInput,
   FilterInputField,
@@ -22,38 +23,7 @@ import {
   PrismaSchemaConfig,
   PrismaTypeNames,
 } from './types'
-import {
-  getFields,
-  isConnectionTypeName,
-  typeToFieldOpts,
-  flatMap,
-} from './utils'
-
-function findPrismaFieldType(
-  typesMap: TypesMap,
-  typeName: string,
-  fieldName: string,
-): GraphQLTypeField {
-  const graphqlType = typesMap.types[typeName]
-
-  if (graphqlType === undefined) {
-    throw new Error(`Type '${typeName}' not found in Prisma API`)
-  }
-
-  const graphqlField = graphqlType.fields.find(
-    field => field.name === fieldName,
-  )
-
-  if (graphqlField === undefined) {
-    throw new Error(`Field ${typeName}.${fieldName} not found in Prisma API`)
-  }
-
-  return graphqlField
-}
-
-function exportEnumType(enumObject: GraphQLEnumObject) {
-  return enumType(enumObject.name, enumObject.values)
-}
+import { flatMap, getFields, isConnectionTypeName } from './utils'
 
 function whitelistArgs(
   args: Record<string, ArgDefinition>,
@@ -87,7 +57,7 @@ class PrismaObjectType<
   constructor(
     protected typeName: string,
     protected config: PrismaSchemaConfig,
-    protected typesMap: TypesMap,
+    protected schema: GraphQLSchema,
   ) {
     super(typeName)
 
@@ -100,15 +70,11 @@ class PrismaObjectType<
   public prismaFields(inputFields?: AddFieldInput<GenTypes, TypeName>): void {
     const typeName = this.name
 
-    const fields = getFields(inputFields, typeName, this.typesMap)
+    const fields = getFields(inputFields, typeName, this.schema)
 
     fields.forEach(field => {
       const fieldName = field.alias === undefined ? field.name : field.alias
-      const fieldType = findPrismaFieldType(
-        this.typesMap,
-        this.name,
-        field.name,
-      )
+      const fieldType = findObjectTypeField(this.name, field.name, this.schema)
       const opts: PrismaOutputOpts = this.prismaType[fieldType.name]
       const args = whitelistArgs(opts.args, field.args)
 
@@ -118,7 +84,7 @@ class PrismaObjectType<
         item: core.Types.NodeType.FIELD,
         config: {
           name: fieldName,
-          type: fieldType.type.name,
+          type: getTypeName(fieldType.type),
           ...opts,
           args,
         },
@@ -132,33 +98,36 @@ class PrismaObjectType<
 
   protected generatePrismaTypes(): PrismaOutputOptsMap {
     const typeName = this.name
+    const graphqlType = this.schema.getType(typeName) as GraphQLObjectType
 
-    const graphqlType = this.typesMap.types[typeName]
+    return Object.values(graphqlType.getFields()).reduce<PrismaOutputOptsMap>(
+      (acc, field) => {
+        const { list, nullable } = isListOrNullable(field.type)
+        acc[field.name] = {
+          list,
+          nullable,
+          description: field.description ? field.description : undefined,
+          args: field.args.reduce<Record<string, ArgDefinition>>(
+            (acc, fieldArg) => {
+              acc[fieldArg.name] = arg(
+                getTypeName(fieldArg.type) as any,
+                isListOrNullable(field.type),
+              )
+              return acc
+            },
+            {},
+          ),
+          resolve: generateDefaultResolver(
+            typeName,
+            field,
+            this.config.prisma.contextClientName,
+          ),
+        }
 
-    return graphqlType.fields.reduce<PrismaOutputOptsMap>((acc, field) => {
-      acc[field.name] = {
-        list: field.type.isArray,
-        nullable: !field.type.isRequired,
-        description: field.description,
-        args: field.arguments.reduce<Record<string, ArgDefinition>>(
-          (acc, fieldArg) => {
-            acc[fieldArg.name] = arg(
-              fieldArg.type.name as any,
-              typeToFieldOpts(fieldArg.type),
-            )
-            return acc
-          },
-          {},
-        ),
-        resolve: generateDefaultResolver(
-          typeName,
-          field,
-          this.config.prisma.contextClientName,
-        ),
-      }
-
-      return acc
-    }, {})
+        return acc
+      },
+      {},
+    )
   }
 }
 
@@ -197,53 +166,23 @@ function getRelayConnectionTypesToExport(
   )
 }
 
-function getAllInputEnumTypes(typesMap: TypesMap): core.WrappedType[] {
-  const types = Object.values(typesMap.types)
-  const enums = Object.values(typesMap.enums)
+function getAllInputEnumTypes(
+  schema: GraphQLSchema,
+): (core.WrappedType | GraphQLNamedType)[] {
+  const types = Object.values(schema.getTypeMap())
 
-  const inputTypes = types
-    .filter(t => t.type.isInput)
-    .map(inputType => {
-      return inputObjectType(inputType.name, t => {
-        inputType.fields.forEach(field => {
-          t.field(
-            field.name,
-            field.type.name as any,
-            typeToFieldOpts(field.type),
-          )
-        })
-      })
-    })
+  const inputTypes = types.filter(isInputObjectType)
+  const enumTypes = types.filter(isEnumType)
+  const scalarTypes = types.filter(isScalarType)
 
-  const enumTypes = enums.map(enumObject => exportEnumType(enumObject))
-  const pageInfoType = objectType('PageInfo', t => {
-    t.boolean('hasNextPage' as any)
-    t.boolean('hasPreviousPage' as any)
-    t.string('startCursor' as any)
-    t.string('endCursor' as any)
-  })
-  const longScalarType = scalarType('Long', {
-    serialize(value) {
-      return value
-    },
-  })
-  const dateTimeScalarType = scalarType('DateTime', {
-    serialize(value) {
-      return value
-    },
-  })
-  const batchPayloadType = objectType('BatchPayload', t => {
-    t.field('count' as any, 'Long' as any)
-  })
-  const nodeType = objectType('Node', t => {
-    t.id('id' as any)
-  })
+  const pageInfoType = schema.getType('PageInfo')!
+  const batchPayloadType = schema.getType('BatchPayload')!
+  const nodeType = schema.getType('Node')!
 
   return [
     ...inputTypes,
     ...enumTypes,
-    dateTimeScalarType,
-    longScalarType,
+    ...scalarTypes,
     batchPayloadType,
     nodeType,
     pageInfoType,
@@ -257,7 +196,7 @@ function getAllInputEnumTypes(typesMap: TypesMap): core.WrappedType[] {
 export function withPrismaTypes(types: any) {
   return new core.WrappedType((schemaBuilder: any) => {
     const schema = schemaBuilder as PrismaSchemaBuilder
-    const typesMap = schema.getPrismaTypesMap()
+    const typesMap = schema.getPrismaSchema()
 
     return [types, ...getAllInputEnumTypes(typesMap)] as any
   })
@@ -283,7 +222,7 @@ export function prismaObjectType<
     const objectType = new PrismaObjectType<GenTypes, TypeName>(
       realTypeName,
       schema.getConfig(),
-      schema.getPrismaTypesMap(),
+      schema.getPrismaSchema(),
     )
 
     // mutate objectType
@@ -310,14 +249,13 @@ export function prismaEnumType<GenTypes = GraphQLNexusGen>(
 ): core.WrappedType {
   return new core.WrappedType((schemaBuilder: any) => {
     const schema = schemaBuilder as PrismaSchemaBuilder
-    const typesMap = schema.getPrismaTypesMap()
 
-    const graphqlEnumType = typesMap.enums[typeName as string]
+    const graphqlEnumType = schema.getPrismaSchema().getType(typeName as string)
 
     if (graphqlEnumType === undefined) {
       throw new Error(`Unknown enum '${typeName}' in Prisma API`)
     }
 
-    return enumType(typeName as string, graphqlEnumType.values)
+    return graphqlEnumType as any
   })
 }
