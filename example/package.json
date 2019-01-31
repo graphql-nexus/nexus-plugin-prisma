@@ -6,9 +6,9 @@
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src"
   },
   "dependencies": {
-    "graphql": "^14.0.2",
-    "graphql-yoga": "^1.17.0",
-    "nexus": "^0.7.0-alpha.2",
+    "graphql": "14.1.1",
+    "graphql-yoga": "1.17.1",
+    "nexus": "0.7.0-alpha.2",
     "nexus-prisma": "0.0.17",
     "prisma-client-lib": "1.24.0"
   },
