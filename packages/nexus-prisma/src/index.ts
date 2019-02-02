@@ -1,16 +1,20 @@
 import { GraphQLSchema } from 'graphql'
 import { core } from 'nexus'
 import { PrismaSchemaBuilder } from './builder'
-import { withPrismaTypes } from './definition'
 import { PrismaSchemaConfig } from './types'
 import { removeUnusedTypesFromSchema } from './unused-types'
+import { getAllInputEnumTypes } from './utils'
 
 export { /*prismaEnumType, */ prismaObjectType } from './definition'
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
-  options.types = withPrismaTypes(options.types)
+  const builder = new PrismaSchemaBuilder(options)
+  options.types = [
+    options.types,
+    ...getAllInputEnumTypes(builder.getPrismaSchema()),
+  ]
 
-  const { schema } = core.makeSchemaInternal(options, PrismaSchemaBuilder)
+  const { schema } = core.makeSchemaInternal(options, builder)
 
   // Only in development envs do we want to worry about regenerating the
   // schema definition and/or generated types.
