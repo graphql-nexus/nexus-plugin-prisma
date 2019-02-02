@@ -33,7 +33,7 @@ export interface PrismaObjectTypeConfig<TypeName extends string>
 export function prismaObjectType<TypeName extends string>(
   typeConfig: PrismaObjectTypeConfig<TypeName>,
 ) {
-  return core.nexusWrappedFn(builder => {
+  return core.nexusWrappedType(typeConfig.name, builder => {
     const { definition, ...rest } = typeConfig
     if (!isPrismaSchemaBuilder(builder)) {
       throw new Error('prismaObjectType can only be used by makePrismaSchema')
