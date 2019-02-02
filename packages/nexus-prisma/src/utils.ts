@@ -1,12 +1,13 @@
 import { GraphQLField, GraphQLSchema } from 'graphql'
-import { isListOrNullable, getTypeName, findObjectType } from './graphql'
+import { isListOrRequired, getTypeName, findObjectType } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
   AnonymousField,
   ObjectField,
   PickInputField,
-} from './types'
+} from './rewrite_types'
+import { core } from 'nexus'
 
 export function getAllFields(
   typeName: string,
@@ -20,27 +21,20 @@ export function getAllFields(
   )
 }
 
-function isDefaultInput<GenTypes, TypeName extends string>(
-  inputFields: AddFieldInput<GenTypes, TypeName> | undefined,
+function isDefaultInput<TypeName extends string>(
+  inputFields: AddFieldInput<TypeName> | undefined,
 ): boolean {
-  return (
-    inputFields === undefined ||
-    (Array.isArray(inputFields) && inputFields.length === 0)
-  )
+  return inputFields === undefined
 }
 
-export function getFields<GenTypes, TypeName extends string>(
-  inputFields: AddFieldInput<GenTypes, TypeName> | undefined,
+export function getFields<TypeName extends string>(
+  inputFields: AddFieldInput<TypeName> | undefined,
   typeName: string,
   schema: GraphQLSchema,
 ): ObjectField[] {
   const fields = isDefaultInput(inputFields)
     ? getAllFields(typeName, schema)
-    : extractFields(
-        inputFields as AddFieldInput<GenTypes, TypeName>,
-        typeName,
-        schema,
-      )
+    : extractFields(inputFields as AddFieldInput<TypeName>, typeName, schema)
   const normalizedFields = normalizeFields(fields)
 
   const objectType = findObjectType(typeName, schema)
@@ -51,18 +45,14 @@ export function getFields<GenTypes, TypeName extends string>(
   return normalizedFields
 }
 
-function isPickInputField<
-  GenTypes = GraphQLNexusGen,
-  TypeName extends string = any
->(arg: any): arg is PickInputField<GenTypes, TypeName> {
-  return (arg as PickInputField<GenTypes, TypeName>).pick !== undefined
+function isPickInputField<TypeName extends string = any>(
+  arg: any,
+): arg is PickInputField<TypeName> {
+  return (arg as PickInputField<TypeName>).pick !== undefined
 }
 
-function extractFields<
-  GenTypes = GraphQLNexusGen,
-  TypeName extends string = any
->(
-  fields: AddFieldInput<GenTypes, TypeName>,
+function extractFields<TypeName extends string = any>(
+  fields: AddFieldInput<TypeName>,
   typeName: string,
   schema: GraphQLSchema,
 ): AnonymousField[] {
@@ -70,7 +60,7 @@ function extractFields<
     return fields as AnonymousField[]
   }
 
-  if (isPickInputField<GenTypes>(fields)) {
+  if (isPickInputField(fields)) {
     return fields.pick as AnonymousField[]
   }
 
@@ -121,7 +111,7 @@ export function isCreateMutation(typeName: string, fieldName: string): boolean {
 export function isNotArrayOrConnectionType(
   fieldToResolve: GraphQLField<any, any>,
 ): boolean {
-  const { list } = isListOrNullable(fieldToResolve.type)
+  const { list } = isListOrRequired(fieldToResolve.type)
   return !list && !isConnectionTypeName(getTypeName(fieldToResolve.type))
 }
 
@@ -137,4 +127,27 @@ export function flatMap<T, U>(
   callbackfn: (value: T, index: number, array: T[]) => U[],
 ): U[] {
   return Array.prototype.concat(...array.map(callbackfn))
+}
+
+export function whitelistArgs(
+  args: Record<string, core.NexusArgDef<string>>,
+  whitelist: string[] | false | undefined,
+) {
+  if (!whitelist) {
+    return args
+  }
+
+  return Object.keys(args).reduce<Record<string, core.NexusArgDef<string>>>(
+    (acc, argName) => {
+      if (whitelist.includes(argName)) {
+        return {
+          ...acc,
+          [argName]: args[argName],
+        }
+      }
+
+      return acc
+    },
+    {},
+  )
 }

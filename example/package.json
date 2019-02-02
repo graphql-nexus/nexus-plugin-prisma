@@ -8,13 +8,14 @@
   "dependencies": {
     "graphql": "^14.0.2",
     "graphql-yoga": "^1.17.0",
-    "nexus": "^0.7.0-alpha.2",
+    "nexus": "^0.9.0",
     "nexus-prisma": "0.0.17",
     "prisma-client-lib": "1.24.0"
   },
   "devDependencies": {
     "@types/graphql": "14.0.4",
     "@types/node": "10.12.20",
+    "nexus-prisma-generate": "^0.0.4",
     "ts-node-dev": "1.0.0-pre.32",
     "typescript": "3.2.4"
   },

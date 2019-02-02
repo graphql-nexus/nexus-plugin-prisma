@@ -20,9 +20,9 @@ export const schema = makePrismaSchema({
     typegen: path.join(__dirname, './generated/nexus.ts'),
   },
 
-  nullability: {
-    input: false,
-    inputList: false,
+  nonNullDefaults: {
+    input: true,
+    output: true,
   },
 
   typegenAutoConfig: {

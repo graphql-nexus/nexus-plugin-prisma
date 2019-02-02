@@ -1,11 +1,13 @@
 // GENERATED TYPES FOR PRISMA PLUGIN. /!\ DO NOT EDIT MANUALLY
 
 import {
-  ArgDefinition,
-  ContextValue,
-  RootValue,
-} from 'nexus/dist/types'
+  core
+} from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
+
+type ArgDefinition = core.NexusArgDef<string>
+type ContextValue = core.NexusArgDef<string>
+type RootValue = core.RootValue<string>
 
 import * as prisma from './prisma-client'
 
@@ -19,7 +21,7 @@ type QueryObject =
   | { name: 'user', args?: QueryUserArgs[] | false, alias?: string  } 
   | { name: 'users', args?: QueryUsersArgs[] | false, alias?: string  } 
   | { name: 'usersConnection', args?: QueryUsersConnectionArgs[] | false, alias?: string  } 
-  | { name: 'node', args?: QueryNodeArgs[] | false, alias?: string  } 
+  | { name: 'node', args?: QueryNodeArgs[] | false, alias?: string  }
 
 type QueryFields =
   | 'post'
@@ -1601,7 +1603,6 @@ export type enumTypesNames =
   | 'PostOrderByInput'
   | 'UserOrderByInput'
   | 'MutationType'
-  
 
 export interface PluginTypes {
   fields: {
@@ -1646,6 +1647,6 @@ export interface PluginTypes {
 }
 
 declare global {
-  interface GraphQLNexusGen extends PluginTypes {}
+  interface NexusGen extends PluginTypes {}
 }
   

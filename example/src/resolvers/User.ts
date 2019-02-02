@@ -1,3 +1,8 @@
 import { prismaObjectType } from 'nexus-prisma'
 
-export const User = prismaObjectType('User')
+export const User = prismaObjectType({
+  name: 'User',
+  definition(t) {
+    t.prismaFields()
+  },
+})

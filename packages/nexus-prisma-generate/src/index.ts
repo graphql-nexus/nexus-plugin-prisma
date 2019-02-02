@@ -100,7 +100,7 @@ ${objectTypes
 }
 
 declare global {
-  interface GraphQLNexusGen extends PluginTypes {}
+  interface NexusGen extends PluginTypes {}
 }
   `
 }
@@ -119,7 +119,7 @@ ${renderTypeFieldDetails(type)}
 
 function renderTypeFieldDetails(type: GraphQLTypeObject) {
   return `\
-export interface ${getTypeObjectName(type)}<GenTypes = GraphQLNexusGen> {
+export interface ${getTypeObjectName(type)}<GenTypes = NexusGen> {
 ${type.fields
   .map(
     field => `\
