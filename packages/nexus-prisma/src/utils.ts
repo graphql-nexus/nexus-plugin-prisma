@@ -1,12 +1,13 @@
 import {
   GraphQLField,
-  GraphQLSchema,
   GraphQLNamedType,
-  isInputObjectType,
+  GraphQLSchema,
   isEnumType,
+  isInputObjectType,
   isScalarType,
 } from 'graphql'
-import { isListOrRequired, getTypeName, findObjectType } from './graphql'
+import { core } from 'nexus'
+import { findObjectType, getTypeName, isList } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
@@ -14,7 +15,6 @@ import {
   ObjectField,
   PickInputField,
 } from './types'
-import { core } from 'nexus'
 
 export function getAllInputEnumTypes(
   schema: GraphQLSchema,
@@ -141,8 +141,10 @@ export function isCreateMutation(typeName: string, fieldName: string): boolean {
 export function isNotArrayOrConnectionType(
   fieldToResolve: GraphQLField<any, any>,
 ): boolean {
-  const { list } = isListOrRequired(fieldToResolve.type)
-  return !list && !isConnectionTypeName(getTypeName(fieldToResolve.type))
+  return (
+    !isList(fieldToResolve.type) &&
+    !isConnectionTypeName(getTypeName(fieldToResolve.type))
+  )
 }
 
 export function isConnectionTypeName(typeName: string): boolean {
