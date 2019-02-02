@@ -117,3 +117,25 @@ function forEachAncestorDirectory<T>(
     directory = parentPath
   }
 }
+
+export function getImportPathRelativeToOutput(
+  importPath: string,
+  outputDir: string,
+): string {
+  let relativePath = path.relative(path.dirname(outputDir), importPath)
+
+  if (!relativePath.startsWith('.')) {
+    relativePath = './' + relativePath
+  }
+
+  // remove .ts or .js file extension
+  relativePath = relativePath.replace(/\.(ts|js)$/, '')
+
+  // remove /index
+  relativePath = relativePath.replace(/\/index$/, '')
+
+  // replace \ with /
+  relativePath = relativePath.replace(/\\/g, '/')
+
+  return relativePath
+}

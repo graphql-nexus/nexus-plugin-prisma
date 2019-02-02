@@ -1,19 +1,29 @@
 #!/usr/bin/env node
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs'
-import { EOL } from 'os'
-import { join, relative, dirname } from 'path'
-import * as meow from 'meow'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import {
-  extractTypes,
-  GraphQLTypeField,
-  GraphQLTypeObject,
-  GraphQLTypes,
-  GraphQLTypeArgument,
-  GraphQLType,
-  GraphQLEnumObject,
-} from './source-helper'
-import { findDatamodelAndComputeSchema, findRootDirectory } from './config'
+  buildASTSchema,
+  GraphQLEnumType,
+  GraphQLField,
+  GraphQLInputField,
+  GraphQLInputObjectType,
+  GraphQLObjectType,
+  GraphQLSchema,
+  isEnumType,
+  isInputObjectType,
+  isObjectType,
+  isScalarType,
+  parse,
+} from 'graphql'
+import * as meow from 'meow'
+import { EOL } from 'os'
+import { dirname, join } from 'path'
+import {
+  findDatamodelAndComputeSchema,
+  findRootDirectory,
+  getImportPathRelativeToOutput,
+} from './config'
+import { getFinalType, getTypeName, isList, isRequired } from './graphql'
 
 const cli = meow(
   `
@@ -46,10 +56,10 @@ function main(cli: meow.Result) {
   }
 
   const rootPath = findRootDirectory()
-  const schema = findDatamodelAndComputeSchema()
-  const types = extractTypes(schema)
+  const typeDefs = findDatamodelAndComputeSchema()
+  const schema = buildASTSchema(parse(typeDefs))
   const typesToRender = render(
-    types,
+    schema,
     getImportPathRelativeToOutput(prismaClientDir, output),
   )
 
@@ -62,19 +72,22 @@ function main(cli: meow.Result) {
   console.log(`Types generated at ${output}`)
 }
 
-function render(types: GraphQLTypes, prismaClientPath: string) {
-  const objectTypes = types.types.filter(t => t.type.isObject)
-  const inputTypes = types.types.filter(t => t.type.isInput)
-  const enumTypes = types.enums
+function render(schema: GraphQLSchema, prismaClientPath: string) {
+  const types = Object.values(schema.getTypeMap())
+  const objectTypes = types.filter(
+    t => isObjectType(t) && !t.name.startsWith('__'),
+  ) as GraphQLObjectType[]
+  const inputTypes = types.filter(isInputObjectType)
+  const enumTypes = types.filter(
+    t => isEnumType(t) && !t.name.startsWith('__'),
+  ) as GraphQLEnumType[]
 
   return `\
 // GENERATED TYPES FOR PRISMA PLUGIN. /!\\ DO NOT EDIT MANUALLY
 
 import {
-  ArgDefinition,
-  ContextValue,
-  RootValue,
-} from 'nexus/dist/types'
+  core
+} from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
 
 import * as prisma from '${prismaClientPath}'
@@ -105,37 +118,45 @@ declare global {
   `
 }
 
-function renderType(type: GraphQLTypeObject) {
+function renderType(type: GraphQLObjectType) {
+  const fields = Object.values(type.getFields())
+
   return `\
 // Types for ${type.name}
 
-${renderFields(type)}
+${renderFields(type, fields)}
 
-${renderFieldsArgs(type)}
+${renderFieldsArgs(type, fields)}
 
-${renderTypeFieldDetails(type)}
+${renderTypeFieldDetails(type, fields)}
 `
 }
 
-function renderTypeFieldDetails(type: GraphQLTypeObject) {
+function renderTypeFieldDetails(
+  type: GraphQLObjectType,
+  fields: GraphQLField<any, any>[],
+) {
   return `\
-export interface ${getTypeObjectName(type)}<GenTypes = NexusGen> {
-${type.fields
+export interface ${getTypeObjectName(type)} {
+${fields
   .map(
     field => `\
   ${field.name}: {
     args: ${
-      field.arguments.length > 0
-        ? `Record<${getTypeFieldArgName(type, field)}, ArgDefinition>`
+      field.args.length > 0
+        ? `Record<${getTypeFieldArgName(
+            type,
+            field,
+          )}, core.NexusArgDef<string>>`
         : '{}'
     }
     description: string
-    list: ${field.type.isArray || false}
-    nullable: ${!field.type.isRequired}
+    list: ${isList(field.type) || false}
+    nullable: ${!isRequired(field.type)}
     resolve: (
-      root: RootValue<GenTypes, "${type.name}">,
+      root: core.RootValue<"${type.name}">,
       args: ${renderResolverArgs(field)},
-      context: ContextValue<GenTypes>,
+      context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => ${renderResolverReturnType(field)};
   }`,
@@ -145,25 +166,28 @@ ${type.fields
   `
 }
 
-function renderResolverArgs(field: GraphQLTypeField) {
+function renderResolverArgs(field: GraphQLField<any, any>) {
   return `{\
- ${field.arguments
+ ${field.args
    .map(
-     arg => `${arg.name}${arg.type.isRequired ? '' : '?'}: ${getTSType(arg)}`,
+     arg => `${arg.name}${isRequired(arg.type) ? '' : '?'}: ${getTSType(arg)}`,
    )
    .join(', ')} }\
   `
 }
 
-function renderFields(type: GraphQLTypeObject) {
+function renderFields(
+  type: GraphQLObjectType,
+  fields: GraphQLField<any, any>[],
+) {
   return `\
 type ${getExposableObjectsTypeName(type)} =
   | ${getExposableFieldsTypeName(type)}
-${type.fields
+${fields
   .map(
     f =>
       `  | { name: '${f.name}', args?: ${
-        f.arguments.length > 0
+        f.args.length > 0
           ? `${getTypeFieldArgName(type, f)}[] | false`
           : '[] | false'
       }, alias?: string  } `,
@@ -171,26 +195,32 @@ ${type.fields
   .join(EOL)}
 
 type ${getExposableFieldsTypeName(type)} =
-${type.fields.map(f => `  | '${f.name}'`).join(EOL)}
+${fields.map(f => `  | '${f.name}'`).join(EOL)}
 `
 }
 
-function renderFieldsArgs(type: GraphQLTypeObject) {
+function renderFieldsArgs(
+  type: GraphQLObjectType,
+  fields: GraphQLField<any, any>[],
+) {
   return `\
-${type.fields
-  .filter(field => field.arguments.length > 0)
+${fields
+  .filter(field => field.args.length > 0)
   .map(field => renderFieldArg(type, field))
   .join(EOL)}
   `
 }
 
-function renderFieldArg(type: GraphQLTypeObject, f: GraphQLTypeField) {
+function renderFieldArg(
+  type: GraphQLObjectType,
+  field: GraphQLField<any, any>,
+) {
   return `\
-type ${getTypeFieldArgName(type, f)} =
-${f.arguments.map(arg => `  | '${arg.name}'`).join(EOL)}`
+type ${getTypeFieldArgName(type, field)} =
+${field.args.map(arg => `  | '${arg.name}'`).join(EOL)}`
 }
 
-function getTSType(graphqlType: GraphQLTypeField | GraphQLTypeArgument) {
+function getTSType(graphqlType: GraphQLField<any, any> | GraphQLInputField) {
   const graphqlToTypescript: Record<string, string> = {
     String: 'string',
     Boolean: 'boolean',
@@ -199,55 +229,57 @@ function getTSType(graphqlType: GraphQLTypeField | GraphQLTypeArgument) {
     Float: 'number',
     DateTime: 'string',
   }
+  const finalType = getFinalType(graphqlType.type)
 
   let returnType = ''
 
-  if (graphqlType.type.isScalar) {
-    returnType = graphqlToTypescript[graphqlType.type.name]
-  } else if (graphqlType.type.isInput) {
-    returnType = getInputTypeName(graphqlType.type)
+  if (isScalarType(finalType)) {
+    returnType = graphqlToTypescript[getTypeName(finalType)]
+  } else if (isInputObjectType(finalType)) {
+    returnType = getInputTypeName(finalType)
   } else {
-    returnType = `prisma.${graphqlType.type.name}`
+    returnType = `prisma.${getTypeName(finalType)}`
   }
 
-  if (graphqlType.type.isArray) {
+  if (isList(graphqlType.type)) {
     returnType += '[]'
   }
 
-  if (!graphqlType.type.isRequired) {
+  if (!isRequired(graphqlType.type)) {
     returnType += ' | null'
   }
 
   return returnType
 }
 
-function renderResolverReturnType(field: GraphQLTypeField) {
+function renderResolverReturnType(field: GraphQLField<any, any>) {
   const returnType = getTSType(field)
 
   return `Promise<${returnType}> | ${returnType}`
 }
 
-function renderInputType(input: GraphQLTypeObject) {
+function renderInputType(input: GraphQLInputObjectType) {
+  const fields = Object.values(input.getFields())
   return `\
 export interface ${getInputTypeName(input)} {
-${input.fields
+${fields
   .map(
     field =>
-      `  ${field.name}${field.type.isRequired ? '' : '?'}: ${getTSType(field)}`,
+      `  ${field.name}${isRequired(input) ? '' : '?'}: ${getTSType(field)}`,
   )
   .join(EOL)}
 }
   `
 }
 
-function renderEnumTypes(enums: GraphQLEnumObject[]): string {
+function renderEnumTypes(enums: GraphQLEnumType[]): string {
   return `\
 export type ${getEnumTypesName()} =
 ${enums.map(e => `  | '${e.name}'`).join(EOL)}
   `
 }
 
-function getExposableFieldsTypeName(type: GraphQLTypeObject) {
+function getExposableFieldsTypeName(type: GraphQLObjectType) {
   return `${type.name}Fields`
 }
 
@@ -255,44 +287,25 @@ function upperFirst(s: string) {
   return s.replace(/^\w/, c => c.toUpperCase())
 }
 
-function getTypeFieldArgName(type: GraphQLTypeObject, field: GraphQLTypeField) {
+function getTypeFieldArgName(
+  type: GraphQLObjectType,
+  field: GraphQLField<any, any>,
+) {
   return `${type.name}${upperFirst(field.name)}Args`
 }
 
-function getExposableObjectsTypeName(type: GraphQLTypeObject) {
+function getExposableObjectsTypeName(type: GraphQLObjectType) {
   return `${type.name}Object`
 }
 
-function getTypeObjectName(type: GraphQLTypeObject) {
+function getTypeObjectName(type: GraphQLObjectType) {
   return `${type.name}FieldDetails`
 }
 
-function getInputTypeName(type: GraphQLTypeObject | GraphQLType) {
+function getInputTypeName(type: GraphQLInputObjectType) {
   return `${type.name}`
 }
 
 function getEnumTypesName(): string {
   return 'enumTypesNames'
-}
-
-export function getImportPathRelativeToOutput(
-  importPath: string,
-  outputDir: string,
-): string {
-  let relativePath = relative(dirname(outputDir), importPath)
-
-  if (!relativePath.startsWith('.')) {
-    relativePath = './' + relativePath
-  }
-
-  // remove .ts or .js file extension
-  relativePath = relativePath.replace(/\.(ts|js)$/, '')
-
-  // remove /index
-  relativePath = relativePath.replace(/\/index$/, '')
-
-  // replace \ with /
-  relativePath = relativePath.replace(/\\/g, '/')
-
-  return relativePath
 }
