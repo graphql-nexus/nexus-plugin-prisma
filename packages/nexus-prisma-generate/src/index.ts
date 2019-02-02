@@ -89,8 +89,11 @@ import {
   core
 } from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
-
 import * as prisma from '${prismaClientPath}'
+
+declare global {
+  interface NexusGen extends NexusPrismaTypes {}
+}
 
 ${objectTypes.map(renderType).join(EOL)}
 
@@ -98,7 +101,7 @@ ${inputTypes.map(renderInputType).join(EOL)}
 
 ${renderEnumTypes(enumTypes)}
 
-export interface PluginTypes {
+export interface NexusPrismaTypes {
   fields: {
 ${objectTypes
   .map(type => `    ${type.name}: ${getExposableObjectsTypeName(type)}`)
@@ -110,10 +113,6 @@ ${objectTypes
   .join(EOL)}
   }
   enumTypesNames: ${getEnumTypesName()}
-}
-
-declare global {
-  interface NexusGen extends PluginTypes {}
 }
   `
 }

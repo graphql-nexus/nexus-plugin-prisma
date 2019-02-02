@@ -4,8 +4,11 @@ import {
   core
 } from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
-
 import * as prisma from './prisma-client'
+
+declare global {
+  interface NexusGen extends NexusPrismaTypes {}
+}
 
 // Types for Query
 
@@ -1601,7 +1604,7 @@ export type enumTypesNames =
   | 'MutationType'
   
 
-export interface PluginTypes {
+export interface NexusPrismaTypes {
   fields: {
     Query: QueryObject
     Post: PostObject
@@ -1641,9 +1644,5 @@ export interface PluginTypes {
     UserPreviousValues: UserPreviousValuesFieldDetails
   }
   enumTypesNames: enumTypesNames
-}
-
-declare global {
-  interface NexusGen extends PluginTypes {}
 }
   
