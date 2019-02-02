@@ -1,4 +1,5 @@
-import { GraphQLFieldResolver, GraphQLField, isScalarType } from 'graphql'
+import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
+import { getFinalType } from './graphql'
 import { throwIfUnknownClientFunction } from './throw'
 import {
   isConnectionTypeName,
@@ -22,7 +23,7 @@ export function generateDefaultResolver(
 
     const fieldName = fieldToResolve.name
 
-    if (isScalarType(fieldToResolve.type)) {
+    if (isScalarType(getFinalType(fieldToResolve.type))) {
       return root[fieldName]
     }
 
