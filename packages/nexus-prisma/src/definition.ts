@@ -63,10 +63,10 @@ export function prismaObjectType<TypeName extends string>(
             const { list, ...rest } = prismaType[fieldType.name]
             const args = whitelistArgs(rest.args, field.args)
             t.field(fieldName, {
+              ...rest,
               type: getTypeName(fieldType.type),
               list: list ? true : undefined,
               args,
-              ...rest,
             })
           })
         }
