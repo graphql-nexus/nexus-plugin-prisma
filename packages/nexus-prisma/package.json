@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "camelcase": "^5.0.0",
-    "nexus": "0.7.0-alpha.2"
+    "nexus": "0.9.3"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
