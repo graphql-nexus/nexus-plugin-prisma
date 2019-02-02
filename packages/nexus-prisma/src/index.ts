@@ -1,11 +1,11 @@
 import { GraphQLSchema } from 'graphql'
 import { core } from 'nexus'
 import { PrismaSchemaBuilder } from './builder'
-import { withPrismaTypes } from './rewrite'
-import { PrismaSchemaConfig } from './rewrite_types'
+import { withPrismaTypes } from './definition'
+import { PrismaSchemaConfig } from './types'
 import { removeUnusedTypesFromSchema } from './unused-types'
 
-export { /*prismaEnumType, */ prismaObjectType } from './rewrite'
+export { /*prismaEnumType, */ prismaObjectType } from './definition'
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
   options.types = withPrismaTypes(options.types)

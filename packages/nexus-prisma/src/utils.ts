@@ -6,7 +6,7 @@ import {
   AnonymousField,
   ObjectField,
   PickInputField,
-} from './rewrite_types'
+} from './types'
 import { core } from 'nexus'
 
 export function getAllFields(

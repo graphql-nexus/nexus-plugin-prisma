@@ -7,8 +7,8 @@ import {
   GraphQLFieldConfigArgumentMap,
 } from 'graphql'
 import { core } from 'nexus'
-import { PrismaSchemaConfig } from './rewrite_types'
-import { PrismaObjectDefinitionBlock } from './rewrite'
+import { PrismaSchemaConfig } from './types'
+import { PrismaObjectDefinitionBlock } from './definition'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
   private prismaTypesMap: GraphQLSchema | null = null

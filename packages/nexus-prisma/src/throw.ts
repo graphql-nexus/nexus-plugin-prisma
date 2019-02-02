@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLObjectType } from 'graphql'
-import { ObjectField } from './rewrite_types'
+import { ObjectField } from './types'
 
 export function throwIfUnknownFields(
   graphqlType: GraphQLObjectType,

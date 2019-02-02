@@ -20,7 +20,7 @@ import {
   PrismaSchemaConfig,
   PrismaOutputOptsMap,
   PrismaTypeNames,
-} from './rewrite_types'
+} from './types'
 import { getFields, whitelistArgs } from './utils'
 
 export class PrismaObjectDefinitionBlock<
