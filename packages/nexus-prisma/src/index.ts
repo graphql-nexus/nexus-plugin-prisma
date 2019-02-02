@@ -2,17 +2,11 @@ import { GraphQLSchema } from 'graphql'
 import { core } from 'nexus'
 import { PrismaSchemaBuilder } from './builder'
 import { PrismaSchemaConfig } from './types'
-import { removeUnusedTypesFromSchema } from './unused-types'
-import { getAllInputEnumTypes } from './utils'
 
 export { /*prismaEnumType, */ prismaObjectType } from './definition'
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
   const builder = new PrismaSchemaBuilder(options)
-  options.types = [
-    options.types,
-    ...getAllInputEnumTypes(builder.getPrismaSchema()),
-  ]
 
   const { schema } = core.makeSchemaInternal(options, builder)
 
@@ -25,16 +19,11 @@ export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
   } = options
 
   if (shouldGenerateArtifacts) {
-    // Remove all unused types to keep the generated schema clean
-    const filteredSchema = removeUnusedTypesFromSchema(schema)
-
     // Generating in the next tick allows us to use the schema
     // in the optional thunk for the typegen config
-    new core.TypegenMetadata(options)
-      .generateArtifacts(filteredSchema)
-      .catch(e => {
-        console.error(e)
-      })
+    new core.TypegenMetadata(options).generateArtifacts(schema).catch(e => {
+      console.error(e)
+    })
   }
 
   return schema
