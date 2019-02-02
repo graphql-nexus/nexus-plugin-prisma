@@ -6,7 +6,6 @@ import {
   isInputObjectType,
   isEnumType,
   isScalarType,
-  GraphQLType,
 } from 'graphql'
 import { isListOrRequired, getTypeName, findObjectTypeField } from './graphql'
 import { generateDefaultResolver } from './resolver'
@@ -29,7 +28,6 @@ export class PrismaObjectDefinitionBlock<
   public prismaType: Record<string, PrismaOutputOpts>
   private config: PrismaSchemaConfig
   private prismaSchema: GraphQLSchema
-  public typesToExport: GraphQLType[]
 
   constructor(
     protected typeBuilder: core.ObjectDefinitionBuilder<TypeName>,
@@ -42,7 +40,6 @@ export class PrismaObjectDefinitionBlock<
     this.prismaSchema = schemaBuilder.getPrismaSchema()
 
     this.prismaType = this.generatePrismaTypes()
-    this.typesToExport = []
   }
 
   public prismaFields(inputFields?: InputField<TypeName>[]): void
