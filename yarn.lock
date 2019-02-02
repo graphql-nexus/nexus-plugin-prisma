@@ -2216,8 +2216,6 @@ cssstyle@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-1.1.1.tgz#18b038a9c44d65f7a8e428a653b9f6fe42faf5fb"
   integrity sha512-364AI1l/M5TYcFH83JnOH/pSqgaNnKmYgKrm0didZMGKWjQB60dymwWy1rKUgL3J1ffdq9xVi2yGLHdSjjSNog==
-  dependencies:
-    cssom "0.3.x"
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -5954,10 +5952,10 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
-nexus@0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.9.0.tgz#2982a80513b79548f0de105c01cd60890f73931a"
-  integrity sha512-pdf5/J+e2enXxFfQckSPx1wOzgcrp7Wos0C+Qt+I+hP/IFXAASKybhV4sCltsd+OItRp7naeqIHvChRfJJBGNw==
+nexus@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.9.3.tgz#bde9f94b337e0cd8ee1fff9e6ad9cc5fddf54d36"
+  integrity sha512-c+N8Hpz7K/RjX0Xgz8KIeKrif9V0DDgxnh0Gy7pxpNs8Wh5LdiHZWugLhNyPekP/9XuaNRR7OTr1O3BtZ8xOPA==
   dependencies:
     tslib "^1.9.3"
 

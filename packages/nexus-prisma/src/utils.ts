@@ -1,4 +1,11 @@
-import { GraphQLField, GraphQLSchema } from 'graphql'
+import {
+  GraphQLField,
+  GraphQLSchema,
+  GraphQLNamedType,
+  isInputObjectType,
+  isEnumType,
+  isScalarType,
+} from 'graphql'
 import { isListOrRequired, getTypeName, findObjectType } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
@@ -8,6 +15,29 @@ import {
   PickInputField,
 } from './types'
 import { core } from 'nexus'
+
+export function getAllInputEnumTypes(
+  schema: GraphQLSchema,
+): GraphQLNamedType[] {
+  const types = Object.values(schema.getTypeMap())
+
+  const inputTypes = types.filter(isInputObjectType)
+  const enumTypes = types.filter(isEnumType)
+  const scalarTypes = types.filter(isScalarType)
+
+  const pageInfoType = schema.getType('PageInfo')!
+  const batchPayloadType = schema.getType('BatchPayload')!
+  const nodeType = schema.getType('Node')!
+
+  return [
+    ...inputTypes,
+    ...enumTypes,
+    ...scalarTypes,
+    batchPayloadType,
+    nodeType,
+    pageInfoType,
+  ]
+}
 
 export function getAllFields(
   typeName: string,
