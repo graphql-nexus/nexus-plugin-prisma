@@ -172,7 +172,6 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     feed: NexusGenRootTypes['Post'][]; // [Post!]!
     filterPosts: NexusGenRootTypes['Post'][]; // [Post!]!
-    posts: NexusGenRootTypes['Post'][]; // [Post!]!
   }
   User: { // field return type
     email: string; // String!
@@ -202,16 +201,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     filterPosts: { // args
-      searchString?: string | null; // String
-    }
-    posts: { // args
-      after?: string | null; // String
-      before?: string | null; // String
-      first?: number | null; // Int
-      last?: number | null; // Int
-      orderBy?: NexusGenEnums['PostOrderByInput'] | null; // PostOrderByInput
-      skip?: number | null; // Int
-      where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+      searchString: string; // String!
     }
   }
   User: {

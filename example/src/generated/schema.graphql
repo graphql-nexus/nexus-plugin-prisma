@@ -105,8 +105,7 @@ input PostWhereInput {
 
 type Query {
   feed: [Post!]!
-  filterPosts(searchString: String): [Post!]!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
+  filterPosts(searchString: String!): [Post!]!
 }
 
 type User {

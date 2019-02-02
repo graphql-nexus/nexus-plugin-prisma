@@ -1,14 +1,15 @@
-import { stringArg, extendType, scalarType } from 'nexus'
-import { prismaObjectType } from 'nexus-prisma'
-import { GraphQLObjectType } from 'graphql'
+import { objectType, stringArg } from 'nexus'
+import { Post } from '.'
 
-export const Query = prismaObjectType({
+export const Query = objectType({
   name: 'Query',
+  nonNullDefaults: {
+    input: true,
+    output: true,
+  },
   definition(t) {
-    t.prismaFields(['posts'])
-
     t.list.field('feed', {
-      type: 'Post',
+      type: Post,
       resolve: (parent, args, ctx) => {
         return ctx.prisma.posts({
           where: { published: true },
@@ -17,7 +18,7 @@ export const Query = prismaObjectType({
     })
 
     t.list.field('filterPosts', {
-      type: 'Post',
+      type: Post,
       args: {
         searchString: stringArg(),
       },
