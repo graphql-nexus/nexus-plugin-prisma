@@ -36,8 +36,7 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
 }
 
 export interface PrismaObjectTypeConfig<TypeName extends string>
-  extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition' | 'name'> {
-  name: TypeName
+  extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
   definition(t: PrismaObjectDefinitionBlock<TypeName>): void
 }
 

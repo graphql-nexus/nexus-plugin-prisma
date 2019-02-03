@@ -28,11 +28,7 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
 }
 
 export interface PrismaInputObjectTypeConfig<TypeName extends string>
-  extends Omit<
-    core.NexusInputObjectTypeConfig<TypeName>,
-    'definition' | 'name'
-  > {
-  name: TypeName
+  extends Omit<core.NexusInputObjectTypeConfig<TypeName>, 'definition'> {
   definition(t: PrismaInputDefinitionBlock<TypeName>): void
 }
 
