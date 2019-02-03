@@ -1,27 +1,38 @@
 import { GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql'
 import { core, objectType } from 'nexus'
-import { isPrismaSchemaBuilder } from './builder'
-import { findObjectTypeField, getTypeName } from './graphql'
-import { graphqlFieldsToNexusFields } from './graphqlToNexus'
+import { isPrismaSchemaBuilder } from '../builder'
+import { findObjectTypeField, getTypeName } from '../graphql'
+import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
   AddFieldInput,
   FilterInputField,
+  GetGen2,
+  GetGen3,
   InputField,
   Omit,
   PickInputField,
-  PrismaObjectTypeNames,
-  PrismaOutputOptsMap,
   PrismaSchemaConfig,
-} from './types'
-import { getFields, whitelistArgs } from './utils'
+} from '../types'
+import { getFields, whitelistArgs } from '../utils'
+
+export type PrismaObjectTypeNames = Extract<
+  keyof GetGen2<'objectTypes', 'fields'>,
+  string
+>
+
+type TypeDetails<TypeName extends string> = GetGen3<
+  'objectTypes',
+  'fieldsDetails',
+  TypeName
+>
 
 export interface PrismaObjectDefinitionBlock<TypeName extends string>
   extends core.ObjectDefinitionBlock<TypeName> {
-  prismaType: PrismaOutputOptsMap
-  prismaFields(inputFields?: InputField<TypeName>[]): void
-  prismaFields(pickFields: PickInputField<TypeName>): void
-  prismaFields(filterFields: FilterInputField<TypeName>): void
-  prismaFields(inputFields?: AddFieldInput<TypeName>): void
+  prismaType: TypeDetails<TypeName>
+  prismaFields(inputFields?: InputField<'objectTypes', TypeName>[]): void
+  prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
+  prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
+  prismaFields(inputFields?: AddFieldInput<'objectTypes', TypeName>): void
 }
 
 export interface PrismaObjectTypeConfig<TypeName extends string>
@@ -68,7 +79,7 @@ export function prismaObjectType<
               prismaSchema,
             )
             const { list, ...rest } = prismaType[fieldType.name]
-            const args = whitelistArgs(rest.args, field.args)
+            const args = whitelistArgs(rest.args!, field.args)
             t.field(field.name, {
               ...rest,
               type: getTypeName(fieldType.type),
@@ -87,7 +98,7 @@ function generatePrismaTypes(
   prismaSchema: GraphQLSchema,
   objectConfig: PrismaObjectTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
-): PrismaOutputOptsMap {
+) {
   const typeName = objectConfig.name
   const graphqlType = prismaSchema.getType(typeName)
   if (!isObjectType(graphqlType)) {
@@ -96,7 +107,7 @@ function generatePrismaTypes(
     )
   }
 
-  return graphqlFieldsToNexusFields(
+  return objectTypeFieldsToNexus(
     graphqlType,
     builderConfig.prisma.contextClientName,
   )

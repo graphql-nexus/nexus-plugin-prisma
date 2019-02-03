@@ -83,7 +83,7 @@ function render(schema: GraphQLSchema, prismaClientPath: string) {
   ) as GraphQLEnumType[]
 
   return `\
-// GENERATED TYPES FOR PRISMA PLUGIN. /!\\ DO NOT EDIT MANUALLY
+// GENERATED TYPES FOR NEXUS-PRISMA. /!\\ DO NOT EDIT MANUALLY
 
 import {
   core
@@ -95,29 +95,43 @@ declare global {
   interface NexusGen extends NexusPrismaTypes {}
 }
 
-${objectTypes.map(renderType).join(EOL)}
+${objectTypes.map(renderObjectType).join(EOL)}
 
 ${inputTypes.map(renderInputType).join(EOL)}
 
 ${renderEnumTypes(enumTypes)}
 
 export interface NexusPrismaTypes {
-  fields: {
+  objectTypes: {
+    fields: {
 ${objectTypes
-  .map(type => `    ${type.name}: ${getExposableObjectsTypeName(type)}`)
+  .map(type => `      ${type.name}: ${getObjectTypeFieldsName(type)}`)
   .join(EOL)}
+    }
+    fieldsDetails: {
+${objectTypes
+  .map(type => `      ${type.name}: ${getObjectTypeFieldsDetailsName(type)}`)
+  .join(EOL)}
+    }
   }
-  fieldsDetails: {
-${objectTypes
-  .map(type => `    ${type.name}: ${getTypeObjectName(type)}`)
+  inputTypes: {
+    fields: {
+${inputTypes
+  .map(
+    type =>
+      `      ${getInputObjectTypeName(type)}: ${getInputObjectTypeFieldsName(
+        type,
+      )}`,
+  )
   .join(EOL)}
+    }
   }
   enumTypesNames: ${getEnumTypesName()}
 }
   `
 }
 
-function renderType(type: GraphQLObjectType) {
+function renderObjectType(type: GraphQLObjectType) {
   const fields = Object.values(type.getFields())
 
   return `\
@@ -136,7 +150,7 @@ function renderTypeFieldDetails(
   fields: GraphQLField<any, any>[],
 ) {
   return `\
-export interface ${getTypeObjectName(type)} {
+export interface ${getObjectTypeFieldsDetailsName(type)} {
 ${fields
   .map(
     field => `\
@@ -180,7 +194,7 @@ function renderFields(
   fields: GraphQLField<any, any>[],
 ) {
   return `\
-type ${getExposableObjectsTypeName(type)} =
+type ${getObjectTypeFieldsName(type)} =
   | ${getExposableFieldsTypeName(type)}
 ${fields
   .map(
@@ -235,7 +249,7 @@ function getTSType(graphqlType: GraphQLField<any, any> | GraphQLInputField) {
   if (isScalarType(finalType)) {
     returnType = graphqlToTypescript[getTypeName(finalType)]
   } else if (isInputObjectType(finalType)) {
-    returnType = getInputTypeName(finalType)
+    returnType = getInputObjectTypeName(finalType)
   } else {
     returnType = `prisma.${getTypeName(finalType)}`
   }
@@ -260,7 +274,7 @@ function renderResolverReturnType(field: GraphQLField<any, any>) {
 function renderInputType(input: GraphQLInputObjectType) {
   const fields = Object.values(input.getFields())
   return `\
-export interface ${getInputTypeName(input)} {
+export interface ${getInputObjectTypeName(input)} {
 ${fields
   .map(
     field =>
@@ -268,6 +282,9 @@ ${fields
   )
   .join(EOL)}
 }
+export type ${getInputObjectTypeFieldsName(input)} =
+  | Extract<keyof ${getInputObjectTypeName(input)}, string>
+${fields.map(f => `  | { name: '${f.name}', alias?: string  } `).join(EOL)}
   `
 }
 
@@ -293,15 +310,19 @@ function getTypeFieldArgName(
   return `${type.name}${upperFirst(field.name)}Args`
 }
 
-function getExposableObjectsTypeName(type: GraphQLObjectType) {
+function getObjectTypeFieldsName(type: GraphQLObjectType) {
   return `${type.name}Object`
 }
 
-function getTypeObjectName(type: GraphQLObjectType) {
+function getInputObjectTypeFieldsName(type: GraphQLInputObjectType) {
+  return `${type.name}InputObject`
+}
+
+function getObjectTypeFieldsDetailsName(type: GraphQLObjectType) {
   return `${type.name}FieldDetails`
 }
 
-function getInputTypeName(type: GraphQLInputObjectType) {
+function getInputObjectTypeName(type: GraphQLInputObjectType) {
   return `${type.name}`
 }
 

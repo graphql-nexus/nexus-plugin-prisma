@@ -1,11 +1,4 @@
-import {
-  GraphQLField,
-  GraphQLNamedType,
-  GraphQLSchema,
-  isEnumType,
-  isInputObjectType,
-  isScalarType,
-} from 'graphql'
+import { GraphQLField, GraphQLSchema } from 'graphql'
 import { core } from 'nexus'
 import { findObjectType, getTypeName, isList } from './graphql'
 import { throwIfUnknownFields } from './throw'
@@ -16,29 +9,6 @@ import {
   ObjectField,
   PickInputField,
 } from './types'
-
-export function getAllInputEnumTypes(
-  schema: GraphQLSchema,
-): GraphQLNamedType[] {
-  const types = Object.values(schema.getTypeMap())
-
-  const inputTypes = types.filter(isInputObjectType)
-  const enumTypes = types.filter(isEnumType)
-  const scalarTypes = types.filter(isScalarType)
-
-  const pageInfoType = schema.getType('PageInfo')!
-  const batchPayloadType = schema.getType('BatchPayload')!
-  const nodeType = schema.getType('Node')!
-
-  return [
-    ...inputTypes,
-    ...enumTypes,
-    ...scalarTypes,
-    batchPayloadType,
-    nodeType,
-    pageInfoType,
-  ]
-}
 
 export function getAllFields(
   typeName: string,
@@ -53,19 +23,27 @@ export function getAllFields(
 }
 
 function isDefaultInput<TypeName extends string>(
-  inputFields: AddFieldInput<TypeName> | undefined,
+  inputFields:
+    | AddFieldInput<'objectTypes' | 'inputTypes', TypeName>
+    | undefined,
 ): boolean {
   return inputFields === undefined
 }
 
 export function getFields<TypeName extends string>(
-  inputFields: AddFieldInput<TypeName> | undefined,
+  inputFields:
+    | AddFieldInput<'objectTypes' | 'inputTypes', TypeName>
+    | undefined,
   typeName: string,
   schema: GraphQLSchema,
 ): ObjectField[] {
   const fields = isDefaultInput(inputFields)
     ? getAllFields(typeName, schema)
-    : extractFields(inputFields as AddFieldInput<TypeName>, typeName, schema)
+    : extractFields(
+        inputFields as AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
+        typeName,
+        schema,
+      )
   const normalizedFields = normalizeFields(fields)
 
   const objectType = findObjectType(typeName, schema)
@@ -78,12 +56,15 @@ export function getFields<TypeName extends string>(
 
 function isPickInputField<TypeName extends string = any>(
   arg: any,
-): arg is PickInputField<TypeName> {
-  return (arg as PickInputField<TypeName>).pick !== undefined
+): arg is PickInputField<'objectTypes' | 'inputTypes', TypeName> {
+  return (
+    (arg as PickInputField<'objectTypes' | 'inputTypes', TypeName>).pick !==
+    undefined
+  )
 }
 
 function extractFields<TypeName extends string = any>(
-  fields: AddFieldInput<TypeName>,
+  fields: AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
   typeName: string,
   schema: GraphQLSchema,
 ): AnonymousField[] {
@@ -95,7 +76,7 @@ function extractFields<TypeName extends string = any>(
     return fields.pick as AnonymousField[]
   }
 
-  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name) // typeName = "Product"
+  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
 
   if (Array.isArray(fields.filter)) {
     const fieldsToFilter = fields.filter as AliasedObjectField[]

@@ -3,7 +3,7 @@ import { core } from 'nexus'
 import { PrismaSchemaBuilder } from './builder'
 import { PrismaSchemaConfig } from './types'
 
-export { /*prismaEnumType, */ prismaObjectType } from './definition'
+export * from './definitions'
 
 interface PrismaSchemaConfigRequiredTypes extends PrismaSchemaConfig {
   types: any
