@@ -4,10 +4,11 @@ import {
   GraphQLSchema,
   isEnumType,
   isInputObjectType,
+  isObjectType,
   isScalarType,
 } from 'graphql'
 import { core } from 'nexus'
-import { findObjectType, getTypeName, isList } from './graphql'
+import { findObjectType, getTypeName, isList, isRequired } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
@@ -15,6 +16,8 @@ import {
   ObjectField,
   PickInputField,
 } from './types'
+import { PrismaSchemaBuilder } from './builder'
+import { generateDefaultResolver } from './resolver'
 
 export function getAllInputEnumTypes(
   schema: GraphQLSchema,
@@ -151,9 +154,6 @@ export function isConnectionTypeName(typeName: string): boolean {
   return typeName.endsWith('Connection') && typeName !== 'Connection'
 }
 
-export const isObject = (obj: any): boolean =>
-  obj !== null && typeof obj === 'object'
-
 export function flatMap<T, U>(
   array: T[],
   callbackfn: (value: T, index: number, array: T[]) => U[],
@@ -182,4 +182,28 @@ export function whitelistArgs(
     },
     {},
   )
+}
+
+export function graphqlTypeToNexusType(
+  builder: PrismaSchemaBuilder,
+  type: GraphQLNamedType,
+  contextClientName: string,
+): GraphQLNamedType {
+  if (isObjectType(type)) {
+    return builder.buildObjectType({
+      name: type.name,
+      definition(t) {
+        Object.values(type.getFields()).forEach(f => {
+          t.field(f.name, {
+            type: getTypeName(f.type),
+            list: isList(f.type) ? true : undefined,
+            nullable: isRequired(f.type),
+            resolve: generateDefaultResolver(type.name, f, contextClientName),
+          })
+        })
+      },
+    })
+  }
+
+  return type
 }

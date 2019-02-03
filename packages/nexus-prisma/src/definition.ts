@@ -8,6 +8,7 @@ import {
   PrismaOutputOpts,
   PrismaOutputOptsMap,
   PrismaSchemaConfig,
+  PrismaTypeNames,
 } from './types'
 import { isObjectType, GraphQLSchema } from 'graphql'
 import { getTypeName, isListOrRequired, findObjectTypeField } from './graphql'
@@ -25,8 +26,10 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
   prismaFields(inputFields?: AddFieldInput<TypeName>): void
 }
 
-export interface PrismaObjectTypeConfig<TypeName extends string>
-  extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
+export interface PrismaObjectTypeConfig<
+  TypeName extends string = PrismaTypeNames
+> extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition' | 'name'> {
+  name: TypeName
   definition(t: PrismaObjectDefinitionBlock<TypeName>): void
 }
 
@@ -36,7 +39,7 @@ export function prismaObjectType<TypeName extends string>(
   return core.nexusWrappedType(typeConfig.name, builder => {
     const { definition, ...rest } = typeConfig
     if (!isPrismaSchemaBuilder(builder)) {
-      throw new Error('prismaObjectType can only be used by makePrismaSchema')
+      throw new Error('prismaObjectType can only be used by `makePrismaSchema`')
     }
     const prismaSchema = builder.getPrismaSchema()
     const prismaType = generatePrismaTypes(

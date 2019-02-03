@@ -1,14 +1,8 @@
 import { existsSync, readFileSync } from 'fs'
-import {
-  buildSchema,
-  GraphQLSchema,
-  GraphQLNamedType,
-  isObjectType,
-} from 'graphql'
 import { core } from 'nexus'
+import { buildSchema, GraphQLNamedType, GraphQLSchema } from 'graphql'
 import { PrismaSchemaConfig } from './types'
-import { getTypeName, isList, isRequired } from './graphql'
-import { generateDefaultResolver } from './resolver'
+import { graphqlTypeToNexusType } from './utils'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
   private prismaTypesMap: GraphQLSchema | null = null
@@ -36,13 +30,11 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
     const type = this.getPrismaSchema().getType(typeName)
 
     if (type) {
-      const finalType = graphqlTypeToNexusType(
+      return graphqlTypeToNexusType(
         this,
         type,
         this.config.prisma.contextClientName,
       )
-      this.finalTypeMap[typeName] = finalType
-      return finalType
     }
 
     return super.missingType(typeName)
@@ -65,28 +57,4 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
 
 export function isPrismaSchemaBuilder(obj: any): obj is PrismaSchemaBuilder {
   return obj && obj instanceof PrismaSchemaBuilder
-}
-
-function graphqlTypeToNexusType(
-  builder: PrismaSchemaBuilder,
-  type: GraphQLNamedType,
-  contextClientName: string,
-): GraphQLNamedType {
-  if (isObjectType(type)) {
-    return builder.objectType({
-      name: type.name,
-      definition(t) {
-        Object.values(type.getFields()).forEach(f => {
-          t.field(f.name, {
-            type: getTypeName(f.type),
-            list: isList(f.type) ? true : undefined,
-            nullable: isRequired(f.type),
-            resolve: generateDefaultResolver(type.name, f, contextClientName),
-          })
-        })
-      },
-    })
-  }
-
-  return type
 }
