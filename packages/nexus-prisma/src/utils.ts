@@ -4,20 +4,18 @@ import {
   GraphQLSchema,
   isEnumType,
   isInputObjectType,
-  isObjectType,
   isScalarType,
 } from 'graphql'
 import { core } from 'nexus'
-import { findObjectType, getTypeName, isList, isRequired } from './graphql'
+import { findObjectType, getTypeName, isList } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
+  AliasedObjectField,
   AnonymousField,
   ObjectField,
   PickInputField,
 } from './types'
-import { PrismaSchemaBuilder } from './builder'
-import { generateDefaultResolver } from './resolver'
 
 export function getAllInputEnumTypes(
   schema: GraphQLSchema,
@@ -45,12 +43,12 @@ export function getAllInputEnumTypes(
 export function getAllFields(
   typeName: string,
   schema: GraphQLSchema,
-): ObjectField[] {
+): AliasedObjectField[] {
   return Object.keys(findObjectType(typeName, schema).getFields()).map(
     fieldName =>
       ({
         name: fieldName,
-      } as ObjectField),
+      } as AliasedObjectField),
   )
 }
 
@@ -100,7 +98,7 @@ function extractFields<TypeName extends string = any>(
   const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name) // typeName = "Product"
 
   if (Array.isArray(fields.filter)) {
-    const fieldsToFilter = fields.filter as ObjectField[]
+    const fieldsToFilter = fields.filter as AliasedObjectField[]
     const fieldsNamesToFilter = fieldsToFilter.map(f =>
       typeof f === 'string' ? f : f.name,
     )
@@ -121,7 +119,10 @@ export function normalizeFields(fields: AnonymousField[]): ObjectField[] {
       }
     }
 
-    return f
+    return {
+      name: f.alias !== undefined ? f.alias : f.name,
+      args: f.args,
+    } as ObjectField
   })
 }
 
@@ -182,31 +183,4 @@ export function whitelistArgs(
     },
     {},
   )
-}
-
-export function graphqlTypeToNexusType(
-  builder: PrismaSchemaBuilder,
-  type: GraphQLNamedType,
-  contextClientName: string,
-): GraphQLNamedType {
-  if (isObjectType(type)) {
-    return builder.buildObjectType({
-      name: type.name,
-      definition(t) {
-        Object.values(type.getFields()).forEach(f => {
-          t.field(f.name, {
-            type: getTypeName(f.type),
-            list: isList(f.type) ? true : undefined,
-            nullable: !isRequired(f.type),
-            resolve: generateDefaultResolver(type.name, f, contextClientName),
-          })
-        })
-        type.getInterfaces().forEach(interfaceType => {
-          t.implements(interfaceType.name)
-        })
-      },
-    })
-  }
-
-  return type
 }

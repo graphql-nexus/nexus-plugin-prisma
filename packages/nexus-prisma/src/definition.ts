@@ -1,21 +1,19 @@
-import { core, objectType, arg } from 'nexus'
+import { GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql'
+import { core, objectType } from 'nexus'
 import { isPrismaSchemaBuilder } from './builder'
+import { findObjectTypeField, getTypeName } from './graphql'
+import { graphqlFieldsToNexusFields } from './graphqlToNexus'
 import {
-  InputField,
-  PickInputField,
-  FilterInputField,
   AddFieldInput,
-  PrismaOutputOpts,
+  FilterInputField,
+  InputField,
+  Omit,
+  PickInputField,
+  PrismaObjectTypeNames,
   PrismaOutputOptsMap,
   PrismaSchemaConfig,
-  PrismaObjectTypeNames,
 } from './types'
-import { isObjectType, GraphQLSchema } from 'graphql'
-import { getTypeName, isListOrRequired, findObjectTypeField } from './graphql'
-import { generateDefaultResolver } from './resolver'
 import { getFields, whitelistArgs } from './utils'
-
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
 export interface PrismaObjectDefinitionBlock<TypeName extends string>
   extends core.ObjectDefinitionBlock<TypeName> {
@@ -55,10 +53,15 @@ export function prismaObjectType<
         prismaBlock.prismaType = prismaType
         prismaBlock.prismaFields = (inputFields: any) => {
           const typeName = this.name
+          const graphqlType = prismaSchema.getType(
+            typeName,
+          ) as GraphQLObjectType
           const fields = getFields(inputFields, typeName, prismaSchema)
+
+          graphqlType.getInterfaces().forEach(interfaceType => {
+            t.implements(interfaceType.name)
+          })
           fields.forEach(field => {
-            const fieldName =
-              field.alias === undefined ? field.name : field.alias
             const fieldType = findObjectTypeField(
               typeName,
               field.name,
@@ -66,7 +69,7 @@ export function prismaObjectType<
             )
             const { list, ...rest } = prismaType[fieldType.name]
             const args = whitelistArgs(rest.args, field.args)
-            t.field(fieldName, {
+            t.field(field.name, {
               ...rest,
               type: getTypeName(fieldType.type),
               list: list ? true : undefined,
@@ -84,7 +87,7 @@ function generatePrismaTypes(
   prismaSchema: GraphQLSchema,
   objectConfig: PrismaObjectTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
-): Record<string, PrismaOutputOpts> {
+): PrismaOutputOptsMap {
   const typeName = objectConfig.name
   const graphqlType = prismaSchema.getType(typeName)
   if (!isObjectType(graphqlType)) {
@@ -92,27 +95,9 @@ function generatePrismaTypes(
       `Must select a GraphQLObjectType, saw ${typeName} which is ${graphqlType}`,
     )
   }
-  return Object.values(graphqlType.getFields()).reduce<PrismaOutputOptsMap>(
-    (acc, field) => {
-      acc[field.name] = {
-        ...isListOrRequired(field.type),
-        description: field.description,
-        args: field.args.reduce<Record<string, any>>((acc, fieldArg) => {
-          acc[fieldArg.name] = arg({
-            type: getTypeName(fieldArg.type),
-            ...isListOrRequired(fieldArg.type),
-            description: fieldArg.description,
-          })
-          return acc
-        }, {}),
-        resolve: generateDefaultResolver(
-          typeName,
-          field,
-          builderConfig.prisma.contextClientName,
-        ),
-      }
-      return acc
-    },
-    {},
+
+  return graphqlFieldsToNexusFields(
+    graphqlType,
+    builderConfig.prisma.contextClientName,
   )
 }

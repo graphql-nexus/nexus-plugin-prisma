@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs'
 import { core } from 'nexus'
 import { buildSchema, GraphQLNamedType, GraphQLSchema } from 'graphql'
 import { PrismaSchemaConfig } from './types'
-import { graphqlTypeToNexusType } from './utils'
+import { graphqlTypeToNexusType } from './graphqlToNexus'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
   private prismaTypesMap: GraphQLSchema | null = null
