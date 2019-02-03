@@ -29,7 +29,7 @@ function objectTypeFieldToNexus(
   typeName: string,
   field: GraphQLField<any, any>,
   contextClientName: string,
-): core.NexusOutputFieldConfig<string, string> {
+): core.NexusOutputFieldConfig<any, any> {
   return {
     ...graphqlTypeToCommonNexus(field),
     type: getTypeName(field.type),
