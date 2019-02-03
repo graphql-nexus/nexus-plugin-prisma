@@ -1,7 +1,7 @@
 import { GraphQLSchema, isInputObjectType } from 'graphql'
 import { core, inputObjectType } from 'nexus'
 import { isPrismaSchemaBuilder } from '../builder'
-import { findObjectTypeField, getTypeName } from '../graphql'
+import { findGraphQLTypeField, getTypeName } from '../graphql'
 import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import {
   AddFieldInput,
@@ -52,20 +52,19 @@ export function prismaInputObjectType<
         const prismaBlock = t as PrismaInputDefinitionBlock<TypeName>
         //prismaBlock.prismaType = prismaType
         prismaBlock.prismaFields = (inputFields: any) => {
-          const typeName = this.name
+          const typeName = typeConfig.name
           const fields = getFields(inputFields, typeName, prismaSchema)
 
           fields.forEach(field => {
-            const fieldType = findObjectTypeField(
+            const fieldType = findGraphQLTypeField(
               typeName,
               field.name,
               prismaSchema,
             )
-            const { list, ...rest } = prismaType[fieldType.name]
+            const { list, ...rest } = prismaType[field.name]
             t.field(field.name, {
               ...rest,
               type: getTypeName(fieldType.type),
-              list: list ? true : undefined,
             })
           })
         }

@@ -1,7 +1,7 @@
 import { GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql'
 import { core, objectType } from 'nexus'
 import { isPrismaSchemaBuilder } from '../builder'
-import { findObjectTypeField, getTypeName } from '../graphql'
+import { findGraphQLTypeField, getTypeName } from '../graphql'
 import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
   AddFieldInput,
@@ -72,7 +72,7 @@ export function prismaObjectType<
             t.implements(interfaceType.name)
           })
           fields.forEach(field => {
-            const fieldType = findObjectTypeField(
+            const fieldType = findGraphQLTypeField(
               typeName,
               field.name,
               prismaSchema,

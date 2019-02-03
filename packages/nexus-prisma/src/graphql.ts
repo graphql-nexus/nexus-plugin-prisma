@@ -45,7 +45,7 @@ export function findObjectType(
   return graphQLType as GraphQLObjectType
 }
 
-export function findObjectTypeField(
+export function findGraphQLTypeField(
   typeName: string,
   fieldName: string,
   schema: GraphQLSchema,
