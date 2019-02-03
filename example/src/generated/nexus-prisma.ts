@@ -1,4 +1,4 @@
-// GENERATED TYPES FOR PRISMA PLUGIN. /!\ DO NOT EDIT MANUALLY
+// GENERATED TYPES FOR NEXUS-PRISMA. /!\ DO NOT EDIT MANUALLY
 
 import {
   core
@@ -1271,6 +1271,9 @@ export interface UserPreviousValuesFieldDetails {
 export interface PostWhereUniqueInput {
   id?: string | null
 }
+export type PostWhereUniqueInputInputObject =
+  | Extract<keyof PostWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
   
 export interface PostWhereInput {
   id?: string | null
@@ -1338,6 +1341,72 @@ export interface PostWhereInput {
   OR?: PostWhereInput[]
   NOT?: PostWhereInput[]
 }
+export type PostWhereInputInputObject =
+  | Extract<keyof PostWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'published', alias?: string  } 
+  | { name: 'published_not', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'title_not', alias?: string  } 
+  | { name: 'title_in', alias?: string  } 
+  | { name: 'title_not_in', alias?: string  } 
+  | { name: 'title_lt', alias?: string  } 
+  | { name: 'title_lte', alias?: string  } 
+  | { name: 'title_gt', alias?: string  } 
+  | { name: 'title_gte', alias?: string  } 
+  | { name: 'title_contains', alias?: string  } 
+  | { name: 'title_not_contains', alias?: string  } 
+  | { name: 'title_starts_with', alias?: string  } 
+  | { name: 'title_not_starts_with', alias?: string  } 
+  | { name: 'title_ends_with', alias?: string  } 
+  | { name: 'title_not_ends_with', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  | { name: 'content_not', alias?: string  } 
+  | { name: 'content_in', alias?: string  } 
+  | { name: 'content_not_in', alias?: string  } 
+  | { name: 'content_lt', alias?: string  } 
+  | { name: 'content_lte', alias?: string  } 
+  | { name: 'content_gt', alias?: string  } 
+  | { name: 'content_gte', alias?: string  } 
+  | { name: 'content_contains', alias?: string  } 
+  | { name: 'content_not_contains', alias?: string  } 
+  | { name: 'content_starts_with', alias?: string  } 
+  | { name: 'content_not_starts_with', alias?: string  } 
+  | { name: 'content_ends_with', alias?: string  } 
+  | { name: 'content_not_ends_with', alias?: string  } 
+  | { name: 'author', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 export interface UserWhereInput {
   id?: string | null
@@ -1389,11 +1458,65 @@ export interface UserWhereInput {
   OR?: UserWhereInput[]
   NOT?: UserWhereInput[]
 }
+export type UserWhereInputInputObject =
+  | Extract<keyof UserWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'email', alias?: string  } 
+  | { name: 'email_not', alias?: string  } 
+  | { name: 'email_in', alias?: string  } 
+  | { name: 'email_not_in', alias?: string  } 
+  | { name: 'email_lt', alias?: string  } 
+  | { name: 'email_lte', alias?: string  } 
+  | { name: 'email_gt', alias?: string  } 
+  | { name: 'email_gte', alias?: string  } 
+  | { name: 'email_contains', alias?: string  } 
+  | { name: 'email_not_contains', alias?: string  } 
+  | { name: 'email_starts_with', alias?: string  } 
+  | { name: 'email_not_starts_with', alias?: string  } 
+  | { name: 'email_ends_with', alias?: string  } 
+  | { name: 'email_not_ends_with', alias?: string  } 
+  | { name: 'name', alias?: string  } 
+  | { name: 'name_not', alias?: string  } 
+  | { name: 'name_in', alias?: string  } 
+  | { name: 'name_not_in', alias?: string  } 
+  | { name: 'name_lt', alias?: string  } 
+  | { name: 'name_lte', alias?: string  } 
+  | { name: 'name_gt', alias?: string  } 
+  | { name: 'name_gte', alias?: string  } 
+  | { name: 'name_contains', alias?: string  } 
+  | { name: 'name_not_contains', alias?: string  } 
+  | { name: 'name_starts_with', alias?: string  } 
+  | { name: 'name_not_starts_with', alias?: string  } 
+  | { name: 'name_ends_with', alias?: string  } 
+  | { name: 'name_not_ends_with', alias?: string  } 
+  | { name: 'posts_every', alias?: string  } 
+  | { name: 'posts_some', alias?: string  } 
+  | { name: 'posts_none', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 export interface UserWhereUniqueInput {
   id?: string | null
   email?: string | null
 }
+export type UserWhereUniqueInputInputObject =
+  | Extract<keyof UserWhereUniqueInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'email', alias?: string  } 
   
 export interface PostCreateInput {
   published?: boolean | null
@@ -1401,16 +1524,30 @@ export interface PostCreateInput {
   content?: string | null
   author?: UserCreateOneWithoutPostsInput
 }
+export type PostCreateInputInputObject =
+  | Extract<keyof PostCreateInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  | { name: 'author', alias?: string  } 
   
 export interface UserCreateOneWithoutPostsInput {
   create?: UserCreateWithoutPostsInput | null
   connect?: UserWhereUniqueInput | null
 }
+export type UserCreateOneWithoutPostsInputInputObject =
+  | Extract<keyof UserCreateOneWithoutPostsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
   
 export interface UserCreateWithoutPostsInput {
   email?: string
   name?: string | null
 }
+export type UserCreateWithoutPostsInputInputObject =
+  | Extract<keyof UserCreateWithoutPostsInput, string>
+  | { name: 'email', alias?: string  } 
+  | { name: 'name', alias?: string  } 
   
 export interface PostUpdateInput {
   published?: boolean | null
@@ -1418,6 +1555,12 @@ export interface PostUpdateInput {
   content?: string | null
   author?: UserUpdateOneRequiredWithoutPostsInput | null
 }
+export type PostUpdateInputInputObject =
+  | Extract<keyof PostUpdateInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  | { name: 'author', alias?: string  } 
   
 export interface UserUpdateOneRequiredWithoutPostsInput {
   create?: UserCreateWithoutPostsInput | null
@@ -1425,45 +1568,83 @@ export interface UserUpdateOneRequiredWithoutPostsInput {
   upsert?: UserUpsertWithoutPostsInput | null
   connect?: UserWhereUniqueInput | null
 }
+export type UserUpdateOneRequiredWithoutPostsInputInputObject =
+  | Extract<keyof UserUpdateOneRequiredWithoutPostsInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
   
 export interface UserUpdateWithoutPostsDataInput {
   email?: string | null
   name?: string | null
 }
+export type UserUpdateWithoutPostsDataInputInputObject =
+  | Extract<keyof UserUpdateWithoutPostsDataInput, string>
+  | { name: 'email', alias?: string  } 
+  | { name: 'name', alias?: string  } 
   
 export interface UserUpsertWithoutPostsInput {
   update?: UserUpdateWithoutPostsDataInput
   create?: UserCreateWithoutPostsInput
 }
+export type UserUpsertWithoutPostsInputInputObject =
+  | Extract<keyof UserUpsertWithoutPostsInput, string>
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
   
 export interface PostUpdateManyMutationInput {
   published?: boolean | null
   title?: string | null
   content?: string | null
 }
+export type PostUpdateManyMutationInputInputObject =
+  | Extract<keyof PostUpdateManyMutationInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
   
 export interface UserCreateInput {
   email?: string
   name?: string | null
   posts?: PostCreateManyWithoutAuthorInput | null
 }
+export type UserCreateInputInputObject =
+  | Extract<keyof UserCreateInput, string>
+  | { name: 'email', alias?: string  } 
+  | { name: 'name', alias?: string  } 
+  | { name: 'posts', alias?: string  } 
   
 export interface PostCreateManyWithoutAuthorInput {
   create?: PostCreateWithoutAuthorInput[]
   connect?: PostWhereUniqueInput[]
 }
+export type PostCreateManyWithoutAuthorInputInputObject =
+  | Extract<keyof PostCreateManyWithoutAuthorInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
   
 export interface PostCreateWithoutAuthorInput {
   published?: boolean | null
   title?: string
   content?: string | null
 }
+export type PostCreateWithoutAuthorInputInputObject =
+  | Extract<keyof PostCreateWithoutAuthorInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
   
 export interface UserUpdateInput {
   email?: string | null
   name?: string | null
   posts?: PostUpdateManyWithoutAuthorInput | null
 }
+export type UserUpdateInputInputObject =
+  | Extract<keyof UserUpdateInput, string>
+  | { name: 'email', alias?: string  } 
+  | { name: 'name', alias?: string  } 
+  | { name: 'posts', alias?: string  } 
   
 export interface PostUpdateManyWithoutAuthorInput {
   create?: PostCreateWithoutAuthorInput[]
@@ -1475,23 +1656,47 @@ export interface PostUpdateManyWithoutAuthorInput {
   deleteMany?: PostScalarWhereInput[]
   updateMany?: PostUpdateManyWithWhereNestedInput[]
 }
+export type PostUpdateManyWithoutAuthorInputInputObject =
+  | Extract<keyof PostUpdateManyWithoutAuthorInput, string>
+  | { name: 'create', alias?: string  } 
+  | { name: 'delete', alias?: string  } 
+  | { name: 'connect', alias?: string  } 
+  | { name: 'disconnect', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'upsert', alias?: string  } 
+  | { name: 'deleteMany', alias?: string  } 
+  | { name: 'updateMany', alias?: string  } 
   
 export interface PostUpdateWithWhereUniqueWithoutAuthorInput {
   where?: PostWhereUniqueInput
   data?: PostUpdateWithoutAuthorDataInput
 }
+export type PostUpdateWithWhereUniqueWithoutAuthorInputInputObject =
+  | Extract<keyof PostUpdateWithWhereUniqueWithoutAuthorInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
   
 export interface PostUpdateWithoutAuthorDataInput {
   published?: boolean | null
   title?: string | null
   content?: string | null
 }
+export type PostUpdateWithoutAuthorDataInputInputObject =
+  | Extract<keyof PostUpdateWithoutAuthorDataInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
   
 export interface PostUpsertWithWhereUniqueWithoutAuthorInput {
   where?: PostWhereUniqueInput
   update?: PostUpdateWithoutAuthorDataInput
   create?: PostCreateWithoutAuthorInput
 }
+export type PostUpsertWithWhereUniqueWithoutAuthorInputInputObject =
+  | Extract<keyof PostUpsertWithWhereUniqueWithoutAuthorInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'update', alias?: string  } 
+  | { name: 'create', alias?: string  } 
   
 export interface PostScalarWhereInput {
   id?: string | null
@@ -1558,22 +1763,100 @@ export interface PostScalarWhereInput {
   OR?: PostScalarWhereInput[]
   NOT?: PostScalarWhereInput[]
 }
+export type PostScalarWhereInputInputObject =
+  | Extract<keyof PostScalarWhereInput, string>
+  | { name: 'id', alias?: string  } 
+  | { name: 'id_not', alias?: string  } 
+  | { name: 'id_in', alias?: string  } 
+  | { name: 'id_not_in', alias?: string  } 
+  | { name: 'id_lt', alias?: string  } 
+  | { name: 'id_lte', alias?: string  } 
+  | { name: 'id_gt', alias?: string  } 
+  | { name: 'id_gte', alias?: string  } 
+  | { name: 'id_contains', alias?: string  } 
+  | { name: 'id_not_contains', alias?: string  } 
+  | { name: 'id_starts_with', alias?: string  } 
+  | { name: 'id_not_starts_with', alias?: string  } 
+  | { name: 'id_ends_with', alias?: string  } 
+  | { name: 'id_not_ends_with', alias?: string  } 
+  | { name: 'createdAt', alias?: string  } 
+  | { name: 'createdAt_not', alias?: string  } 
+  | { name: 'createdAt_in', alias?: string  } 
+  | { name: 'createdAt_not_in', alias?: string  } 
+  | { name: 'createdAt_lt', alias?: string  } 
+  | { name: 'createdAt_lte', alias?: string  } 
+  | { name: 'createdAt_gt', alias?: string  } 
+  | { name: 'createdAt_gte', alias?: string  } 
+  | { name: 'updatedAt', alias?: string  } 
+  | { name: 'updatedAt_not', alias?: string  } 
+  | { name: 'updatedAt_in', alias?: string  } 
+  | { name: 'updatedAt_not_in', alias?: string  } 
+  | { name: 'updatedAt_lt', alias?: string  } 
+  | { name: 'updatedAt_lte', alias?: string  } 
+  | { name: 'updatedAt_gt', alias?: string  } 
+  | { name: 'updatedAt_gte', alias?: string  } 
+  | { name: 'published', alias?: string  } 
+  | { name: 'published_not', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'title_not', alias?: string  } 
+  | { name: 'title_in', alias?: string  } 
+  | { name: 'title_not_in', alias?: string  } 
+  | { name: 'title_lt', alias?: string  } 
+  | { name: 'title_lte', alias?: string  } 
+  | { name: 'title_gt', alias?: string  } 
+  | { name: 'title_gte', alias?: string  } 
+  | { name: 'title_contains', alias?: string  } 
+  | { name: 'title_not_contains', alias?: string  } 
+  | { name: 'title_starts_with', alias?: string  } 
+  | { name: 'title_not_starts_with', alias?: string  } 
+  | { name: 'title_ends_with', alias?: string  } 
+  | { name: 'title_not_ends_with', alias?: string  } 
+  | { name: 'content', alias?: string  } 
+  | { name: 'content_not', alias?: string  } 
+  | { name: 'content_in', alias?: string  } 
+  | { name: 'content_not_in', alias?: string  } 
+  | { name: 'content_lt', alias?: string  } 
+  | { name: 'content_lte', alias?: string  } 
+  | { name: 'content_gt', alias?: string  } 
+  | { name: 'content_gte', alias?: string  } 
+  | { name: 'content_contains', alias?: string  } 
+  | { name: 'content_not_contains', alias?: string  } 
+  | { name: 'content_starts_with', alias?: string  } 
+  | { name: 'content_not_starts_with', alias?: string  } 
+  | { name: 'content_ends_with', alias?: string  } 
+  | { name: 'content_not_ends_with', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 export interface PostUpdateManyWithWhereNestedInput {
   where?: PostScalarWhereInput
   data?: PostUpdateManyDataInput
 }
+export type PostUpdateManyWithWhereNestedInputInputObject =
+  | Extract<keyof PostUpdateManyWithWhereNestedInput, string>
+  | { name: 'where', alias?: string  } 
+  | { name: 'data', alias?: string  } 
   
 export interface PostUpdateManyDataInput {
   published?: boolean | null
   title?: string | null
   content?: string | null
 }
+export type PostUpdateManyDataInputInputObject =
+  | Extract<keyof PostUpdateManyDataInput, string>
+  | { name: 'published', alias?: string  } 
+  | { name: 'title', alias?: string  } 
+  | { name: 'content', alias?: string  } 
   
 export interface UserUpdateManyMutationInput {
   email?: string | null
   name?: string | null
 }
+export type UserUpdateManyMutationInputInputObject =
+  | Extract<keyof UserUpdateManyMutationInput, string>
+  | { name: 'email', alias?: string  } 
+  | { name: 'name', alias?: string  } 
   
 export interface PostSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
@@ -1585,6 +1868,16 @@ export interface PostSubscriptionWhereInput {
   OR?: PostSubscriptionWhereInput[]
   NOT?: PostSubscriptionWhereInput[]
 }
+export type PostSubscriptionWhereInputInputObject =
+  | Extract<keyof PostSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 export interface UserSubscriptionWhereInput {
   mutation_in?: prisma.MutationType[]
@@ -1596,6 +1889,16 @@ export interface UserSubscriptionWhereInput {
   OR?: UserSubscriptionWhereInput[]
   NOT?: UserSubscriptionWhereInput[]
 }
+export type UserSubscriptionWhereInputInputObject =
+  | Extract<keyof UserSubscriptionWhereInput, string>
+  | { name: 'mutation_in', alias?: string  } 
+  | { name: 'updatedFields_contains', alias?: string  } 
+  | { name: 'updatedFields_contains_every', alias?: string  } 
+  | { name: 'updatedFields_contains_some', alias?: string  } 
+  | { name: 'node', alias?: string  } 
+  | { name: 'AND', alias?: string  } 
+  | { name: 'OR', alias?: string  } 
+  | { name: 'NOT', alias?: string  } 
   
 
 export type enumTypesNames =
@@ -1605,43 +1908,75 @@ export type enumTypesNames =
   
 
 export interface NexusPrismaTypes {
-  fields: {
-    Query: QueryObject
-    Post: PostObject
-    User: UserObject
-    PostConnection: PostConnectionObject
-    PageInfo: PageInfoObject
-    PostEdge: PostEdgeObject
-    AggregatePost: AggregatePostObject
-    UserConnection: UserConnectionObject
-    UserEdge: UserEdgeObject
-    AggregateUser: AggregateUserObject
-    Mutation: MutationObject
-    BatchPayload: BatchPayloadObject
-    Subscription: SubscriptionObject
-    PostSubscriptionPayload: PostSubscriptionPayloadObject
-    PostPreviousValues: PostPreviousValuesObject
-    UserSubscriptionPayload: UserSubscriptionPayloadObject
-    UserPreviousValues: UserPreviousValuesObject
+  objectTypes: {
+    fields: {
+      Query: QueryObject
+      Post: PostObject
+      User: UserObject
+      PostConnection: PostConnectionObject
+      PageInfo: PageInfoObject
+      PostEdge: PostEdgeObject
+      AggregatePost: AggregatePostObject
+      UserConnection: UserConnectionObject
+      UserEdge: UserEdgeObject
+      AggregateUser: AggregateUserObject
+      Mutation: MutationObject
+      BatchPayload: BatchPayloadObject
+      Subscription: SubscriptionObject
+      PostSubscriptionPayload: PostSubscriptionPayloadObject
+      PostPreviousValues: PostPreviousValuesObject
+      UserSubscriptionPayload: UserSubscriptionPayloadObject
+      UserPreviousValues: UserPreviousValuesObject
+    }
+    fieldsDetails: {
+      Query: QueryFieldDetails
+      Post: PostFieldDetails
+      User: UserFieldDetails
+      PostConnection: PostConnectionFieldDetails
+      PageInfo: PageInfoFieldDetails
+      PostEdge: PostEdgeFieldDetails
+      AggregatePost: AggregatePostFieldDetails
+      UserConnection: UserConnectionFieldDetails
+      UserEdge: UserEdgeFieldDetails
+      AggregateUser: AggregateUserFieldDetails
+      Mutation: MutationFieldDetails
+      BatchPayload: BatchPayloadFieldDetails
+      Subscription: SubscriptionFieldDetails
+      PostSubscriptionPayload: PostSubscriptionPayloadFieldDetails
+      PostPreviousValues: PostPreviousValuesFieldDetails
+      UserSubscriptionPayload: UserSubscriptionPayloadFieldDetails
+      UserPreviousValues: UserPreviousValuesFieldDetails
+    }
   }
-  fieldsDetails: {
-    Query: QueryFieldDetails
-    Post: PostFieldDetails
-    User: UserFieldDetails
-    PostConnection: PostConnectionFieldDetails
-    PageInfo: PageInfoFieldDetails
-    PostEdge: PostEdgeFieldDetails
-    AggregatePost: AggregatePostFieldDetails
-    UserConnection: UserConnectionFieldDetails
-    UserEdge: UserEdgeFieldDetails
-    AggregateUser: AggregateUserFieldDetails
-    Mutation: MutationFieldDetails
-    BatchPayload: BatchPayloadFieldDetails
-    Subscription: SubscriptionFieldDetails
-    PostSubscriptionPayload: PostSubscriptionPayloadFieldDetails
-    PostPreviousValues: PostPreviousValuesFieldDetails
-    UserSubscriptionPayload: UserSubscriptionPayloadFieldDetails
-    UserPreviousValues: UserPreviousValuesFieldDetails
+  inputTypes: {
+    fields: {
+      PostWhereUniqueInput: PostWhereUniqueInputInputObject
+      PostWhereInput: PostWhereInputInputObject
+      UserWhereInput: UserWhereInputInputObject
+      UserWhereUniqueInput: UserWhereUniqueInputInputObject
+      PostCreateInput: PostCreateInputInputObject
+      UserCreateOneWithoutPostsInput: UserCreateOneWithoutPostsInputInputObject
+      UserCreateWithoutPostsInput: UserCreateWithoutPostsInputInputObject
+      PostUpdateInput: PostUpdateInputInputObject
+      UserUpdateOneRequiredWithoutPostsInput: UserUpdateOneRequiredWithoutPostsInputInputObject
+      UserUpdateWithoutPostsDataInput: UserUpdateWithoutPostsDataInputInputObject
+      UserUpsertWithoutPostsInput: UserUpsertWithoutPostsInputInputObject
+      PostUpdateManyMutationInput: PostUpdateManyMutationInputInputObject
+      UserCreateInput: UserCreateInputInputObject
+      PostCreateManyWithoutAuthorInput: PostCreateManyWithoutAuthorInputInputObject
+      PostCreateWithoutAuthorInput: PostCreateWithoutAuthorInputInputObject
+      UserUpdateInput: UserUpdateInputInputObject
+      PostUpdateManyWithoutAuthorInput: PostUpdateManyWithoutAuthorInputInputObject
+      PostUpdateWithWhereUniqueWithoutAuthorInput: PostUpdateWithWhereUniqueWithoutAuthorInputInputObject
+      PostUpdateWithoutAuthorDataInput: PostUpdateWithoutAuthorDataInputInputObject
+      PostUpsertWithWhereUniqueWithoutAuthorInput: PostUpsertWithWhereUniqueWithoutAuthorInputInputObject
+      PostScalarWhereInput: PostScalarWhereInputInputObject
+      PostUpdateManyWithWhereNestedInput: PostUpdateManyWithWhereNestedInputInputObject
+      PostUpdateManyDataInput: PostUpdateManyDataInputInputObject
+      UserUpdateManyMutationInput: UserUpdateManyMutationInputInputObject
+      PostSubscriptionWhereInput: PostSubscriptionWhereInputInputObject
+      UserSubscriptionWhereInput: UserSubscriptionWhereInputInputObject
+    }
   }
   enumTypesNames: enumTypesNames
 }
