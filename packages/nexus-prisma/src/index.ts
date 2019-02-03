@@ -5,10 +5,21 @@ import { PrismaSchemaConfig } from './types'
 
 export { /*prismaEnumType, */ prismaObjectType } from './definition'
 
+interface PrismaSchemaConfigRequiredTypes extends PrismaSchemaConfig {
+  types: any
+}
+
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
   const builder = new PrismaSchemaBuilder(options)
 
-  const { schema } = core.makeSchemaInternal(options, builder)
+  if (!options.types) {
+    options.types = []
+  }
+
+  const { schema } = core.makeSchemaInternal(
+    options as PrismaSchemaConfigRequiredTypes,
+    builder,
+  )
 
   // Only in development envs do we want to worry about regenerating the
   // schema definition and/or generated types.

@@ -1,5 +1,7 @@
 import { core } from 'nexus'
 
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
 type GenTypesKeys = 'fields' | 'fieldsDetails' | 'enumTypesNames'
 
 interface GenTypesShape {
@@ -30,13 +32,15 @@ export type GetGen2<
     : any
   : any
 
-export interface ObjectField {
+export type AliasedObjectField = {
   name: string
   args?: string[] | false
   alias?: string
 }
 
-export type AnonymousField = string | ObjectField
+export type ObjectField = Omit<AliasedObjectField, 'alias'>
+
+export type AnonymousField = string | AliasedObjectField
 
 export interface AnonymousPickOmitField {
   pick?: AnonymousField[]
@@ -45,12 +49,13 @@ export interface AnonymousPickOmitField {
 
 export type AnonymousInputFields = AnonymousField[] | AnonymousPickOmitField
 
-export interface PrismaOutputOpts {
+export interface PrismaOutputOpts
+  extends Omit<
+    core.FieldOutConfig<string, string>,
+    'args' | 'deprecation' | 'resolve'
+  > {
   args: Record<string, core.NexusArgDef<string>>
-  description?: string | null
-  list: true | null
-  nullable: boolean
-  resolve: (root: any, args: any, ctx: any, info?: any) => any
+  resolve: (root: any, args: any, ctx: any) => any
 }
 
 export type PrismaOutputOptsMap = Record<string, PrismaOutputOpts>
@@ -84,7 +89,7 @@ export type PrismaObject<TypeName extends string> = GetGen2<
 >
 
 export interface PrismaSchemaConfig extends core.BuilderConfig {
-  types: any
+  types?: any
   prisma: {
     schemaPath: string
     contextClientName: string
