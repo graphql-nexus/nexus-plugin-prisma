@@ -24,15 +24,6 @@ export function isList(type: GraphQLType): boolean {
   return isListType(type)
 }
 
-export function isListOrRequired(
-  type: GraphQLType,
-): { list: true | null; nullable: boolean } {
-  return {
-    list: isList(type) ? true : null,
-    nullable: !isRequired(type),
-  }
-}
-
 export function getFinalType(type: GraphQLType): GraphQLNamedType {
   if (isListType(type) || isNonNullType(type)) {
     return getFinalType(type.ofType)
