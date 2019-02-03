@@ -9,10 +9,6 @@ import {
 } from 'graphql'
 
 export function isRequired(type: GraphQLType): boolean {
-  if (isListType(type)) {
-    return isRequired(type.ofType)
-  }
-
   return isNonNullType(type)
 }
 
