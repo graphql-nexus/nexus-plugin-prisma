@@ -197,9 +197,12 @@ export function graphqlTypeToNexusType(
           t.field(f.name, {
             type: getTypeName(f.type),
             list: isList(f.type) ? true : undefined,
-            nullable: isRequired(f.type),
+            nullable: !isRequired(f.type),
             resolve: generateDefaultResolver(type.name, f, contextClientName),
           })
+        })
+        type.getInterfaces().forEach(interfaceType => {
+          t.implements(interfaceType.name)
         })
       },
     })
