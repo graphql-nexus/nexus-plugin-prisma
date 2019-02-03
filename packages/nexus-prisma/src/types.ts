@@ -57,7 +57,7 @@ export type PrismaOutputOptsMap = Record<string, PrismaOutputOpts>
 
 export type InputField<TypeName extends string> = GetGen2<'fields', TypeName>
 
-export type PrismaTypeNames = Extract<keyof GetGen<'fields', any>, string>
+export type PrismaObjectTypeNames = Extract<keyof GetGen<'fields', any>, string>
 
 export type PrismaEnumTypeNames = NexusGen extends infer GenTypes
   ? GenTypes extends GenTypesShape
