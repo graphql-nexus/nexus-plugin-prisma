@@ -1,6 +1,6 @@
 # nexus-prisma
 
-A Nexus plugin for Prisma
+Prisma Plugin for Nexus
 
 ## Motivation
 
