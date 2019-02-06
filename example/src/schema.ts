@@ -28,11 +28,11 @@ export const schema = makePrismaSchema({
   typegenAutoConfig: {
     sources: [
       {
-        module: path.join(__dirname, './generated/prisma-client/index.ts'),
+        source: path.join(__dirname, './generated/prisma-client/index.ts'),
         alias: 'prisma',
       },
       {
-        module: path.join(__dirname, './context.ts'),
+        source: path.join(__dirname, './context.ts'),
         alias: 'ctx',
       },
     ],
