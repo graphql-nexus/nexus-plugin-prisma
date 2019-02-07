@@ -29,7 +29,7 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
 
 export interface PrismaInputObjectTypeConfig<TypeName extends string>
   extends Omit<core.NexusInputObjectTypeConfig<TypeName>, 'definition'> {
-  definition(t: PrismaInputDefinitionBlock<TypeName>): void
+  definition?: (t: PrismaInputDefinitionBlock<TypeName>) => void
 }
 
 export function prismaInputObjectType<
@@ -38,7 +38,7 @@ export function prismaInputObjectType<
   typeConfig: PrismaInputObjectTypeConfig<TypeName>,
 ): core.NexusWrappedType<core.NexusInputObjectTypeDef<TypeName>> {
   return core.nexusWrappedType(typeConfig.name, builder => {
-    const { definition, ...rest } = typeConfig
+    let { definition, ...rest } = typeConfig
     if (!isPrismaSchemaBuilder(builder)) {
       throw new Error(
         'prismaInputObjectType can only be used by `makePrismaSchema`',
@@ -68,6 +68,12 @@ export function prismaInputObjectType<
             })
           })
         }
+        if (!definition) {
+          definition = t => {
+            t.prismaFields()
+          }
+        }
+
         definition(prismaBlock)
       },
     })

@@ -37,7 +37,7 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
 
 export interface PrismaObjectTypeConfig<TypeName extends string>
   extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
-  definition(t: PrismaObjectDefinitionBlock<TypeName>): void
+  definition?: (t: PrismaObjectDefinitionBlock<TypeName>) => void
 }
 
 export function prismaObjectType<
@@ -46,7 +46,7 @@ export function prismaObjectType<
   typeConfig: PrismaObjectTypeConfig<TypeName>,
 ): core.NexusWrappedType<core.NexusObjectTypeDef<TypeName>> {
   return core.nexusWrappedType(typeConfig.name, builder => {
-    const { definition, ...rest } = typeConfig
+    let { definition, ...rest } = typeConfig
     if (!isPrismaSchemaBuilder(builder)) {
       throw new Error('prismaObjectType can only be used by `makePrismaSchema`')
     }
@@ -87,6 +87,11 @@ export function prismaObjectType<
             })
           })
         }
+        if (!definition) {
+          definition = t => {
+            t.prismaFields()
+          }
+        }
         definition(prismaBlock)
       },
     })
@@ -94,7 +99,10 @@ export function prismaObjectType<
 }
 
 function generatePrismaTypes(
-  prismaSchema: { uniqueFieldsByModel: Record<string, string[]>; schema: GraphQLSchema },
+  prismaSchema: {
+    uniqueFieldsByModel: Record<string, string[]>
+    schema: GraphQLSchema
+  },
   objectConfig: PrismaObjectTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
 ) {
@@ -109,6 +117,6 @@ function generatePrismaTypes(
   return objectTypeFieldsToNexus(
     graphqlType,
     builderConfig.prisma.contextClientName,
-    prismaSchema.uniqueFieldsByModel
+    prismaSchema.uniqueFieldsByModel,
   )
 }
