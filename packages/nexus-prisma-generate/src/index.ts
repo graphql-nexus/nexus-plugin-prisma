@@ -251,12 +251,16 @@ ${fields
     description: string
     list: ${isList(field.type) ? true : undefined}
     nullable: ${!isRequired(field.type)}
-    resolve: (
+    resolve: ${
+      isScalarType(getFinalType(field.type))
+        ? undefined
+        : `(
       root: core.RootValue<"${type.name}">,
       args: ${renderResolverArgs(field)},
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => ${renderResolverReturnType(field)};
+    ) => ${renderResolverReturnType(field)}`
+    }
   }`,
   )
   .join(EOL)}

@@ -82,7 +82,7 @@ export interface QueryFieldDetails {
       args: { where: UserWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User | null> | prisma.User | null;
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   users: {
     type: 'Query'
@@ -95,7 +95,7 @@ export interface QueryFieldDetails {
       args: { where?: UserWhereInput | null, orderBy?: prisma.UserOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User[]> | prisma.User[];
+    ) => Promise<prisma.User[]> | prisma.User[]
   }
   usersConnection: {
     type: 'Query'
@@ -108,7 +108,7 @@ export interface QueryFieldDetails {
       args: { where?: UserWhereInput | null, orderBy?: prisma.UserOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.UserConnection> | prisma.UserConnection;
+    ) => Promise<prisma.UserConnection> | prisma.UserConnection
   }
   post: {
     type: 'Query'
@@ -121,7 +121,7 @@ export interface QueryFieldDetails {
       args: { where: PostWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post | null> | prisma.Post | null;
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   posts: {
     type: 'Query'
@@ -134,7 +134,7 @@ export interface QueryFieldDetails {
       args: { where?: PostWhereInput | null, orderBy?: prisma.PostOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post[]> | prisma.Post[];
+    ) => Promise<prisma.Post[]> | prisma.Post[]
   }
   postsConnection: {
     type: 'Query'
@@ -147,7 +147,7 @@ export interface QueryFieldDetails {
       args: { where?: PostWhereInput | null, orderBy?: prisma.PostOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PostConnection> | prisma.PostConnection;
+    ) => Promise<prisma.PostConnection> | prisma.PostConnection
   }
   node: {
     type: 'Query'
@@ -160,7 +160,7 @@ export interface QueryFieldDetails {
       args: { id: string }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Node | null> | prisma.Node | null;
+    ) => Promise<prisma.Node | null> | prisma.Node | null
   }
 }
   
@@ -198,12 +198,7 @@ export interface UserFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"User">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   email: {
     type: 'User'
@@ -211,12 +206,7 @@ export interface UserFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"User">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   name: {
     type: 'User'
@@ -224,12 +214,7 @@ export interface UserFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"User">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
   posts: {
     type: 'User'
@@ -242,7 +227,7 @@ export interface UserFieldDetails {
       args: { where?: PostWhereInput | null, orderBy?: prisma.PostOrderByInput | null, skip?: number | null, after?: string | null, before?: string | null, first?: number | null, last?: number | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post[]> | prisma.Post[];
+    ) => Promise<prisma.Post[]> | prisma.Post[]
   }
 }
   
@@ -279,12 +264,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   createdAt: {
     type: 'Post'
@@ -292,12 +272,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   updatedAt: {
     type: 'Post'
@@ -305,12 +280,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   published: {
     type: 'Post'
@@ -318,12 +288,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<boolean> | boolean;
+    resolve: undefined
   }
   title: {
     type: 'Post'
@@ -331,12 +296,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   content: {
     type: 'Post'
@@ -344,12 +304,7 @@ export interface PostFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"Post">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
   author: {
     type: 'Post'
@@ -362,7 +317,7 @@ export interface PostFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User;
+    ) => Promise<prisma.User> | prisma.User
   }
 }
   
@@ -396,7 +351,7 @@ export interface UserConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PageInfo> | prisma.PageInfo;
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
     type: 'UserConnection'
@@ -409,7 +364,7 @@ export interface UserConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.UserEdge[]> | prisma.UserEdge[];
+    ) => Promise<prisma.UserEdge[]> | prisma.UserEdge[]
   }
   aggregate: {
     type: 'UserConnection'
@@ -422,7 +377,7 @@ export interface UserConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregateUser> | prisma.AggregateUser;
+    ) => Promise<prisma.AggregateUser> | prisma.AggregateUser
   }
 }
   
@@ -453,12 +408,7 @@ export interface PageInfoFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PageInfo">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<boolean> | boolean;
+    resolve: undefined
   }
   hasPreviousPage: {
     type: 'PageInfo'
@@ -466,12 +416,7 @@ export interface PageInfoFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PageInfo">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<boolean> | boolean;
+    resolve: undefined
   }
   startCursor: {
     type: 'PageInfo'
@@ -479,12 +424,7 @@ export interface PageInfoFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"PageInfo">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
   endCursor: {
     type: 'PageInfo'
@@ -492,12 +432,7 @@ export interface PageInfoFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"PageInfo">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
 }
   
@@ -529,7 +464,7 @@ export interface UserEdgeFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User;
+    ) => Promise<prisma.User> | prisma.User
   }
   cursor: {
     type: 'UserEdge'
@@ -537,12 +472,7 @@ export interface UserEdgeFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"UserEdge">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
 }
   
@@ -567,12 +497,7 @@ export interface AggregateUserFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"AggregateUser">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<number> | number;
+    resolve: undefined
   }
 }
   
@@ -606,7 +531,7 @@ export interface PostConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PageInfo> | prisma.PageInfo;
+    ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
     type: 'PostConnection'
@@ -619,7 +544,7 @@ export interface PostConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PostEdge[]> | prisma.PostEdge[];
+    ) => Promise<prisma.PostEdge[]> | prisma.PostEdge[]
   }
   aggregate: {
     type: 'PostConnection'
@@ -632,7 +557,7 @@ export interface PostConnectionFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.AggregatePost> | prisma.AggregatePost;
+    ) => Promise<prisma.AggregatePost> | prisma.AggregatePost
   }
 }
   
@@ -664,7 +589,7 @@ export interface PostEdgeFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post> | prisma.Post;
+    ) => Promise<prisma.Post> | prisma.Post
   }
   cursor: {
     type: 'PostEdge'
@@ -672,12 +597,7 @@ export interface PostEdgeFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostEdge">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
 }
   
@@ -702,12 +622,7 @@ export interface AggregatePostFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"AggregatePost">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<number> | number;
+    resolve: undefined
   }
 }
   
@@ -790,7 +705,7 @@ export interface MutationFieldDetails {
       args: { data: UserCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User;
+    ) => Promise<prisma.User> | prisma.User
   }
   updateUser: {
     type: 'Mutation'
@@ -803,7 +718,7 @@ export interface MutationFieldDetails {
       args: { data: UserUpdateInput, where: UserWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User | null> | prisma.User | null;
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   updateManyUsers: {
     type: 'Mutation'
@@ -816,7 +731,7 @@ export interface MutationFieldDetails {
       args: { data: UserUpdateManyMutationInput, where?: UserWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertUser: {
     type: 'Mutation'
@@ -829,7 +744,7 @@ export interface MutationFieldDetails {
       args: { where: UserWhereUniqueInput, create: UserCreateInput, update: UserUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User> | prisma.User;
+    ) => Promise<prisma.User> | prisma.User
   }
   deleteUser: {
     type: 'Mutation'
@@ -842,7 +757,7 @@ export interface MutationFieldDetails {
       args: { where: UserWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User | null> | prisma.User | null;
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   deleteManyUsers: {
     type: 'Mutation'
@@ -855,7 +770,7 @@ export interface MutationFieldDetails {
       args: { where?: UserWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   createPost: {
     type: 'Mutation'
@@ -868,7 +783,7 @@ export interface MutationFieldDetails {
       args: { data: PostCreateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post> | prisma.Post;
+    ) => Promise<prisma.Post> | prisma.Post
   }
   updatePost: {
     type: 'Mutation'
@@ -881,7 +796,7 @@ export interface MutationFieldDetails {
       args: { data: PostUpdateInput, where: PostWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post | null> | prisma.Post | null;
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updateManyPosts: {
     type: 'Mutation'
@@ -894,7 +809,7 @@ export interface MutationFieldDetails {
       args: { data: PostUpdateManyMutationInput, where?: PostWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertPost: {
     type: 'Mutation'
@@ -907,7 +822,7 @@ export interface MutationFieldDetails {
       args: { where: PostWhereUniqueInput, create: PostCreateInput, update: PostUpdateInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post> | prisma.Post;
+    ) => Promise<prisma.Post> | prisma.Post
   }
   deletePost: {
     type: 'Mutation'
@@ -920,7 +835,7 @@ export interface MutationFieldDetails {
       args: { where: PostWhereUniqueInput }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post | null> | prisma.Post | null;
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   deleteManyPosts: {
     type: 'Mutation'
@@ -933,7 +848,7 @@ export interface MutationFieldDetails {
       args: { where?: PostWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
+    ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
 }
   
@@ -958,12 +873,7 @@ export interface BatchPayloadFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"BatchPayload">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<undefined> | undefined;
+    resolve: undefined
   }
 }
   
@@ -998,7 +908,7 @@ export interface SubscriptionFieldDetails {
       args: { where?: UserSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null;
+    ) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null
   }
   post: {
     type: 'Subscription'
@@ -1011,7 +921,7 @@ export interface SubscriptionFieldDetails {
       args: { where?: PostSubscriptionWhereInput | null }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PostSubscriptionPayload | null> | prisma.PostSubscriptionPayload | null;
+    ) => Promise<prisma.PostSubscriptionPayload | null> | prisma.PostSubscriptionPayload | null
   }
 }
   
@@ -1047,7 +957,7 @@ export interface UserSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.MutationType> | prisma.MutationType;
+    ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
     type: 'UserSubscriptionPayload'
@@ -1060,7 +970,7 @@ export interface UserSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.User | null> | prisma.User | null;
+    ) => Promise<prisma.User | null> | prisma.User | null
   }
   updatedFields: {
     type: 'UserSubscriptionPayload'
@@ -1068,12 +978,7 @@ export interface UserSubscriptionPayloadFieldDetails {
     description: string
     list: true
     nullable: false
-    resolve: (
-      root: core.RootValue<"UserSubscriptionPayload">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string[]> | string[];
+    resolve: undefined
   }
   previousValues: {
     type: 'UserSubscriptionPayload'
@@ -1086,7 +991,7 @@ export interface UserSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.UserPreviousValues | null> | prisma.UserPreviousValues | null;
+    ) => Promise<prisma.UserPreviousValues | null> | prisma.UserPreviousValues | null
   }
 }
   
@@ -1115,12 +1020,7 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"UserPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   email: {
     type: 'UserPreviousValues'
@@ -1128,12 +1028,7 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"UserPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   name: {
     type: 'UserPreviousValues'
@@ -1141,12 +1036,7 @@ export interface UserPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"UserPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
 }
   
@@ -1182,7 +1072,7 @@ export interface PostSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.MutationType> | prisma.MutationType;
+    ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
     type: 'PostSubscriptionPayload'
@@ -1195,7 +1085,7 @@ export interface PostSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.Post | null> | prisma.Post | null;
+    ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updatedFields: {
     type: 'PostSubscriptionPayload'
@@ -1203,12 +1093,7 @@ export interface PostSubscriptionPayloadFieldDetails {
     description: string
     list: true
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostSubscriptionPayload">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string[]> | string[];
+    resolve: undefined
   }
   previousValues: {
     type: 'PostSubscriptionPayload'
@@ -1221,7 +1106,7 @@ export interface PostSubscriptionPayloadFieldDetails {
       args: {  }  ,
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
-    ) => Promise<prisma.PostPreviousValues | null> | prisma.PostPreviousValues | null;
+    ) => Promise<prisma.PostPreviousValues | null> | prisma.PostPreviousValues | null
   }
 }
   
@@ -1256,12 +1141,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   createdAt: {
     type: 'PostPreviousValues'
@@ -1269,12 +1149,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   updatedAt: {
     type: 'PostPreviousValues'
@@ -1282,12 +1157,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   published: {
     type: 'PostPreviousValues'
@@ -1295,12 +1165,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<boolean> | boolean;
+    resolve: undefined
   }
   title: {
     type: 'PostPreviousValues'
@@ -1308,12 +1173,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: false
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string> | string;
+    resolve: undefined
   }
   content: {
     type: 'PostPreviousValues'
@@ -1321,12 +1181,7 @@ export interface PostPreviousValuesFieldDetails {
     description: string
     list: undefined
     nullable: true
-    resolve: (
-      root: core.RootValue<"PostPreviousValues">,
-      args: {  }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<string | null> | string | null;
+    resolve: undefined
   }
 }
   

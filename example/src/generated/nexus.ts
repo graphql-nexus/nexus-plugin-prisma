@@ -4,7 +4,6 @@
  */
 
 import * as ctx from "../context"
-import * as prisma from "./prisma-client/index"
 
 
 declare global {
@@ -135,10 +134,37 @@ export interface NexusGenEnums {
 }
 
 export interface NexusGenRootTypes {
-  Mutation: {};
-  Post: prisma.Post;
+  AggregatePost: { // root type
+    count: number; // Int!
+  }
+  PageInfo: { // root type
+    endCursor?: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    hasPreviousPage: boolean; // Boolean!
+    startCursor?: string | null; // String
+  }
+  Post: { // root type
+    content?: string | null; // String
+    createdAt: any; // DateTime!
+    id: string; // ID!
+    published: boolean; // Boolean!
+    title: string; // String!
+    updatedAt: any; // DateTime!
+  }
+  PostConnection: { // root type
+    edges: NexusGenRootTypes['PostEdge'][]; // [PostEdge!]!
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  PostEdge: { // root type
+    cursor: string; // String!
+    node: NexusGenRootTypes['Post']; // Post!
+  }
   Query: {};
-  User: prisma.User;
+  User: { // root type
+    email: string; // String!
+    id: string; // ID!
+    name?: string | null; // String
+  }
   String: string;
   Int: number;
   Float: number;
@@ -154,11 +180,14 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
-  Mutation: { // field return type
-    createDraft: NexusGenRootTypes['Post']; // Post!
-    deletePost: NexusGenRootTypes['Post'] | null; // Post
-    publish: NexusGenRootTypes['Post']; // Post!
-    signupUser: NexusGenRootTypes['User']; // User!
+  AggregatePost: { // field return type
+    count: number; // Int!
+  }
+  PageInfo: { // field return type
+    endCursor: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    hasPreviousPage: boolean; // Boolean!
+    startCursor: string | null; // String
   }
   Post: { // field return type
     author: NexusGenRootTypes['User']; // User!
@@ -169,9 +198,17 @@ export interface NexusGenFieldTypes {
     title: string; // String!
     updatedAt: any; // DateTime!
   }
+  PostConnection: { // field return type
+    aggregate: NexusGenRootTypes['AggregatePost']; // AggregatePost!
+    edges: NexusGenRootTypes['PostEdge'][]; // [PostEdge!]!
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  PostEdge: { // field return type
+    cursor: string; // String!
+    node: NexusGenRootTypes['Post']; // Post!
+  }
   Query: { // field return type
-    feed: NexusGenRootTypes['Post'][]; // [Post!]!
-    filterPosts: NexusGenRootTypes['Post'][]; // [Post!]!
+    toto: NexusGenRootTypes['PostConnection']; // PostConnection!
   }
   User: { // field return type
     email: string; // String!
@@ -182,26 +219,15 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenArgTypes {
-  Mutation: {
-    createDraft: { // args
-      authorEmail: string; // String!
-      content: string; // String!
-      title: string; // String!
-    }
-    deletePost: { // args
-      id: string; // ID!
-    }
-    publish: { // args
-      id: string; // ID!
-    }
-    signupUser: { // args
-      email: string; // String!
-      name: string; // String!
-    }
-  }
   Query: {
-    filterPosts: { // args
-      searchString: string; // String!
+    toto: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy?: NexusGenEnums['PostOrderByInput'] | null; // PostOrderByInput
+      skip?: number | null; // Int
+      where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
   User: {
@@ -222,7 +248,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Mutation" | "Post" | "Query" | "User";
+export type NexusGenObjectNames = "AggregatePost" | "PageInfo" | "Post" | "PostConnection" | "PostEdge" | "Query" | "User";
 
 export type NexusGenInputNames = "PostWhereInput" | "UserWhereInput";
 

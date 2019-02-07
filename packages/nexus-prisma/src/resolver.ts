@@ -9,25 +9,58 @@ import {
 } from './utils'
 const camelCase = require('camelcase')
 
+function shouldRelyOnDefaultResolver(
+  typeName: string,
+  fieldToResolve: GraphQLField<any, any>,
+) {
+  const fieldName = fieldToResolve.name
+
+  if (isScalarType(getFinalType(fieldToResolve.type))) {
+    return true
+  }
+
+  if (isConnectionTypeName(typeName) && fieldName !== 'aggregate') {
+    // returns `pageInfo` and `edges` queries by the client
+    return true
+  }
+
+  // fields inside `edges` are queried as well, we can simply return them
+  if (
+    typeName.endsWith('Edge') &&
+    typeName !== 'Edge' &&
+    (fieldName === 'node' || fieldName === 'cursor')
+  ) {
+    return true
+  }
+
+  return false
+}
+
 export function generateDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
   contextClientName: string,
   uniqFieldsByModel: Record<string, string[]>,
-): GraphQLFieldResolver<any, any> {
+): GraphQLFieldResolver<any, any> | undefined {
+  const fieldName = fieldToResolve.name
+
+  /**
+   * If we know the prisma-client returns these fields, then let's just return undefined and let nexus handle it with a default resolver
+   * We need to do this to make the typings working without having to provide a typegenAutoconfig.source to the the prisma-client
+   * becase Nexus does not generate types from the schema for fields that have a resolve property
+   */
+  if (shouldRelyOnDefaultResolver(typeName, fieldToResolve)) {
+    return undefined
+  }
+
+  const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
+  const parentName = camelCase(typeName)
+
+  if (typeName === 'Subscription') {
+    throw new Error('Subscription are not supported yet')
+  }
+
   return (root, args, ctx, info) => {
-    const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
-
-    if (typeName === 'Subscription') {
-      throw new Error('Subscription not supported yet')
-    }
-
-    const fieldName = fieldToResolve.name
-
-    if (isScalarType(getFinalType(fieldToResolve.type))) {
-      return root[fieldName]
-    }
-
     // Resolve top-level fields
     if (isTopLevel) {
       throwIfUnknownClientFunction(
@@ -52,22 +85,6 @@ export function generateDefaultResolver(
 
       return ctx[contextClientName][fieldName](args)
     }
-
-    if (isConnectionTypeName(typeName)) {
-      // returns `pageInfo` and `edges` queries by the client
-      return root[fieldName]
-    }
-
-    // fields inside `edges` are queried as well, we can simply return them
-    if (
-      typeName.endsWith('Edge') &&
-      typeName !== 'Edge' &&
-      (fieldName === 'node' || fieldName === 'cursor')
-    ) {
-      return root[fieldName]
-    }
-
-    const parentName = camelCase(typeName)
 
     throwIfUnknownClientFunction(
       parentName,
