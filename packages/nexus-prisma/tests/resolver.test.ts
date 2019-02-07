@@ -1,7 +1,7 @@
+import { buildClientSchema, GraphQLObjectType } from 'graphql'
 import { generateDefaultResolver } from '../src/resolver'
-import { prisma } from './prisma/prisma-client'
 import nexusPrismaSchema from './prisma/nexus-prisma'
-import { buildClientSchema, GraphQLObjectType } from 'graphql';
+import { prisma } from './prisma/prisma-client'
 
 const schema = buildClientSchema(nexusPrismaSchema.schema as any)
 
@@ -18,7 +18,9 @@ const getData = async (
   args: Record<string, any> = {},
 ) => {
   const field = getField(typeName, fieldName)
-  const resolver = generateDefaultResolver(typeName, field, 'prisma', { [typeName]: ['id'] })
+  const resolver = generateDefaultResolver(typeName, field, 'prisma', {
+    [typeName]: ['id'],
+  })
 
   return resolver(root, args, { prisma }, {} as any)
 }
@@ -71,6 +73,24 @@ test('Top-level Mutation.deletePost', async () => {
       {},
       {
         where: { id: '' },
+      },
+    )
+  } catch (e) {
+    expect(e.message).toEqual(
+      'No Node for the model Post with value  for id found.',
+    )
+  }
+})
+
+test('Top-level Mutation.updatePost', async () => {
+  try {
+    await getData(
+      'Mutation',
+      'updatePost',
+      {},
+      {
+        where: { id: '' },
+        data: { title: 'title' },
       },
     )
   } catch (e) {
