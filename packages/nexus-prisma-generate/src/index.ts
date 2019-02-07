@@ -87,7 +87,7 @@ function main(cli: meow.Result) {
     const nexusPrismaTypesPath = join(
       rootPath,
       output,
-      jsMode ? 'nexus-prisma.d.ts' : 'nexus-prisma.ts',
+      'nexus-prisma.ts',
     )
     const nexusPrismaTypes = renderNexusPrismaTypes(
       schema,
