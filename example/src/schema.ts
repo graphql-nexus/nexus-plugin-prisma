@@ -7,7 +7,6 @@ import { makePrismaSchema } from 'nexus-prisma'
  * Finally, we construct our schema (whose starting query type is the query
  * type we defined above) and export it.
  */
-
 export const schema = makePrismaSchema({
   types: allTypes,
 
