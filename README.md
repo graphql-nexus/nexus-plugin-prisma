@@ -4,7 +4,7 @@ Prisma Plugin for Nexus
 
 ## Motivation
 
-**nexus-prisma** generate a working CRUD GraphQL schema based on your prisma datamodel. It leverages [`nexus`](https://github.com/prisma/nexus) code-first power to easily expose/hide/customise types from the generated schema and solve most of the common problems previously faced while using the SDL-first paradigm.
+**nexus-prisma** generates a working CRUD GraphQL schema based on your prisma datamodel. It leverages [`nexus`](https://github.com/prisma/nexus) code-first power to easily expose/hide/customise types from the generated schema and solve most of the common problems previously faced while using the SDL-first paradigm.
 
 If you want to give it a quick look, check it out here:
 
