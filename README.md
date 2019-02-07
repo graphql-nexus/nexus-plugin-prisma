@@ -60,15 +60,6 @@ const schema = makePrismaSchema({
     // Name of the prisma instance passed into the context below
     contextClientName: 'prisma',
   },
-  typegenAutoConfig: {
-    sources: [
-      {
-        source: path.join(__dirname, '__PRISMA_CLIENT_DIR__/index.ts'),
-        alias: 'prisma',
-      }
-    ],
-    contextType: 'ctx.Context',
-  },
 })
 
 const server = new ApolloServer({
