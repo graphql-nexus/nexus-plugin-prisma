@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma-generate",
-  "version": "0.0.4",
+  "version": "0.1.2",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "files": [
