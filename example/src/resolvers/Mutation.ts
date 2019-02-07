@@ -1,12 +1,11 @@
 import { prismaObjectType } from 'nexus-prisma'
 import { idArg, stringArg } from 'nexus'
-import { User, Post } from '.'
 
 export const Mutation = prismaObjectType({
   name: 'Mutation',
   definition(t) {
     t.field('deletePost', {
-      type: Post,
+      type: 'Post',
       nullable: true,
       args: {
         id: idArg(),
@@ -17,7 +16,7 @@ export const Mutation = prismaObjectType({
     })
 
     t.field('signupUser', {
-      type: User,
+      type: 'User',
       args: {
         name: stringArg(),
         email: stringArg(),
@@ -28,7 +27,7 @@ export const Mutation = prismaObjectType({
     })
 
     t.field('createDraft', {
-      type: Post,
+      type: 'Post',
       args: {
         title: stringArg(),
         content: stringArg(),
@@ -44,7 +43,7 @@ export const Mutation = prismaObjectType({
     })
 
     t.field('publish', {
-      type: Post,
+      type: 'Post',
       args: {
         id: idArg(),
       },

@@ -40,11 +40,3 @@ export const schema = makePrismaSchema({
     contextType: 'ctx.Context',
   },
 })
-
-export default {
-  uniqueFields: {
-    User: ['id', 'email'],
-    Post: ['id'],
-  },
-  schema: `type User { id: ID! }`,
-}

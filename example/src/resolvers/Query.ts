@@ -1,10 +1,9 @@
 import { queryType, stringArg } from 'nexus'
-import { Post } from '.'
 
 export const Query = queryType({
   definition(t) {
     t.list.field('feed', {
-      type: Post,
+      type: 'Post',
       resolve: (parent, args, ctx) => {
         return ctx.prisma.posts({
           where: { published: true },
@@ -13,7 +12,7 @@ export const Query = queryType({
     })
 
     t.list.field('filterPosts', {
-      type: Post,
+      type: 'Post',
       args: {
         searchString: stringArg(),
       },
