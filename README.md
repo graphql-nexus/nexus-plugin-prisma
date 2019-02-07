@@ -4,9 +4,7 @@ Prisma Plugin for Nexus
 
 ## Motivation
 
-[Nexus](https://graphql-nexus.com/) is a library that helps you build your GraphQL schema in a programmatic way versus using the SDL syntax. While SDL might seem more concise at first, defining your schema in a programmatic way allows you to leverage the power of the language to solve lots of common problems faced with SDL.
-
-At Prisma, we think that approach (named _"resolver-first"_ instead of _"schema-first"_) gives lots of benefits while using Prisma as well, solving many problems users were facing while using the SDL approach (like importing types...)
+**nexus-prisma** generate a working CRUD GraphQL schema based on your prisma datamodel. It leverages [`nexus`](https://github.com/prisma/nexus) code-first power to easily expose/hide/customise types from the generated schema and solve most of the common problems previously faced while using the SDL-first paradigm.
 
 If you want to give it a quick look, check it out here:
 
