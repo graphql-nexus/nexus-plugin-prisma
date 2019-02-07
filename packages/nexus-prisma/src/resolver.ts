@@ -78,7 +78,8 @@ export function generateDefaultResolver(
       } else if (
         // If is "findOne" query (eg: `user`, or `post`)
         isNotArrayOrConnectionType(fieldToResolve) &&
-        (typeName !== 'Node' && fieldName !== 'node')
+        (typeName !== 'Node' && fieldName !== 'node') &&
+        typeName !== 'Mutation'
       ) {
         args = args.where
       }
