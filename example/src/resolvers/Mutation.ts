@@ -1,9 +1,12 @@
-import { prismaObjectType } from 'nexus-prisma'
 import { idArg, stringArg } from 'nexus'
+import { prismaObjectType } from 'nexus-prisma'
 
 export const Mutation = prismaObjectType({
   name: 'Mutation',
   definition(t) {
+    // Call t.primaFields to expose, hide, or customize fields
+    // t.prismaFields(['createUser', 'deleteUser'])
+
     t.field('deletePost', {
       type: 'Post',
       nullable: true,

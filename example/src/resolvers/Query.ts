@@ -1,7 +1,11 @@
-import { queryType, stringArg } from 'nexus'
+import { stringArg } from 'nexus'
+import { prismaObjectType } from 'nexus-prisma'
 
-export const Query = queryType({
+export const Query = prismaObjectType({
+  name: 'Query',
   definition(t) {
+    // Call t.primaFields to expose, hide, or customize fields
+    // t.prismaFields(['users'])
     t.list.field('feed', {
       type: 'Post',
       resolve: (parent, args, ctx) => {
