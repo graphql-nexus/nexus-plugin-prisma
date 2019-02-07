@@ -43,8 +43,9 @@ Then run `prisma deploy` or `npx nexus-prisma-generate`. This will generate TS t
 Once done, you can start using the library as so:
 
 ```ts
-import { ApolloServer } from 'apollo-server'
-import { makePrismaSchema } from 'nexus-prisma'
+import { GraphQLServer } from 'graphql-yoga'
+import { makePrismaSchema, prismaObjectType } from 'nexus-prisma'
+import * as path from 'path'
 import { prisma } from '__PRISMA_CLIENT_DIR__'
 import nexusPrismaSchema from './generated/nexus-prisma'
 
@@ -66,10 +67,12 @@ const schema = makePrismaSchema({
   },
 })
 
-const server = new ApolloServer({
+const server = new GraphQLServer({
   schema,
-  context: { prisma }
+  context: { prisma },
 })
+
+server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
 ```
 
 That's it. You can now enjoy a fully working CRUD GraphQL API.
