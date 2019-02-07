@@ -9,7 +9,7 @@
     "graphql": "^14.0.2",
     "graphql-yoga": "^1.17.0",
     "nexus": "^0.9.9",
-    "nexus-prisma": "^0.1.1",
+    "nexus-prisma": "^0.1.2",
     "prisma-client-lib": "1.24.0"
   },
   "devDependencies": {

@@ -1415,10 +1415,10 @@ nexus-prisma-generate@^0.1.2:
     prisma-datamodel "^1.28.0-alpha.1"
     prisma-generate-schema "^1.28.0-alpha.1"
 
-nexus-prisma@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.1.1.tgz#26cd1568ab155628a5bfb2ae1ae7dd80cd50a4e7"
-  integrity sha512-Z2TKQ7Hfq34Op5Pgve4/V3nhdTGpL03pSBCGZqDQlWnwbkyArCeDS311yyUwtEWAD36QHb+38EuP7vyUYf5gPQ==
+nexus-prisma@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.1.2.tgz#aa3055f59c27dfef3670167a7d73d5090a234044"
+  integrity sha512-+7GiGJQxmo9buJd5+VvnEwuMzya4+xFLjwEpFse2az1sVf7tYRcOwLICanRAYDfHnbH5qP5kmwTBiSzzlzU/qw==
   dependencies:
     camelcase "^5.0.0"
     nexus "^0.9.9"
