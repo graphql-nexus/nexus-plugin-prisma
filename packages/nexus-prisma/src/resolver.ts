@@ -83,7 +83,6 @@ export function generateDefaultResolver(
 
     throwIfNoUniqFieldName(uniqFieldName, parentName)
 
-    // FIXME: It can very well be something else than `id` (depending on the @unique field)
     return ctx[contextClientName][parentName]({
       [uniqFieldName!]: root[uniqFieldName!],
     })[fieldName](args)
