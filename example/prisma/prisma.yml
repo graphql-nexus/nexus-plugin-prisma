@@ -2,13 +2,11 @@ datamodel: datamodel.prisma
 
 hooks:
   post-deploy:
+    - prisma generate
     - npx nexus-prisma-generate --client="./src/generated/prisma-client" --output="./src/generated/nexus-prisma"
 
 generate:
   - generator: typescript-client
     output: ../src/generated/prisma-client/
-  - generator: graphql-schema
-    output: ../src/generated/
-  
 
 endpoint: https://eu1.prisma.sh/flavian/plugin/dev
