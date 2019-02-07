@@ -61,8 +61,8 @@ main(cli)
 function main(cli: meow.Result) {
   const { client: prismaClientDir, output, js: jsMode } = cli.flags
 
-  if (!prismaClientDir || !existsSync(prismaClientDir)) {
-    console.log('ERROR: Missing or invalid argument --client')
+  if (!prismaClientDir) {
+    console.log('ERROR: Missing argument --client')
     process.exit(1)
   }
 
@@ -75,6 +75,16 @@ function main(cli: meow.Result) {
   const resolvedOutput = output.startsWith('/')
     ? output
     : join(rootPath, output)
+  const resolvedPrismaClientDir = prismaClientDir.startsWith('/')
+    ? prismaClientDir
+    : join(rootPath, prismaClientDir)
+
+  if (!existsSync(resolvedPrismaClientDir)) {
+    console.log(
+      `ERROR: Cannot find --client path at ${resolvedPrismaClientDir}`,
+    )
+    process.exit(1)
+  }
 
   // Create the output directories if needed (mkdir -p)
   mkdirSync(resolvedOutput, { recursive: true })
@@ -87,7 +97,10 @@ function main(cli: meow.Result) {
     const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
     const nexusPrismaTypes = renderNexusPrismaTypes(
       schema,
-      getImportPathRelativeToOutput(prismaClientDir, nexusPrismaTypesPath),
+      getImportPathRelativeToOutput(
+        resolvedPrismaClientDir,
+        nexusPrismaTypesPath,
+      ),
       renderedDatamodel,
       jsMode,
     )
