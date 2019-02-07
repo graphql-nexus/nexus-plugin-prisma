@@ -36,9 +36,9 @@ const cli = meow(
     
     Inputs should be relative to the root of your project
 
-    \`prisma-client-dir\`: Path to your prisma-client directory (eg: ./generated/prisma-client/)
-    \`output\`: Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
-    \`js (optional)\`: Whether to generate the types for Javascript
+    --client (required): Path to your prisma-client directory (eg: ./generated/prisma-client/)
+    --output (required): Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
+    --js     (optional): Whether to generate the types for Javascript
 `,
   {
     flags: {
@@ -84,11 +84,7 @@ function main(cli: meow.Result) {
   try {
     const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
     const renderedDatamodel = renderDatamodel(datamodel, schema)
-    const nexusPrismaTypesPath = join(
-      rootPath,
-      output,
-      'nexus-prisma.ts',
-    )
+    const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
     const nexusPrismaTypes = renderNexusPrismaTypes(
       schema,
       getImportPathRelativeToOutput(prismaClientDir, nexusPrismaTypesPath),
