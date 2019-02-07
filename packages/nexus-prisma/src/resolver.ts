@@ -1,6 +1,6 @@
 import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
 import { getFinalType } from './graphql'
-import { throwIfUnknownClientFunction } from './throw'
+import { throwIfNoUniqFieldName, throwIfUnknownClientFunction } from './throw'
 import {
   isConnectionTypeName,
   isCreateMutation,
@@ -13,6 +13,7 @@ export function generateDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
   contextClientName: string,
+  uniqFieldsByModel: Record<string, string[]>,
 ): GraphQLFieldResolver<any, any> {
   return (root, args, ctx, info) => {
     const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
@@ -76,7 +77,15 @@ export function generateDefaultResolver(
       info,
     )
 
+    const uniqFieldName = uniqFieldsByModel[typeName].find(
+      uniqFieldName => root[uniqFieldName] !== undefined,
+    )
+
+    throwIfNoUniqFieldName(uniqFieldName, parentName)
+
     // FIXME: It can very well be something else than `id` (depending on the @unique field)
-    return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)
+    return ctx[contextClientName][parentName]({
+      [uniqFieldName!]: root[uniqFieldName!],
+    })[fieldName](args)
   }
 }

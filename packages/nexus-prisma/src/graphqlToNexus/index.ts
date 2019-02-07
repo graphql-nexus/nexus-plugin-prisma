@@ -7,9 +7,15 @@ export function graphqlTypeToNexus(
   builder: PrismaSchemaBuilder,
   type: GraphQLNamedType,
   contextClientName: string,
+  uniqueFieldsByModel: Record<string, string[]>,
 ): GraphQLNamedType {
   if (isObjectType(type)) {
-    return objectTypeToNexus(builder, type, contextClientName)
+    return objectTypeToNexus(
+      builder,
+      type,
+      contextClientName,
+      uniqueFieldsByModel,
+    )
   }
 
   if (isInputObjectType(type)) {

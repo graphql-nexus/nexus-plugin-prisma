@@ -33,3 +33,14 @@ export function throwIfUnknownClientFunction(
     )
   }
 }
+
+export function throwIfNoUniqFieldName(
+  uniqFieldName: string | undefined,
+  parentName: any,
+) {
+  if (uniqFieldName === undefined) {
+    throw new Error(
+      `ERROR: No uniq field were found to resolve \`${parentName.fieldName}\``,
+    )
+  }
+}

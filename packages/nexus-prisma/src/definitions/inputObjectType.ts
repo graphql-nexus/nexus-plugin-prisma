@@ -44,7 +44,7 @@ export function prismaInputObjectType<
         'prismaInputObjectType can only be used by `makePrismaSchema`',
       )
     }
-    const prismaSchema = builder.getPrismaSchema()
+    const prismaSchema = builder.getPrismaSchema().schema
     const prismaType = generatePrismaTypes(prismaSchema, typeConfig)
     return inputObjectType({
       ...rest,

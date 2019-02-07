@@ -50,9 +50,9 @@ export function prismaObjectType<
     if (!isPrismaSchemaBuilder(builder)) {
       throw new Error('prismaObjectType can only be used by `makePrismaSchema`')
     }
-    const prismaSchema = builder.getPrismaSchema()
+    const prismaSchema = builder.getPrismaSchema().schema
     const prismaType = generatePrismaTypes(
-      prismaSchema,
+      builder.getPrismaSchema(),
       typeConfig,
       builder.getConfig(),
     )
@@ -94,12 +94,12 @@ export function prismaObjectType<
 }
 
 function generatePrismaTypes(
-  prismaSchema: GraphQLSchema,
+  prismaSchema: { uniqueFieldsByModel: Record<string, string[]>; schema: GraphQLSchema },
   objectConfig: PrismaObjectTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
 ) {
   const typeName = objectConfig.name
-  const graphqlType = prismaSchema.getType(typeName)
+  const graphqlType = prismaSchema.schema.getType(typeName)
   if (!isObjectType(graphqlType)) {
     throw new Error(
       `Must select a GraphQLObjectType, saw ${typeName} which is ${graphqlType}`,
@@ -109,5 +109,6 @@ function generatePrismaTypes(
   return objectTypeFieldsToNexus(
     graphqlType,
     builderConfig.prisma.contextClientName,
+    prismaSchema.uniqueFieldsByModel
   )
 }

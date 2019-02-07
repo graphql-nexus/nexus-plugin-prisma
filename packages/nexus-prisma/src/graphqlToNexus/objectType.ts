@@ -9,8 +9,9 @@ export function objectTypeToNexus(
   builder: PrismaSchemaBuilder,
   type: GraphQLObjectType<any, any>,
   contextClientName: string,
+  uniqueFieldsByModel: Record<string, string[]>,
 ) {
-  const nexusFieldsConfig = objectTypeFieldsToNexus(type, contextClientName)
+  const nexusFieldsConfig = objectTypeFieldsToNexus(type, contextClientName, uniqueFieldsByModel)
 
   return builder.buildObjectType({
     name: type.name,
@@ -29,11 +30,12 @@ function objectTypeFieldToNexus(
   typeName: string,
   field: GraphQLField<any, any>,
   contextClientName: string,
+  uniqueFieldsByModel: Record<string, string[]>,
 ): core.NexusOutputFieldConfig<any, any> {
   return {
     ...graphqlTypeToCommonNexus(field),
     type: getTypeName(field.type),
-    resolve: generateDefaultResolver(typeName, field, contextClientName),
+    resolve: generateDefaultResolver(typeName, field, contextClientName, uniqueFieldsByModel),
     args: graphqlArgsToNexusArgs(field.args),
   }
 }
@@ -41,6 +43,7 @@ function objectTypeFieldToNexus(
 export function objectTypeFieldsToNexus(
   type: GraphQLObjectType,
   contextClientName: string,
+  uniqueFieldsByModel: Record<string, string[]>,
 ) {
   return Object.values(type.getFields()).reduce<
     Record<string, core.FieldOutConfig<string, string>>
@@ -49,6 +52,7 @@ export function objectTypeFieldsToNexus(
       getTypeName(type),
       field,
       contextClientName,
+      uniqueFieldsByModel
     )
 
     return acc
