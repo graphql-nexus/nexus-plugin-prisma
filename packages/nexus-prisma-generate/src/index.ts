@@ -102,7 +102,7 @@ function main(cli: meow.Result) {
       const datamodelPath = join(rootPath, output, 'nexus-prisma-schema.js')
       const indexPath = join(rootPath, output, 'index.js')
 
-      writeFileSync(datamodelPath, `exports.default = ${renderedDatamodel}`)
+      writeFileSync(datamodelPath, `module.exports = ${renderedDatamodel}`)
       writeFileSync(indexPath, renderIndexJs())
     } else {
       const indexPath = join(rootPath, output, 'index.ts')
@@ -120,7 +120,7 @@ function renderIndexJs() {
   return `\
 const nexusPrismaSchema = require(\'./nexus-prisma-schema\')
   
-exports.default = nexusPrismaSchema
+module.exports = nexusPrismaSchema
   `
 }
 
