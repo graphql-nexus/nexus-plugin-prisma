@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as allTypes from './resolvers'
+import nexusPrismaSchema from './generated/nexus-prisma'
 import { makePrismaSchema } from 'nexus-prisma'
 
 /**
@@ -11,7 +12,7 @@ export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
-    schemaPath: path.join(__dirname, './generated/prisma.graphql'),
+    schemaConfig: nexusPrismaSchema,
     contextClientName: 'prisma',
   },
 
@@ -39,3 +40,11 @@ export const schema = makePrismaSchema({
     contextType: 'ctx.Context',
   },
 })
+
+export default {
+  uniqueFields: {
+    User: ['id', 'email'],
+    Post: ['id'],
+  },
+  schema: `type User { id: ID! }`,
+}

@@ -1,27 +1,32 @@
-import { existsSync, readFileSync } from 'fs'
-import { buildSchema, GraphQLNamedType, GraphQLSchema } from 'graphql'
+import { buildClientSchema, GraphQLNamedType, GraphQLSchema } from 'graphql'
 import { core } from 'nexus'
 import { graphqlTypeToNexus } from './graphqlToNexus'
 import { PrismaSchemaConfig } from './types'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
-  private prismaTypesMap: GraphQLSchema | null = null
+  private prismaSchema: GraphQLSchema | null = null
 
   constructor(protected config: PrismaSchemaConfig) {
     super(config)
 
     if (!this.config.prisma) {
-      throw new Error('Required `prisma` object in config was not provided')
+      throw new Error(
+        'ERROR: Missing `prisma` property in `makePrismaSchema({ prisma: { ... } })`',
+      )
+    }
+
+    if (!this.config.prisma.schemaConfig) {
+      throw new Error(
+        'Missing `prisma.schemaConfig` property in `makePrismaSchema({ prisma: { ... } })`',
+      )
     }
 
     if (
-      !this.config.prisma.schemaPath ||
-      !existsSync(this.config.prisma.schemaPath)
+      !this.config.prisma.schemaConfig.uniqueFieldsByModel ||
+      !this.config.prisma.schemaConfig.schema
     ) {
       throw new Error(
-        `No valid \`prisma.schemaPath\` was found at ${
-          this.config.prisma.schemaPath
-        }`,
+        'Invalid `prisma.schemaConfig` property. This should be imported from the `nexus-prisma-generate` output directory',
       )
     }
   }
@@ -45,13 +50,13 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
   }
 
   public getPrismaSchema() {
-    if (!this.prismaTypesMap) {
-      const typeDefs = readFileSync(this.config.prisma.schemaPath).toString()
-
-      this.prismaTypesMap = buildSchema(typeDefs)
+    if (!this.prismaSchema) {
+      this.prismaSchema = buildClientSchema(
+        this.config.prisma.schemaConfig.schema,
+      )
     }
 
-    return this.prismaTypesMap
+    return this.prismaSchema
   }
 }
 

@@ -2,7 +2,6 @@
 
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import {
-  buildASTSchema,
   GraphQLEnumType,
   GraphQLField,
   GraphQLInputField,
@@ -13,11 +12,13 @@ import {
   isInputObjectType,
   isObjectType,
   isScalarType,
-  parse,
+  introspectionFromSchema,
 } from 'graphql'
 import * as meow from 'meow'
 import { EOL } from 'os'
-import { dirname, join } from 'path'
+import { join } from 'path'
+import { ISDL } from 'prisma-datamodel'
+import { generateCRUDSchemaFromInternalISDL } from 'prisma-generate-schema'
 import {
   findDatamodelAndComputeSchema,
   findRootDirectory,
@@ -35,44 +36,119 @@ const cli = meow(
     
     Inputs should be relative to the root of your project
 
-    \`prisma-client-dir\`: Path to your prisma-client directory (eg: ./generated/nexus-prisma/)
-    \`output\`: Path to where you want to output the typings (eg: ./generated/nexus-prisma.ts)
+    \`prisma-client-dir\`: Path to your prisma-client directory (eg: ./generated/prisma-client/)
+    \`output\`: Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
+    \`js (optional)\`: Whether to generate the types for Javascript
 `,
+  {
+    flags: {
+      client: {
+        type: 'string',
+      },
+      output: {
+        type: 'string',
+      },
+      js: {
+        type: 'boolean',
+        default: false,
+      },
+    },
+  },
 )
 
 main(cli)
 
 function main(cli: meow.Result) {
-  let [prismaClientDir, output] = cli.input
+  const { client: prismaClientDir, output, js: jsMode } = cli.flags
 
   if (!prismaClientDir || !existsSync(prismaClientDir)) {
-    console.log('No valid `prisma-client-dir` was found')
+    console.log('ERROR: Missing or invalid argument --client')
     process.exit(1)
   }
 
-  if (!output || !output.endsWith('.ts')) {
-    console.log('No valid `output` was found. Must point to a .ts file')
+  if (!output) {
+    console.log('ERROR: Missing argument --output')
     process.exit(1)
   }
 
   const rootPath = findRootDirectory()
-  const typeDefs = findDatamodelAndComputeSchema()
-  const schema = buildASTSchema(parse(typeDefs))
-  const typesToRender = render(
-    schema,
-    getImportPathRelativeToOutput(prismaClientDir, output),
-  )
+  const resolvedOutput = output.startsWith('/')
+    ? output
+    : join(rootPath, output)
 
   // Create the output directories if needed (mkdir -p)
-  mkdirSync(dirname(output), { recursive: true })
+  mkdirSync(resolvedOutput, { recursive: true })
 
-  const outputPath = join(rootPath, output)
+  const { datamodel, databaseType } = findDatamodelAndComputeSchema()
 
-  writeFileSync(outputPath, typesToRender)
-  console.log(`Types generated at ${output}`)
+  try {
+    const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
+    const renderedDatamodel = renderDatamodel(datamodel, schema)
+    const nexusPrismaTypesPath = join(
+      rootPath,
+      output,
+      jsMode ? 'nexus-prisma.d.ts' : 'nexus-prisma.ts',
+    )
+    const nexusPrismaTypes = renderNexusPrismaTypes(
+      schema,
+      getImportPathRelativeToOutput(prismaClientDir, nexusPrismaTypesPath),
+      renderedDatamodel,
+      jsMode,
+    )
+
+    writeFileSync(nexusPrismaTypesPath, nexusPrismaTypes)
+
+    if (jsMode) {
+      const datamodelPath = join(rootPath, output, 'nexus-prisma-schema.js')
+      const indexPath = join(rootPath, output, 'index.js')
+
+      writeFileSync(datamodelPath, `exports.default = ${renderedDatamodel}`)
+      writeFileSync(indexPath, renderIndexJs())
+    } else {
+      const indexPath = join(rootPath, output, 'index.ts')
+
+      writeFileSync(indexPath, `export * from './nexus-prisma'`)
+    }
+
+    console.log(`Types generated at ${output}`)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
-function render(schema: GraphQLSchema, prismaClientPath: string) {
+function renderIndexJs() {
+  return `\
+const nexusPrismaSchema = require(\'./nexus-prisma-schema\')
+  
+exports.default = nexusPrismaSchema
+  `
+}
+
+function renderDatamodel(datamodel: ISDL, schema: GraphQLSchema) {
+  return `\
+{
+  uniqueFieldsByModel: {
+${datamodel.types
+  .map(
+    type =>
+      `    ${type.name}: [${type.fields
+        .filter(field => field.isUnique)
+        .map(field => `'${field.name}'`)
+        .join(', ')}]`,
+  )
+  .join(',' + EOL)}
+  },
+  schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
+}
+  `
+}
+
+function renderNexusPrismaTypes(
+  schema: GraphQLSchema,
+  prismaClientPath: string,
+  renderedDatamodel: string,
+  jsMode: boolean,
+) {
   const types = Object.values(schema.getTypeMap())
   const objectTypes = types.filter(
     t => isObjectType(t) && !t.name.startsWith('__'),
@@ -85,9 +161,7 @@ function render(schema: GraphQLSchema, prismaClientPath: string) {
   return `\
 // GENERATED TYPES FOR NEXUS-PRISMA. /!\\ DO NOT EDIT MANUALLY
 
-import {
-  core
-} from 'nexus'
+import { core } from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
 import * as prisma from '${prismaClientPath}'
 
@@ -128,6 +202,7 @@ ${inputTypes
   }
   enumTypesNames: ${getEnumTypesName()}
 }
+${jsMode ? '' : `export default ${renderedDatamodel}`}
   `
 }
 
