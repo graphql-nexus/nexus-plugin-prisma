@@ -14,13 +14,13 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
 
     if (!this.config.prisma) {
       throw new Error(
-        'ERROR: Missing `prisma` property in `makePrismaSchema({ prisma: { ... } })`',
+        'Missing `prisma` property in `makePrismaSchema({ prisma: { ... } })`',
       )
     }
 
     if (!this.config.prisma.nexusPrismaSchema) {
       throw new Error(
-        'Missing `prisma.schemaConfig` property in `makePrismaSchema({ prisma: { ... } })`',
+        'Missing `prisma.nexusPrismaSchema` property in `makePrismaSchema({ prisma: { ... } })`',
       )
     }
 
@@ -29,7 +29,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
       !this.config.prisma.nexusPrismaSchema.schema
     ) {
       throw new Error(
-        'Invalid `prisma.schemaConfig` property. This should be imported from the `nexus-prisma-generate` output directory',
+        'Invalid `prisma.nexusPrismaSchema` property. This should be imported from the `nexus-prisma-generate` output directory',
       )
     }
 
