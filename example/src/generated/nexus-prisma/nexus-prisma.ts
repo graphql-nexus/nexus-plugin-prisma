@@ -72,9 +72,10 @@ type QueryNodeArgs =
 
 export interface QueryFieldDetails {
   user: {
+    type: 'Query'
     args: Record<QueryUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
@@ -84,6 +85,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null;
   }
   users: {
+    type: 'Query'
     args: Record<QueryUsersArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -96,9 +98,10 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.User[]> | prisma.User[];
   }
   usersConnection: {
+    type: 'Query'
     args: Record<QueryUsersConnectionArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
@@ -108,9 +111,10 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.UserConnection> | prisma.UserConnection;
   }
   post: {
+    type: 'Query'
     args: Record<QueryPostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
@@ -120,6 +124,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null;
   }
   posts: {
+    type: 'Query'
     args: Record<QueryPostsArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -132,9 +137,10 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.Post[]> | prisma.Post[];
   }
   postsConnection: {
+    type: 'Query'
     args: Record<QueryPostsConnectionArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Query">,
@@ -144,9 +150,10 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.PostConnection> | prisma.PostConnection;
   }
   node: {
+    type: 'Query'
     args: Record<QueryNodeArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Query">,
@@ -186,9 +193,10 @@ type UserPostsArgs =
 
 export interface UserFieldDetails {
   id: {
+    type: 'User'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"User">,
@@ -198,9 +206,10 @@ export interface UserFieldDetails {
     ) => Promise<string> | string;
   }
   email: {
+    type: 'User'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"User">,
@@ -210,9 +219,10 @@ export interface UserFieldDetails {
     ) => Promise<string> | string;
   }
   name: {
+    type: 'User'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"User">,
@@ -222,6 +232,7 @@ export interface UserFieldDetails {
     ) => Promise<string | null> | string | null;
   }
   posts: {
+    type: 'User'
     args: Record<UserPostsArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -263,9 +274,10 @@ type PostFields =
 
 export interface PostFieldDetails {
   id: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -275,9 +287,10 @@ export interface PostFieldDetails {
     ) => Promise<string> | string;
   }
   createdAt: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -287,9 +300,10 @@ export interface PostFieldDetails {
     ) => Promise<string> | string;
   }
   updatedAt: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -299,9 +313,10 @@ export interface PostFieldDetails {
     ) => Promise<string> | string;
   }
   published: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -311,9 +326,10 @@ export interface PostFieldDetails {
     ) => Promise<boolean> | boolean;
   }
   title: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -323,9 +339,10 @@ export interface PostFieldDetails {
     ) => Promise<string> | string;
   }
   content: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Post">,
@@ -335,9 +352,10 @@ export interface PostFieldDetails {
     ) => Promise<string | null> | string | null;
   }
   author: {
+    type: 'Post'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Post">,
@@ -368,9 +386,10 @@ type UserConnectionFields =
 
 export interface UserConnectionFieldDetails {
   pageInfo: {
+    type: 'UserConnection'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserConnection">,
@@ -380,6 +399,7 @@ export interface UserConnectionFieldDetails {
     ) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
+    type: 'UserConnection'
     args: {}
     description: string
     list: true
@@ -392,9 +412,10 @@ export interface UserConnectionFieldDetails {
     ) => Promise<prisma.UserEdge[]> | prisma.UserEdge[];
   }
   aggregate: {
+    type: 'UserConnection'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserConnection">,
@@ -427,9 +448,10 @@ type PageInfoFields =
 
 export interface PageInfoFieldDetails {
   hasNextPage: {
+    type: 'PageInfo'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PageInfo">,
@@ -439,9 +461,10 @@ export interface PageInfoFieldDetails {
     ) => Promise<boolean> | boolean;
   }
   hasPreviousPage: {
+    type: 'PageInfo'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PageInfo">,
@@ -451,9 +474,10 @@ export interface PageInfoFieldDetails {
     ) => Promise<boolean> | boolean;
   }
   startCursor: {
+    type: 'PageInfo'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"PageInfo">,
@@ -463,9 +487,10 @@ export interface PageInfoFieldDetails {
     ) => Promise<string | null> | string | null;
   }
   endCursor: {
+    type: 'PageInfo'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"PageInfo">,
@@ -494,9 +519,10 @@ type UserEdgeFields =
 
 export interface UserEdgeFieldDetails {
   node: {
+    type: 'UserEdge'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserEdge">,
@@ -506,9 +532,10 @@ export interface UserEdgeFieldDetails {
     ) => Promise<prisma.User> | prisma.User;
   }
   cursor: {
+    type: 'UserEdge'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserEdge">,
@@ -535,9 +562,10 @@ type AggregateUserFields =
 
 export interface AggregateUserFieldDetails {
   count: {
+    type: 'AggregateUser'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"AggregateUser">,
@@ -568,9 +596,10 @@ type PostConnectionFields =
 
 export interface PostConnectionFieldDetails {
   pageInfo: {
+    type: 'PostConnection'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostConnection">,
@@ -580,6 +609,7 @@ export interface PostConnectionFieldDetails {
     ) => Promise<prisma.PageInfo> | prisma.PageInfo;
   }
   edges: {
+    type: 'PostConnection'
     args: {}
     description: string
     list: true
@@ -592,9 +622,10 @@ export interface PostConnectionFieldDetails {
     ) => Promise<prisma.PostEdge[]> | prisma.PostEdge[];
   }
   aggregate: {
+    type: 'PostConnection'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostConnection">,
@@ -623,9 +654,10 @@ type PostEdgeFields =
 
 export interface PostEdgeFieldDetails {
   node: {
+    type: 'PostEdge'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostEdge">,
@@ -635,9 +667,10 @@ export interface PostEdgeFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post;
   }
   cursor: {
+    type: 'PostEdge'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostEdge">,
@@ -664,9 +697,10 @@ type AggregatePostFields =
 
 export interface AggregatePostFieldDetails {
   count: {
+    type: 'AggregatePost'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"AggregatePost">,
@@ -746,9 +780,10 @@ type MutationDeleteManyPostsArgs =
 
 export interface MutationFieldDetails {
   createUser: {
+    type: 'Mutation'
     args: Record<MutationCreateUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -758,9 +793,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User> | prisma.User;
   }
   updateUser: {
+    type: 'Mutation'
     args: Record<MutationUpdateUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -770,9 +806,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null;
   }
   updateManyUsers: {
+    type: 'Mutation'
     args: Record<MutationUpdateManyUsersArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -782,9 +819,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertUser: {
+    type: 'Mutation'
     args: Record<MutationUpsertUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -794,9 +832,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User> | prisma.User;
   }
   deleteUser: {
+    type: 'Mutation'
     args: Record<MutationDeleteUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -806,9 +845,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null;
   }
   deleteManyUsers: {
+    type: 'Mutation'
     args: Record<MutationDeleteManyUsersArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -818,9 +858,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   createPost: {
+    type: 'Mutation'
     args: Record<MutationCreatePostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -830,9 +871,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post;
   }
   updatePost: {
+    type: 'Mutation'
     args: Record<MutationUpdatePostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -842,9 +884,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null;
   }
   updateManyPosts: {
+    type: 'Mutation'
     args: Record<MutationUpdateManyPostsArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -854,9 +897,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload;
   }
   upsertPost: {
+    type: 'Mutation'
     args: Record<MutationUpsertPostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -866,9 +910,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post;
   }
   deletePost: {
+    type: 'Mutation'
     args: Record<MutationDeletePostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -878,9 +923,10 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null;
   }
   deleteManyPosts: {
+    type: 'Mutation'
     args: Record<MutationDeleteManyPostsArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"Mutation">,
@@ -907,9 +953,10 @@ type BatchPayloadFields =
 
 export interface BatchPayloadFieldDetails {
   count: {
+    type: 'BatchPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"BatchPayload">,
@@ -941,9 +988,10 @@ type SubscriptionPostArgs =
 
 export interface SubscriptionFieldDetails {
   user: {
+    type: 'Subscription'
     args: Record<SubscriptionUserArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
@@ -953,9 +1001,10 @@ export interface SubscriptionFieldDetails {
     ) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null;
   }
   post: {
+    type: 'Subscription'
     args: Record<SubscriptionPostArgs, core.NexusArgDef<string>>
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"Subscription">,
@@ -988,9 +1037,10 @@ type UserSubscriptionPayloadFields =
 
 export interface UserSubscriptionPayloadFieldDetails {
   mutation: {
+    type: 'UserSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserSubscriptionPayload">,
@@ -1000,9 +1050,10 @@ export interface UserSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
+    type: 'UserSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"UserSubscriptionPayload">,
@@ -1012,6 +1063,7 @@ export interface UserSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null;
   }
   updatedFields: {
+    type: 'UserSubscriptionPayload'
     args: {}
     description: string
     list: true
@@ -1024,9 +1076,10 @@ export interface UserSubscriptionPayloadFieldDetails {
     ) => Promise<string[]> | string[];
   }
   previousValues: {
+    type: 'UserSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"UserSubscriptionPayload">,
@@ -1057,9 +1110,10 @@ type UserPreviousValuesFields =
 
 export interface UserPreviousValuesFieldDetails {
   id: {
+    type: 'UserPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserPreviousValues">,
@@ -1069,9 +1123,10 @@ export interface UserPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   email: {
+    type: 'UserPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"UserPreviousValues">,
@@ -1081,9 +1136,10 @@ export interface UserPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   name: {
+    type: 'UserPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"UserPreviousValues">,
@@ -1116,9 +1172,10 @@ type PostSubscriptionPayloadFields =
 
 export interface PostSubscriptionPayloadFieldDetails {
   mutation: {
+    type: 'PostSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostSubscriptionPayload">,
@@ -1128,9 +1185,10 @@ export interface PostSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.MutationType> | prisma.MutationType;
   }
   node: {
+    type: 'PostSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"PostSubscriptionPayload">,
@@ -1140,6 +1198,7 @@ export interface PostSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null;
   }
   updatedFields: {
+    type: 'PostSubscriptionPayload'
     args: {}
     description: string
     list: true
@@ -1152,9 +1211,10 @@ export interface PostSubscriptionPayloadFieldDetails {
     ) => Promise<string[]> | string[];
   }
   previousValues: {
+    type: 'PostSubscriptionPayload'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"PostSubscriptionPayload">,
@@ -1191,9 +1251,10 @@ type PostPreviousValuesFields =
 
 export interface PostPreviousValuesFieldDetails {
   id: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostPreviousValues">,
@@ -1203,9 +1264,10 @@ export interface PostPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   createdAt: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostPreviousValues">,
@@ -1215,9 +1277,10 @@ export interface PostPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   updatedAt: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostPreviousValues">,
@@ -1227,9 +1290,10 @@ export interface PostPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   published: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostPreviousValues">,
@@ -1239,9 +1303,10 @@ export interface PostPreviousValuesFieldDetails {
     ) => Promise<boolean> | boolean;
   }
   title: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: false
     resolve: (
       root: core.RootValue<"PostPreviousValues">,
@@ -1251,9 +1316,10 @@ export interface PostPreviousValuesFieldDetails {
     ) => Promise<string> | string;
   }
   content: {
+    type: 'PostPreviousValues'
     args: {}
     description: string
-    list: false
+    list: undefined
     nullable: true
     resolve: (
       root: core.RootValue<"PostPreviousValues">,

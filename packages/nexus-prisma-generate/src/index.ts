@@ -230,6 +230,7 @@ ${fields
   .map(
     field => `\
   ${field.name}: {
+    type: '${getTypeName(type)}'
     args: ${
       field.args.length > 0
         ? `Record<${getTypeFieldArgName(
@@ -239,7 +240,7 @@ ${fields
         : '{}'
     }
     description: string
-    list: ${isList(field.type) || false}
+    list: ${isList(field.type) ? true : undefined}
     nullable: ${!isRequired(field.type)}
     resolve: (
       root: core.RootValue<"${type.name}">,
