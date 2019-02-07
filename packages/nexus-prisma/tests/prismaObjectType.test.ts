@@ -1,21 +1,19 @@
 import { prismaObjectType, makePrismaSchema } from '../src'
-import { join } from 'path'
 import { GraphQLObjectType } from 'graphql'
+import nexusPrismaSchema from './prisma/nexus-prisma'
 
 test("prismaObjectType('Query')", () => {
-  const Post = prismaObjectType('Post')
-  const User = prismaObjectType('User')
-  const Query = prismaObjectType('Query')
+  const Query = prismaObjectType({ name: 'Query' })
 
   const schema = makePrismaSchema({
-    types: [Post, User, Query],
+    types: [Query],
     outputs: {
       schema: false,
       typegen: false,
     },
     prisma: {
       contextClientName: 'prisma',
-      schemaPath: join(__dirname, './prisma/prisma.graphql'),
+      nexusPrismaSchema,
     },
   })
 
@@ -58,24 +56,26 @@ test("prismaObjectType('Query')", () => {
   expect(Object.keys(schema.getTypeMap())).toEqual(
     expect.arrayContaining([
       'Query',
-      'PostWhereUniqueInput',
+      'UserWhereUniqueInput',
       'ID',
-      'Post',
-      'DateTime',
-      'Boolean',
       'String',
       'User',
       'PostWhereInput',
+      'DateTime',
+      'Boolean',
       'UserWhereInput',
       'PostOrderByInput',
       'Int',
-      'PostConnection',
-      'PostEdge',
-      'PageInfo',
-      'UserWhereUniqueInput',
+      'Post',
       'UserOrderByInput',
       'UserConnection',
+      'PageInfo',
       'UserEdge',
+      'AggregateUser',
+      'PostWhereUniqueInput',
+      'PostConnection',
+      'PostEdge',
+      'AggregatePost',
       'Node',
       '__Schema',
       '__Type',
@@ -85,51 +85,27 @@ test("prismaObjectType('Query')", () => {
       '__EnumValue',
       '__Directive',
       '__DirectiveLocation',
-      'Long',
-      'PostCreateInput',
-      'UserCreateOneWithoutPostsInput',
-      'UserCreateWithoutPostsInput',
-      'PostUpdateInput',
-      'UserUpdateOneRequiredWithoutPostsInput',
-      'UserUpdateWithoutPostsDataInput',
-      'UserUpsertWithoutPostsInput',
-      'PostUpdateManyMutationInput',
-      'UserCreateInput',
-      'PostCreateManyWithoutAuthorInput',
-      'PostCreateWithoutAuthorInput',
-      'UserUpdateInput',
-      'PostUpdateManyWithoutAuthorInput',
-      'PostUpdateWithWhereUniqueWithoutAuthorInput',
-      'PostUpdateWithoutAuthorDataInput',
-      'PostUpsertWithWhereUniqueWithoutAuthorInput',
-      'PostScalarWhereInput',
-      'PostUpdateManyWithWhereNestedInput',
-      'PostUpdateManyDataInput',
-      'UserUpdateManyMutationInput',
-      'PostSubscriptionWhereInput',
-      'MutationType',
-      'UserSubscriptionWhereInput',
-      'BatchPayload',
     ]),
   )
 })
 
 test("prismaObjectType('Query', ['post', 'posts'])", () => {
-  const Post = prismaObjectType('Post')
-  const User = prismaObjectType('User')
-  const Query = prismaObjectType('Query', t => {
-    t.prismaFields(['post', 'posts'])
+  const Query = prismaObjectType({
+    name: 'Query',
+    definition(t) {
+      t.prismaFields(['post', 'posts'])
+    },
   })
 
   const schema = makePrismaSchema({
-    types: [Post, User, Query],
+    types: [Query],
     outputs: {
       schema: false,
       typegen: false,
     },
     prisma: {
       contextClientName: 'prisma',
-      schemaPath: join(__dirname, './prisma/prisma.graphql'),
+      nexusPrismaSchema,
     },
   })
 
@@ -161,35 +137,6 @@ test("prismaObjectType('Query', ['post', 'posts'])", () => {
       '__EnumValue',
       '__Directive',
       '__DirectiveLocation',
-      'Long',
-      'UserWhereUniqueInput',
-      'PostCreateInput',
-      'UserCreateOneWithoutPostsInput',
-      'UserCreateWithoutPostsInput',
-      'PostUpdateInput',
-      'UserUpdateOneRequiredWithoutPostsInput',
-      'UserUpdateWithoutPostsDataInput',
-      'UserUpsertWithoutPostsInput',
-      'PostUpdateManyMutationInput',
-      'UserCreateInput',
-      'PostCreateManyWithoutAuthorInput',
-      'PostCreateWithoutAuthorInput',
-      'UserUpdateInput',
-      'PostUpdateManyWithoutAuthorInput',
-      'PostUpdateWithWhereUniqueWithoutAuthorInput',
-      'PostUpdateWithoutAuthorDataInput',
-      'PostUpsertWithWhereUniqueWithoutAuthorInput',
-      'PostScalarWhereInput',
-      'PostUpdateManyWithWhereNestedInput',
-      'PostUpdateManyDataInput',
-      'UserUpdateManyMutationInput',
-      'PostSubscriptionWhereInput',
-      'MutationType',
-      'UserSubscriptionWhereInput',
-      'UserOrderByInput',
-      'BatchPayload',
-      'Node',
-      'PageInfo',
     ]),
   )
 })

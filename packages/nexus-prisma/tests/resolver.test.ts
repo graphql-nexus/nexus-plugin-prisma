@@ -1,9 +1,14 @@
 import { generateDefaultResolver } from '../src/resolver'
 import { prisma } from './prisma/prisma-client'
-const allTypes = require('./prisma/types.json') as TypesMap
+import nexusPrismaSchema from './prisma/nexus-prisma'
+import { buildClientSchema, GraphQLObjectType } from 'graphql';
+
+const schema = buildClientSchema(nexusPrismaSchema.schema as any)
 
 const getField = (typeName: string, fieldName: string) => {
-  return allTypes.types[typeName].fields.find(f => f.name === fieldName)!
+  const type = schema.getType(typeName) as GraphQLObjectType
+
+  return type.getFields()[fieldName]
 }
 
 const getData = async (
@@ -13,7 +18,7 @@ const getData = async (
   args: Record<string, any> = {},
 ) => {
   const field = getField(typeName, fieldName)
-  const resolver = generateDefaultResolver(typeName, field, 'prisma')
+  const resolver = generateDefaultResolver(typeName, field, 'prisma', { [typeName]: ['id'] })
 
   return resolver(root, args, { prisma }, {} as any)
 }
