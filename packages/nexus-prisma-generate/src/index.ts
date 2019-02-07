@@ -107,7 +107,7 @@ function main(cli: meow.Result) {
     } else {
       const indexPath = join(rootPath, output, 'index.ts')
 
-      writeFileSync(indexPath, `export * from './nexus-prisma'`)
+      writeFileSync(indexPath, `export { default } from './nexus-prisma'`)
     }
 
     console.log(`Types generated at ${output}`)

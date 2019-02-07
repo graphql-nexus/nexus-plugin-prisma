@@ -1,1 +1,1 @@
-export * from './nexus-prisma'
+export { default } from './nexus-prisma'
