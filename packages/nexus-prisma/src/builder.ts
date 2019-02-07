@@ -18,15 +18,15 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
       )
     }
 
-    if (!this.config.prisma.schemaConfig) {
+    if (!this.config.prisma.nexusPrismaSchema) {
       throw new Error(
         'Missing `prisma.schemaConfig` property in `makePrismaSchema({ prisma: { ... } })`',
       )
     }
 
     if (
-      !this.config.prisma.schemaConfig.uniqueFieldsByModel ||
-      !this.config.prisma.schemaConfig.schema
+      !this.config.prisma.nexusPrismaSchema.uniqueFieldsByModel ||
+      !this.config.prisma.nexusPrismaSchema.schema
     ) {
       throw new Error(
         'Invalid `prisma.schemaConfig` property. This should be imported from the `nexus-prisma-generate` output directory',
@@ -34,8 +34,9 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
     }
 
     this.prismaSchema = {
-      uniqueFieldsByModel: this.config.prisma.schemaConfig.uniqueFieldsByModel,
-      schema: buildClientSchema(this.config.prisma.schemaConfig.schema),
+      uniqueFieldsByModel: this.config.prisma.nexusPrismaSchema
+        .uniqueFieldsByModel,
+      schema: buildClientSchema(this.config.prisma.nexusPrismaSchema.schema),
     }
   }
 
@@ -47,7 +48,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
         this,
         type,
         this.config.prisma.contextClientName,
-        this.config.prisma.schemaConfig.uniqueFieldsByModel,
+        this.config.prisma.nexusPrismaSchema.uniqueFieldsByModel,
       )
     }
 

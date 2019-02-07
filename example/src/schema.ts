@@ -12,7 +12,7 @@ export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
-    schemaConfig: nexusPrismaSchema,
+    nexusPrismaSchema,
     contextClientName: 'prisma',
   },
 

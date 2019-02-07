@@ -134,7 +134,7 @@ export interface PrismaSchemaConfig extends core.BuilderConfig {
      * })
      * ```
      */
-    schemaConfig: {
+    nexusPrismaSchema: {
       uniqueFieldsByModel: Record<string, string[]>
       schema: { __schema: any }
     }
