@@ -92,7 +92,7 @@ export const Query = prismaObjectType({
 })
 ```
 
-### Customizing types from the generated 
+### Customizing types from the generated CRUD schema
 
 However, `prismaObjectType` adds a special method to the `t` object for you to expose fields of your Prisma GraphQL types.
 
