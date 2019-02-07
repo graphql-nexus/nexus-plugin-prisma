@@ -1,40 +1,13 @@
-import { GraphQLResolveInfo } from 'graphql'
-import { TypesMap } from './source-helper'
-import { GraphQLTypeArgument, GraphQLTypeObject } from './source-helper'
-import { ObjectField } from './types'
-
-export function throwIfUnkownArgsName(
-  typeName: string,
-  fieldName: string,
-  args: GraphQLTypeArgument[],
-  argsNameToExpose: string[],
-) {
-  const graphqlArgNames = args.map(a => a.name)
-  const unknownArgsToExpose = argsNameToExpose.filter(
-    argName => !graphqlArgNames.includes(argName),
-  )
-
-  if (unknownArgsToExpose.length > 0) {
-    throw new Error(
-      `Input args \`${unknownArgsToExpose.join(
-        ', ',
-      )}\` does not exist on \`${typeName}.${fieldName}\``,
-    )
-  }
-}
-
-export function throwIfUnknownType(typesMap: TypesMap, typeName: string): void {
-  if (typesMap.types[typeName] === undefined) {
-    throw new Error(`Type ${typeName} not found in Prisma API`)
-  }
-}
+import { GraphQLResolveInfo, GraphQLObjectType } from 'graphql'
+import { AliasedObjectField } from './types'
 
 export function throwIfUnknownFields(
-  graphqlType: GraphQLTypeObject,
-  fields: ObjectField[],
+  graphqlType: GraphQLObjectType,
+  fields: AliasedObjectField[],
   typeName: string,
 ): void {
-  const fieldsName = graphqlType.fields.map(f => f.name)
+  const fieldsName = Object.values(graphqlType.getFields()).map(f => f.name)
+
   const unknownFields = fields
     .filter(f => !fieldsName.includes(f.name))
     .map(f => f.name)
@@ -57,6 +30,17 @@ export function throwIfUnknownClientFunction(
   if (ctx[contextClientName][fieldName] === undefined) {
     throw new Error(
       `Unknown prisma-client function for field ${typeName}.${info.fieldName}`,
+    )
+  }
+}
+
+export function throwIfNoUniqFieldName(
+  uniqFieldName: string | undefined,
+  parentName: any,
+) {
+  if (uniqFieldName === undefined) {
+    throw new Error(
+      `ERROR: No uniq field were found to resolve \`${parentName.fieldName}\``,
     )
   }
 }

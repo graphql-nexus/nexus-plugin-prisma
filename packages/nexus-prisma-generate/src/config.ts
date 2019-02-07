@@ -1,9 +1,12 @@
 import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
-import generateCRUDSchemaString from 'prisma-generate-schema'
+import { Parser, DatabaseType, ISDL } from 'prisma-datamodel'
 
-export function findDatamodelAndComputeSchema(): string {
+export function findDatamodelAndComputeSchema(): {
+  datamodel: ISDL
+  databaseType: DatabaseType
+} {
   const configPath = findPrismaConfigFile()
 
   if (!configPath) {
@@ -27,8 +30,13 @@ export function findDatamodelAndComputeSchema(): string {
     definition.datamodel,
     path.dirname(configPath),
   )
+  const databaseType = getDatabaseType(definition)
+  const ParserInstance = Parser.create(databaseType)
 
-  return generateCRUDSchemaString(typeDefs)
+  return {
+    datamodel: ParserInstance.parseFromSchemaString(typeDefs),
+    databaseType,
+  }
 }
 
 function findPrismaConfigFile(): string | null {
@@ -116,4 +124,36 @@ function forEachAncestorDirectory<T>(
 
     directory = parentPath
   }
+}
+
+export function getImportPathRelativeToOutput(
+  importPath: string,
+  outputDir: string,
+): string {
+  let relativePath = path.relative(path.dirname(outputDir), importPath)
+
+  if (!relativePath.startsWith('.')) {
+    relativePath = './' + relativePath
+  }
+
+  // remove .ts or .js file extension
+  relativePath = relativePath.replace(/\.(ts|js)$/, '')
+
+  // remove /index
+  relativePath = relativePath.replace(/\/index$/, '')
+
+  // replace \ with /
+  relativePath = relativePath.replace(/\\/g, '/')
+
+  return relativePath
+}
+
+function getDatabaseType(definition: any): DatabaseType {
+  if (!definition.databaseType) {
+    return DatabaseType.postgres
+  }
+
+  return definition.databaseType === 'document'
+    ? DatabaseType.mongo
+    : DatabaseType.postgres
 }

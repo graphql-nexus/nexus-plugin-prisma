@@ -1,6 +1,6 @@
-import { GraphQLFieldResolver } from 'graphql'
-import { GraphQLTypeField } from './source-helper'
-import { throwIfUnknownClientFunction } from './throw'
+import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
+import { getFinalType } from './graphql'
+import { throwIfNoUniqFieldName, throwIfUnknownClientFunction } from './throw'
 import {
   isConnectionTypeName,
   isCreateMutation,
@@ -11,8 +11,9 @@ const camelCase = require('camelcase')
 
 export function generateDefaultResolver(
   typeName: string,
-  fieldToResolve: GraphQLTypeField,
+  fieldToResolve: GraphQLField<any, any>,
   contextClientName: string,
+  uniqFieldsByModel: Record<string, string[]>,
 ): GraphQLFieldResolver<any, any> {
   return (root, args, ctx, info) => {
     const isTopLevel = ['Query', 'Mutation', 'Subscription'].includes(typeName)
@@ -23,7 +24,7 @@ export function generateDefaultResolver(
 
     const fieldName = fieldToResolve.name
 
-    if (fieldToResolve.type.isScalar) {
+    if (isScalarType(getFinalType(fieldToResolve.type))) {
       return root[fieldName]
     }
 
@@ -41,7 +42,8 @@ export function generateDefaultResolver(
         args = args.data
       } else if (isDeleteMutation(typeName, fieldName)) {
         args = args.where
-      } else if ( // If is "findOne" query (eg: `user`, or `post`)
+      } else if (
+        // If is "findOne" query (eg: `user`, or `post`)
         isNotArrayOrConnectionType(fieldToResolve) &&
         (typeName !== 'Node' && fieldName !== 'node')
       ) {
@@ -75,7 +77,14 @@ export function generateDefaultResolver(
       info,
     )
 
-    // FIXME: It can very well be something else than `id` (depending on the @unique field)
-    return ctx[contextClientName][parentName]({ id: root.id })[fieldName](args)
+    const uniqFieldName = uniqFieldsByModel[typeName].find(
+      uniqFieldName => root[uniqFieldName] !== undefined,
+    )
+
+    throwIfNoUniqFieldName(uniqFieldName, parentName)
+
+    return ctx[contextClientName][parentName]({
+      [uniqFieldName!]: root[uniqFieldName!],
+    })[fieldName](args)
   }
 }

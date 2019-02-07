@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as allTypes from './resolvers'
+import nexusPrismaSchema from './generated/nexus-prisma'
 import { makePrismaSchema } from 'nexus-prisma'
 
 /**
@@ -11,7 +12,7 @@ export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
-    schemaPath: path.join(__dirname, './generated/prisma.graphql'),
+    schemaConfig: nexusPrismaSchema,
     contextClientName: 'prisma',
   },
 
@@ -20,22 +21,30 @@ export const schema = makePrismaSchema({
     typegen: path.join(__dirname, './generated/nexus.ts'),
   },
 
-  nullability: {
-    input: false,
-    inputList: false,
+  nonNullDefaults: {
+    input: true,
+    output: true,
   },
 
   typegenAutoConfig: {
     sources: [
       {
-        module: path.join(__dirname, './generated/prisma-client/index.ts'),
+        source: path.join(__dirname, './generated/prisma-client/index.ts'),
         alias: 'prisma',
       },
       {
-        module: path.join(__dirname, './context.ts'),
+        source: path.join(__dirname, './context.ts'),
         alias: 'ctx',
       },
     ],
     contextType: 'ctx.Context',
   },
 })
+
+export default {
+  uniqueFields: {
+    User: ['id', 'email'],
+    Post: ['id'],
+  },
+  schema: `type User { id: ID! }`,
+}

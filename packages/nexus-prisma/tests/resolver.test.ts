@@ -1,5 +1,4 @@
 import { generateDefaultResolver } from '../src/resolver'
-import { TypesMap } from '../src/source-helper'
 import { prisma } from './prisma/prisma-client'
 const allTypes = require('./prisma/types.json') as TypesMap
 
