@@ -60,6 +60,10 @@ const schema = makePrismaSchema({
     // Name of the prisma instance passed into the context below
     contextClientName: 'prisma',
   },
+  outputs: {
+    schema: path.join(__dirname, './schema.graphql'),
+    typegen: path.join(__dirname, './generated/nexus.ts'),
+  },
 })
 
 const server = new ApolloServer({
