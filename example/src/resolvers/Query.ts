@@ -1,12 +1,7 @@
-import { objectType, stringArg } from 'nexus'
+import { queryType, stringArg } from 'nexus'
 import { Post } from '.'
 
-export const Query = objectType({
-  name: 'Query',
-  nonNullDefaults: {
-    input: true,
-    output: true,
-  },
+export const Query = queryType({
   definition(t) {
     t.list.field('feed', {
       type: Post,
