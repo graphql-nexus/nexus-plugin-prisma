@@ -92,13 +92,12 @@ export type AddFieldInput<
   | PickInputField<GraphQLType, TypeName>
   | FilterInputField<GraphQLType, TypeName>
 
-export type AliasedObjectField = {
+export type ObjectField = {
   name: string
   args?: string[] | false
   alias?: string
 }
-export type ObjectField = Omit<AliasedObjectField, 'alias'>
-export type AnonymousField = string | AliasedObjectField
+export type AnonymousField = string | ObjectField
 export interface AnonymousPickOmitField {
   pick?: AnonymousField[]
   omit?: AnonymousField[]

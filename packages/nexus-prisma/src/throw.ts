@@ -1,9 +1,9 @@
 import { GraphQLResolveInfo, GraphQLObjectType } from 'graphql'
-import { AliasedObjectField } from './types'
+import { ObjectField } from './types'
 
 export function throwIfUnknownFields(
   graphqlType: GraphQLObjectType,
-  fields: AliasedObjectField[],
+  fields: ObjectField[],
   typeName: string,
 ): void {
   const fieldsName = Object.values(graphqlType.getFields()).map(f => f.name)

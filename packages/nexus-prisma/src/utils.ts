@@ -4,21 +4,20 @@ import { findObjectType, getTypeName, isList } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
-  AliasedObjectField,
-  AnonymousField,
   ObjectField,
+  AnonymousField,
   PickInputField,
 } from './types'
 
 export function getAllFields(
   typeName: string,
   schema: GraphQLSchema,
-): AliasedObjectField[] {
+): ObjectField[] {
   return Object.keys(findObjectType(typeName, schema).getFields()).map(
     fieldName =>
       ({
         name: fieldName,
-      } as AliasedObjectField),
+      } as ObjectField),
   )
 }
 
@@ -79,7 +78,7 @@ function extractFields<TypeName extends string = any>(
   const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
 
   if (Array.isArray(fields.filter)) {
-    const fieldsToFilter = fields.filter as AliasedObjectField[]
+    const fieldsToFilter = fields.filter as ObjectField[]
     const fieldsNamesToFilter = fieldsToFilter.map(f =>
       typeof f === 'string' ? f : f.name,
     )
@@ -100,10 +99,7 @@ export function normalizeFields(fields: AnonymousField[]): ObjectField[] {
       }
     }
 
-    return {
-      name: f.alias !== undefined ? f.alias : f.name,
-      args: f.args,
-    } as ObjectField
+    return f
   })
 }
 

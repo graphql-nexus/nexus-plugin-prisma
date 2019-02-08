@@ -72,6 +72,7 @@ export function prismaObjectType<
             t.implements(interfaceType.name)
           })
           fields.forEach(field => {
+            const aliasName = field.alias ? field.alias : field.name
             const fieldType = findGraphQLTypeField(
               typeName,
               field.name,
@@ -79,7 +80,7 @@ export function prismaObjectType<
             )
             const { list, ...rest } = prismaType[fieldType.name]
             const args = whitelistArgs(rest.args!, field.args)
-            t.field(field.name, {
+            t.field(aliasName, {
               ...rest,
               type: getTypeName(fieldType.type),
               list: list ? true : undefined,
