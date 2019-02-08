@@ -70,6 +70,16 @@ export type InputField<
     : any
   : any
 
+export type PrismaObjectTypeNames = Extract<
+  keyof GetGen2<'objectTypes', 'fields'>,
+  string
+>
+
+export type PrismaInputObjectTypeNames = Extract<
+  keyof GetGen2<'inputTypes', 'fields'>,
+  string
+>
+
 export interface PickInputField<
   GraphQLType extends PrismaShapeKeys,
   TypeName extends string
