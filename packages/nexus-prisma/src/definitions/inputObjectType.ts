@@ -33,7 +33,7 @@ export interface PrismaInputObjectTypeConfig<TypeName extends string>
 }
 
 export function prismaInputObjectType<
-  TypeName extends string = PrismaInputObjectTypeNames
+  TypeName extends PrismaInputObjectTypeNames
 >(
   typeConfig: PrismaInputObjectTypeConfig<TypeName>,
 ): core.NexusWrappedType<core.NexusInputObjectTypeDef<TypeName>> {

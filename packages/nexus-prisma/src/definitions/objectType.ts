@@ -35,9 +35,7 @@ export interface PrismaObjectTypeConfig<TypeName extends string>
   definition?: (t: PrismaObjectDefinitionBlock<TypeName>) => void
 }
 
-export function prismaObjectType<
-  TypeName extends string = PrismaObjectTypeNames
->(
+export function prismaObjectType<TypeName extends PrismaObjectTypeNames>(
   typeConfig: PrismaObjectTypeConfig<TypeName>,
 ): core.NexusWrappedType<core.NexusObjectTypeDef<TypeName>> {
   return core.nexusWrappedType(typeConfig.name, builder => {
