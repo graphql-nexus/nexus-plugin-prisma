@@ -5,7 +5,7 @@ import { GraphQLResolveInfo } from 'graphql'
 import * as prisma from '../prisma-client'
 
 declare global {
-  interface NexusGen extends NexusPrismaTypes {}
+  interface NexusPrismaGen extends NexusPrismaTypes {}
 }
 
 // Types for Query

@@ -2,6 +2,10 @@ import { core } from 'nexus'
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 
+declare global {
+  interface NexusPrismaGen {}
+}
+
 type PrismaShapeKeys = 'objectTypes' | 'inputTypes' | 'enumTypesNames'
 
 interface PrismaGenTypesShape {
@@ -18,7 +22,7 @@ interface PrismaGenTypesShape {
 export type GetGen<
   K extends PrismaShapeKeys,
   Fallback = any
-> = NexusGen extends infer GenTypes
+> = NexusPrismaGen extends infer GenTypes
   ? GenTypes extends PrismaGenTypesShape
     ? GenTypes[K]
     : Fallback
@@ -27,7 +31,7 @@ export type GetGen<
 export type GetGen2<
   K extends PrismaShapeKeys,
   K2 extends keyof PrismaGenTypesShape[K]
-> = NexusGen extends infer GenTypes
+> = NexusPrismaGen extends infer GenTypes
   ? GenTypes extends PrismaGenTypesShape
     ? K extends keyof GenTypes
       ? K2 extends keyof GenTypes[K]
@@ -41,7 +45,7 @@ export type GetGen3<
   K extends PrismaShapeKeys,
   K2 extends Extract<keyof PrismaGenTypesShape[K], string>,
   K3 extends Extract<keyof PrismaGenTypesShape[K][K2], string>
-> = NexusGen extends infer GenTypes
+> = NexusPrismaGen extends infer GenTypes
   ? GenTypes extends PrismaGenTypesShape
     ? K extends keyof GenTypes
       ? K2 extends keyof GenTypes[K]
@@ -56,7 +60,7 @@ export type GetGen3<
 export type InputField<
   GraphQLType extends PrismaShapeKeys,
   TypeName extends string
-> = NexusGen extends infer GenTypes
+> = NexusPrismaGen extends infer GenTypes
   ? GenTypes extends PrismaGenTypesShape
     ? GraphQLType extends keyof GenTypes
       ? 'fields' extends infer Fields

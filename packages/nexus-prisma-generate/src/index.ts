@@ -175,7 +175,7 @@ import { GraphQLResolveInfo } from 'graphql'
 import * as prisma from '${prismaClientPath}'
 
 declare global {
-  interface NexusGen extends NexusPrismaTypes {}
+  interface NexusPrismaGen extends NexusPrismaTypes {}
 }
 
 ${objectTypes.map(renderObjectType).join(EOL)}
