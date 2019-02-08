@@ -4,7 +4,7 @@ import { graphqlTypeToNexus } from './graphqlToNexus'
 import { PrismaSchemaConfig } from './types'
 
 export class PrismaSchemaBuilder extends core.SchemaBuilder {
-  private prismaSchema: {
+  private nexusPrismaSchema: {
     uniqueFieldsByModel: Record<string, string[]>
     schema: GraphQLSchema
   }
@@ -33,7 +33,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
       )
     }
 
-    this.prismaSchema = {
+    this.nexusPrismaSchema = {
       uniqueFieldsByModel: this.config.prisma.nexusPrismaSchema
         .uniqueFieldsByModel,
       schema: buildClientSchema(this.config.prisma.nexusPrismaSchema.schema),
@@ -41,7 +41,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
   }
 
   protected missingType(typeName: string): GraphQLNamedType {
-    const type = this.getPrismaSchema().schema.getType(typeName)
+    const type = this.getNexusPrismaSchema().schema.getType(typeName)
 
     if (type) {
       return graphqlTypeToNexus(
@@ -59,8 +59,8 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
     return this.config
   }
 
-  public getPrismaSchema() {
-    return this.prismaSchema
+  public getNexusPrismaSchema() {
+    return this.nexusPrismaSchema
   }
 }
 

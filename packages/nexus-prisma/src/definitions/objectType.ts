@@ -1,37 +1,14 @@
-import { GraphQLObjectType, GraphQLSchema, isObjectType } from 'graphql'
 import { core, objectType } from 'nexus'
-import { isPrismaSchemaBuilder, PrismaSchemaBuilder } from '../builder'
-import { findGraphQLTypeField, getTypeName } from '../graphql'
-import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
-  AddFieldInput,
-  FilterInputField,
-  GetGen3,
-  InputField,
-  Omit,
-  PickInputField,
-  PrismaSchemaConfig,
-  PrismaObjectTypeNames,
-} from '../types'
-import { getFields, whitelistArgs } from '../utils'
-
-type TypeDetails<TypeName extends string> = GetGen3<
-  'objectTypes',
-  'fieldsDetails',
-  TypeName
->
-
-export interface PrismaObjectDefinitionBlock<TypeName extends string>
-  extends core.ObjectDefinitionBlock<TypeName> {
-  prismaType: TypeDetails<TypeName>
-  prismaFields(inputFields?: InputField<'objectTypes', TypeName>[]): void
-  prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
-  prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
-  prismaFields(inputFields?: AddFieldInput<'objectTypes', TypeName>): void
-}
+  prismaTypeObject,
+  PrismaObjectDefinitionBlock,
+  prismaObjectDefinitionBlock,
+} from '../blocks/objectType'
+import { isPrismaSchemaBuilder, PrismaSchemaBuilder } from '../builder'
+import { PrismaObjectTypeNames } from '../types'
 
 export interface PrismaObjectTypeConfig<TypeName extends string>
-  extends Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
+  extends core.Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
   definition?: (t: PrismaObjectDefinitionBlock<TypeName>) => void
 }
 
@@ -43,86 +20,29 @@ export function prismaObjectType<TypeName extends PrismaObjectTypeNames>(
       throw new Error('prismaObjectType can only be used by `makePrismaSchema`')
     }
 
-    return generateObjectType(typeConfig, builder)
+    return nexusObjectType(typeConfig, builder)
   })
 }
 
-function generatePrismaInputObjectTypes(
-  prismaSchema: {
-    uniqueFieldsByModel: Record<string, string[]>
-    schema: GraphQLSchema
-  },
-  objectConfig: PrismaObjectTypeConfig<any>,
-  builderConfig: PrismaSchemaConfig,
-) {
-  const typeName = objectConfig.name
-  const graphqlType = prismaSchema.schema.getType(typeName)
-  if (!isObjectType(graphqlType)) {
-    throw new Error(
-      `Must select a GraphQLObjectType, saw ${typeName} which is ${graphqlType}`,
-    )
-  }
-
-  return objectTypeFieldsToNexus(
-    graphqlType,
-    builderConfig.prisma.contextClientName,
-    prismaSchema.uniqueFieldsByModel,
-  )
-}
-
-export function generatePrismaObjectTypeBlock<TypeName extends string>(
-  typeName: string,
-  t:
-    | core.ObjectDefinitionBlock<TypeName>
-    | core.OutputDefinitionBlock<TypeName>,
-  prismaType: Record<string, core.NexusOutputFieldConfig<string, string>>,
-  prismaSchema: GraphQLSchema,
-): PrismaObjectDefinitionBlock<TypeName> {
-  const prismaBlock = t as PrismaObjectDefinitionBlock<TypeName>
-
-  prismaBlock.prismaType = prismaType
-  prismaBlock.prismaFields = (inputFields: any) => {
-    const graphqlType = prismaSchema.getType(typeName) as GraphQLObjectType
-    const fields = getFields(inputFields, typeName, prismaSchema)
-
-    graphqlType.getInterfaces().forEach(interfaceType => {
-      prismaBlock.implements(interfaceType.name)
-    })
-    fields.forEach(field => {
-      const aliasName = field.alias ? field.alias : field.name
-      const fieldType = findGraphQLTypeField(typeName, field.name, prismaSchema)
-      const { list, ...rest } = prismaType[fieldType.name]
-      const args = whitelistArgs(rest.args!, field.args)
-      prismaBlock.field(aliasName, {
-        ...rest,
-        type: getTypeName(fieldType.type),
-        list: list ? true : undefined,
-        args,
-      })
-    })
-  }
-
-  return prismaBlock
-}
-
-function generateObjectType<TypeName extends string>(
+function nexusObjectType<TypeName extends string>(
   typeConfig: PrismaObjectTypeConfig<TypeName>,
   builder: PrismaSchemaBuilder,
-) {
+): core.NexusObjectTypeDef<TypeName> {
   let { definition, ...rest } = typeConfig
-  const nexusPrismaSchema = builder.getPrismaSchema()
-  const prismaType = generatePrismaInputObjectTypes(
+  const nexusPrismaSchema = builder.getNexusPrismaSchema()
+  const prismaType = prismaTypeObject(
     nexusPrismaSchema,
     typeConfig,
     builder.getConfig(),
   )
   const prismaSchema = nexusPrismaSchema.schema
+
   return objectType({
     ...rest,
-    definition(t) {
-      const prismaBlock = generatePrismaObjectTypeBlock(
+    definition(block) {
+      const prismaBlock = prismaObjectDefinitionBlock(
         typeConfig.name,
-        t as PrismaObjectDefinitionBlock<TypeName>,
+        block as PrismaObjectDefinitionBlock<TypeName>,
         prismaType,
         prismaSchema,
       )

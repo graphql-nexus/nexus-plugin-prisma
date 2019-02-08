@@ -4,8 +4,8 @@ import { findObjectType, getTypeName, isList } from './graphql'
 import { throwIfUnknownFields } from './throw'
 import {
   AddFieldInput,
-  ObjectField,
   AnonymousField,
+  ObjectField,
   PickInputField,
 } from './types'
 
