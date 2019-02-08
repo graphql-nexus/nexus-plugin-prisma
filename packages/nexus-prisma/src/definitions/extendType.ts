@@ -5,9 +5,9 @@ import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
   Omit,
-  PrismaSchemaConfig,
-  PrismaObjectTypeNames,
   PrismaInputObjectTypeNames,
+  PrismaObjectTypeNames,
+  PrismaSchemaConfig,
 } from '../types'
 import {
   generatePrismaInputObjectTypeBlock,
