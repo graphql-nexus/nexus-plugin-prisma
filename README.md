@@ -8,7 +8,7 @@ Prisma Plugin for Nexus
 
 If you want to give it a quick look, check it out here:
 
-[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/prisma/nexus-prisma/tree/master/example)
+[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/v3wrqz7445)
 
 ## Features
 
