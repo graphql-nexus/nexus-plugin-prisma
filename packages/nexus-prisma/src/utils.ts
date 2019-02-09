@@ -144,7 +144,7 @@ export function whitelistArgs(
   whitelist: string[] | false | undefined,
 ) {
   if (!whitelist) {
-    return args
+    return undefined
   }
 
   return Object.keys(args).reduce<Record<string, core.NexusArgDef<string>>>(
