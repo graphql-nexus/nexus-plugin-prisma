@@ -1822,10 +1822,36 @@ export type PostSubscriptionWhereInputInputObject =
   | { name: 'NOT', alias?: string  } 
   
 
-export type enumTypesNames =
-  | 'PostOrderByInput'
-  | 'UserOrderByInput'
-  | 'MutationType'
+export type PostOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  | 'published_ASC'
+  | 'published_DESC'
+  | 'title_ASC'
+  | 'title_DESC'
+  | 'content_ASC'
+  | 'content_DESC'
+  
+export type UserOrderByInputValues =
+  | 'id_ASC'
+  | 'id_DESC'
+  | 'email_ASC'
+  | 'email_DESC'
+  | 'name_ASC'
+  | 'name_DESC'
+  | 'createdAt_ASC'
+  | 'createdAt_DESC'
+  | 'updatedAt_ASC'
+  | 'updatedAt_DESC'
+  
+export type MutationTypeValues =
+  | 'CREATED'
+  | 'UPDATED'
+  | 'DELETED'
   
 
 export interface NexusPrismaTypes {
@@ -1899,7 +1925,11 @@ export interface NexusPrismaTypes {
       PostSubscriptionWhereInput: PostSubscriptionWhereInputInputObject
     }
   }
-  enumTypesNames: enumTypesNames
+  enumTypes: {
+    PostOrderByInput: PostOrderByInputValues,
+    UserOrderByInput: UserOrderByInputValues,
+    MutationType: MutationTypeValues,
+  }
 }
 export default {
   uniqueFieldsByModel: {

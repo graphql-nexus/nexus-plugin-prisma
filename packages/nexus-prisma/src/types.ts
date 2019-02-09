@@ -1,61 +1,11 @@
 import { core } from 'nexus'
-
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
-
-declare global {
-  interface NexusPrismaGen {}
-}
-
-type PrismaShapeKeys = 'objectTypes' | 'inputTypes' | 'enumTypesNames'
-
-interface PrismaGenTypesShape {
-  objectTypes: {
-    fields: Record<string, any>
-    fieldsDetails: Record<string, any>
-  }
-  inputTypes: {
-    fields: Record<string, any>
-  }
-  enumTypesNames: string
-}
-
-export type GetGen<
-  K extends PrismaShapeKeys,
-  Fallback = any
-> = NexusPrismaGen extends infer GenTypes
-  ? GenTypes extends PrismaGenTypesShape
-    ? GenTypes[K]
-    : Fallback
-  : Fallback
-
-export type GetGen2<
-  K extends PrismaShapeKeys,
-  K2 extends keyof PrismaGenTypesShape[K]
-> = NexusPrismaGen extends infer GenTypes
-  ? GenTypes extends PrismaGenTypesShape
-    ? K extends keyof GenTypes
-      ? K2 extends keyof GenTypes[K]
-        ? GenTypes[K][K2]
-        : any
-      : any
-    : any
-  : any
-
-export type GetGen3<
-  K extends PrismaShapeKeys,
-  K2 extends Extract<keyof PrismaGenTypesShape[K], string>,
-  K3 extends Extract<keyof PrismaGenTypesShape[K][K2], string>
-> = NexusPrismaGen extends infer GenTypes
-  ? GenTypes extends PrismaGenTypesShape
-    ? K extends keyof GenTypes
-      ? K2 extends keyof GenTypes[K]
-        ? K3 extends keyof GenTypes[K][K2]
-          ? GenTypes[K][K2][K3]
-          : any
-        : any
-      : any
-    : any
-  : any
+import {
+  GetGen,
+  GetGen2,
+  GetGen3,
+  PrismaGenTypesShape,
+  PrismaShapeKeys,
+} from './typesHelpers'
 
 export type InputField<
   GraphQLType extends PrismaShapeKeys,
@@ -82,6 +32,22 @@ export type PrismaObjectTypeNames = Extract<
 export type PrismaInputObjectTypeNames = Extract<
   keyof GetGen2<'inputTypes', 'fields'>,
   string
+>
+
+export type PrismaEnumTypeNames = Extract<
+  keyof GetGen<'enumTypes', any>,
+  string
+>
+
+export type PrismaEnumTypeValues<TypeName extends string> = GetGen2<
+  'enumTypes',
+  TypeName
+>
+
+export type ObjectTypeDetails<TypeName extends string> = GetGen3<
+  'objectTypes',
+  'fieldsDetails',
+  TypeName
 >
 
 export interface PickInputField<
@@ -119,7 +85,7 @@ export interface AnonymousPickOmitField {
 export type AnonymousInputFields = AnonymousField[] | AnonymousPickOmitField
 
 export interface PrismaOutputOpts
-  extends Omit<
+  extends core.Omit<
     core.FieldOutConfig<string, string>,
     'args' | 'deprecation' | 'resolve'
   > {

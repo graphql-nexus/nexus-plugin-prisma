@@ -182,7 +182,7 @@ ${objectTypes.map(renderObjectType).join(EOL)}
 
 ${inputTypes.map(renderInputType).join(EOL)}
 
-${renderEnumTypes(enumTypes)}
+${enumTypes.map(renderEnumType).join(EOL)}
 
 export interface NexusPrismaTypes {
   objectTypes: {
@@ -209,7 +209,11 @@ ${inputTypes
   .join(EOL)}
     }
   }
-  enumTypesNames: ${getEnumTypesName()}
+  enumTypes: {
+${enumTypes
+  .map(type => `    ${type.name}: ${getEnumTypeName(type)},`)
+  .join(EOL)}
+  }
 }
 ${jsMode ? '' : `export default ${renderedDatamodel}`}
   `
@@ -377,10 +381,13 @@ ${fields.map(f => `  | { name: '${f.name}', alias?: string  } `).join(EOL)}
   `
 }
 
-function renderEnumTypes(enums: GraphQLEnumType[]): string {
+function renderEnumType(enumType: GraphQLEnumType): string {
   return `\
-export type ${getEnumTypesName()} =
-${enums.map(e => `  | '${e.name}'`).join(EOL)}
+export type ${getEnumTypeName(enumType)} =
+${enumType
+  .getValues()
+  .map(value => `  | '${value.name}'`)
+  .join(EOL)}
   `
 }
 
@@ -415,6 +422,6 @@ function getInputObjectTypeName(type: GraphQLInputObjectType) {
   return `${type.name}`
 }
 
-function getEnumTypesName(): string {
-  return 'enumTypesNames'
+function getEnumTypeName(enumType: GraphQLEnumType): string {
+  return `${enumType.name}Values`
 }
