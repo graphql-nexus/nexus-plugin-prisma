@@ -149,7 +149,10 @@ export function prismaTypeObject(
 
   if (!isObjectType(graphqlType)) {
     throw new Error(
-      `Must select a GraphQLObjectType, saw ${typeName} which is ${graphqlType}`,
+      `\
+Must select a GraphQLObjectType, saw ${typeName} which is ${graphqlType}.
+Are you trying to create a new type? Use \`objectType\` instead of \`prismaObjectType\`
+`,
     )
   }
 

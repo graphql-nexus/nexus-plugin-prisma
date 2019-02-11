@@ -78,7 +78,10 @@ export function prismaTypeInputObject(
 
   if (!isInputObjectType(graphqlType)) {
     throw new Error(
-      `Must select a GraphQLInputObjectType, saw ${typeName} which is ${graphqlType}`,
+      `\
+Must select a GraphQLInputObjectType, saw ${typeName} which is ${graphqlType}.
+Are you trying to create a new type? Use \`inputObjectType\` instead of \`prismaInputObjectType\`
+`,
     )
   }
 
