@@ -243,7 +243,7 @@ ${fields
   .map(
     field => `\
   ${field.name}: {
-    type: '${getTypeName(type)}'
+    type: '${getTypeName(field.type)}'
     args: ${
       field.args.length > 0
         ? `Record<${getTypeFieldArgName(

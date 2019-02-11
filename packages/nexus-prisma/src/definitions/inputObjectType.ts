@@ -47,12 +47,14 @@ function nexusInputObjectType<TypeName extends string>(
         prismaSchema,
       )
       if (!definition) {
-        definition = t => {
-          t.prismaFields()
-        }
+        definition = t => t.prismaFields()
       }
 
       definition(prismaBlock)
+
+      if (!prismaBlock.__calledPrismaFields) {
+        prismaBlock.prismaFields()
+      }
     },
   })
 }
