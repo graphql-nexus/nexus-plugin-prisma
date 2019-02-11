@@ -72,7 +72,7 @@ type QueryNodeArgs =
 
 export interface QueryFieldDetails {
   user: {
-    type: 'Query'
+    type: 'User'
     args: Record<QueryUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -85,7 +85,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null
   }
   users: {
-    type: 'Query'
+    type: 'User'
     args: Record<QueryUsersArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -98,7 +98,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.User[]> | prisma.User[]
   }
   usersConnection: {
-    type: 'Query'
+    type: 'UserConnection'
     args: Record<QueryUsersConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -111,7 +111,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.UserConnection> | prisma.UserConnection
   }
   post: {
-    type: 'Query'
+    type: 'Post'
     args: Record<QueryPostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -124,7 +124,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   posts: {
-    type: 'Query'
+    type: 'Post'
     args: Record<QueryPostsArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -137,7 +137,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.Post[]> | prisma.Post[]
   }
   postsConnection: {
-    type: 'Query'
+    type: 'PostConnection'
     args: Record<QueryPostsConnectionArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -150,7 +150,7 @@ export interface QueryFieldDetails {
     ) => Promise<prisma.PostConnection> | prisma.PostConnection
   }
   node: {
-    type: 'Query'
+    type: 'Node'
     args: Record<QueryNodeArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -193,7 +193,7 @@ type UserPostsArgs =
 
 export interface UserFieldDetails {
   id: {
-    type: 'User'
+    type: 'ID'
     args: {}
     description: string
     list: undefined
@@ -201,7 +201,7 @@ export interface UserFieldDetails {
     resolve: undefined
   }
   email: {
-    type: 'User'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -209,7 +209,7 @@ export interface UserFieldDetails {
     resolve: undefined
   }
   name: {
-    type: 'User'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -217,7 +217,7 @@ export interface UserFieldDetails {
     resolve: undefined
   }
   posts: {
-    type: 'User'
+    type: 'Post'
     args: Record<UserPostsArgs, core.NexusArgDef<string>>
     description: string
     list: true
@@ -259,7 +259,7 @@ type PostFields =
 
 export interface PostFieldDetails {
   id: {
-    type: 'Post'
+    type: 'ID'
     args: {}
     description: string
     list: undefined
@@ -267,7 +267,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   createdAt: {
-    type: 'Post'
+    type: 'DateTime'
     args: {}
     description: string
     list: undefined
@@ -275,7 +275,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   updatedAt: {
-    type: 'Post'
+    type: 'DateTime'
     args: {}
     description: string
     list: undefined
@@ -283,7 +283,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   published: {
-    type: 'Post'
+    type: 'Boolean'
     args: {}
     description: string
     list: undefined
@@ -291,7 +291,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   title: {
-    type: 'Post'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -299,7 +299,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   content: {
-    type: 'Post'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -307,7 +307,7 @@ export interface PostFieldDetails {
     resolve: undefined
   }
   author: {
-    type: 'Post'
+    type: 'User'
     args: {}
     description: string
     list: undefined
@@ -341,7 +341,7 @@ type UserConnectionFields =
 
 export interface UserConnectionFieldDetails {
   pageInfo: {
-    type: 'UserConnection'
+    type: 'PageInfo'
     args: {}
     description: string
     list: undefined
@@ -354,7 +354,7 @@ export interface UserConnectionFieldDetails {
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'UserConnection'
+    type: 'UserEdge'
     args: {}
     description: string
     list: true
@@ -367,7 +367,7 @@ export interface UserConnectionFieldDetails {
     ) => Promise<prisma.UserEdge[]> | prisma.UserEdge[]
   }
   aggregate: {
-    type: 'UserConnection'
+    type: 'AggregateUser'
     args: {}
     description: string
     list: undefined
@@ -403,7 +403,7 @@ type PageInfoFields =
 
 export interface PageInfoFieldDetails {
   hasNextPage: {
-    type: 'PageInfo'
+    type: 'Boolean'
     args: {}
     description: string
     list: undefined
@@ -411,7 +411,7 @@ export interface PageInfoFieldDetails {
     resolve: undefined
   }
   hasPreviousPage: {
-    type: 'PageInfo'
+    type: 'Boolean'
     args: {}
     description: string
     list: undefined
@@ -419,7 +419,7 @@ export interface PageInfoFieldDetails {
     resolve: undefined
   }
   startCursor: {
-    type: 'PageInfo'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -427,7 +427,7 @@ export interface PageInfoFieldDetails {
     resolve: undefined
   }
   endCursor: {
-    type: 'PageInfo'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -454,7 +454,7 @@ type UserEdgeFields =
 
 export interface UserEdgeFieldDetails {
   node: {
-    type: 'UserEdge'
+    type: 'User'
     args: {}
     description: string
     list: undefined
@@ -467,7 +467,7 @@ export interface UserEdgeFieldDetails {
     ) => Promise<prisma.User> | prisma.User
   }
   cursor: {
-    type: 'UserEdge'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -492,7 +492,7 @@ type AggregateUserFields =
 
 export interface AggregateUserFieldDetails {
   count: {
-    type: 'AggregateUser'
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -521,7 +521,7 @@ type PostConnectionFields =
 
 export interface PostConnectionFieldDetails {
   pageInfo: {
-    type: 'PostConnection'
+    type: 'PageInfo'
     args: {}
     description: string
     list: undefined
@@ -534,7 +534,7 @@ export interface PostConnectionFieldDetails {
     ) => Promise<prisma.PageInfo> | prisma.PageInfo
   }
   edges: {
-    type: 'PostConnection'
+    type: 'PostEdge'
     args: {}
     description: string
     list: true
@@ -547,7 +547,7 @@ export interface PostConnectionFieldDetails {
     ) => Promise<prisma.PostEdge[]> | prisma.PostEdge[]
   }
   aggregate: {
-    type: 'PostConnection'
+    type: 'AggregatePost'
     args: {}
     description: string
     list: undefined
@@ -579,7 +579,7 @@ type PostEdgeFields =
 
 export interface PostEdgeFieldDetails {
   node: {
-    type: 'PostEdge'
+    type: 'Post'
     args: {}
     description: string
     list: undefined
@@ -592,7 +592,7 @@ export interface PostEdgeFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post
   }
   cursor: {
-    type: 'PostEdge'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -617,7 +617,7 @@ type AggregatePostFields =
 
 export interface AggregatePostFieldDetails {
   count: {
-    type: 'AggregatePost'
+    type: 'Int'
     args: {}
     description: string
     list: undefined
@@ -695,7 +695,7 @@ type MutationDeleteManyPostsArgs =
 
 export interface MutationFieldDetails {
   createUser: {
-    type: 'Mutation'
+    type: 'User'
     args: Record<MutationCreateUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -708,7 +708,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User> | prisma.User
   }
   updateUser: {
-    type: 'Mutation'
+    type: 'User'
     args: Record<MutationUpdateUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -721,7 +721,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null
   }
   updateManyUsers: {
-    type: 'Mutation'
+    type: 'BatchPayload'
     args: Record<MutationUpdateManyUsersArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -734,7 +734,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertUser: {
-    type: 'Mutation'
+    type: 'User'
     args: Record<MutationUpsertUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -747,7 +747,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User> | prisma.User
   }
   deleteUser: {
-    type: 'Mutation'
+    type: 'User'
     args: Record<MutationDeleteUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -760,7 +760,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null
   }
   deleteManyUsers: {
-    type: 'Mutation'
+    type: 'BatchPayload'
     args: Record<MutationDeleteManyUsersArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -773,7 +773,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   createPost: {
-    type: 'Mutation'
+    type: 'Post'
     args: Record<MutationCreatePostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -786,7 +786,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post
   }
   updatePost: {
-    type: 'Mutation'
+    type: 'Post'
     args: Record<MutationUpdatePostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -799,7 +799,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updateManyPosts: {
-    type: 'Mutation'
+    type: 'BatchPayload'
     args: Record<MutationUpdateManyPostsArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -812,7 +812,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.BatchPayload> | prisma.BatchPayload
   }
   upsertPost: {
-    type: 'Mutation'
+    type: 'Post'
     args: Record<MutationUpsertPostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -825,7 +825,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post> | prisma.Post
   }
   deletePost: {
-    type: 'Mutation'
+    type: 'Post'
     args: Record<MutationDeletePostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -838,7 +838,7 @@ export interface MutationFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   deleteManyPosts: {
-    type: 'Mutation'
+    type: 'BatchPayload'
     args: Record<MutationDeleteManyPostsArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -868,7 +868,7 @@ type BatchPayloadFields =
 
 export interface BatchPayloadFieldDetails {
   count: {
-    type: 'BatchPayload'
+    type: 'Long'
     args: {}
     description: string
     list: undefined
@@ -898,7 +898,7 @@ type SubscriptionPostArgs =
 
 export interface SubscriptionFieldDetails {
   user: {
-    type: 'Subscription'
+    type: 'UserSubscriptionPayload'
     args: Record<SubscriptionUserArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -911,7 +911,7 @@ export interface SubscriptionFieldDetails {
     ) => Promise<prisma.UserSubscriptionPayload | null> | prisma.UserSubscriptionPayload | null
   }
   post: {
-    type: 'Subscription'
+    type: 'PostSubscriptionPayload'
     args: Record<SubscriptionPostArgs, core.NexusArgDef<string>>
     description: string
     list: undefined
@@ -947,7 +947,7 @@ type UserSubscriptionPayloadFields =
 
 export interface UserSubscriptionPayloadFieldDetails {
   mutation: {
-    type: 'UserSubscriptionPayload'
+    type: 'MutationType'
     args: {}
     description: string
     list: undefined
@@ -960,7 +960,7 @@ export interface UserSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'UserSubscriptionPayload'
+    type: 'User'
     args: {}
     description: string
     list: undefined
@@ -973,7 +973,7 @@ export interface UserSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.User | null> | prisma.User | null
   }
   updatedFields: {
-    type: 'UserSubscriptionPayload'
+    type: 'String'
     args: {}
     description: string
     list: true
@@ -981,7 +981,7 @@ export interface UserSubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'UserSubscriptionPayload'
+    type: 'UserPreviousValues'
     args: {}
     description: string
     list: undefined
@@ -1015,7 +1015,7 @@ type UserPreviousValuesFields =
 
 export interface UserPreviousValuesFieldDetails {
   id: {
-    type: 'UserPreviousValues'
+    type: 'ID'
     args: {}
     description: string
     list: undefined
@@ -1023,7 +1023,7 @@ export interface UserPreviousValuesFieldDetails {
     resolve: undefined
   }
   email: {
-    type: 'UserPreviousValues'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -1031,7 +1031,7 @@ export interface UserPreviousValuesFieldDetails {
     resolve: undefined
   }
   name: {
-    type: 'UserPreviousValues'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -1062,7 +1062,7 @@ type PostSubscriptionPayloadFields =
 
 export interface PostSubscriptionPayloadFieldDetails {
   mutation: {
-    type: 'PostSubscriptionPayload'
+    type: 'MutationType'
     args: {}
     description: string
     list: undefined
@@ -1075,7 +1075,7 @@ export interface PostSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.MutationType> | prisma.MutationType
   }
   node: {
-    type: 'PostSubscriptionPayload'
+    type: 'Post'
     args: {}
     description: string
     list: undefined
@@ -1088,7 +1088,7 @@ export interface PostSubscriptionPayloadFieldDetails {
     ) => Promise<prisma.Post | null> | prisma.Post | null
   }
   updatedFields: {
-    type: 'PostSubscriptionPayload'
+    type: 'String'
     args: {}
     description: string
     list: true
@@ -1096,7 +1096,7 @@ export interface PostSubscriptionPayloadFieldDetails {
     resolve: undefined
   }
   previousValues: {
-    type: 'PostSubscriptionPayload'
+    type: 'PostPreviousValues'
     args: {}
     description: string
     list: undefined
@@ -1136,7 +1136,7 @@ type PostPreviousValuesFields =
 
 export interface PostPreviousValuesFieldDetails {
   id: {
-    type: 'PostPreviousValues'
+    type: 'ID'
     args: {}
     description: string
     list: undefined
@@ -1144,7 +1144,7 @@ export interface PostPreviousValuesFieldDetails {
     resolve: undefined
   }
   createdAt: {
-    type: 'PostPreviousValues'
+    type: 'DateTime'
     args: {}
     description: string
     list: undefined
@@ -1152,7 +1152,7 @@ export interface PostPreviousValuesFieldDetails {
     resolve: undefined
   }
   updatedAt: {
-    type: 'PostPreviousValues'
+    type: 'DateTime'
     args: {}
     description: string
     list: undefined
@@ -1160,7 +1160,7 @@ export interface PostPreviousValuesFieldDetails {
     resolve: undefined
   }
   published: {
-    type: 'PostPreviousValues'
+    type: 'Boolean'
     args: {}
     description: string
     list: undefined
@@ -1168,7 +1168,7 @@ export interface PostPreviousValuesFieldDetails {
     resolve: undefined
   }
   title: {
-    type: 'PostPreviousValues'
+    type: 'String'
     args: {}
     description: string
     list: undefined
@@ -1176,7 +1176,7 @@ export interface PostPreviousValuesFieldDetails {
     resolve: undefined
   }
   content: {
-    type: 'PostPreviousValues'
+    type: 'String'
     args: {}
     description: string
     list: undefined
