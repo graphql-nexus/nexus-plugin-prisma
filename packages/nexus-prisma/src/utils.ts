@@ -21,28 +21,16 @@ export function getAllFields(
   )
 }
 
-function isDefaultInput<TypeName extends string>(
-  inputFields:
-    | AddFieldInput<'objectTypes' | 'inputTypes', TypeName>
-    | undefined,
-): boolean {
-  return inputFields === undefined
-}
-
 export function getFields<TypeName extends string>(
-  inputFields:
-    | AddFieldInput<'objectTypes' | 'inputTypes', TypeName>
-    | undefined,
+  inputFields: AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
   typeName: string,
   schema: GraphQLSchema,
 ): ObjectField[] {
-  const fields = isDefaultInput(inputFields)
-    ? getAllFields(typeName, schema)
-    : extractFields(
-        inputFields as AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
-        typeName,
-        schema,
-      )
+  const fields = extractFields(
+    inputFields as AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
+    typeName,
+    schema,
+  )
   const normalizedFields = normalizeFields(fields)
 
   const objectType = findObjectType(typeName, schema)
@@ -78,7 +66,7 @@ function extractFields<TypeName extends string = any>(
   const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
 
   if (Array.isArray(fields.filter)) {
-    const fieldsToFilter = fields.filter as ObjectField[]
+    const fieldsToFilter = fields.filter as AnonymousField[]
     const fieldsNamesToFilter = fieldsToFilter.map(f =>
       typeof f === 'string' ? f : f.name,
     )
@@ -143,8 +131,15 @@ export function whitelistArgs(
   args: Record<string, core.NexusArgDef<string>>,
   whitelist: string[] | false | undefined,
 ) {
-  if (!whitelist) {
+  if (
+    whitelist === false ||
+    (Array.isArray(whitelist) && whitelist.length === 0)
+  ) {
     return undefined
+  }
+
+  if (whitelist === undefined) {
+    return args
   }
 
   return Object.keys(args).reduce<Record<string, core.NexusArgDef<string>>>(

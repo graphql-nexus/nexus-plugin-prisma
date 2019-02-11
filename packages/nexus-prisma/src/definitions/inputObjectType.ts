@@ -7,12 +7,16 @@ import {
 } from '../blocks/inputObjectType'
 import { isPrismaSchemaBuilder } from '../builder'
 import { PrismaInputObjectTypeNames } from '../types'
+import { getAllFields } from '../utils'
 
 export interface PrismaInputObjectTypeConfig<TypeName extends string>
   extends core.Omit<core.NexusInputObjectTypeConfig<TypeName>, 'definition'> {
   definition?: (t: PrismaInputDefinitionBlock<TypeName>) => void
 }
 
+/**
+ * Exposes an input object type from the meta schema
+ */
 export function prismaInputObjectType<
   TypeName extends PrismaInputObjectTypeNames
 >(
@@ -36,6 +40,9 @@ function nexusInputObjectType<TypeName extends string>(
 ): core.NexusInputObjectTypeDef<TypeName> {
   let { definition, ...rest } = typeConfig
   const prismaType = prismaTypeInputObject(prismaSchema, typeConfig)
+  const allFieldsNames = getAllFields(typeConfig.name, prismaSchema).map(
+    f => f.name,
+  )
 
   return inputObjectType({
     ...rest,
@@ -47,12 +54,14 @@ function nexusInputObjectType<TypeName extends string>(
         prismaSchema,
       )
       if (!definition) {
-        definition = t => {
-          t.prismaFields()
-        }
+        definition = t => t.prismaFields(allFieldsNames)
       }
 
       definition(prismaBlock)
+
+      if (!prismaBlock.__calledPrismaFields) {
+        prismaBlock.prismaFields(allFieldsNames)
+      }
     },
   })
 }

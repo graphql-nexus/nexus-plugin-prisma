@@ -18,7 +18,7 @@ const getData = async (
   args: Record<string, any> = {},
 ) => {
   const field = getField(typeName, fieldName)
-  const resolver = generateDefaultResolver(typeName, field, 'prisma', {
+  const resolver = generateDefaultResolver(typeName, field, prisma, {
     [typeName]: ['id'],
   })
 

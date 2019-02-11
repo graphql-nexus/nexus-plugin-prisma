@@ -1,7 +1,7 @@
-import { prismaObjectType, makePrismaSchema } from '../src'
 import { GraphQLObjectType } from 'graphql'
+import { makePrismaSchema, prismaObjectType } from '../src'
+import metaSchema from './prisma/nexus-prisma'
 import { prisma } from './prisma/prisma-client'
-import nexusPrismaSchema from './prisma/nexus-prisma'
 
 describe('prismaObjectType', () => {
   test("prismaObjectType('Query')", () => {
@@ -14,8 +14,8 @@ describe('prismaObjectType', () => {
         typegen: false,
       },
       prisma: {
-        contextClientName: 'prisma',
-        nexusPrismaSchema,
+        client: prisma,
+        metaSchema,
       },
     })
 
@@ -106,8 +106,8 @@ describe('prismaObjectType', () => {
         typegen: false,
       },
       prisma: {
-        contextClientName: 'prisma',
-        nexusPrismaSchema,
+        client: prisma,
+        metaSchema,
       },
     })
 
@@ -158,8 +158,8 @@ describe('prismaObjectType', () => {
         typegen: false,
       },
       prisma: {
-        contextClientName: 'prisma',
-        nexusPrismaSchema,
+        client: prisma,
+        metaSchema,
       },
     })
 
