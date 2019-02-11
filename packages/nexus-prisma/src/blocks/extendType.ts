@@ -20,7 +20,7 @@ export interface PrismaExtendTypeBlock<TypeName extends string>
    *
    * @example Pass in all the options as-is
    * ```
-   * prismaObjectType({
+   * prismaExtendType({
    *   name: 'Query',
    *   definition(t) {
    *     t.field(
@@ -33,7 +33,7 @@ export interface PrismaExtendTypeBlock<TypeName extends string>
    * @example Use all the options, but overide the resolver
    *
    * ```
-   * prismaObjectType({
+   * prismaExtendType({
    *   name: 'Query',
    *   definition(t) {
    *     t.field('users', {
@@ -48,7 +48,7 @@ export interface PrismaExtendTypeBlock<TypeName extends string>
    * @example Use all the options, add more arguments with a custom resolver
    *
    * ```
-   * prismaObjectType({
+   * prismaExtendType({
    *   name: 'Query',
    *   definition(t) {
    *     t.field('users', {
