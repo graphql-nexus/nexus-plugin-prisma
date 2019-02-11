@@ -101,22 +101,22 @@ function main(cli: meow.Result) {
         resolvedPrismaClientDir,
         nexusPrismaTypesPath,
       ),
-      renderedDatamodel,
-      jsMode,
     )
 
     writeFileSync(nexusPrismaTypesPath, nexusPrismaTypes)
 
     if (jsMode) {
-      const datamodelPath = join(rootPath, output, 'nexus-prisma-schema.js')
+      const datamodelPath = join(rootPath, output, 'meta-schema.js')
       const indexPath = join(rootPath, output, 'index.js')
 
       writeFileSync(datamodelPath, `module.exports = ${renderedDatamodel}`)
       writeFileSync(indexPath, renderIndexJs())
     } else {
+      const datamodelPath = join(rootPath, output, 'meta-schema.ts')
       const indexPath = join(rootPath, output, 'index.ts')
 
-      writeFileSync(indexPath, `export { default } from './nexus-prisma'`)
+      writeFileSync(datamodelPath, `export default ${renderedDatamodel}`)
+      writeFileSync(indexPath, `export { default } from './meta-schema'`)
     }
 
     console.log(`Types generated at ${output}`)
@@ -127,9 +127,9 @@ function main(cli: meow.Result) {
 
 function renderIndexJs() {
   return `\
-const nexusPrismaSchema = require(\'./nexus-prisma-schema\')
+const metaSchema = require('./meta-schema')
   
-module.exports = nexusPrismaSchema
+module.exports = metaSchema
   `
 }
 
@@ -155,8 +155,6 @@ ${datamodel.types
 function renderNexusPrismaTypes(
   schema: GraphQLSchema,
   prismaClientPath: string,
-  renderedDatamodel: string,
-  jsMode: boolean,
 ) {
   const types = Object.values(schema.getTypeMap())
   const objectTypes = types.filter(
@@ -177,12 +175,6 @@ import * as prisma from '${prismaClientPath}'
 declare global {
   interface NexusPrismaGen extends NexusPrismaTypes {}
 }
-
-${objectTypes.map(renderObjectType).join(EOL)}
-
-${inputTypes.map(renderInputType).join(EOL)}
-
-${enumTypes.map(renderEnumType).join(EOL)}
 
 export interface NexusPrismaTypes {
   objectTypes: {
@@ -215,7 +207,12 @@ ${enumTypes
   .join(EOL)}
   }
 }
-${jsMode ? '' : `export default ${renderedDatamodel}`}
+
+${objectTypes.map(renderObjectType).join(EOL)}
+
+${inputTypes.map(renderInputType).join(EOL)}
+
+${enumTypes.map(renderEnumType).join(EOL)}
   `
 }
 

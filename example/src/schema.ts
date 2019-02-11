@@ -1,7 +1,8 @@
-import * as path from 'path'
-import * as allTypes from './resolvers'
-import nexusPrismaSchema from './generated/nexus-prisma'
 import { makePrismaSchema } from 'nexus-prisma'
+import * as path from 'path'
+import metaSchema from './generated/nexus-prisma'
+import { prisma } from './generated/prisma-client'
+import * as allTypes from './resolvers'
 
 /**
  * Finally, we construct our schema (whose starting query type is the query
@@ -11,8 +12,8 @@ export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
-    nexusPrismaSchema,
-    contextClientName: 'prisma',
+    metaSchema,
+    client: prisma,
   },
 
   outputs: {
