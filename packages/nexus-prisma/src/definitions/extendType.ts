@@ -6,6 +6,7 @@ import {
 } from '../blocks/extendType'
 import { isPrismaSchemaBuilder, PrismaSchemaBuilder } from '../builder'
 import { PrismaObjectTypeNames } from '../types'
+import { getAllFields } from '../utils'
 
 export interface PrismaExtendTypeConfig<TypeName extends string>
   extends core.Omit<core.NexusExtendTypeConfig<TypeName>, 'definition'> {
@@ -37,6 +38,10 @@ function nexusExtendType<TypeName extends string>(
     typeConfig,
     builder.getConfig(),
   )
+  const prismaSchema = nexusPrismaSchema.schema
+  const allFieldsNames = getAllFields(typeConfig.type, prismaSchema).map(
+    f => f.name,
+  )
 
   return extendType({
     ...rest,
@@ -45,10 +50,14 @@ function nexusExtendType<TypeName extends string>(
         typeConfig.type,
         block,
         prismaType,
-        nexusPrismaSchema.schema,
+        prismaSchema,
       )
 
       definition(prismaBlock)
+
+      if (!prismaBlock.__calledPrismaFields) {
+        prismaBlock.prismaFields(allFieldsNames)
+      }
     },
   })
 }

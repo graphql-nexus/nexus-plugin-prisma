@@ -1,19 +1,19 @@
+import { GraphQLSchema, isInputObjectType } from 'graphql'
 import { core } from 'nexus'
+import { PrismaInputObjectTypeConfig } from '../definitions/inputObjectType'
+import { findGraphQLTypeField, getTypeName } from '../graphql'
+import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import {
+  AddFieldInput,
+  FilterInputField,
   InputField,
   PickInputField,
-  FilterInputField,
-  AddFieldInput,
 } from '../types'
-import { GraphQLSchema, isInputObjectType } from 'graphql'
-import { PrismaInputObjectTypeConfig } from '../definitions/inputObjectType'
-import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import { getFields } from '../utils'
-import { findGraphQLTypeField, getTypeName } from '../graphql'
 
 export interface PrismaInputDefinitionBlock<TypeName extends string>
   extends core.InputDefinitionBlock<TypeName> {
-  prismaFields(inputFields?: InputField<'inputTypes', TypeName>[]): void
+  prismaFields(inputFields: InputField<'inputTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'inputTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'inputTypes', TypeName>): void
   /**
@@ -33,7 +33,7 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
    * t.prismaFields({ filter: ['first', 'last'] })
    *
    */
-  prismaFields(inputFields?: AddFieldInput<'inputTypes', TypeName>): void
+  prismaFields(inputFields: AddFieldInput<'inputTypes', TypeName>): void
 }
 
 interface InternalPrismaInputDefinitionBlock<TypeName extends string>

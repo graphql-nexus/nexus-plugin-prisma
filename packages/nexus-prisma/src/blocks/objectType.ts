@@ -66,7 +66,7 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
    * ```
    */
   prismaType: ObjectTypeDetails<TypeName>
-  prismaFields(inputFields?: InputField<'objectTypes', TypeName>[]): void
+  prismaFields(inputFields: InputField<'objectTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
   /**
@@ -94,7 +94,7 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
    * t.prismaFields([{ name: 'users', args: ['first', 'last'] }])
    *
    */
-  prismaFields(inputFields?: AddFieldInput<'objectTypes', TypeName>): void
+  prismaFields(inputFields: AddFieldInput<'objectTypes', TypeName>): void
 }
 
 interface InternalPrismaObjectDefinitionBlock<TypeName extends string>

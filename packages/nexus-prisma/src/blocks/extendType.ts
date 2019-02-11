@@ -16,10 +16,15 @@ import { getFields, whitelistArgs } from '../utils'
 export interface PrismaExtendTypeBlock<TypeName extends string>
   extends core.OutputDefinitionBlock<TypeName> {
   prismaType: ObjectTypeDetails<TypeName>
-  prismaFields(inputFields?: InputField<'objectTypes', TypeName>[]): void
+  prismaFields(inputFields: InputField<'objectTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
-  prismaFields(inputFields?: AddFieldInput<'objectTypes', TypeName>): void
+  prismaFields(inputFields: AddFieldInput<'objectTypes', TypeName>): void
+}
+
+export interface InternalPrismaExtendTypeBlock<TypeName extends string>
+  extends PrismaExtendTypeBlock<TypeName> {
+  __calledPrismaFields: boolean
 }
 
 export function prismaExtendTypeBlock<TypeName extends string>(
@@ -27,11 +32,12 @@ export function prismaExtendTypeBlock<TypeName extends string>(
   t: core.OutputDefinitionBlock<TypeName>,
   prismaType: Record<string, core.NexusOutputFieldConfig<string, string>>,
   prismaSchema: GraphQLSchema,
-): PrismaExtendTypeBlock<TypeName> {
-  const block = t as PrismaExtendTypeBlock<TypeName>
+): InternalPrismaExtendTypeBlock<TypeName> {
+  const prismaBlock = t as InternalPrismaExtendTypeBlock<TypeName>
 
-  block.prismaType = prismaType
-  block.prismaFields = (inputFields: any) => {
+  prismaBlock.prismaType = prismaType
+  prismaBlock.prismaFields = (inputFields: any) => {
+    prismaBlock.__calledPrismaFields = true
     const fields = getFields(inputFields, typeName, prismaSchema)
 
     fields.forEach(field => {
@@ -39,7 +45,7 @@ export function prismaExtendTypeBlock<TypeName extends string>(
       const fieldType = findGraphQLTypeField(typeName, field.name, prismaSchema)
       const { list, ...rest } = prismaType[fieldType.name]
       const args = whitelistArgs(rest.args!, field.args)
-      block.field(aliasName, {
+      prismaBlock.field(aliasName, {
         ...rest,
         type: getTypeName(fieldType.type),
         list: list ? true : undefined,
@@ -48,7 +54,7 @@ export function prismaExtendTypeBlock<TypeName extends string>(
     })
   }
 
-  return block
+  return prismaBlock
 }
 
 export function prismaTypeExtend(
