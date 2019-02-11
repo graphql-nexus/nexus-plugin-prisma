@@ -3,15 +3,20 @@ import { core } from 'nexus'
 import { PrismaSchemaBuilder } from '../builder'
 import { getTypeName } from '../graphql'
 import { generateDefaultResolver } from '../resolver'
+import { PrismaClientInput } from '../types'
 import { graphqlArgsToNexusArgs, graphqlTypeToCommonNexus } from './common'
 
 export function objectTypeToNexus(
   builder: PrismaSchemaBuilder,
   type: GraphQLObjectType<any, any>,
-  contextClientName: string,
+  prismaClient: PrismaClientInput,
   uniqueFieldsByModel: Record<string, string[]>,
 ) {
-  const nexusFieldsConfig = objectTypeFieldsToNexus(type, contextClientName, uniqueFieldsByModel)
+  const nexusFieldsConfig = objectTypeFieldsToNexus(
+    type,
+    prismaClient,
+    uniqueFieldsByModel,
+  )
 
   return builder.buildObjectType({
     name: type.name,
@@ -29,20 +34,25 @@ export function objectTypeToNexus(
 function objectTypeFieldToNexus(
   typeName: string,
   field: GraphQLField<any, any>,
-  contextClientName: string,
+  prismaClient: PrismaClientInput,
   uniqueFieldsByModel: Record<string, string[]>,
 ): core.NexusOutputFieldConfig<any, any> {
   return {
     ...graphqlTypeToCommonNexus(field),
     type: getTypeName(field.type),
-    resolve: generateDefaultResolver(typeName, field, contextClientName, uniqueFieldsByModel),
+    resolve: generateDefaultResolver(
+      typeName,
+      field,
+      prismaClient,
+      uniqueFieldsByModel,
+    ),
     args: graphqlArgsToNexusArgs(field.args),
   }
 }
 
 export function objectTypeFieldsToNexus(
   type: GraphQLObjectType,
-  contextClientName: string,
+  prismaClient: PrismaClientInput,
   uniqueFieldsByModel: Record<string, string[]>,
 ) {
   return Object.values(type.getFields()).reduce<
@@ -51,8 +61,8 @@ export function objectTypeFieldsToNexus(
     acc[field.name] = objectTypeFieldToNexus(
       getTypeName(type),
       field,
-      contextClientName,
-      uniqueFieldsByModel
+      prismaClient,
+      uniqueFieldsByModel,
     )
 
     return acc

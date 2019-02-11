@@ -70,7 +70,7 @@ export function prismaTypeExtend(
 
   return objectTypeFieldsToNexus(
     graphqlType,
-    builderConfig.prisma.contextClientName,
+    builderConfig.prisma.client,
     prismaSchema.uniqueFieldsByModel,
   )
 }

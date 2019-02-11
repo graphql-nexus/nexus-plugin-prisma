@@ -9,7 +9,50 @@ interface PrismaSchemaConfigRequiredTypes extends PrismaSchemaConfig {
   types: any
 }
 
+function validateOptions(options: PrismaSchemaConfig): void {
+  if (!options.prisma) {
+    throw new Error(
+      'Missing `prisma` property in `makePrismaSchema({ prisma: { ... } })`',
+    )
+  }
+
+  if (!options.prisma.metaSchema) {
+    throw new Error(
+      'Missing `prisma.metaSchema` property in `makePrismaSchema({ prisma: { metaSchema: ... } })`',
+    )
+  }
+
+  if (
+    !options.prisma.metaSchema.uniqueFieldsByModel ||
+    !options.prisma.metaSchema.schema
+  ) {
+    throw new Error(
+      'Invalid `prisma.metaSchema` property. This should be imported from the `nexus-prisma-generate` output directory',
+    )
+  }
+
+  if (!options.prisma.client) {
+    throw new Error(
+      'Missing `prisma.client` property in `makePrismaSchema({ prisma: { client: ... } })`',
+    )
+  }
+
+  if (
+    typeof options.prisma.client !== 'function' &&
+    (!options.prisma.client.$exists || !options.prisma.client.$graphql)
+  ) {
+    throw new Error(
+      `\
+Invalid \`prisma.client\` property in \`makePrismaSchema({ prisma: { client: ... } })\`.
+This should either be an instance of the generated prisma-client, or a function that returns the prisma-client instance from your GraphQL server context
+`,
+    )
+  }
+}
+
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
+  validateOptions(options)
+
   const builder = new PrismaSchemaBuilder(options)
 
   if (!options.types) {

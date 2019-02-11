@@ -12,31 +12,9 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
   constructor(protected config: PrismaSchemaConfig) {
     super(config)
 
-    if (!this.config.prisma) {
-      throw new Error(
-        'Missing `prisma` property in `makePrismaSchema({ prisma: { ... } })`',
-      )
-    }
-
-    if (!this.config.prisma.nexusPrismaSchema) {
-      throw new Error(
-        'Missing `prisma.nexusPrismaSchema` property in `makePrismaSchema({ prisma: { ... } })`',
-      )
-    }
-
-    if (
-      !this.config.prisma.nexusPrismaSchema.uniqueFieldsByModel ||
-      !this.config.prisma.nexusPrismaSchema.schema
-    ) {
-      throw new Error(
-        'Invalid `prisma.nexusPrismaSchema` property. This should be imported from the `nexus-prisma-generate` output directory',
-      )
-    }
-
     this.nexusPrismaSchema = {
-      uniqueFieldsByModel: this.config.prisma.nexusPrismaSchema
-        .uniqueFieldsByModel,
-      schema: buildClientSchema(this.config.prisma.nexusPrismaSchema.schema),
+      uniqueFieldsByModel: this.config.prisma.metaSchema.uniqueFieldsByModel,
+      schema: buildClientSchema(this.config.prisma.metaSchema.schema),
     }
   }
 
@@ -47,8 +25,8 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
       return graphqlTypeToNexus(
         this,
         type,
-        this.config.prisma.contextClientName,
-        this.config.prisma.nexusPrismaSchema.uniqueFieldsByModel,
+        this.config.prisma.client,
+        this.config.prisma.metaSchema.uniqueFieldsByModel,
       )
     }
 

@@ -1,6 +1,7 @@
 import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
 import { getFinalType } from './graphql'
 import { throwIfNoUniqFieldName, throwIfUnknownClientFunction } from './throw'
+import { PrismaClient, PrismaClientInput } from './types'
 import {
   isConnectionTypeName,
   isCreateMutation,
@@ -36,10 +37,21 @@ function shouldRelyOnDefaultResolver(
   return false
 }
 
+function getPrismaClient(
+  prismaClient: PrismaClientInput,
+  ctx: any,
+): PrismaClient {
+  if (typeof prismaClient === 'function') {
+    return prismaClient(ctx)
+  }
+
+  return prismaClient
+}
+
 export function generateDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
-  contextClientName: string,
+  prismaClientInput: PrismaClientInput,
   uniqFieldsByModel: Record<string, string[]>,
 ): GraphQLFieldResolver<any, any> | undefined {
   const fieldName = fieldToResolve.name
@@ -61,15 +73,11 @@ export function generateDefaultResolver(
   }
 
   return (root, args, ctx, info) => {
+    const prismaClient = getPrismaClient(prismaClientInput, ctx)
+
     // Resolve top-level fields
     if (isTopLevel) {
-      throwIfUnknownClientFunction(
-        fieldName,
-        typeName,
-        ctx,
-        contextClientName,
-        info,
-      )
+      throwIfUnknownClientFunction(prismaClient, fieldName, typeName, info)
 
       if (isCreateMutation(typeName, fieldName)) {
         args = args.data
@@ -84,16 +92,10 @@ export function generateDefaultResolver(
         args = args.where
       }
 
-      return ctx[contextClientName][fieldName](args)
+      return prismaClient[fieldName](args)
     }
 
-    throwIfUnknownClientFunction(
-      parentName,
-      typeName,
-      ctx,
-      contextClientName,
-      info,
-    )
+    throwIfUnknownClientFunction(prismaClient, parentName, typeName, info)
 
     const uniqFieldName = uniqFieldsByModel[typeName].find(
       uniqFieldName => root[uniqFieldName] !== undefined,
@@ -101,7 +103,7 @@ export function generateDefaultResolver(
 
     throwIfNoUniqFieldName(uniqFieldName, parentName)
 
-    return ctx[contextClientName][parentName]({
+    return prismaClient[parentName]({
       [uniqFieldName!]: root[uniqFieldName!],
     })[fieldName](args)
   }
