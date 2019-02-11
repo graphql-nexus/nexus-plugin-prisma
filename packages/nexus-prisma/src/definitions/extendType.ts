@@ -13,6 +13,9 @@ export interface PrismaExtendTypeConfig<TypeName extends string>
   definition: (t: PrismaExtendTypeBlock<TypeName>) => void
 }
 
+/**
+ * Extend an object type from the meta schema
+ */
 export function prismaExtendType<TypeName extends PrismaObjectTypeNames>(
   typeConfig: PrismaExtendTypeConfig<TypeName>,
   // @ts-ignore

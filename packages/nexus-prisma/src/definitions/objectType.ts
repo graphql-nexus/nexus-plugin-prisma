@@ -19,6 +19,9 @@ export interface PrismaObjectTypeConfig<TypeName extends string>
   definition?: (t: PrismaObjectDefinitionBlock<TypeName>) => void
 }
 
+/**
+ * Exposes an object type from the meta schema
+ */
 export function prismaObjectType<TypeName extends PrismaObjectTypeNames>(
   typeConfig: PrismaObjectTypeConfig<TypeName>,
 ): core.NexusWrappedType<core.NexusObjectTypeDef<TypeName>> {
