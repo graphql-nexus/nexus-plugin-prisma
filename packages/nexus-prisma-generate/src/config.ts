@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
-import { Parser, DatabaseType, ISDL } from 'prisma-datamodel'
+import { DefaultParser, DatabaseType, ISDL } from 'prisma-datamodel'
 
 export function findDatamodelAndComputeSchema(): {
   datamodel: ISDL
@@ -31,7 +31,7 @@ export function findDatamodelAndComputeSchema(): {
     path.dirname(configPath),
   )
   const databaseType = getDatabaseType(definition)
-  const ParserInstance = Parser.create(databaseType)
+  const ParserInstance = DefaultParser.create(databaseType)
 
   return {
     datamodel: ParserInstance.parseFromSchemaString(typeDefs),
