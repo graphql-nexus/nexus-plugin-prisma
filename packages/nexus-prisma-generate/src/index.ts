@@ -33,7 +33,7 @@ const cli = meow(
     > Generate the TypeScript types for nexus-prisma
 
     -----
-    
+
     Inputs should be relative to the root of your project
 
     --client (required): Path to your prisma-client directory (eg: ./generated/prisma-client/)
@@ -115,8 +115,8 @@ function main(cli: meow.Result) {
       const datamodelPath = join(rootPath, output, 'meta-schema.ts')
       const indexPath = join(rootPath, output, 'index.ts')
 
-      writeFileSync(datamodelPath, `export default ${renderedDatamodel}`)
-      writeFileSync(indexPath, `export { default } from './meta-schema'`)
+      writeFileSync(datamodelPath, `export const metaSchema = ${renderedDatamodel}`)
+      writeFileSync(indexPath, `export * from './meta-schema'`)
     }
 
     console.log(`Types generated at ${output}`)
@@ -128,7 +128,7 @@ function main(cli: meow.Result) {
 function renderIndexJs() {
   return `\
 const metaSchema = require('./meta-schema')
-  
+
 module.exports = metaSchema
   `
 }
