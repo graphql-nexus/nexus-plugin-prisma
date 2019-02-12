@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/prisma/nexus-prisma-plugin#readme",
   "scripts": {
-    "prepublish": "rm -rf example/node_modules && npm test && npm run build",
+    "prepublish": "rm -rf example/node_modules && npm run build",
     "build": "tsc --declaration",
     "watch": "tsc -d -w"
   },
@@ -28,10 +28,11 @@
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
     "js-yaml": "3.12.1",
     "meow": "^5.0.0",
-    "prisma-datamodel": "^1.28.0-alpha.1",
-    "prisma-generate-schema": "^1.28.0-alpha.1"
+    "prisma-datamodel": "^1.28.0-alpha.8",
+    "prisma-generate-schema": "^1.28.0-alpha.8"
   },
   "devDependencies": {
+    "@types/graphql": "^14.0.5",
     "@types/js-yaml": "3.12.0",
     "@types/meow": "^5.0.0",
     "@types/node": "10.12.20",
