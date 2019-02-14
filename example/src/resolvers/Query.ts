@@ -4,10 +4,13 @@ import { prismaObjectType } from 'nexus-prisma'
 export const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
-    // All fields from the underlying object type are exposed automatically
-    // use `t.primaFields(['fieldName', ...])` to hide, customize, or select specific fields
+    /**
+     * - use `t.prismaFields(['*'])` to expose all the underlying object type fields
+     * - use `t.primaFields(['fieldName', ...])` to pick and/or customize specific fields
+     * - use `t.prismaFields({ filter: ['fieldName', ...] })` to filter and/or customize specific fields
+     */
 
-    // This removes all fields from the underlying Query object type
+    // An empty array removes all fields from the underlying object type
     t.prismaFields([])
 
     t.list.field('feed', {
