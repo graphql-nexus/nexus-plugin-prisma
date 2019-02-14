@@ -160,8 +160,8 @@ const User = prismaObjectType({
 **Exposes the only the `users` field, and alias it to `customers`**
 
 ```ts
-const User = prismaObjectType({
-  name: 'User',
+const Query = prismaObjectType({
+  name: 'Query',
   definition(t) {
     t.prismaFields([{ name: 'users', alias: 'customers' }])
   },
@@ -171,8 +171,8 @@ const User = prismaObjectType({
 **Exposes only the `users` field, and only the `first` and `last` args**
 
 ```ts
-const User = prismaObjectType({
-  name: 'User',
+const Query = prismaObjectType({
+  name: 'Query',
   definition(t) {
     t.prismaFields([{ name: 'users', args: ['first', 'last'] }])
   },
@@ -192,9 +192,10 @@ const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
     t.field('users', t.prismaType.users)
-  }
+  },
 })
 ```
+
 Use all the options, but overide the resolver
 
 ```ts
@@ -205,11 +206,12 @@ const Query = prismaObjectType({
       ...t.prismaType.users,
       resolve(root, args, ctx) {
         // Custom implementation
-      }
+      },
     })
-  }
+  },
 })
 ```
+
 Use all the options, add more arguments with a custom resolver
 
 ```ts
@@ -220,12 +222,12 @@ const Query = prismaObjectType({
       ...t.prismaType.users,
       args: {
         ...t.prismaType.users.args,
-        newArg: stringArg()
+        newArg: stringArg(),
       },
       resolve(root, args, ctx) {
         // Custom implementation
-      }
+      },
     })
-  }
+  },
 })
 ```
