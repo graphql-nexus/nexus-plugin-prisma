@@ -16,7 +16,7 @@ When using `nexus-prisma`, you're using a code-first (instead of an SDL-first) a
 
 You can also check out a quick demo on CodeSandbox:
 
-[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/v3wrqz7445)
+[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
 
 ## Features
 
