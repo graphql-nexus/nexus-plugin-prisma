@@ -1,1 +1,1 @@
-export { default } from './meta-schema'
+export { default } from './datamodel-info'

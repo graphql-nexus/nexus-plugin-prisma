@@ -13,8 +13,8 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
     super(config)
 
     this.nexusPrismaSchema = {
-      uniqueFieldsByModel: this.config.prisma.metaSchema.uniqueFieldsByModel,
-      schema: buildClientSchema(this.config.prisma.metaSchema.schema),
+      uniqueFieldsByModel: this.config.prisma.datamodelInfo.uniqueFieldsByModel,
+      schema: buildClientSchema(this.config.prisma.datamodelInfo.schema),
     }
   }
 
@@ -26,7 +26,7 @@ export class PrismaSchemaBuilder extends core.SchemaBuilder {
         this,
         type,
         this.config.prisma.client,
-        this.config.prisma.metaSchema.uniqueFieldsByModel,
+        this.config.prisma.datamodelInfo.uniqueFieldsByModel,
       )
     }
 

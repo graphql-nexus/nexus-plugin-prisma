@@ -6,19 +6,23 @@ import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import {
   AddFieldInput,
   FilterInputField,
-  InputField,
+  InputFieldsWithStar,
   PickInputField,
 } from '../types'
 import { getFields } from '../utils'
 
 export interface PrismaInputDefinitionBlock<TypeName extends string>
   extends core.InputDefinitionBlock<TypeName> {
-  prismaFields(inputFields: InputField<'inputTypes', TypeName>[]): void
+  prismaFields(inputFields: InputFieldsWithStar<'inputTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'inputTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'inputTypes', TypeName>): void
   /**
-   * Omit/customize the fields of the underlying input object type
-   * @param inputFields The fields you want to omit/customize
+   * Pick, filter or customize the fields of the underlying input object type
+   * @param inputFields The fields you want to pick/filter or customize
+   *
+   * @example Exposes all fields
+   *
+   * t.prismaField(['*'])
    *
    * @example Exposes only the `first` and `last` field
    *
@@ -36,21 +40,15 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
   prismaFields(inputFields: AddFieldInput<'inputTypes', TypeName>): void
 }
 
-interface InternalPrismaInputDefinitionBlock<TypeName extends string>
-  extends PrismaInputDefinitionBlock<TypeName> {
-  __calledPrismaFields: boolean
-}
-
 export function prismaInputDefinitionBlock<TypeName extends string>(
   typeName: string,
   t: core.InputDefinitionBlock<TypeName> | core.OutputDefinitionBlock<TypeName>,
   prismaType: Record<string, core.NexusInputFieldConfig>,
   prismaSchema: GraphQLSchema,
-): InternalPrismaInputDefinitionBlock<TypeName> {
-  const prismaBlock = t as InternalPrismaInputDefinitionBlock<TypeName>
+): PrismaInputDefinitionBlock<TypeName> {
+  const prismaBlock = t as PrismaInputDefinitionBlock<TypeName>
 
   prismaBlock.prismaFields = (inputFields: any) => {
-    prismaBlock.__calledPrismaFields = true
     const fields = getFields(inputFields, typeName, prismaSchema)
 
     fields.forEach(field => {

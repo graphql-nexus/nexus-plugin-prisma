@@ -1,11 +1,16 @@
 import { GraphQLObjectType } from 'graphql'
 import { makePrismaSchema, prismaObjectType } from '../src'
-import metaSchema from './prisma/nexus-prisma'
+import datamodelInfo from './prisma/nexus-prisma'
 import { prisma } from './prisma/prisma-client'
 
 describe('prismaObjectType', () => {
   test("prismaObjectType('Query')", () => {
-    const Query = prismaObjectType({ name: 'Query' })
+    const Query = prismaObjectType({
+      name: 'Query',
+      definition(t) {
+        t.prismaFields(['*'])
+      },
+    })
 
     const schema = makePrismaSchema({
       types: [Query],
@@ -15,7 +20,7 @@ describe('prismaObjectType', () => {
       },
       prisma: {
         client: prisma,
-        metaSchema,
+        datamodelInfo,
       },
     })
 
@@ -107,7 +112,7 @@ describe('prismaObjectType', () => {
       },
       prisma: {
         client: prisma,
-        metaSchema,
+        datamodelInfo,
       },
     })
 
@@ -159,7 +164,7 @@ describe('prismaObjectType', () => {
       },
       prisma: {
         client: prisma,
-        metaSchema,
+        datamodelInfo,
       },
     })
 

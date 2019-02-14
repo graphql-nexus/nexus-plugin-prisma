@@ -1,6 +1,6 @@
 import { makePrismaSchema } from 'nexus-prisma'
 import * as path from 'path'
-import metaSchema from './generated/nexus-prisma'
+import datamodelInfo from './generated/nexus-prisma'
 import { prisma } from './generated/prisma-client'
 import * as allTypes from './resolvers'
 
@@ -12,7 +12,7 @@ export const schema = makePrismaSchema({
   types: allTypes,
 
   prisma: {
-    metaSchema,
+    datamodelInfo,
     client: prisma,
   },
 

@@ -6,7 +6,7 @@ import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
   AddFieldInput,
   FilterInputField,
-  InputField,
+  InputFieldsWithStar,
   ObjectTypeDetails,
   PickInputField,
   PrismaSchemaConfig,
@@ -66,13 +66,19 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
    * ```
    */
   prismaType: ObjectTypeDetails<TypeName>
-  prismaFields(inputFields: InputField<'objectTypes', TypeName>[]): void
+  prismaFields(
+    inputFields: InputFieldsWithStar<'objectTypes', TypeName>[],
+  ): void
   prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
   /**
-   * Omit/customize the fields of the underlying object type
-   * @param inputFields The fields you want to omit/customize
+   * Pick, filter or customize the fields of the underlying object type
+   * @param inputFields The fields you want to pick/filter/customize
    *
+   * @example Exposes all fields
+   *
+   * t.prismaField(['*'])
+   * 
    * @example Exposes only the `id` and `name` field
    *
    * t.prismaField(['id', 'name'])
@@ -97,22 +103,16 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
   prismaFields(inputFields: AddFieldInput<'objectTypes', TypeName>): void
 }
 
-interface InternalPrismaObjectDefinitionBlock<TypeName extends string>
-  extends PrismaObjectDefinitionBlock<TypeName> {
-  __calledPrismaFields: boolean
-}
-
 export function prismaObjectDefinitionBlock<TypeName extends string>(
   typeName: string,
   t: core.ObjectDefinitionBlock<TypeName>,
   prismaType: Record<string, core.NexusOutputFieldConfig<string, string>>,
   prismaSchema: GraphQLSchema,
-): InternalPrismaObjectDefinitionBlock<TypeName> {
-  const prismaBlock = t as InternalPrismaObjectDefinitionBlock<TypeName>
+): PrismaObjectDefinitionBlock<TypeName> {
+  const prismaBlock = t as PrismaObjectDefinitionBlock<TypeName>
 
   prismaBlock.prismaType = prismaType
   prismaBlock.prismaFields = (inputFields: any) => {
-    prismaBlock.__calledPrismaFields = true
     const graphqlType = prismaSchema.getType(typeName) as GraphQLObjectType
     const fields = getFields(inputFields, typeName, prismaSchema)
 
