@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
@@ -22,12 +22,10 @@
     "build": "tsc --declaration",
     "watch": "tsc -d -w"
   },
-  "dependencies": {
-    "camelcase": "^5.0.0",
-    "nexus": "^0.9.11"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
+    "nexus": "^0.9.11"
   },
   "devDependencies": {
     "@types/graphql": "14.0.5",
@@ -35,6 +33,7 @@
     "@types/lodash": "4.14.120",
     "graphql-tag": "^2.10.1",
     "jest": "^24.0.0",
+    "nexus": "^0.9.11",
     "prettier": "1.16.3",
     "prisma": "1.25.4",
     "prisma-client-lib": "^1.25.3",
