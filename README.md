@@ -242,7 +242,6 @@ interface Field {
 
 #### Examples
 
-
 **Expose all fields**
 
 ```ts
@@ -305,6 +304,59 @@ const Query = prismaObjectType({
   name: 'Query',
   definition(t) {
     t.prismaFields([{ name: 'users', args: ['first', 'last'] }])
+  },
+})
+```
+
+### `t.prismaType()`
+
+Contains all the options to use native `nexus` methods with `nexus-prisma` generated schema.
+
+#### Examples
+
+**Pass in all the options as-is**
+
+```ts
+const Query = prismaObjectType({
+  name: 'Query',
+  definition(t) {
+    t.field('users', t.prismaType.users)
+  },
+})
+```
+
+**Use all the options, but override the resolver**
+
+```ts
+const Query = prismaObjectType({
+  name: 'Query',
+  definition(t) {
+    t.field('users', {
+      ...t.prismaType.users,
+      resolve(root, args, ctx) {
+        // Custom implementation
+      },
+    })
+  },
+})
+```
+
+**Use all the options, add more arguments with a custom resolver**
+
+```ts
+const Query = prismaObjectType({
+  name: 'Query',
+  definition(t) {
+    t.field('users', {
+      ...t.prismaType.users,
+      args: {
+        ...t.prismaType.users.args,
+        newArg: stringArg(),
+      },
+      resolve(root, args, ctx) {
+        // Custom implementation
+      },
+    })
   },
 })
 ```
