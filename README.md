@@ -2,36 +2,186 @@
 
 # nexus-prisma
 
-Prisma Plugin for Nexus
+Prisma plugin for [GraphQL Nexus](https://nexus.js.org/), a code first GraphQL schema construction library
 
 ## Motivation
 
-**nexus-prisma** generates a working CRUD GraphQL schema based on your prisma datamodel. It leverages [`nexus`](https://github.com/prisma/nexus) code-first power to easily expose/hide/customise types from the generated schema and solve most of the common problems previously faced while using the SDL-first paradigm.
+The `nexus-prisma` plugin provides CRUD building blocks based on the Prisma datamodel. When implementing your GraphQL server, you build upon these building blocks and expose/customize them to your own API needs. 
 
-If you want to give it a quick look, check it out here:
+When using `nexus-prisma`, you're using a code-first (instead of an SDL-first) approach for GraphQL server development. Read more about the benefits of code-first in this article series:
+
+1. [The Problems of "Schema-First" GraphQL Server Development](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3)
+1. [Introducing GraphQL Nexus: Code-First GraphQL Server Development](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5/)
+1. [Using GraphQL Nexus with a Database](https://www.prisma.io/blog/using-graphql-nexus-with-a-database-pmyl3660ncst/)
+
+You can also check out a quick demo on CodeSandbox:
 
 [![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/v3wrqz7445)
 
 ## Features
 
-- Great DX with built-in (and almost invisible) type-safety
-- Easily expose and customise types from your Prisma API
-- Automatically resolve queries of Prisma types
+- CRUD operations for your Prisma models in GraphQL (easier than [`forwardTo`](https://github.com/prisma/prisma-binding#forwardto))
+- Customize your Prisma models, e.g. _hide certain fields_ or _add computed fields_
+- Full type-safety: Coherent set of types for GraphQL schema and database
+- Compatible with the GraphQL ecosystem (e.g. `apollo-server`, `graphql-yoga`, ...)
 - Incrementally adoptable
 - Compatible both with TypeScript and JavaScript
-- Compatible with any GraphQL Server
+
+## Documentation
+
+You can find the docs for `nexus-prisma` [here](https://nexus.js.org/docs/database-access-with-prisma). The docs also include a [**Getting started**](https://nexus.js.org/docs/database-access-with-prisma#getting-started)-section.
+
+## Examples
+
+Here's a minimal example for using `nexus-prisma`:
+
+**Prisma datamodel**:
+
+```graphql
+type Todo {
+  id: ID! @unique
+  title: String!
+  done: Boolean! @default(value: "false")
+}
+```
+
+**GraphQL server code**::
+
+```ts
+import { prismaObjectType } from 'nexus-prisma'
+import { idArg } from 'nexus-prisma'
+
+// Expose the full "Query" building block
+const Query = prismaObjectType({ 
+  name: 'Query',
+   // Expose all generated `Todo`-queries
+  definition(t) => t.prismaFields(['*'])
+})
+
+// Customize the "Mutation" building block
+const Mutation = prismaObjectType({ 
+  name: 'Mutation',
+  definition(t) {
+    // Keep only the `createTodo` mutation
+    t.prismaFields(['createTodo'])
+
+    // Add a custom `markAsDone` mutation
+    t.field('markAsDone', {
+      args: { id: idArg() },
+      nullable: true,
+      resolve: (_, { id }, ctx) {
+        return ctx.prisma.updateTodo({
+          where: { id },
+          data: { done: true }
+        })
+      }
+    })
+  }
+})
+
+const schema = makePrismaSchema({
+  types: [Query, Mutation],
+
+  // More config stuff, e.g. where to put the generated SDL
+})
+
+// Feed the `schema` into your GraphQL server, e.g. `apollo-server, `graphql-yoga` 
+```
+
+<Details><Summary>Expand to view the generated SDL for the final GraphQL API</Summary>
+
+```graphql
+# The fully exposed "Query" building block
+type Query {
+  todo(where: TodoWhereUniqueInput!): Todo
+  todoes(after: String, before: String, first: Int, last: Int, orderBy: TodoOrderByInput, skip: Int, where: TodoWhereInput): [Todo!]!
+  todoesConnection(after: String, before: String, first: Int, last: Int, orderBy: TodoOrderByInput, skip: Int, where: TodoWhereInput): TodoConnection!
+}
+
+# The customized "Mutation" building block
+type Mutation {
+  createTodo(data: TodoCreateInput!): Todo!
+  markAsDone(id: ID): Todo
+}
+
+# The Prisma model
+type Todo {
+  done: Boolean!
+  id: ID!
+  title: String!
+}
+
+# More of the generated building blocks:
+# e.g. `TodoWhereUniqueInput`, `TodoCreateInput`, `TodoConnection`, ...
+```
+
+</Details>
+<br />
+
+You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples`](https://github.com/prisma/prisma-examples/):
+
+- [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
+- [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema. 
+
+
+## The `nexus-prisma` workflow
+
+The `nexus-prisma` plugin is the glue between the Prisma client and GraphQL Nexus. It generates CRUD building blocks based for your Prisma models.
+
+When constructing your GraphQL schema with GraphQL Nexus, you build upon these building blocks and expose/customize them to your own API needs.
+
+#### Generated CRUD building blocks
+
+Assume you have a `User` type in your Prisma datamodel. `nexus-prisma-generate` will generate the following building blocks for it:
+
+- **Queries**
+  - **`user(...): User!`**: Fetches a single record
+  - **`users(...): [User!]!`**: Fetches a list of records
+  - **`usersConnection(...): UserConnection!`**: [Relay connections](https://graphql.org/learn/pagination/#complete-connection-model) & aggregations
+
+- **Mutations**
+  - **`createUser(...): User!`**: Creates a new record
+  - **`updateUser(...): User`**: Updates a record
+  - **`deleteUser(...): User`**: Deletes a record
+  - **`updatesManyUsers(...): BatchPayload!`**: Updates many records in bulk
+  - **`deleteManyUsers(...): BatchPayload!`**: Deletes many records in bulk
+
+- [**GraphQL input types**](https://graphql.org/graphql-js/mutations-and-input-types/)
+  - **`UserCreateInput`**: Wraps all fields of the record
+  - **`UserUpdateInput`**: Wraps all fields of the record
+  - **`UserWhereInput`**: Provides filters for all fields of the record
+  - **`UserWhereUniqueInput`**: Provides filters for unique fields of the record
+  - **`UserUpdateManyMutationInput`**: Wraps fields that can be updated in bulk
+  - **`UserOrderByInput`**: Specifies ascending or descending orders by field
+
+> `UserCreateInput` and `UserUpdateInput` differ in the way relation fields are treated.
+
 
 ## Usage
 
-This assumes you are already using `prisma`.
+### Install
 
-Install `nexus-prisma`
+Install dependencies:
 
 ```bash
-yarn add nexus nexus-prisma
+npm install --save nexus-prisma
 ```
 
-Edit your `prisma.yml` file, and add the following:
+Other required dependencies:
+
+```
+npm install --save nexus graphql prisma-client-lib
+```
+
+### Generate CRUD building blocks
+
+Teh CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
+
+```bash
+npx nexus-prisma-generate --client PRISMA_CLIENT_DIR --output ./src/generated/nexus-prisma
+```
+
+It is recommended to add this command as a `post-deploy` hook to your `prisma.yml`, e.g.:
 
 ```yml
 hooks:
@@ -40,64 +190,35 @@ hooks:
     - npx nexus-prisma-generate --client prisma-client-dir --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
 ```
 
-Then run `prisma deploy` or `npx nexus-prisma-generate`. This will generate TS types based on the Prisma GraphQL API.
+## Reference 
 
-Once done, you can start using the library as so:
+### `prismaObjectType()`
 
-```ts
-import { GraphQLServer } from 'graphql-yoga'
-import { makePrismaSchema, prismaObjectType } from 'nexus-prisma'
-import * as path from 'path'
-import { prisma } from '__PRISMA_CLIENT_DIR__'
-import datamodelInfo from './generated/nexus-prisma'
+`prismaObjectType` is a wrapper around Nexus' `objectType`. It expects an object with the following properties:
 
-const Query = prismaObjectType({ name: 'Query' })
-const Mutation = prismaObjectType({ name: 'Mutation' })
+#### Required
 
-const schema = makePrismaSchema({
-  // Generated CRUD Query and Mutation types
-  types: [Query, Mutation],
-  prisma: {
-    // Prisma's datamodel information
-    datamodelInfo,
-    // The prisma-client instance
-    client: prisma,
-  },
-  outputs: {
-    schema: path.join(__dirname, './schema.graphql'),
-    typegen: path.join(__dirname, './generated/nexus.ts'),
-  },
-})
+- `name` (string): The name of the Prisma model or generated CRUD GraphQL type you want to expose in your API, e.g. `Query`, `Mutation`, `User`, `Todo`, `UserWhereUniqueInput`, `TodoConnection`, ...
+- `definition(t)` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t`. To expose the entire type, call: `t.prismaFields(['*'])`. See the documentation of `prismaFields()` below for more info.
 
-const server = new GraphQLServer({
-  schema,
-  context: { prisma },
-})
+#### Optional
 
-server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
-```
+- `nonNullDefaults` (boolean or object): Specifies whether the [nullability](https://graphql.org/learn/schema/#lists-and-non-null) behaviour for field arguments and field types. **All input arguments and return types of fields are non-null by default**. If you want the behaviour to differ for input arguments and field (outout) types, you can pass an object with these properties: 
+  - `input` (boolean): Specifies whether input arguments should be required. Default: `true`.
+  - `output` (boolean): Specifies whether return values of fields should be required. Default: `true`.
+- `description`: A string that shows up in the generated SDL schema definition to describe the type. It is also picked up by tools like the GraphQL Playground or graphiql.
+- `defaultResolver`
 
-That's it. You can now enjoy a fully working CRUD GraphQL API.
+### `prismaFields()`
 
-## API
+`prismaFields()` is called on the type `t` that's passed into the `definition` function. All the fields exposed using `prismaFields()` are automatically resolved. The `prismaFields()` function expects an array of Prisma fields where each field can either be provided:
 
-## `prismaObjectType`
+- as a simple string to indicate that it should be exposed in the same way it was defined in the datamodel
+- as a configuration object in case you want to rename the field or adjust its arguments
 
-`prismaObjectType` is a wrapper around nexus' `objectType`. It adds special methods to the `t` object for you to expose fields of your Prisma GraphQL types.
-
-**All the fields exposed using `nexus-prisma` are automatically resolved. No code is needed besides which fields you want to expose.**
-
-### `t.prismaFields`
-
-**Signature** (simplified types)
+#### Signature
 
 ```ts
-interface Field {
-  name: string // Name of the field you want to expose
-  alias: string // Name of the alias of you want to give the field
-  args: string[] // Arguments of the field you want to expose
-}
-
 /**
  * Pick, or customize the fields of the underlying object type
  */
@@ -111,11 +232,17 @@ t.prismaFields({ pick: string[] | Field[] })
  * Filter or customize the fields of the underlying object type
  */
 t.prismaFields({ filter: (string[] | Field[]) | (fields: string[]) => string[] })
+
+interface Field {
+  name: string    // Name of the field you want to expose
+  alias: string   // Name of the alias of you want to give the field
+  args: string[]  // Arguments of the field you want to expose
+}
 ```
 
-### Examples
+#### Examples
 
-**Exposes all fields**
+**Expose all fields**
 
 ```ts
 const User = prismaObjectType({
@@ -126,7 +253,7 @@ const User = prismaObjectType({
 })
 ```
 
-**Exposes only the `id` and `name` field**
+**Expose only the `id` and `name` field**
 
 ```ts
 const User = prismaObjectType({
@@ -148,7 +275,7 @@ const User = prismaObjectType({
 })
 ```
 
-**Exposes all fields but the `id` and `name`**
+**Expose all fields but the `id` and `name`**
 
 ```ts
 const User = prismaObjectType({
@@ -159,7 +286,7 @@ const User = prismaObjectType({
 })
 ```
 
-**Exposes only the `users` field, and alias it to `customers`**
+**Expose only the `users` field, and renames it to `customers`**
 
 ```ts
 const Query = prismaObjectType({
@@ -170,7 +297,7 @@ const Query = prismaObjectType({
 })
 ```
 
-**Exposes only the `users` field, and only the `first` and `last` args**
+**Expose only the `users` field, and only the `first` and `last` args**
 
 ```ts
 const Query = prismaObjectType({
@@ -181,13 +308,13 @@ const Query = prismaObjectType({
 })
 ```
 
-### `t.prismaType`
+### `t.prismaType()`
 
-Contains all the options to use native `nexus` methods with `nexus-prisma` generated schema
+Contains all the options to use native `nexus` methods with `nexus-prisma` generated schema.
 
-### Examples
+#### Examples
 
-Pass in all the options as-is
+**Pass in all the options as-is**
 
 ```ts
 const Query = prismaObjectType({
@@ -198,7 +325,7 @@ const Query = prismaObjectType({
 })
 ```
 
-Use all the options, but overide the resolver
+**Use all the options, but override the resolver**
 
 ```ts
 const Query = prismaObjectType({
@@ -214,7 +341,7 @@ const Query = prismaObjectType({
 })
 ```
 
-Use all the options, add more arguments with a custom resolver
+**Use all the options, add more arguments with a custom resolver**
 
 ```ts
 const Query = prismaObjectType({
