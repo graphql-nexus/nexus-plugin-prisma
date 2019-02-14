@@ -51,7 +51,6 @@ This should either be an instance of the generated prisma-client, or a function 
 }
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
-  console.log('LOCAL VERSION')
   validateOptions(options)
 
   const builder = new PrismaSchemaBuilder(options)
