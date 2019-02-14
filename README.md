@@ -37,7 +37,7 @@ Edit your `prisma.yml` file, and add the following:
 hooks:
   post-deploy:
     - prisma generate
-      - npx nexus-prisma-generate --client prisma-client-dir --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
+    - npx nexus-prisma-generate --client prisma-client-dir --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
 ```
 
 Then run `prisma deploy` or `npx nexus-prisma-generate`. This will generate TS types based on the Prisma GraphQL API.
