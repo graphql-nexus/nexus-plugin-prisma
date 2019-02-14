@@ -6,7 +6,7 @@ import { objectTypeFieldsToNexus } from '../graphqlToNexus/objectType'
 import {
   AddFieldInput,
   FilterInputField,
-  InputField,
+  InputFieldsWithStar,
   ObjectTypeDetails,
   PickInputField,
   PrismaSchemaConfig,
@@ -66,7 +66,7 @@ export interface PrismaExtendTypeBlock<TypeName extends string>
    * ```
    */
   prismaType: ObjectTypeDetails<TypeName>
-  prismaFields(inputFields: InputField<'objectTypes', TypeName>[]): void
+  prismaFields(inputFields: InputFieldsWithStar<'objectTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
   /**

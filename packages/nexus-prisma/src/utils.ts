@@ -26,11 +26,7 @@ export function getFields<TypeName extends string>(
   typeName: string,
   schema: GraphQLSchema,
 ): ObjectField[] {
-  const fields = extractFields(
-    inputFields as AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
-    typeName,
-    schema,
-  )
+  const fields = extractFields(inputFields, typeName, schema)
   const normalizedFields = normalizeFields(fields)
 
   const objectType = findObjectType(typeName, schema)
@@ -50,26 +46,39 @@ function isPickInputField<TypeName extends string = any>(
   )
 }
 
-function extractFields<TypeName extends string = any>(
+function allOrInputFields(
+  fields: AnonymousField[],
+  prismaFieldsNames: string[],
+) {
+  const hasWhitelist = fields.filter(f => typeof f === 'string').includes('*')
+
+  return hasWhitelist ? prismaFieldsNames : fields
+}
+
+function extractFields<TypeName extends string>(
   fields: AddFieldInput<'objectTypes' | 'inputTypes', TypeName>,
   typeName: string,
   schema: GraphQLSchema,
 ): AnonymousField[] {
+  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
+
   if (Array.isArray(fields)) {
-    return fields as AnonymousField[]
+    return allOrInputFields(fields as AnonymousField[], prismaFieldsNames)
   }
 
   if (isPickInputField(fields)) {
-    return fields.pick as AnonymousField[]
+    return allOrInputFields(fields.pick as AnonymousField[], prismaFieldsNames)
   }
-
-  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
 
   if (Array.isArray(fields.filter)) {
     const fieldsToFilter = fields.filter as AnonymousField[]
     const fieldsNamesToFilter = fieldsToFilter.map(f =>
       typeof f === 'string' ? f : f.name,
     )
+
+    if (fieldsNamesToFilter.includes('*')) {
+      return []
+    }
 
     return prismaFieldsNames.filter(
       fieldName => !fieldsNamesToFilter.includes(fieldName),

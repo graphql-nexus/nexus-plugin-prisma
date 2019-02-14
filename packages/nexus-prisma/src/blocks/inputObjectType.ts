@@ -6,14 +6,14 @@ import { inputObjectTypeFieldsToNexus } from '../graphqlToNexus/inputObjectType'
 import {
   AddFieldInput,
   FilterInputField,
-  InputField,
+  InputFieldsWithStar,
   PickInputField,
 } from '../types'
 import { getFields } from '../utils'
 
 export interface PrismaInputDefinitionBlock<TypeName extends string>
   extends core.InputDefinitionBlock<TypeName> {
-  prismaFields(inputFields: InputField<'inputTypes', TypeName>[]): void
+  prismaFields(inputFields: InputFieldsWithStar<'inputTypes', TypeName>[]): void
   prismaFields(pickFields: PickInputField<'inputTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'inputTypes', TypeName>): void
   /**
