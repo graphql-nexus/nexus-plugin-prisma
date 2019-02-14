@@ -39,7 +39,7 @@
     "jest": "23.6.0",
     "prettier": "1.16.3",
     "ts-jest": "23.10.5",
-    "typescript": "3.2.4"
+    "typescript": "3.3.1"
   },
   "prettier": {
     "singleQuote": true,
