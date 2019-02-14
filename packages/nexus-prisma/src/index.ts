@@ -16,18 +16,18 @@ function validateOptions(options: PrismaSchemaConfig): void {
     )
   }
 
-  if (!options.prisma.metaSchema) {
+  if (!options.prisma.datamodelInfo) {
     throw new Error(
-      'Missing `prisma.metaSchema` property in `makePrismaSchema({ prisma: { metaSchema: ... } })`',
+      'Missing `prisma.datamodelInfo` property in `makePrismaSchema({ prisma: { datamodelInfo: ... } })`',
     )
   }
 
   if (
-    !options.prisma.metaSchema.uniqueFieldsByModel ||
-    !options.prisma.metaSchema.schema
+    !options.prisma.datamodelInfo.uniqueFieldsByModel ||
+    !options.prisma.datamodelInfo.schema
   ) {
     throw new Error(
-      'Invalid `prisma.metaSchema` property. This should be imported from the `nexus-prisma-generate` output directory',
+      'Invalid `prisma.datamodelInfo` property. This should be imported from the `nexus-prisma-generate` output directory',
     )
   }
 
@@ -51,6 +51,7 @@ This should either be an instance of the generated prisma-client, or a function 
 }
 
 export function makePrismaSchema(options: PrismaSchemaConfig): GraphQLSchema {
+  console.log('LOCAL VERSION')
   validateOptions(options)
 
   const builder = new PrismaSchemaBuilder(options)

@@ -106,17 +106,17 @@ function main(cli: meow.Result) {
     writeFileSync(nexusPrismaTypesPath, nexusPrismaTypes)
 
     if (jsMode) {
-      const datamodelPath = join(rootPath, output, 'meta-schema.js')
+      const datamodelPath = join(rootPath, output, 'datamodel-info.js')
       const indexPath = join(rootPath, output, 'index.js')
 
       writeFileSync(datamodelPath, `module.exports = ${renderedDatamodel}`)
       writeFileSync(indexPath, renderIndexJs())
     } else {
-      const datamodelPath = join(rootPath, output, 'meta-schema.ts')
+      const datamodelPath = join(rootPath, output, 'datamodel-info.ts')
       const indexPath = join(rootPath, output, 'index.ts')
 
       writeFileSync(datamodelPath, `export default ${renderedDatamodel}`)
-      writeFileSync(indexPath, `export { default } from './meta-schema'`)
+      writeFileSync(indexPath, `export { default } from './datamodel-info'`)
     }
 
     console.log(`Types generated at ${output}`)
@@ -127,9 +127,9 @@ function main(cli: meow.Result) {
 
 function renderIndexJs() {
   return `\
-const metaSchema = require('./meta-schema')
+const datamodelInfo = require('./datamodel-info')
   
-module.exports = metaSchema
+module.exports = datamodelInfo
   `
 }
 
