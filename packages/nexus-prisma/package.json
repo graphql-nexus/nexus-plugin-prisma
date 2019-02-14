@@ -28,7 +28,7 @@
     "nexus": "^0.9.11"
   },
   "devDependencies": {
-    "@types/graphql": "14.0.5",
+    "@types/graphql": "14.0.7",
     "@types/jest": "^23.3.13",
     "@types/lodash": "4.14.120",
     "graphql-tag": "^2.10.1",
