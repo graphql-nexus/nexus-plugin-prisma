@@ -10,7 +10,7 @@ import {
 } from './utils'
 import { camelCase } from './camelcase'
 
-function shouldRelyOnDefaultResolver(
+export function shouldRelyOnDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
 ) {
