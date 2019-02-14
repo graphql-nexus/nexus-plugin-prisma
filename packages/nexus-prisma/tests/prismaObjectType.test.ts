@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql'
-import { makePrismaSchema, prismaObjectType } from '../src'
-import datamodelInfo from './prisma/nexus-prisma'
+import { prismaObjectType } from '../src'
+import { mockSchema } from './prisma/mockSchema'
 import { prisma } from './prisma/prisma-client'
 
 describe('prismaObjectType', () => {
@@ -12,17 +12,7 @@ describe('prismaObjectType', () => {
       },
     })
 
-    const schema = makePrismaSchema({
-      types: [Query],
-      outputs: {
-        schema: false,
-        typegen: false,
-      },
-      prisma: {
-        client: prisma,
-        datamodelInfo,
-      },
-    })
+    const schema = mockSchema([Query])
 
     const queryFields = Object.keys(
       (schema.getType('Query') as GraphQLObjectType).getFields(),
@@ -104,17 +94,7 @@ describe('prismaObjectType', () => {
       },
     })
 
-    const schema = makePrismaSchema({
-      types: [Query],
-      outputs: {
-        schema: false,
-        typegen: false,
-      },
-      prisma: {
-        client: prisma,
-        datamodelInfo,
-      },
-    })
+    const schema = mockSchema([Query])
 
     const queryFields = Object.keys(
       (schema.getType('Query') as GraphQLObjectType).getFields(),
@@ -156,17 +136,7 @@ describe('prismaObjectType', () => {
       },
     })
 
-    const schema = makePrismaSchema({
-      types: [Query],
-      outputs: {
-        schema: false,
-        typegen: false,
-      },
-      prisma: {
-        client: prisma,
-        datamodelInfo,
-      },
-    })
+    const schema = mockSchema([Query])
 
     const queryFields = (schema.getType(
       'Query',
