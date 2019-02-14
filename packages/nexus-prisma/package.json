@@ -34,7 +34,7 @@
     "graphql-tag": "^2.10.1",
     "jest": "^24.0.0",
     "nexus": "^0.9.11",
-    "prettier": "1.16.3",
+    "prettier": "1.16.4",
     "prisma": "1.25.4",
     "prisma-client-lib": "^1.25.3",
     "ts-jest": "^23.10.5",
