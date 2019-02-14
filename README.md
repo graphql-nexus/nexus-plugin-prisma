@@ -1,3 +1,5 @@
+<p align="center"><img src="https://i.imgur.com/8qvElTM.png" width="300" /></p>
+
 # nexus-prisma
 
 Prisma Plugin for Nexus
