@@ -8,7 +8,7 @@ import {
   isDeleteMutation,
   isNotArrayOrConnectionType,
 } from './utils'
-const camelCase = require('camelcase')
+import { camelCase } from './camelcase'
 
 function shouldRelyOnDefaultResolver(
   typeName: string,
