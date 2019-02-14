@@ -120,8 +120,8 @@ t.prismaFields(fieldsToExpose: string[] | Field[])
 t.prismaFields({ pick: string[] | Field[] })
 /**
  * Hides fields of an object type of the generated CRUD schema
- * Usage: t.prismaFields({ hide: ['age'] })
- * Usage: t.prismaFields({ hide: (fields) => !fields.includes(['age']) })
+ * Usage: t.prismaFields({ filter: ['age'] })
+ * Usage: t.prismaFields({ filter: (fields) => !fields.includes(['age']) })
  */
 t.prismaFields({ filter: (string[] | Field[]) | (fields: string[]) => string[] })
 ```
