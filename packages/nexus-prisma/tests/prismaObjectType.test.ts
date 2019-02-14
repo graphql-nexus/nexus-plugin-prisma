@@ -4,7 +4,7 @@ import { mockSchema } from './prisma/mockSchema'
 import { prisma } from './prisma/prisma-client'
 
 describe('prismaObjectType', () => {
-  test("prismaObjectType('Query')", () => {
+  it('exposes all fields from the `Query` type', () => {
     const Query = prismaObjectType({
       name: 'Query',
       definition(t) {
@@ -86,7 +86,7 @@ describe('prismaObjectType', () => {
     )
   })
 
-  test("prismaObjectType('Query', ['post', 'posts'])", () => {
+  it('exposes only the `Query.post` and `Query.posts` field', () => {
     const Query = prismaObjectType({
       name: 'Query',
       definition(t) {
@@ -128,7 +128,7 @@ describe('prismaObjectType', () => {
     )
   })
 
-  test("prismaObjectType('Query', [{ name: 'posts', alias: 'feed'}])", async () => {
+  test('it exposes the `Query.posts` field as `Query.feed`', async () => {
     const Query = prismaObjectType({
       name: 'Query',
       definition(t) {

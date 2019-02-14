@@ -3,7 +3,7 @@ import { prismaInputObjectType } from '../src'
 import { mockSchema } from './prisma/mockSchema'
 
 describe('prismaInputObjectType', () => {
-  test("prismaInputObjectType('PostWhereInput')", () => {
+  it('exposes all fields of PostWhereInput', () => {
     const PostWhereInput = prismaInputObjectType({
       name: 'PostWhereInput',
       definition(t) {
@@ -136,7 +136,7 @@ describe('prismaInputObjectType', () => {
     )
   })
 
-  test("prismaInputObjectType('PostWhereInput', ['title', 'content'])", () => {
+  it('exposes only the `PostWhereInput.title` and `PostWhereInput.content` fields', () => {
     const PostWhereInput = prismaInputObjectType({
       name: 'PostWhereInput',
       definition(t) {

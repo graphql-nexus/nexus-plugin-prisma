@@ -3,7 +3,7 @@ import { prismaExtendType, prismaObjectType } from '../src'
 import { mockSchema } from './prisma/mockSchema'
 
 describe('prismaExtendType', () => {
-  it('extends the query types with `user` and `users` queries', () => {
+  it('extends the `Query` types with `Query.user` and `Query.users` queries', () => {
     const Query = prismaObjectType({
       name: 'Query',
       definition(t) {
