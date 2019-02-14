@@ -36,21 +36,15 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
   prismaFields(inputFields: AddFieldInput<'inputTypes', TypeName>): void
 }
 
-interface InternalPrismaInputDefinitionBlock<TypeName extends string>
-  extends PrismaInputDefinitionBlock<TypeName> {
-  __calledPrismaFields: boolean
-}
-
 export function prismaInputDefinitionBlock<TypeName extends string>(
   typeName: string,
   t: core.InputDefinitionBlock<TypeName> | core.OutputDefinitionBlock<TypeName>,
   prismaType: Record<string, core.NexusInputFieldConfig>,
   prismaSchema: GraphQLSchema,
-): InternalPrismaInputDefinitionBlock<TypeName> {
-  const prismaBlock = t as InternalPrismaInputDefinitionBlock<TypeName>
+): PrismaInputDefinitionBlock<TypeName> {
+  const prismaBlock = t as PrismaInputDefinitionBlock<TypeName>
 
   prismaBlock.prismaFields = (inputFields: any) => {
-    prismaBlock.__calledPrismaFields = true
     const fields = getFields(inputFields, typeName, prismaSchema)
 
     fields.forEach(field => {

@@ -97,22 +97,16 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
   prismaFields(inputFields: AddFieldInput<'objectTypes', TypeName>): void
 }
 
-interface InternalPrismaObjectDefinitionBlock<TypeName extends string>
-  extends PrismaObjectDefinitionBlock<TypeName> {
-  __calledPrismaFields: boolean
-}
-
 export function prismaObjectDefinitionBlock<TypeName extends string>(
   typeName: string,
   t: core.ObjectDefinitionBlock<TypeName>,
   prismaType: Record<string, core.NexusOutputFieldConfig<string, string>>,
   prismaSchema: GraphQLSchema,
-): InternalPrismaObjectDefinitionBlock<TypeName> {
-  const prismaBlock = t as InternalPrismaObjectDefinitionBlock<TypeName>
+): PrismaObjectDefinitionBlock<TypeName> {
+  const prismaBlock = t as PrismaObjectDefinitionBlock<TypeName>
 
   prismaBlock.prismaType = prismaType
   prismaBlock.prismaFields = (inputFields: any) => {
-    prismaBlock.__calledPrismaFields = true
     const graphqlType = prismaSchema.getType(typeName) as GraphQLObjectType
     const fields = getFields(inputFields, typeName, prismaSchema)
 
