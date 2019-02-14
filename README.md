@@ -157,7 +157,7 @@ const User = prismaObjectType({
 })
 ```
 
-**Exposes the only the `users` field, and alias it to `customers`**
+**Exposes only the `users` field, and alias it to `customers`**
 
 ```ts
 const Query = prismaObjectType({
