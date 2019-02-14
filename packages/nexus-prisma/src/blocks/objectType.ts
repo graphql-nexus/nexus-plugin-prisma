@@ -72,9 +72,13 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
   prismaFields(pickFields: PickInputField<'objectTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'objectTypes', TypeName>): void
   /**
-   * Omit/customize the fields of the underlying object type
-   * @param inputFields The fields you want to omit/customize
+   * Pick, filter or customize the fields of the underlying object type
+   * @param inputFields The fields you want to pick/filter/customize
    *
+   * @example Exposes all fields
+   *
+   * t.prismaField(['*'])
+   * 
    * @example Exposes only the `id` and `name` field
    *
    * t.prismaField(['id', 'name'])

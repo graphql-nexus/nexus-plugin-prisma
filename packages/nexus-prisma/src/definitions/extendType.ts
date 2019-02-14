@@ -13,7 +13,7 @@ export interface PrismaExtendTypeConfig<TypeName extends string>
 }
 
 /**
- * Extend an object type from the meta schema
+ * Extend a previously defined object type. Mainly meant to split the Query/Mutation types in several files if needed.
  */
 export function prismaExtendType<TypeName extends PrismaObjectTypeNames>(
   typeConfig: PrismaExtendTypeConfig<TypeName>,

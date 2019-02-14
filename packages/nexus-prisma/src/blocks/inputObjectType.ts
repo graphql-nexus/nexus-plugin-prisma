@@ -17,8 +17,12 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
   prismaFields(pickFields: PickInputField<'inputTypes', TypeName>): void
   prismaFields(filterFields: FilterInputField<'inputTypes', TypeName>): void
   /**
-   * Omit/customize the fields of the underlying input object type
-   * @param inputFields The fields you want to omit/customize
+   * Pick, filter or customize the fields of the underlying input object type
+   * @param inputFields The fields you want to pick/filter or customize
+   *
+   * @example Exposes all fields
+   *
+   * t.prismaField(['*'])
    *
    * @example Exposes only the `first` and `last` field
    *

@@ -9,17 +9,11 @@ import { PrismaObjectTypeNames } from '../types'
 
 export interface PrismaObjectTypeConfig<TypeName extends string>
   extends core.Omit<core.NexusObjectTypeConfig<TypeName>, 'definition'> {
-  /**
-   * **Exposes all fields of the underliying object type by default**.
-   * Omit/customize fields by explicitely calling t.prismaFields()
-   *
-   * @optional When not provided, all fields will also be exposed
-   */
   definition: (t: PrismaObjectDefinitionBlock<TypeName>) => void
 }
 
 /**
- * Exposes an object type from the meta schema
+ * Exposes an object type based on the datamodel
  */
 export function prismaObjectType<TypeName extends PrismaObjectTypeNames>(
   typeConfig: PrismaObjectTypeConfig<TypeName>,

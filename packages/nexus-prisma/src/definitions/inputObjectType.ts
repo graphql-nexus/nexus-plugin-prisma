@@ -14,7 +14,7 @@ export interface PrismaInputObjectTypeConfig<TypeName extends string>
 }
 
 /**
- * Exposes an input object type from the meta schema
+ * Exposes an input object type based on the datamodel
  */
 export function prismaInputObjectType<
   TypeName extends PrismaInputObjectTypeNames
