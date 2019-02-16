@@ -360,3 +360,26 @@ const Query = prismaObjectType({
   },
 })
 ```
+
+## Typings
+
+By default, `nexus` will infer the `root` types from your schema. In some cases, you might need the `root`s to be the actual types return by the `prisma-client` (eg: You want to use a hidden field from your Prisma datamodel to expose a computed one)
+
+In that case, you need to add the `prisma-client` types to the `typegenAutoConfig.sources` config:
+
+```
+import { join } from 'path'
+import { makePrismaSchema } from 'nexus-prisma'
+
+const schema = makePrismaSchema({
+  // ... other configs,
+  typegenAutoConfig: {
+    sources: [
+      source: path.join(__dirname, './relative/path/to/prisma/client'),
+      alias: 'prisma'
+    ]
+  }
+})
+```
+
+`nexus` will match the types name of your schema with the TS interfaces contained in the `prisma-client` file, and use these types instead of the inferred one from your schema. If needed, you can also input your own types.
