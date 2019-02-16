@@ -367,7 +367,7 @@ By default, `nexus` will infer the `root` types from your schema. In some cases,
 
 In that case, you need to add the `prisma-client` types to the `typegenAutoConfig.sources` config:
 
-```
+```ts
 import { join } from 'path'
 import { makePrismaSchema } from 'nexus-prisma'
 
