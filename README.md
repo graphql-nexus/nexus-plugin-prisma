@@ -201,7 +201,7 @@ It expects an object with the following properties:
 #### Required
 
 - `name` (string): The name of the Prisma model or generated CRUD GraphQL type you want to expose in your API, e.g. `Query`, `Mutation`, `User`, `Todo`, `UserWhereUniqueInput`, `TodoConnection`, ...
-- `definition(t)` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t`. To expose the entire type, call: `t.prismaFields(['*'])`. See the documentation of `prismaFields()` below for more info.
+- `definition(t) => {}` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t`. To expose the entire type, call: `t.prismaFields(['*'])`. See the documentation of `prismaFields()` below for more info.
 
 #### Optional
 
@@ -213,13 +213,14 @@ It expects an object with the following properties:
 
 ### `prismaExtendType()`
 
-`prismaExtendType` wraps the Nexus [`extendType`](https://nexus.js.org/docs/api-extendtype) function and adds two utility methods to the model `t`: `prismaFields()` and `prismaType()`.  Like `extendType` from Nexus, `prismaExtendType` is primarily useful in incrementally defining the fields of a type (i.e. defining the fields of a type from multiple locations within a project). Such type extension is commonly used to co-locate (within in a single file) type definitions for a specific domain with relevant additions to the root `Query` and `Mutation` types. `prismaExtendType` expects an object with the following properties:
+`prismaExtendType` wraps the Nexus [`extendType`](https://nexus.js.org/docs/api-extendtype) function and adds two utility methods to the model `t`: `prismaFields()` and `prismaType()`. Like `extendType`, `prismaExtendType` is primarily useful in incrementally defining the fields of a type (i.e. defining the fields of a type from multiple locations within a project). Such type extension is commonly used to co-locate (within in a single file) type definitions for a specific domain with relevant additions to the root `Query` and `Mutation` types. 
+
+It expects an object with the following properties:
 
 #### Required
 
-- `type` (string): The name of the Prisma model or generated CRUD GraphQL type you want to **augment** with additional fields.
-- `definition(t) => {}` (function): A function which provides the type definition `t`, as defined elsewhere in the schema, for augmentation. The argument `t` behaves in the same manner as the argument to the `definition` property passed to `prismaObjectType`.
-
+- `type` (string): The name of the Prisma model or generated CRUD GraphQL type you want to *augment* with additional fields.
+- `definition(t) => {}` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t` by adding new fields to the specified `type`. The type of the argument `t` matches its analog in `prismaObjectType`.
 
 ### `prismaFields()`
 
