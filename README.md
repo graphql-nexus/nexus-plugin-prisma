@@ -175,7 +175,7 @@ npm install --save nexus graphql prisma-client-lib
 
 ### Generate CRUD building blocks
 
-Teh CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
+The CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
 
 ```bash
 npx nexus-prisma-generate --client PRISMA_CLIENT_DIR --output ./src/generated/nexus-prisma
