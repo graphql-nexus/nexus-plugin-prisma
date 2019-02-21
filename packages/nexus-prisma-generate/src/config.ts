@@ -1,41 +1,66 @@
+import * as Ajv from 'ajv'
 import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
-import { DefaultParser, DatabaseType, ISDL } from 'prisma-datamodel'
+import { DatabaseType, DefaultParser, ISDL } from 'prisma-datamodel'
+import { PrismaDefinition } from 'prisma-json-schema'
+const schema = require('prisma-json-schema/dist/schema.json')
 
-export function findDatamodelAndComputeSchema(): {
+const ajv = new Ajv().addMetaSchema(
+  require('ajv/lib/refs/json-schema-draft-06.json'),
+)
+
+const validate = ajv.compile(schema)
+
+export function findDatamodelAndComputeSchema(
+  configPath: string,
+  config: PrismaDefinition,
+): {
   datamodel: ISDL
   databaseType: DatabaseType
 } {
+  const typeDefs = getTypesString(config.datamodel!, path.dirname(configPath))
+  const databaseType = getDatabaseType(config)
+  const ParserInstance = DefaultParser.create(databaseType)
+
+  return {
+    datamodel: ParserInstance.parseFromSchemaString(typeDefs),
+    databaseType,
+  }
+}
+
+export function readPrismaYml() {
   const configPath = findPrismaConfigFile()
 
   if (!configPath) {
     throw new Error('Could not find `prisma.yml` file')
   }
 
-  let definition: null | any = null
-
   try {
     const file = fs.readFileSync(configPath, 'utf-8')
-    definition = yaml.safeLoad(file)
+    const config = yaml.safeLoad(file) as PrismaDefinition
+
+    const valid = validate(config)
+
+    if (!valid) {
+      let errorMessage =
+        `Invalid prisma.yml file` + '\n' + ajv.errorsText(validate.errors)
+      throw new Error(errorMessage)
+    }
+
+    if (!config.datamodel) {
+      throw new Error('Invalid prisma.yml file: Missing `datamodel` property')
+    }
+
+    if (!config.generate) {
+      throw new Error(
+        'Invalid prisma.yml file: Missing `generate` property for a `prisma-client`',
+      )
+    }
+
+    return { config, configPath }
   } catch (e) {
     throw new Error(`Yaml parsing error in ${configPath}: ${e.message}`)
-  }
-
-  if (!definition.datamodel) {
-    throw new Error('Missing `datamodel` property in prisma.yml file')
-  }
-
-  const typeDefs = getTypesString(
-    definition.datamodel,
-    path.dirname(configPath),
-  )
-  const databaseType = getDatabaseType(definition)
-  const ParserInstance = DefaultParser.create(databaseType)
-
-  return {
-    datamodel: ParserInstance.parseFromSchemaString(typeDefs),
-    databaseType,
   }
 }
 
@@ -53,6 +78,38 @@ function findPrismaConfigFile(): string | null {
   }
 
   return null
+}
+
+export function getPrismaClientDir(
+  prismaClientDir: string | undefined,
+  prisma: { config: PrismaDefinition; configPath: string },
+  rootPath: string,
+) {
+  if (prismaClientDir) {
+    return prismaClientDir.startsWith('/')
+      ? prismaClientDir
+      : path.resolve(rootPath, prismaClientDir)
+  }
+
+  const clientGenerators = prisma.config.generate!.filter(gen =>
+    ['typescript-client', 'javascript-client'].includes(gen.generator),
+  )
+
+  if (clientGenerators.length === 0) {
+    throw new Error(
+      'No prisma-client generators were found in your prisma.yml file',
+    )
+  }
+  if (clientGenerators.length > 1) {
+    throw new Error(
+      'Several prisma-client generators are defined in your prisma.yml file. If all are needed, use the `--client` option to point to the right one.',
+    )
+  }
+
+  return path.resolve(
+    path.dirname(prisma.configPath),
+    clientGenerators[0].output,
+  )
 }
 
 function getTypesString(datamodel: string | string[], definitionDir: string) {
@@ -148,7 +205,7 @@ export function getImportPathRelativeToOutput(
   return relativePath
 }
 
-function getDatabaseType(definition: any): DatabaseType {
+function getDatabaseType(definition: PrismaDefinition): DatabaseType {
   if (!definition.databaseType) {
     return DatabaseType.postgres
   }

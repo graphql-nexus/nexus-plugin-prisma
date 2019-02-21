@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { mkdirSync, writeFileSync } from 'fs'
 import {
   GraphQLEnumType,
   GraphQLField,
@@ -8,11 +8,11 @@ import {
   GraphQLInputObjectType,
   GraphQLObjectType,
   GraphQLSchema,
+  introspectionFromSchema,
   isEnumType,
   isInputObjectType,
   isObjectType,
   isScalarType,
-  introspectionFromSchema,
 } from 'graphql'
 import * as meow from 'meow'
 import { EOL } from 'os'
@@ -23,6 +23,8 @@ import {
   findDatamodelAndComputeSchema,
   findRootDirectory,
   getImportPathRelativeToOutput,
+  getPrismaClientDir,
+  readPrismaYml,
 } from './config'
 import { getFinalType, getTypeName, isList, isRequired } from './graphql'
 
@@ -36,8 +38,8 @@ const cli = meow(
     
     Inputs should be relative to the root of your project
 
-    --client (required): Path to your prisma-client directory (eg: ./generated/prisma-client/)
     --output (required): Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
+    --client (optional): Path to your prisma-client directory (eg: ./generated/prisma-client/)
     --js     (optional): Whether to generate the types for Javascript
 `,
   {
@@ -61,30 +63,21 @@ main(cli)
 function main(cli: meow.Result) {
   const { client: prismaClientDir, output, js: jsMode } = cli.flags
 
-  if (!prismaClientDir) {
-    console.log('ERROR: Missing argument --client')
-    process.exit(1)
-  }
-
   if (!output) {
     console.log('ERROR: Missing argument --output')
     process.exit(1)
   }
 
+  const prisma = readPrismaYml()
   const rootPath = findRootDirectory()
   const resolvedOutput = output.startsWith('/')
     ? output
     : join(rootPath, output)
-  const resolvedPrismaClientDir = prismaClientDir.startsWith('/')
-    ? prismaClientDir
-    : join(rootPath, prismaClientDir)
-
-  if (!existsSync(resolvedPrismaClientDir)) {
-    console.log(
-      `ERROR: Cannot find --client path at ${resolvedPrismaClientDir}`,
-    )
-    process.exit(1)
-  }
+  const resolvedPrismaClientDir = getPrismaClientDir(
+    prismaClientDir,
+    prisma,
+    rootPath,
+  )
 
   try {
     // Create the output directories if needed (mkdir -p)
@@ -93,7 +86,10 @@ function main(cli: meow.Result) {
     if (e.code !== 'EEXIST') throw e
   }
 
-  const { datamodel, databaseType } = findDatamodelAndComputeSchema()
+  const { datamodel, databaseType } = findDatamodelAndComputeSchema(
+    prisma.configPath,
+    prisma.config,
+  )
 
   try {
     const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
