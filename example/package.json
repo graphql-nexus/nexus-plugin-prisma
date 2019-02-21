@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "@types/graphql": "14.0.7",
-    "@types/node": "10.12.20",
+    "@types/node": "10.12.26",
     "nexus-prisma-generate": "^0.2.1",
     "ts-node": "^8.0.2",
     "ts-node-dev": "1.0.0-pre.32",
-    "typescript": "3.3.1"
+    "typescript": "3.3.3"
   },
   "prettier": {
     "singleQuote": true,

@@ -86,8 +86,12 @@ function main(cli: meow.Result) {
     process.exit(1)
   }
 
-  // Create the output directories if needed (mkdir -p)
-  mkdirSync(resolvedOutput, { recursive: true })
+  try {
+    // Create the output directories if needed (mkdir -p)
+    mkdirSync(resolvedOutput, { recursive: true })
+  } catch (e) {
+    if (e.code !== 'EEXIST') throw e
+  }
 
   const { datamodel, databaseType } = findDatamodelAndComputeSchema()
 

@@ -175,7 +175,7 @@ npm install --save nexus graphql prisma-client-lib
 
 ### Generate CRUD building blocks
 
-Teh CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
+The CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
 
 ```bash
 npx nexus-prisma-generate --client PRISMA_CLIENT_DIR --output ./src/generated/nexus-prisma
@@ -194,12 +194,14 @@ hooks:
 
 ### `prismaObjectType()`
 
-`prismaObjectType` is a wrapper around Nexus' `objectType`. It expects an object with the following properties:
+`prismaObjectType` is a wrapper around Nexus' `objectType`. It provides two additional methods to the model: `prismaType()` and `prismaFields()`. These two methods simplify the coupling between a Prisma schema and a Nexus schema and provide a straightforward mechanism to customize the Prisma models, fields, and input-arguments which are included in the Nexus schema.
+
+It expects an object with the following properties:
 
 #### Required
 
 - `name` (string): The name of the Prisma model or generated CRUD GraphQL type you want to expose in your API, e.g. `Query`, `Mutation`, `User`, `Todo`, `UserWhereUniqueInput`, `TodoConnection`, ...
-- `definition(t)` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t`. To expose the entire type, call: `t.prismaFields(['*'])`. See the documentation of `prismaFields()` below for more info.
+- `definition(t) => {}` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t`. To expose the entire type, call: `t.prismaFields(['*'])`. See the documentation of `prismaFields()` below for more info.
 
 #### Optional
 
@@ -208,6 +210,17 @@ hooks:
   - `output` (boolean): Specifies whether return values of fields should be required. Default: `true`.
 - `description`: A string that shows up in the generated SDL schema definition to describe the type. It is also picked up by tools like the GraphQL Playground or graphiql.
 - `defaultResolver`
+
+### `prismaExtendType()`
+
+`prismaExtendType` wraps the Nexus [`extendType`](https://nexus.js.org/docs/api-extendtype) function and adds two utility methods to the model `t`: `prismaFields()` and `prismaType()`. Like `extendType`, `prismaExtendType` is primarily useful in incrementally defining the fields of a type (i.e. defining the fields of a type from multiple locations within a project). Such type extension is commonly used to co-locate (within in a single file) type definitions for a specific domain with relevant additions to the root `Query` and `Mutation` types. 
+
+It expects an object with the following properties:
+
+#### Required
+
+- `type` (string): The name of the Prisma model or generated CRUD GraphQL type you want to *augment* with additional fields.
+- `definition(t) => {}` (function): A function to customize the Prisma model or generated CRUD GraphQL type `t` by adding new fields to the specified `type`. The type of the argument `t` matches its analog in `prismaObjectType`.
 
 ### `prismaFields()`
 
@@ -310,7 +323,7 @@ const Query = prismaObjectType({
 
 ### `t.prismaType()`
 
-Contains all the options to use native `nexus` methods with `nexus-prisma` generated schema.
+Contains all the options to use native `nexus` default methods with `nexus-prisma` generated schema.
 
 #### Examples
 
@@ -360,3 +373,28 @@ const Query = prismaObjectType({
   },
 })
 ```
+
+## Typings
+
+By default, `nexus` will infer the `root` types from your schema. In some cases, you might need the `root`s to be the actual types return by the `prisma-client` (eg: You want to use a hidden field from your Prisma datamodel to expose a computed one)
+
+In that case, you need to add the `prisma-client` types to the `typegenAutoConfig.sources` config:
+
+```ts
+import { join } from 'path'
+import { makePrismaSchema } from 'nexus-prisma'
+
+const schema = makePrismaSchema({
+  // ... other configs,
+  typegenAutoConfig: {
+    sources: [
+      {
+        source: path.join(__dirname, './relative/path/to/prisma/client'),
+        alias: 'prisma',
+      },
+    ],
+  },
+})
+```
+
+`nexus` will match the types name of your schema with the TS interfaces contained in the `prisma-client` file, and use these types instead of the inferred one from your schema. If needed, you can also input your own types.
