@@ -24,6 +24,7 @@ function validateOptions(options: PrismaSchemaConfig): void {
 
   if (
     !options.prisma.datamodelInfo.uniqueFieldsByModel ||
+    !options.prisma.datamodelInfo.clientPath ||
     !options.prisma.datamodelInfo.schema
   ) {
     throw new Error(

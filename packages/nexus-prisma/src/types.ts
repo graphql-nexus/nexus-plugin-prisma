@@ -120,6 +120,7 @@ export interface PrismaSchemaConfig extends core.BuilderConfig {
      */
     datamodelInfo: {
       uniqueFieldsByModel: Record<string, string[]>
+      clientPath: string
       schema: { __schema: any }
     }
     /**
