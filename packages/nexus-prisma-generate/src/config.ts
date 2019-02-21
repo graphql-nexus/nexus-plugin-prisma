@@ -106,9 +106,9 @@ export function getPrismaClientDir(
     )
   }
 
-  return path.resolve(
-    path.dirname(prisma.configPath),
-    clientGenerators[0].output,
+  return path.relative(
+    rootPath,
+    path.resolve(path.dirname(prisma.configPath), clientGenerators[0].output),
   )
 }
 

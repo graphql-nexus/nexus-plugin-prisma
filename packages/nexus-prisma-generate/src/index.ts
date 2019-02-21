@@ -93,7 +93,11 @@ function main(cli: meow.Result) {
 
   try {
     const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
-    const renderedDatamodel = renderDatamodel(datamodel, schema)
+    const renderedDatamodel = renderDatamodel(
+      datamodel,
+      schema,
+      resolvedPrismaClientDir,
+    )
     const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
     const nexusPrismaTypes = renderNexusPrismaTypes(
       schema,
@@ -133,7 +137,11 @@ module.exports = datamodelInfo
   `
 }
 
-function renderDatamodel(datamodel: ISDL, schema: GraphQLSchema) {
+function renderDatamodel(
+  datamodel: ISDL,
+  schema: GraphQLSchema,
+  prismaClientDir: string,
+) {
   return `\
 {
   uniqueFieldsByModel: {
@@ -147,6 +155,7 @@ ${datamodel.types
   )
   .join(',' + EOL)}
   },
+  clientPath: '${prismaClientDir}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
   `
