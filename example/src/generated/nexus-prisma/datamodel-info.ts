@@ -3,7 +3,7 @@ export default {
     User: ['id', 'email'],
     Post: ['id']
   },
-  clientDir: 'src/generated/prisma-client',
+  clientPath: 'src/generated/prisma-client',
   schema: {
   "__schema": {
     "queryType": {
