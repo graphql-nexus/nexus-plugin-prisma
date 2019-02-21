@@ -29,7 +29,7 @@
     "js-yaml": "3.12.1",
     "meow": "^5.0.0",
     "prisma-datamodel": "1.28.0-alpha.13",
-    "prisma-generate-schema": "1.28.0-alpha.8"
+    "prisma-generate-schema": "1.28.0-alpha.13"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.5",
