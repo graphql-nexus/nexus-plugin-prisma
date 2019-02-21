@@ -375,10 +375,12 @@ const schema = makePrismaSchema({
   // ... other configs,
   typegenAutoConfig: {
     sources: [
-      source: path.join(__dirname, './relative/path/to/prisma/client'),
-      alias: 'prisma'
-    ]
-  }
+      {
+        source: path.join(__dirname, './relative/path/to/prisma/client'),
+        alias: 'prisma',
+      },
+    ],
+  },
 })
 ```
 
