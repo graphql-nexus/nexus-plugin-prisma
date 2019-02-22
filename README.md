@@ -178,7 +178,7 @@ npm install --save nexus graphql prisma-client-lib
 The CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
 
 ```bash
-npx nexus-prisma-generate --client PRISMA_CLIENT_DIR --output ./src/generated/nexus-prisma
+npx nexus-prisma-generate --output ./src/generated/nexus-prisma
 ```
 
 It is recommended to add this command as a `post-deploy` hook to your `prisma.yml`, e.g.:
@@ -187,7 +187,7 @@ It is recommended to add this command as a `post-deploy` hook to your `prisma.ym
 hooks:
   post-deploy:
     - prisma generate
-    - npx nexus-prisma-generate --client prisma-client-dir --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
+    - npx nexus-prisma-generate --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
 ```
 
 ## Reference 
