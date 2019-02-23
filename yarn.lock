@@ -6143,10 +6143,40 @@ prisma-client-lib@1.27.0:
     ws "^6.1.0"
     zen-observable "^0.8.10"
 
+prisma-client-lib@1.27.1:
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/prisma-client-lib/-/prisma-client-lib-1.27.1.tgz#442429b4f54fbbd752a20f149214f3eb72bc1df3"
+  integrity sha512-+YSDyjsvUQ+Gnr4Hco59QOLMJqMgavubFUzAH27VHQHkzEKh4EVpfRhELqYK4CSTOWCCb6p7Vs9Rk7LhmGod4Q==
+  dependencies:
+    "@types/node" "^10.12.0"
+    "@types/prettier" "^1.13.2"
+    debug "^4.1.0"
+    flow-bin "^0.87.0"
+    graphql-tag "^2.10.0"
+    http-link-dataloader "^0.1.6"
+    jsonwebtoken "^8.3.0"
+    lodash.flatten "^4.4.0"
+    prettier "1.14.3"
+    prisma-datamodel "1.27.1"
+    prisma-generate-schema "1.27.1"
+    subscriptions-transport-ws "^0.9.15"
+    uppercamelcase "^3.0.0"
+    ws "^6.1.0"
+    zen-observable "^0.8.10"
+
 prisma-datamodel@1.27.0:
   version "1.27.0"
   resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.27.0.tgz#5ab17c1104db8f8c06791cf8fa06909c4a4bd5dc"
   integrity sha512-M8FL8agbymCMpjza7c1dxgpWkyjhB+w0OeDTwBdA7OTUx62Jn02ySdJ5wNac0E6qpDMDphgAGovoD8+cYJVZIg==
+  dependencies:
+    graphql "^14.0.2"
+    pluralize "^7.0.0"
+    popsicle "10"
+
+prisma-datamodel@1.27.1:
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.27.1.tgz#e95482d9c309bf751e4bf0f41f1c07f1458d0ae9"
+  integrity sha512-OQKwYc/s4nNZ3VXZXSyQBEKGVQnKCcjIySjfyaQ1d0z9vwHqR1e2BhdfnK65b0PbndK2IQIAuiSF/gj+waYgbw==
   dependencies:
     graphql "^14.0.2"
     pluralize "^7.0.0"
@@ -6189,6 +6219,16 @@ prisma-generate-schema@1.27.0:
     pluralize "^7.0.0"
     popsicle "10"
     prisma-datamodel "1.27.0"
+
+prisma-generate-schema@1.27.1:
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/prisma-generate-schema/-/prisma-generate-schema-1.27.1.tgz#d8af8e907c84806290793a819bf2901e3c3da3d0"
+  integrity sha512-/HescvrD+KoBURvDWo3RQSpT1ocEZV4uJxCGdXwsmYmdxu8U9yyAQsvmBwUvN6/HnbSkqjFa8ZGoXjEZ5TpgIg==
+  dependencies:
+    graphql "^14.0.2"
+    pluralize "^7.0.0"
+    popsicle "10"
+    prisma-datamodel "1.27.1"
 
 prisma-generate-schema@1.28.0-alpha.13:
   version "1.28.0-alpha.13"

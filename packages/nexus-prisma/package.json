@@ -36,7 +36,7 @@
     "nexus": "0.9.17",
     "prettier": "1.16.4",
     "prisma": "1.27.0",
-    "prisma-client-lib": "1.27.0",
+    "prisma-client-lib": "1.27.1",
     "ts-jest": "24.0.0",
     "typescript": "3.3.3"
   },
