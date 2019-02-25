@@ -20,7 +20,8 @@
   "scripts": {
     "prepublish": "rm -rf example/node_modules && npm test && npm run build",
     "build": "tsc --declaration",
-    "watch": "tsc -d -w"
+    "watch": "tsc -d -w",
+    "test": "jest"
   },
   "dependencies": {},
   "peerDependencies": {

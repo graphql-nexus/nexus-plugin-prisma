@@ -2,16 +2,18 @@
   "private": true,
   "scripts": {
     "dev": "lerna run start",
-    "bootstrap": "yarn install && lerna bootstrap && yarn graphql-once",
+    "bootstrap": "yarn install && lerna bootstrap",
     "graphql-once": "rm -rf ./node_modules/graphql ./packages/nexus-prisma/node_modules/graphql && mv ./example/node_modules/graphql ./node_modules/graphql",
     "clean": "lerna clean -y && yarn clean:packages && yarn clean:root",
     "clean:packages": "lerna exec -- rm -rf node_modules yarn.lock package-lock.json dist",
     "clean:root": "rm -rf node_modules yarn.lock package-lock.json",
     "reset": "yarn clean && yarn bootstrap",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "example"
   ],
   "prettier": {
     "semi": false,
