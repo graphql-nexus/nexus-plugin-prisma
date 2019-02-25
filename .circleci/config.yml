@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/yoga2
+    docker:
+      # Node 10 LTS
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run:
+          name: install-package-dependencies
+          command: yarn bootstrap
+      - run:
+          name: run-build
+          command: yarn build
+      - run:
+          name: run-tests
+          command: yarn test
