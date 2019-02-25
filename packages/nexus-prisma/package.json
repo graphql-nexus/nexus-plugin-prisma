@@ -26,7 +26,7 @@
   "dependencies": {},
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
-    "nexus": "^0.9.17"
+    "nexus": "^0.9.17 || ^0.10.0"
   },
   "devDependencies": {
     "@types/graphql": "14.0.7",
@@ -34,7 +34,7 @@
     "@types/lodash": "4.14.121",
     "graphql-tag": "2.10.1",
     "jest": "24.1.0",
-    "nexus": "0.9.17",
+    "nexus": "0.10.0",
     "prettier": "1.16.4",
     "prisma": "1.27.1",
     "prisma-client-lib": "1.27.1",
