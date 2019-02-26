@@ -27,7 +27,7 @@
   "dependencies": {
     "ajv": "6.9.2",
     "graphql": "14.1.1",
-    "js-yaml": "3.12.1",
+    "js-yaml": "3.12.2",
     "meow": "5.0.0",
     "prisma-datamodel": "1.28.0-beta",
     "prisma-generate-schema": "1.28.0-alpha.13",
