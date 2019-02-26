@@ -49,13 +49,13 @@ type Todo {
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
-import { idArg } from 'nexus-prisma'
+import { idArg } from 'nexus'
 
 // Expose the full "Query" building block
 const Query = prismaObjectType({ 
   name: 'Query',
    // Expose all generated `Todo`-queries
-  definition(t) => t.prismaFields(['*'])
+  definition: t => t.prismaFields(['*'])
 })
 
 // Customize the "Mutation" building block
