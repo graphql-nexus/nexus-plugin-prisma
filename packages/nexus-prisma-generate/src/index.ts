@@ -27,12 +27,13 @@ import {
   readPrismaYml,
 } from './config'
 import { getFinalType, getTypeName, isList, isRequired } from './graphql'
+import { NEXUS_PRISMA_HEADER } from './header'
 
 const cli = meow(
   `
     nexus-prisma-generate prisma-client-dir output
 
-    > Generate the TypeScript types for nexus-prisma
+    > Generate the building blocks for nexus-prisma
 
     -----
     
@@ -97,6 +98,7 @@ function main(cli: meow.Result) {
       datamodel,
       schema,
       resolvedPrismaClientDir,
+      jsMode ? 'module.exports =' : 'export default',
     )
     const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
     const nexusPrismaTypes = renderNexusPrismaTypes(
@@ -113,20 +115,28 @@ function main(cli: meow.Result) {
       const datamodelPath = join(rootPath, output, 'datamodel-info.js')
       const indexPath = join(rootPath, output, 'index.js')
 
-      writeFileSync(datamodelPath, `module.exports = ${renderedDatamodel}`)
-      writeFileSync(indexPath, renderIndexJs())
+      writeFileSync(datamodelPath, renderedDatamodel)
+      writeFileSync(indexPath, withHeader(renderIndexJs()))
     } else {
       const datamodelPath = join(rootPath, output, 'datamodel-info.ts')
       const indexPath = join(rootPath, output, 'index.ts')
 
-      writeFileSync(datamodelPath, `export default ${renderedDatamodel}`)
-      writeFileSync(indexPath, `export { default } from './datamodel-info'`)
+      writeFileSync(datamodelPath, renderedDatamodel)
+      writeFileSync(indexPath, withHeader(renderIndexTs()))
     }
 
     console.log(`Types generated at ${output}`)
   } catch (e) {
     console.error(e)
   }
+}
+
+function withHeader(content: string) {
+  return `\
+${NEXUS_PRISMA_HEADER}
+
+${content}
+  `
 }
 
 function renderIndexJs() {
@@ -137,13 +147,20 @@ module.exports = datamodelInfo
   `
 }
 
+function renderIndexTs() {
+  return `\
+export { default } from './datamodel-info'
+  `
+}
+
 function renderDatamodel(
   datamodel: ISDL,
   schema: GraphQLSchema,
   prismaClientDir: string,
+  exportString: string,
 ) {
-  return `\
-{
+  return withHeader(`\
+${exportString} {
   uniqueFieldsByModel: {
 ${datamodel.types
   .map(
@@ -158,7 +175,7 @@ ${datamodel.types
   clientPath: '${prismaClientDir}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
-  `
+  `)
 }
 
 function renderNexusPrismaTypes(
@@ -175,7 +192,7 @@ function renderNexusPrismaTypes(
   ) as GraphQLEnumType[]
 
   return `\
-// GENERATED TYPES FOR NEXUS-PRISMA. /!\\ DO NOT EDIT MANUALLY
+${NEXUS_PRISMA_HEADER}
 
 import { core } from 'nexus'
 import { GraphQLResolveInfo } from 'graphql'
