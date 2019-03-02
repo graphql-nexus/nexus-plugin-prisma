@@ -6,6 +6,7 @@ import {
   PrismaGenTypesShape,
   PrismaShapeKeys,
 } from './typesHelpers'
+import { GraphQLSchema } from 'graphql'
 
 export type PrismaObjectTypeNames = Extract<
   keyof GetGen2<'objectTypes', 'fields'>,
@@ -100,6 +101,18 @@ export type PrismaClientInput =
   | PrismaClient
   | ((ctx: core.GetGen<'context'>) => PrismaClient)
 
+export interface DatamodelInfo {
+  uniqueFieldsByModel: Record<string, string[]>
+  embeddedTypes: string[]
+  clientPath: string
+  schema: { __schema: any }
+}
+
+export interface InternalDatamodelInfo
+  extends core.Omit<DatamodelInfo, 'schema'> {
+  schema: GraphQLSchema
+}
+
 export interface PrismaSchemaConfig extends core.BuilderConfig {
   types?: any
   prisma: {
@@ -118,11 +131,7 @@ export interface PrismaSchemaConfig extends core.BuilderConfig {
      * })
      * ```
      */
-    datamodelInfo: {
-      uniqueFieldsByModel: Record<string, string[]>
-      clientPath: string
-      schema: { __schema: any }
-    }
+    datamodelInfo: DatamodelInfo
     /**
      * The instance of the prisma-client, either passed statically
      * or returned from the context defined in your GraphQL server

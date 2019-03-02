@@ -172,6 +172,10 @@ ${datamodel.types
   )
   .join(',' + EOL)}
   },
+  embeddedTypes: [${datamodel.types
+    .filter(t => t.isEmbedded)
+    .map(t => `'${t.name}'`)
+    .join(', ')}],
   clientPath: '${prismaClientDir}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
@@ -184,7 +188,7 @@ function renderNexusPrismaTypes(
 ) {
   const types = Object.values(schema.getTypeMap())
   const objectTypes = types.filter(
-    t => isObjectType(t) && !t.name.startsWith('__'),
+    t => isObjectType(t) && !t.name.startsWith('__') && t.name !== 'Node',
   ) as GraphQLObjectType[]
   const inputTypes = types.filter(isInputObjectType)
   const enumTypes = types.filter(
@@ -244,15 +248,16 @@ ${enumTypes.map(renderEnumType).join(EOL)}
 
 function renderObjectType(type: GraphQLObjectType) {
   const fields = Object.values(type.getFields())
+  const fieldsWithoutQueryNode = removeQueryNodeField(type, fields)
 
   return `\
 // Types for ${type.name}
 
-${renderFields(type, fields)}
+${renderFields(type, fieldsWithoutQueryNode)}
 
-${renderFieldsArgs(type, fields)}
+${renderFieldsArgs(type, fieldsWithoutQueryNode)}
 
-${renderTypeFieldDetails(type, fields)}
+${renderTypeFieldDetails(type, fieldsWithoutQueryNode)}
 `
 }
 
@@ -420,6 +425,17 @@ function getExposableFieldsTypeName(type: GraphQLObjectType) {
 
 function upperFirst(s: string) {
   return s.replace(/^\w/, c => c.toUpperCase())
+}
+
+function removeQueryNodeField(
+  type: GraphQLObjectType,
+  fields: GraphQLField<any, any>[],
+) {
+  if (type.name === 'Query') {
+    fields = fields.filter(field => field.name !== 'node')
+  }
+
+  return fields
 }
 
 function getTypeFieldArgName(

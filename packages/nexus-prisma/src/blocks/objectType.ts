@@ -10,6 +10,7 @@ import {
   ObjectTypeDetails,
   PickInputField,
   PrismaSchemaConfig,
+  InternalDatamodelInfo,
 } from '../types'
 import { getFields, whitelistArgs } from '../utils'
 
@@ -78,7 +79,7 @@ export interface PrismaObjectDefinitionBlock<TypeName extends string>
    * @example Exposes all fields
    *
    * t.prismaField(['*'])
-   * 
+   *
    * @example Exposes only the `id` and `name` field
    *
    * t.prismaField(['id', 'name'])
@@ -137,15 +138,12 @@ export function prismaObjectDefinitionBlock<TypeName extends string>(
 }
 
 export function prismaTypeObject(
-  prismaSchema: {
-    uniqueFieldsByModel: Record<string, string[]>
-    schema: GraphQLSchema
-  },
+  datamodelInfo: InternalDatamodelInfo,
   objectConfig: PrismaObjectTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
 ) {
   const typeName = objectConfig.name
-  const graphqlType = prismaSchema.schema.getType(typeName)
+  const graphqlType = datamodelInfo.schema.getType(typeName)
 
   if (!isObjectType(graphqlType)) {
     throw new Error(
@@ -159,6 +157,6 @@ Are you trying to create a new type? Use \`objectType\` instead of \`prismaObjec
   return objectTypeFieldsToNexus(
     graphqlType,
     builderConfig.prisma.client,
-    prismaSchema.uniqueFieldsByModel,
+    datamodelInfo,
   )
 }

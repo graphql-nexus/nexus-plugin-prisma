@@ -3,19 +3,19 @@ import { core } from 'nexus'
 import { PrismaSchemaBuilder } from '../builder'
 import { getTypeName } from '../graphql'
 import { generateDefaultResolver } from '../resolver'
-import { PrismaClientInput } from '../types'
+import { PrismaClientInput, InternalDatamodelInfo } from '../types'
 import { graphqlArgsToNexusArgs, graphqlTypeToCommonNexus } from './common'
 
 export function objectTypeToNexus(
   builder: PrismaSchemaBuilder,
   type: GraphQLObjectType<any, any>,
   prismaClient: PrismaClientInput,
-  uniqueFieldsByModel: Record<string, string[]>,
+  datamodelInfo: InternalDatamodelInfo,
 ) {
   const nexusFieldsConfig = objectTypeFieldsToNexus(
     type,
     prismaClient,
-    uniqueFieldsByModel,
+    datamodelInfo,
   )
 
   return builder.buildObjectType({
@@ -35,7 +35,7 @@ function objectTypeFieldToNexus(
   typeName: string,
   field: GraphQLField<any, any>,
   prismaClient: PrismaClientInput,
-  uniqueFieldsByModel: Record<string, string[]>,
+  datamodelInfo: InternalDatamodelInfo,
 ): core.NexusOutputFieldConfig<any, any> {
   return {
     ...graphqlTypeToCommonNexus(field),
@@ -44,7 +44,7 @@ function objectTypeFieldToNexus(
       typeName,
       field,
       prismaClient,
-      uniqueFieldsByModel,
+      datamodelInfo,
     ),
     args: graphqlArgsToNexusArgs(field.args),
   }
@@ -53,18 +53,26 @@ function objectTypeFieldToNexus(
 export function objectTypeFieldsToNexus(
   type: GraphQLObjectType,
   prismaClient: PrismaClientInput,
-  uniqueFieldsByModel: Record<string, string[]>,
+  datamodelInfo: InternalDatamodelInfo,
 ) {
-  return Object.values(type.getFields()).reduce<
-    Record<string, core.FieldOutConfig<string, string>>
-  >((acc, field) => {
-    acc[field.name] = objectTypeFieldToNexus(
-      getTypeName(type),
-      field,
-      prismaClient,
-      uniqueFieldsByModel,
-    )
+  let fields = Object.values(type.getFields())
 
-    return acc
-  }, {})
+  // TODO: Remove that once `node` is removed from the Prisma API
+  if (type.name === 'Query') {
+    fields = fields.filter(f => f.name !== 'node')
+  }
+
+  return fields.reduce<Record<string, core.FieldOutConfig<string, string>>>(
+    (acc, field) => {
+      acc[field.name] = objectTypeFieldToNexus(
+        getTypeName(type),
+        field,
+        prismaClient,
+        datamodelInfo,
+      )
+
+      return acc
+    },
+    {},
+  )
 }

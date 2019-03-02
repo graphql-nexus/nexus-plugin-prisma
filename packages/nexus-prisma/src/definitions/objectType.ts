@@ -32,13 +32,13 @@ function nexusObjectType<TypeName extends string>(
   builder: PrismaSchemaBuilder,
 ): core.NexusObjectTypeDef<TypeName> {
   let { definition, ...rest } = typeConfig
-  const nexusPrismaSchema = builder.getNexusPrismaSchema()
+  const datamodelInfo = builder.getDatamodelInfo()
   const prismaType = prismaTypeObject(
-    nexusPrismaSchema,
+    datamodelInfo,
     typeConfig,
     builder.getConfig(),
   )
-  const prismaSchema = nexusPrismaSchema.schema
+  const prismaSchema = datamodelInfo.schema
 
   return objectType({
     ...rest,

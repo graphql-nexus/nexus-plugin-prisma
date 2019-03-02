@@ -10,6 +10,7 @@ import {
   ObjectTypeDetails,
   PickInputField,
   PrismaSchemaConfig,
+  InternalDatamodelInfo,
 } from '../types'
 import { getFields, whitelistArgs } from '../utils'
 
@@ -133,15 +134,12 @@ export function prismaExtendTypeBlock<TypeName extends string>(
 }
 
 export function prismaTypeExtend(
-  prismaSchema: {
-    uniqueFieldsByModel: Record<string, string[]>
-    schema: GraphQLSchema
-  },
+  datamodelInfo: InternalDatamodelInfo,
   objectConfig: PrismaExtendTypeConfig<any>,
   builderConfig: PrismaSchemaConfig,
 ) {
   const typeName = objectConfig.type
-  const graphqlType = prismaSchema.schema.getType(typeName)
+  const graphqlType = datamodelInfo.schema.getType(typeName)
 
   if (!isObjectType(graphqlType)) {
     throw new Error(
@@ -152,6 +150,6 @@ export function prismaTypeExtend(
   return objectTypeFieldsToNexus(
     graphqlType,
     builderConfig.prisma.client,
-    prismaSchema.uniqueFieldsByModel,
+    datamodelInfo,
   )
 }

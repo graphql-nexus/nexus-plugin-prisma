@@ -60,7 +60,12 @@ function extractFields<TypeName extends string>(
   typeName: string,
   schema: GraphQLSchema,
 ): AnonymousField[] {
-  const prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
+  let prismaFieldsNames = getAllFields(typeName, schema).map(f => f.name)
+
+  // TODO: Remove that once `node` is removed from the Prisma API
+  if (typeName === 'Query') {
+    prismaFieldsNames = prismaFieldsNames.filter(field => field !== 'node')
+  }
 
   if (Array.isArray(fields)) {
     return allOrInputFields(fields as AnonymousField[], prismaFieldsNames)

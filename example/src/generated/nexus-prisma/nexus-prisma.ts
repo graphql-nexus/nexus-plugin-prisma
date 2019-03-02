@@ -99,7 +99,6 @@ type QueryObject =
   | { name: 'post', args?: QueryPostArgs[] | false, alias?: string  } 
   | { name: 'posts', args?: QueryPostsArgs[] | false, alias?: string  } 
   | { name: 'postsConnection', args?: QueryPostsConnectionArgs[] | false, alias?: string  } 
-  | { name: 'node', args?: QueryNodeArgs[] | false, alias?: string  } 
 
 type QueryFields =
   | 'user'
@@ -108,7 +107,6 @@ type QueryFields =
   | 'post'
   | 'posts'
   | 'postsConnection'
-  | 'node'
 
 
 type QueryUserArgs =
@@ -147,8 +145,6 @@ type QueryPostsConnectionArgs =
   | 'before'
   | 'first'
   | 'last'
-type QueryNodeArgs =
-  | 'id'
   
 
 export interface QueryFieldDetails {
@@ -229,19 +225,6 @@ export interface QueryFieldDetails {
       context: core.GetGen<"context">,
       info?: GraphQLResolveInfo
     ) => Promise<prisma.PostConnection> | prisma.PostConnection
-  }
-  node: {
-    type: 'Node'
-    args: Record<QueryNodeArgs, core.NexusArgDef<string>>
-    description: string
-    list: undefined
-    nullable: true
-    resolve: (
-      root: core.RootValue<"Query">,
-      args: { id: string }  ,
-      context: core.GetGen<"context">,
-      info?: GraphQLResolveInfo
-    ) => Promise<prisma.Node | null> | prisma.Node | null
   }
 }
   

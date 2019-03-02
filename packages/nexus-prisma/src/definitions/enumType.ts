@@ -25,7 +25,7 @@ function nexusEnumType<TypeName extends string>(
   builder: PrismaSchemaBuilder,
 ): core.NexusEnumTypeDef<TypeName> {
   const typeName = typeConfig.name
-  const prismaSchema = builder.getNexusPrismaSchema().schema
+  const prismaSchema = builder.getDatamodelInfo().schema
   const graphqlType = prismaSchema.getType(typeName)
   const members = getEnumTypeMembers(typeName, typeConfig.members, graphqlType)
   const description = typeConfig.description
