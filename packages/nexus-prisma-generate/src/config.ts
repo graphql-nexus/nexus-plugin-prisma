@@ -106,10 +106,7 @@ export function getPrismaClientDir(
     )
   }
 
-  return path.relative(
-    rootPath,
-    path.resolve(path.dirname(prisma.configPath), clientGenerators[0].output),
-  )
+  return path.join(path.dirname(prisma.configPath), clientGenerators[0].output)
 }
 
 function getTypesString(datamodel: string | string[], definitionDir: string) {

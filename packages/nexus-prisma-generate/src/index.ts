@@ -16,7 +16,7 @@ import {
 } from 'graphql'
 import * as meow from 'meow'
 import { EOL } from 'os'
-import { join } from 'path'
+import { join, relative } from 'path'
 import { ISDL } from 'prisma-datamodel'
 import { generateCRUDSchemaFromInternalISDL } from 'prisma-generate-schema'
 import {
@@ -94,10 +94,10 @@ function main(cli: meow.Result) {
 
   try {
     const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
-    const renderedDatamodel = renderDatamodel(
+    const renderedDatamodel = renderDatamodelInfo(
       datamodel,
       schema,
-      resolvedPrismaClientDir,
+      relative(rootPath, resolvedPrismaClientDir),
       jsMode ? 'module.exports =' : 'export default',
     )
     const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
@@ -153,10 +153,10 @@ export { default } from './datamodel-info'
   `
 }
 
-function renderDatamodel(
+function renderDatamodelInfo(
   datamodel: ISDL,
   schema: GraphQLSchema,
-  prismaClientDir: string,
+  prismaClientDirRelativeToRoot: string,
   exportString: string,
 ) {
   return withHeader(`\
@@ -176,7 +176,7 @@ ${datamodel.types
     .filter(t => t.isEmbedded)
     .map(t => `'${t.name}'`)
     .join(', ')}],
-  clientPath: '${prismaClientDir}',
+  clientPath: '${prismaClientDirRelativeToRoot}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
   `)
