@@ -1,6 +1,6 @@
 import { GraphQLEnumType } from 'graphql'
 import { prismaEnumType } from '../src'
-import { mockSchema } from './prisma/mockSchema'
+import { mockSchema } from './prisma/mockedArtifacts'
 
 describe('prismaEnumType', () => {
   it('exposes only id_ASC and id_DESC', () => {

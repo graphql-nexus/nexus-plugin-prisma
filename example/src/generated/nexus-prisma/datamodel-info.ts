@@ -8,6 +8,7 @@ export default {
     User: ['id', 'email'],
     Post: ['id']
   },
+  embeddedTypes: [],
   clientPath: 'src/generated/prisma-client',
   schema: {
   "__schema": {

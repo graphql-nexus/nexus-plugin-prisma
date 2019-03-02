@@ -27,7 +27,7 @@ export function prismaInputObjectType<
         'prismaInputObjectType can only be used by `makePrismaSchema`',
       )
     }
-    const prismaSchema = builder.getNexusPrismaSchema().schema
+    const prismaSchema = builder.getDatamodelInfo().schema
 
     return nexusInputObjectType(typeConfig, prismaSchema)
   })

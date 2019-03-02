@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql'
 import { prismaExtendType, prismaObjectType } from '../src'
-import { mockSchema } from './prisma/mockSchema'
+import { mockSchema } from './prisma/mockedArtifacts'
 
 describe('prismaExtendType', () => {
   it('extends the `Query` types with `Query.user` and `Query.users` queries', () => {

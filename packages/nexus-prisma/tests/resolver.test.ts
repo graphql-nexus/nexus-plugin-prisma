@@ -1,9 +1,10 @@
 import { buildClientSchema, GraphQLObjectType } from 'graphql'
 import { generateDefaultResolver } from '../src/resolver'
-import nexusPrismaSchema from './prisma/nexus-prisma'
+import datamodelInfo from './prisma/nexus-prisma'
 import { prisma } from './prisma/prisma-client'
+import { mockedDatamodelInfo } from './prisma/mockedArtifacts';
 
-const schema = buildClientSchema(nexusPrismaSchema.schema as any)
+const schema = buildClientSchema(datamodelInfo.schema as any)
 
 const getField = (typeName: string, fieldName: string) => {
   const type = schema.getType(typeName) as GraphQLObjectType
@@ -18,9 +19,7 @@ const getData = async (
   args: Record<string, any> = {},
 ) => {
   const field = getField(typeName, fieldName)
-  const resolver = generateDefaultResolver(typeName, field, prisma, {
-    [typeName]: ['id'],
-  })
+  const resolver = generateDefaultResolver(typeName, field, prisma, mockedDatamodelInfo)
 
   return resolver(root, args, { prisma }, {} as any)
 }

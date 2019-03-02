@@ -1,7 +1,7 @@
 import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
 import { getFinalType } from './graphql'
 import { throwIfNoUniqFieldName, throwIfUnknownClientFunction } from './throw'
-import { PrismaClient, PrismaClientInput } from './types'
+import { PrismaClient, PrismaClientInput, InternalDatamodelInfo } from './types'
 import {
   isConnectionTypeName,
   isCreateMutation,
@@ -13,10 +13,16 @@ import { camelCase } from './camelcase'
 export function shouldRelyOnDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
+  datamodelInfo: InternalDatamodelInfo,
 ) {
   const fieldName = fieldToResolve.name
 
   if (isScalarType(getFinalType(fieldToResolve.type))) {
+    return true
+  }
+
+  // Embedded types are handled just like scalars
+  if (datamodelInfo.embeddedTypes.includes(typeName)) {
     return true
   }
 
@@ -52,7 +58,7 @@ export function generateDefaultResolver(
   typeName: string,
   fieldToResolve: GraphQLField<any, any>,
   prismaClientInput: PrismaClientInput,
-  uniqFieldsByModel: Record<string, string[]>,
+  datamodelInfo: InternalDatamodelInfo,
 ): GraphQLFieldResolver<any, any> | undefined {
   const fieldName = fieldToResolve.name
 
@@ -61,7 +67,7 @@ export function generateDefaultResolver(
    * We need to do this to make the typings working without having to provide a typegenAutoconfig.source to the the prisma-client
    * becase Nexus does not generate types from the schema for fields that have a resolve property
    */
-  if (shouldRelyOnDefaultResolver(typeName, fieldToResolve)) {
+  if (shouldRelyOnDefaultResolver(typeName, fieldToResolve, datamodelInfo)) {
     return undefined
   }
 
@@ -97,7 +103,7 @@ export function generateDefaultResolver(
 
     throwIfUnknownClientFunction(prismaClient, parentName, typeName, info)
 
-    const uniqFieldName = uniqFieldsByModel[typeName].find(
+    const uniqFieldName = datamodelInfo.uniqueFieldsByModel[typeName].find(
       uniqFieldName => root[uniqFieldName] !== undefined,
     )
 

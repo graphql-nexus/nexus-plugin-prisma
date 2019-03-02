@@ -16,7 +16,7 @@ import {
 } from 'graphql'
 import * as meow from 'meow'
 import { EOL } from 'os'
-import { join } from 'path'
+import { join, relative } from 'path'
 import { ISDL } from 'prisma-datamodel'
 import { generateCRUDSchemaFromInternalISDL } from 'prisma-generate-schema'
 import {
@@ -94,10 +94,10 @@ function main(cli: meow.Result) {
 
   try {
     const schema = generateCRUDSchemaFromInternalISDL(datamodel, databaseType)
-    const renderedDatamodel = renderDatamodel(
+    const renderedDatamodel = renderDatamodelInfo(
       datamodel,
       schema,
-      resolvedPrismaClientDir,
+      relative(rootPath, resolvedPrismaClientDir),
       jsMode ? 'module.exports =' : 'export default',
     )
     const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
@@ -153,10 +153,10 @@ export { default } from './datamodel-info'
   `
 }
 
-function renderDatamodel(
+function renderDatamodelInfo(
   datamodel: ISDL,
   schema: GraphQLSchema,
-  prismaClientDir: string,
+  prismaClientDirRelativeToRoot: string,
   exportString: string,
 ) {
   return withHeader(`\
@@ -172,7 +172,11 @@ ${datamodel.types
   )
   .join(',' + EOL)}
   },
-  clientPath: '${prismaClientDir}',
+  embeddedTypes: [${datamodel.types
+    .filter(t => t.isEmbedded)
+    .map(t => `'${t.name}'`)
+    .join(', ')}],
+  clientPath: '${prismaClientDirRelativeToRoot}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
   `)
@@ -184,7 +188,7 @@ function renderNexusPrismaTypes(
 ) {
   const types = Object.values(schema.getTypeMap())
   const objectTypes = types.filter(
-    t => isObjectType(t) && !t.name.startsWith('__'),
+    t => isObjectType(t) && !t.name.startsWith('__') && t.name !== 'Node',
   ) as GraphQLObjectType[]
   const inputTypes = types.filter(isInputObjectType)
   const enumTypes = types.filter(
@@ -244,15 +248,16 @@ ${enumTypes.map(renderEnumType).join(EOL)}
 
 function renderObjectType(type: GraphQLObjectType) {
   const fields = Object.values(type.getFields())
+  const fieldsWithoutQueryNode = removeQueryNodeField(type, fields)
 
   return `\
 // Types for ${type.name}
 
-${renderFields(type, fields)}
+${renderFields(type, fieldsWithoutQueryNode)}
 
-${renderFieldsArgs(type, fields)}
+${renderFieldsArgs(type, fieldsWithoutQueryNode)}
 
-${renderTypeFieldDetails(type, fields)}
+${renderTypeFieldDetails(type, fieldsWithoutQueryNode)}
 `
 }
 
@@ -420,6 +425,17 @@ function getExposableFieldsTypeName(type: GraphQLObjectType) {
 
 function upperFirst(s: string) {
   return s.replace(/^\w/, c => c.toUpperCase())
+}
+
+function removeQueryNodeField(
+  type: GraphQLObjectType,
+  fields: GraphQLField<any, any>[],
+) {
+  if (type.name === 'Query') {
+    fields = fields.filter(field => field.name !== 'node')
+  }
+
+  return fields
 }
 
 function getTypeFieldArgName(
