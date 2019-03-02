@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql'
 import { prismaObjectType } from '../src'
-import { mockSchema } from './prisma/mockSchema'
+import { mockSchema } from './prisma/mockedArtifacts'
 import { prisma } from './prisma/prisma-client'
 
 describe('prismaObjectType', () => {
@@ -32,7 +32,6 @@ describe('prismaObjectType', () => {
         'user',
         'users',
         'usersConnection',
-        'node',
       ]),
     )
     expect(userFields).toEqual(
@@ -73,7 +72,6 @@ describe('prismaObjectType', () => {
         'PostConnection',
         'PostEdge',
         'AggregatePost',
-        'Node',
         '__Schema',
         '__Type',
         '__TypeKind',

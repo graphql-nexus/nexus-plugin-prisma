@@ -1,6 +1,6 @@
 import { GraphQLInputObjectType, GraphQLObjectType } from 'graphql'
 import { prismaInputObjectType } from '../src'
-import { mockSchema } from './prisma/mockSchema'
+import { mockSchema } from './prisma/mockedArtifacts'
 
 describe('prismaInputObjectType', () => {
   it('exposes all fields of PostWhereInput', () => {
@@ -28,7 +28,6 @@ describe('prismaInputObjectType', () => {
         'user',
         'users',
         'usersConnection',
-        'node',
       ]),
     )
     expect(postWhereInputFields).toEqual(
@@ -123,7 +122,6 @@ describe('prismaInputObjectType', () => {
         'PostConnection',
         'PostEdge',
         'AggregatePost',
-        'Node',
         '__Schema',
         '__Type',
         '__TypeKind',

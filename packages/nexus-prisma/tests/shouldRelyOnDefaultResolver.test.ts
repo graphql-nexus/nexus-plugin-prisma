@@ -1,11 +1,9 @@
 import { shouldRelyOnDefaultResolver } from '../src/resolver'
-import nexusPrismaSchema from './prisma/nexus-prisma'
-import { buildClientSchema, GraphQLObjectType } from 'graphql'
-
-const schema = buildClientSchema(nexusPrismaSchema.schema as any)
+import { GraphQLObjectType } from 'graphql'
+import { mockedDatamodelInfo } from './prisma/mockedArtifacts'
 
 const getField = (typeName: string, fieldName: string) => {
-  const type = schema.getType(typeName) as GraphQLObjectType
+  const type = mockedDatamodelInfo.schema.getType(typeName) as GraphQLObjectType
 
   return type.getFields()[fieldName]
 }
@@ -17,9 +15,15 @@ describe('shouldRelyOnDefaultResolver', () => {
     const stringField = getField(typeName, 'title')
     const booleanField = getField(typeName, 'published')
 
-    expect(shouldRelyOnDefaultResolver(typeName, idField)).toEqual(true)
-    expect(shouldRelyOnDefaultResolver(typeName, stringField)).toEqual(true)
-    expect(shouldRelyOnDefaultResolver(typeName, booleanField)).toEqual(true)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, idField, mockedDatamodelInfo),
+    ).toEqual(true)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, stringField, mockedDatamodelInfo),
+    ).toEqual(true)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, booleanField, mockedDatamodelInfo),
+    ).toEqual(true)
   })
 
   it('should return true for *Connection.edges & *Connection.pageInfo, except aggregate', () => {
@@ -28,9 +32,15 @@ describe('shouldRelyOnDefaultResolver', () => {
     const edges = getField(typeName, 'edges')
     const aggregate = getField(typeName, 'aggregate')
 
-    expect(shouldRelyOnDefaultResolver(typeName, pageInfo)).toEqual(true)
-    expect(shouldRelyOnDefaultResolver(typeName, edges)).toEqual(true)
-    expect(shouldRelyOnDefaultResolver(typeName, aggregate)).toEqual(false)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, pageInfo, mockedDatamodelInfo),
+    ).toEqual(true)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, edges, mockedDatamodelInfo),
+    ).toEqual(true)
+    expect(
+      shouldRelyOnDefaultResolver(typeName, aggregate, mockedDatamodelInfo),
+    ).toEqual(false)
   })
 
   it('should return false for all fields in Query/Mutation', () => {
@@ -38,15 +48,21 @@ describe('shouldRelyOnDefaultResolver', () => {
 
     types.forEach(typeName => {
       const fieldsNames = Object.keys(
-        (schema.getType(typeName) as GraphQLObjectType).getFields(),
+        (mockedDatamodelInfo.schema.getType(
+          typeName,
+        ) as GraphQLObjectType).getFields(),
       )
 
       fieldsNames.forEach(fieldName => {
         const fieldToResolve = getField(typeName, fieldName)
 
-        expect(shouldRelyOnDefaultResolver(typeName, fieldToResolve)).toEqual(
-          false,
-        )
+        expect(
+          shouldRelyOnDefaultResolver(
+            typeName,
+            fieldToResolve,
+            mockedDatamodelInfo,
+          ),
+        ).toEqual(false)
       })
     })
   })
