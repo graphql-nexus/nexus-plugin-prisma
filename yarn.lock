@@ -6627,10 +6627,10 @@ prisma-datamodel@1.28.0-beta:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma-datamodel@1.28.0-beta.1:
-  version "1.28.0-beta.1"
-  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.28.0-beta.1.tgz#407ad106cba2133dbd83a10388d6486e89b1ad44"
-  integrity sha512-ho4xkUl9WZvqc2kC6iIggp1eCde+wRzFD+MVM+qETfd64f1rtkToDHrx3qR2vRF41Ws2XXCcy9ZwgUnNPyjC7A==
+prisma-datamodel@1.28.0-beta.2:
+  version "1.28.0-beta.2"
+  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.28.0-beta.2.tgz#3ce308c88e022d11bb7663b35791ad65db2ec14e"
+  integrity sha512-SaKZUNa5V4CGIzZ/NSQBsRLHuJvXnBWJjiNW4c5M7X5UZtJKO0WFWjyh3QdWVLcEJu299fPIxWZAjePa5ktTnQ==
   dependencies:
     graphql "^14.0.2"
     pluralize "^7.0.0"
