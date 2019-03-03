@@ -25,7 +25,7 @@
     "watch": "tsc -d -w"
   },
   "dependencies": {
-    "ajv": "6.9.2",
+    "ajv": "6.10.0",
     "graphql": "14.1.1",
     "js-yaml": "3.12.2",
     "meow": "5.0.0",
