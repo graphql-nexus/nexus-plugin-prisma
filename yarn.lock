@@ -6628,15 +6628,6 @@ prisma-datamodel@1.27.4:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma-datamodel@1.28.0-beta.3:
-  version "1.28.0-beta.3"
-  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.28.0-beta.3.tgz#aadaa26d40c59065567ea98e1abc98b8054bf221"
-  integrity sha512-MDRR/vGIU0X/Fd+FtYq4ZUnJsQKwHuA6qCI718jSCR44sTtTRWlXiOufoDckzrWKhywBLcIZsMbCSM/H3luAWA==
-  dependencies:
-    graphql "^14.0.2"
-    pluralize "^7.0.0"
-    popsicle "10"
-
 prisma-datamodel@1.28.0-beta.4:
   version "1.28.0-beta.4"
   resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.28.0-beta.4.tgz#f964f0d7270ce0210730a7c5e0080ec47fb8a1cc"
@@ -6675,15 +6666,15 @@ prisma-generate-schema@1.27.4:
     popsicle "10"
     prisma-datamodel "1.27.4"
 
-prisma-generate-schema@1.28.0-beta.3:
-  version "1.28.0-beta.3"
-  resolved "https://registry.yarnpkg.com/prisma-generate-schema/-/prisma-generate-schema-1.28.0-beta.3.tgz#fe19370e56b3e12629ff744b9f8a35cfab7b18d5"
-  integrity sha512-Mf33cFxvMLc2fe5oVQCdLq6Ufmb5Klxfj1YMGn8rQMVyon9KsEsl3IQ4I/q+DrdMHWFdEz92kPatygXjD76hUA==
+prisma-generate-schema@1.28.0-beta.4:
+  version "1.28.0-beta.4"
+  resolved "https://registry.yarnpkg.com/prisma-generate-schema/-/prisma-generate-schema-1.28.0-beta.4.tgz#7bb41682d4e02f0d0c25de57a16066ceaedb828c"
+  integrity sha512-PkBkJcwntqfPpD3uR9X8Z4qcKsFxY0m5utB4zQ+AFXQGdP0Ys+vrEgDvO8KyTC0ncwTVSqvfrHd5H8Uqv0R2Hw==
   dependencies:
     graphql "^14.0.2"
     pluralize "^7.0.0"
     popsicle "10"
-    prisma-datamodel "1.28.0-beta.3"
+    prisma-datamodel "1.28.0-beta.4"
 
 prisma-json-schema@0.1.3:
   version "0.1.3"
