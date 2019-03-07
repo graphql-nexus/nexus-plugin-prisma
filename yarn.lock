@@ -6713,27 +6713,6 @@ prisma-cli-engine@1.28.1:
     treeify "^1.0.1"
     update-notifier "^2.3.0"
 
-prisma-client-lib@1.28.0:
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/prisma-client-lib/-/prisma-client-lib-1.28.0.tgz#fba9aeb8d41ee9e73eb0e9c71b5d1fca00eea3ef"
-  integrity sha512-zM74f0GcbRXfe5H7SFihue86ysUxf23aZkxBunRocRTdogrkJ+ZSc+df1mcUatT6cWjU2hK6ncz31ZtmyjC/eA==
-  dependencies:
-    "@types/node" "^10.12.0"
-    "@types/prettier" "^1.13.2"
-    debug "^4.1.0"
-    flow-bin "^0.87.0"
-    graphql-tag "^2.10.0"
-    http-link-dataloader "^0.1.6"
-    jsonwebtoken "^8.3.0"
-    lodash.flatten "^4.4.0"
-    prettier "1.14.3"
-    prisma-datamodel "1.28.0"
-    prisma-generate-schema "1.28.0"
-    subscriptions-transport-ws "^0.9.15"
-    uppercamelcase "^3.0.0"
-    ws "^6.1.0"
-    zen-observable "^0.8.10"
-
 prisma-client-lib@1.28.1:
   version "1.28.1"
   resolved "https://registry.yarnpkg.com/prisma-client-lib/-/prisma-client-lib-1.28.1.tgz#36e027cda1362d7109ebf7e8639d769c5288b8f0"
