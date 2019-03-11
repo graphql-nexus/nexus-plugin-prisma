@@ -22,7 +22,7 @@ export function inputObjectTypeToNexus(
 
 function inputObjectTypeFieldToNexus(
   field: GraphQLInputField,
-): core.NexusInputFieldConfig {
+): core.NexusInputFieldConfig<string, string> {
   return {
     ...graphqlTypeToCommonNexus(field),
     type: getTypeName(field.type),
@@ -31,9 +31,9 @@ function inputObjectTypeFieldToNexus(
 
 export function inputObjectTypeFieldsToNexus(
   type: GraphQLInputObjectType,
-): Record<string, core.NexusInputFieldConfig> {
+): Record<string, core.NexusInputFieldConfig<string, string>> {
   return Object.values(type.getFields()).reduce<
-    Record<string, core.NexusInputFieldConfig>
+    Record<string, core.NexusInputFieldConfig<string, string>>
   >((acc, field) => {
     acc[field.name] = inputObjectTypeFieldToNexus(field)
 

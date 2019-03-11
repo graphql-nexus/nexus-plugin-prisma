@@ -43,7 +43,7 @@ export interface PrismaInputDefinitionBlock<TypeName extends string>
 export function prismaInputDefinitionBlock<TypeName extends string>(
   typeName: string,
   t: core.InputDefinitionBlock<TypeName> | core.OutputDefinitionBlock<TypeName>,
-  prismaType: Record<string, core.NexusInputFieldConfig>,
+  prismaType: Record<string, core.NexusInputFieldConfig<string, string>>,
   prismaSchema: GraphQLSchema,
 ): PrismaInputDefinitionBlock<TypeName> {
   const prismaBlock = t as PrismaInputDefinitionBlock<TypeName>
