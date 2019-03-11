@@ -176,7 +176,7 @@ ${datamodel.types
     .filter(t => t.isEmbedded)
     .map(t => `'${t.name}'`)
     .join(', ')}],
-  clientPath: '${prismaClientDirRelativeToRoot}',
+  clientPath: '${prismaClientDirRelativeToRoot.replace(/\\/g, '\\\\')}',
   schema: ${JSON.stringify(introspectionFromSchema(schema), null, 2)}
 }
   `)
