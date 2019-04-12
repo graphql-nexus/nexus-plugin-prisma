@@ -112,14 +112,14 @@ function main(cli: meow.Result) {
     writeFileSync(nexusPrismaTypesPath, nexusPrismaTypes)
 
     if (jsMode) {
-      const datamodelPath = join(rootPath, output, 'datamodel-info.js')
-      const indexPath = join(rootPath, output, 'index.js')
+      const datamodelPath = join(resolvedOutput, 'datamodel-info.js')
+      const indexPath = join(resolvedOutput, 'index.js')
 
       writeFileSync(datamodelPath, renderedDatamodel)
       writeFileSync(indexPath, withHeader(renderIndexJs()))
     } else {
-      const datamodelPath = join(rootPath, output, 'datamodel-info.ts')
-      const indexPath = join(rootPath, output, 'index.ts')
+      const datamodelPath = join(resolvedOutput, 'datamodel-info.ts')
+      const indexPath = join(resolvedOutput, 'index.ts')
 
       writeFileSync(datamodelPath, renderedDatamodel)
       writeFileSync(indexPath, withHeader(renderIndexTs()))
