@@ -100,7 +100,7 @@ function main(cli: meow.Result) {
       relative(rootPath, resolvedPrismaClientDir),
       jsMode ? 'module.exports =' : 'export default',
     )
-    const nexusPrismaTypesPath = join(rootPath, output, 'nexus-prisma.ts')
+    const nexusPrismaTypesPath = join(resolvedOutput, 'nexus-prisma.ts')
     const nexusPrismaTypes = renderNexusPrismaTypes(
       schema,
       getImportPathRelativeToOutput(
