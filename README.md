@@ -48,7 +48,7 @@ type Todo {
 **GraphQL server code**::
 
 ```ts
-import { prismaObjectType } from 'nexus-prisma'
+import { prismaObjectType, makePrismaSchema } from 'nexus-prisma'
 import { idArg } from 'nexus'
 
 // Expose the full "Query" building block
