@@ -6,7 +6,6 @@
   <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="#usage">Usage</a> 
 </p>
 
-<br />
 
 `nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
 
@@ -141,68 +140,9 @@ type Todo {
 You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples`](https://github.com/prisma/prisma-examples/):
 
 - [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
+- [GraphQL CRUD](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-crud): Full CRUD operations with minimal boilerplate.
 - [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema. 
 
 You can also check out this quick demo on CodeSandbox:
 
 [![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
-
-## Usage
-
-### Prerequisites
-
-You need to have a running Prisma project in order to use `nexus-prisma`. Learn how to get started with Prisma [here](https://www.prisma.io/docs/-t002/).
-
-### Install
-
-Install dependencies:
-
-```bash
-npm install --save nexus-prisma
-```
-
-Other required dependencies:
-
-```
-npm install --save nexus graphql prisma-client-lib
-```
-
-### Generate CRUD building blocks
-
-The CRUD building blocks are generated using the `nexus-prisma-generate` CLI:
-
-```bash
-npx nexus-prisma-generate --output ./src/generated/nexus-prisma
-```
-
-It is recommended to add this command as a `post-deploy` hook to your `prisma.yml`, e.g.:
-
-```yml
-hooks:
-  post-deploy:
-    - npx nexus-prisma-generate --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
-```
-
-As an example, assume you have a `User` type in your Prisma datamodel. `nexus-prisma-generate` will generate the following building blocks for it:
-
-- Queries
-  - `user(...): User!`: Returns a single record
-  - `users(...): [User!]!`: Returns a list of records
-  - `usersConnection(...): UserConnection!`: [Relay connections](https://graphql.org/learn/pagination/#complete-connection-model) & aggregations
-
-- Mutations
-  - `createUser(...): User!`: Creates a new record
-  - `updateUser(...): User`: Updates a record
-  - `deleteUser(...): User`: Deletes a record
-  - `updatesManyUsers(...): BatchPayload!`: Updates many records in bulk
-  - `deleteManyUsers(...): BatchPayload!`: Deletes many records in bulk
-
-- [GraphQL input types](https://graphql.org/graphql-js/mutations-and-input-types/)
-  - `UserCreateInput`: Wraps all fields of the record
-  - `UserUpdateInput`: Wraps all fields of the record
-  - `UserWhereInput`: Provides filters for all fields of the record
-  - `UserWhereUniqueInput`: Provides filters for unique fields of the record
-  - `UserUpdateManyMutationInput`: Wraps fields that can be updated in bulk
-  - `UserOrderByInput`: Specifies ascending or descending orders by field
-
-> `UserCreateInput` and `UserUpdateInput` differ in the way relation fields are treated.
