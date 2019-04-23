@@ -12,6 +12,7 @@ Check out a quick demo on CodeSandbox:
 
 - **No boilerplate**: Auto-generated CRUD operations for Prisma models
 - **Customize Prisma models**: Easily hide fields or add computed fields
+- **Best practices**: Generated GraphQL schema follows best practices (e.g. `input` types for mutations) 
 - **Full type-safety**: Coherent set of types for GraphQL schema and database
 - **Code-first**: Programmatically define your GraphQL types in JavaScript/TypeScript
 - **Compatible with GraphQL ecosystem**: Works with (`graphql-yoga`, `apollo-server`, ...)
@@ -47,7 +48,7 @@ type Todo {
 }
 ```
 
-**GraphQL server code**::
+**GraphQL server code**:
 
 ```ts
 import { prismaObjectType } from 'nexus-prisma'
@@ -64,7 +65,7 @@ const Query = prismaObjectType({
 const Mutation = prismaObjectType({ 
   name: 'Mutation',
   definition(t) {
-    // Keep only the `createTodo` mutation
+    // Expose only the `createTodo` mutation (`updateTodo` and `deleteTodo` not exposed)
     t.prismaFields(['createTodo'])
 
     // Add a custom `markAsDone` mutation
