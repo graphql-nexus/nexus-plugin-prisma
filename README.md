@@ -6,6 +6,7 @@
   <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="#usage">Usage</a> 
 </p>
 
+---
 
 `nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
 
