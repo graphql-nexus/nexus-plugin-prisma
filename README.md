@@ -2,7 +2,15 @@
 
 # nexus-prisma
 
-Prisma plugin for [GraphQL Nexus](https://nexus.js.org/), a code first GraphQL schema construction library
+`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own schema. `nexus-prisma` is based on Prisma and integrates with the Prisma client.
+
+## Features
+
+- **No boilerplate**: Auto-generated CRUD operations for Prisma models
+- **Customize Prisma models**: Easily hide fields or add computed fields
+- **Full type-safety**: Coherent set of types for GraphQL schema and database
+- **Compatible**: Works with TypeScript & JavaScript and all popular GraphQL tools
+- **Incrementally adoptable**: Gradually migrate your app to `nexus-prisma`
 
 ## Motivation
 
@@ -17,15 +25,6 @@ When using `nexus-prisma`, you're using a code-first (instead of an SDL-first) a
 You can also check out a quick demo on CodeSandbox:
 
 [![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
-
-## Features
-
-- CRUD operations for your Prisma models in GraphQL (easier than [`forwardTo`](https://github.com/prisma/prisma-binding#forwardto))
-- Customize your Prisma models, e.g. _hide certain fields_ or _add computed fields_
-- Full type-safety: Coherent set of types for GraphQL schema and database
-- Compatible with the GraphQL ecosystem (e.g. `apollo-server`, `graphql-yoga`, ...)
-- Incrementally adoptable
-- Compatible both with TypeScript and JavaScript
 
 ## Documentation
 
