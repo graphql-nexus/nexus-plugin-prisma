@@ -4,16 +4,12 @@
 
 `nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your GraphQL schema.
 
-Check out a quick demo on CodeSandbox:
-
-[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
-
 ## Features
 
 - **No boilerplate**: Auto-generated CRUD operations for Prisma models
+- **Full type-safety**: Coherent set of types for GraphQL schema and database
 - **Customize Prisma models**: Easily hide fields or add computed fields
 - **Best practices**: Generated GraphQL schema follows best practices (e.g. `input` types for mutations) 
-- **Full type-safety**: Coherent set of types for GraphQL schema and database
 - **Code-first**: Programmatically define your GraphQL types in JavaScript/TypeScript
 - **Compatible with GraphQL ecosystem**: Works with (`graphql-yoga`, `apollo-server`, ...)
 - **Incrementally adoptable**: Gradually migrate your app to `nexus-prisma`
@@ -126,6 +122,9 @@ You can find some easy-to-run example projects based on `nexus-prisma` in the [`
 - [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
 - [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema. 
 
+You can also check out this quick demo on CodeSandbox:
+
+[![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
 
 ## The `nexus-prisma` workflow
 
