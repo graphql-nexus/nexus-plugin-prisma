@@ -3,7 +3,7 @@
 <p><h1 align="center">nexus-prisma</h1></p>
 
 <p align="center">
-  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="#usage">Usage</a> 
+  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma#getting-started">Get started</a> 
 </p>
 
 
