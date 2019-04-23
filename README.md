@@ -2,14 +2,15 @@
 
 # nexus-prisma
 
-`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own schema. 
+`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your GraphQL schema.
 
 ## Features
 
 - **No boilerplate**: Auto-generated CRUD operations for Prisma models
 - **Customize Prisma models**: Easily hide fields or add computed fields
 - **Full type-safety**: Coherent set of types for GraphQL schema and database
-- **Compatible**: Works with TypeScript & JavaScript and all popular GraphQL tools
+- **Code-first**: Programmatically define your GraphQL types in JavaScript/TypeScript
+- **Compatible with GraphQL ecosystem**: Works with (`graphql-yoga`, `apollo-server`, ...)
 - **Incrementally adoptable**: Gradually migrate your app to `nexus-prisma`
 
 ## Motivation
@@ -18,7 +19,7 @@
 
 ![](https://imgur.com/dbEMHd5.png)
 
-When using `nexus-prisma`, you're using a code-first (instead of an SDL-first) approach for GraphQL server development. Read more about the benefits of code-first in this article series:
+When using `nexus-prisma`, you're using a _code-first_ (instead of an _SDL-first_) approach for GraphQL server development. Read more about the benefits of code-first in [this](https://www.prisma.io/blog/series/what-is-nexus-wsobadcm7oju) article series:
 
 1. [The Problems of "Schema-First" GraphQL Server Development](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3)
 1. [Introducing GraphQL Nexus: Code-First GraphQL Server Development](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5/)
@@ -30,7 +31,7 @@ You can also check out a quick demo on CodeSandbox:
 
 ## Documentation
 
-You can find the docs for `nexus-prisma` [here](https://nexus.js.org/docs/database-access-with-prisma). The docs also include a [**Getting started**](https://nexus.js.org/docs/database-access-with-prisma#getting-started)-section.
+You can find the docs [here](https://nexus.js.org/docs/database-access-with-prisma). They also include a [**Getting started**](https://nexus.js.org/docs/database-access-with-prisma#getting-started)-section.
 
 ## Examples
 
@@ -40,9 +41,9 @@ Here's a minimal example for using `nexus-prisma`:
 
 ```graphql
 type Todo {
-  id: ID! @unique
+  id: ID! @id
   title: String!
-  done: Boolean! @default(value: "false")
+  done: Boolean! @default(value: false)
 }
 ```
 
