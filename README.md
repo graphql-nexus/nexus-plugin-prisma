@@ -1,6 +1,11 @@
 <p align="center"><img src="https://i.imgur.com/8qvElTM.png" width="300" /></p>
 
-# nexus-prisma
+<p><h1 align="center">nexus-prisma</h1></p>
+
+<p align="center">
+  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="#usage">Usage</a> 
+</p>
+
 
 `nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
 
@@ -10,7 +15,7 @@
 - **Full type-safety**: Coherent set of types for GraphQL schema and database
 - **Customize Prisma models**: Easily hide fields or add computed fields
 - **Best practices**: Generated GraphQL schema follows best practices (e.g. `input` types for mutations) 
-- **Code-first**: Programmatically define your GraphQL types in JavaScript/TypeScript
+- **Code-first**: Programmatically define your GraphQL schema in JavaScript/TypeScript
 - **Compatible with GraphQL ecosystem**: Works with (`graphql-yoga`, `apollo-server`, ...)
 - **Incrementally adoptable**: Gradually migrate your app to `nexus-prisma`
 
@@ -20,7 +25,7 @@
 
 ![](https://imgur.com/dbEMHd5.png)
 
-When using `nexus-prisma`, you're using a _code-first_ (instead of an _SDL-first_) approach for GraphQL server development. Read more about the benefits of code-first in [this](https://www.prisma.io/blog/series/what-is-nexus-wsobadcm7oju) article series:
+When using `nexus-prisma`, you're using a _code-first_ (instead of an _SDL-first_) approach for GraphQL server development. Read more about the benefits of code-first in this article series:
 
 1. [The Problems of "Schema-First" GraphQL Server Development](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3)
 1. [Introducing GraphQL Nexus: Code-First GraphQL Server Development](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5/)
@@ -131,7 +136,6 @@ type Todo {
 ```
 
 </Details>
-<br />
 
 You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples`](https://github.com/prisma/prisma-examples/):
 
@@ -143,6 +147,10 @@ You can also check out this quick demo on CodeSandbox:
 [![Edit example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/6w7581x05k)
 
 ## Usage
+
+### Prerequisites
+
+You need to have a running Prisma project in order to use `nexus-prisma`. Learn how to get started with Prisma [here](https://www.prisma.io/docs/-t002/).
 
 ### Install
 
@@ -171,15 +179,14 @@ It is recommended to add this command as a `post-deploy` hook to your `prisma.ym
 ```yml
 hooks:
   post-deploy:
-    - prisma generate
     - npx nexus-prisma-generate --output ./src/generated/nexus-prisma # Runs the codegen tool from nexus-prisma
 ```
 
 As an example, assume you have a `User` type in your Prisma datamodel. `nexus-prisma-generate` will generate the following building blocks for it:
 
 - Queries
-  - `user(...): User!`: Fetches a single record
-  - `users(...): [User!]!`: Fetches a list of records
+  - `user(...): User!`: Returns a single record
+  - `users(...): [User!]!`: Returns a list of records
   - `usersConnection(...): UserConnection!`: [Relay connections](https://graphql.org/learn/pagination/#complete-connection-model) & aggregations
 
 - Mutations
