@@ -1,6 +1,6 @@
 <p align="center"><img src="https://i.imgur.com/8qvElTM.png" width="300" /></p>
 
-# nexus-prisma 
+<p><h1 align="center">nexus-prisma</h1></p>
 
 <p align="center">
   <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="#usage">Usage</a> 
