@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://circleci.com/gh/prisma/prisma"><img src="https://circleci.com/gh/prisma/prisma.svg?style=shield"></img></a>
+  <a href="https://circleci.com/gh/prisma/nexus-prisma"><img src="https://circleci.com/gh/prisma/prisma.svg?style=shield"></img></a>
   <a href="https://spectrum.chat/prisma/graphql"><img src="https://withspectrum.github.io/badge/badge.svg"></img></a>
 </p>
 
