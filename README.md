@@ -14,7 +14,7 @@
 
 `nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
 
-> Check out this [**15min tutorial video**](https://www.youtube.com/watch?v=1qB8vQwWwIc) to learn how to get started with `nexus-prisma`.
+Check out this [**15min tutorial video**](https://www.youtube.com/watch?v=1qB8vQwWwIc) to learn how to get started with `nexus-prisma`.
 
 ## Features
 
