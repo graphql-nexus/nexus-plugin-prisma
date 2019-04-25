@@ -3,7 +3,12 @@
 <p><h1 align="center">nexus-prisma</h1></p>
 
 <p align="center">
-  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma#getting-started">Get started</a> 
+  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma">Docs</a> • <a href="#examples">Examples</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma#getting-started">Get started</a> • <a href="https://www.youtube.com/watch?v=1qB8vQwWwIc">Video</a> 
+</p>
+
+<p align="center">
+  <a href="https://circleci.com/gh/prisma/nexus-prisma"><img src="https://circleci.com/gh/prisma/prisma.svg?style=shield"></img></a>
+  <a href="https://spectrum.chat/prisma/graphql"><img src="https://withspectrum.github.io/badge/badge.svg"></img></a>
 </p>
 
 <p align="center">
@@ -12,7 +17,7 @@
 </p>
 
 
-`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
+`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema. Check out this [15min tutorial video](https://www.youtube.com/watch?v=1qB8vQwWwIc) to learn how to get started with `nexus-prisma`.
 
 ## Features
 
