@@ -7,14 +7,14 @@
     "build": "tsc"
   },
   "dependencies": {
-    "graphql": "14.1.1",
+    "graphql": "14.2.1",
     "graphql-yoga": "1.17.4",
     "nexus": "0.11.6",
     "nexus-prisma": "0.3.3",
     "prisma-client-lib": "1.28.3"
   },
   "devDependencies": {
-    "@types/graphql": "14.0.7",
+    "@types/graphql": "14.2.0",
     "@types/node": "10.14.5",
     "nexus-prisma-generate": "0.3.3",
     "ts-node": "8.1.0",
