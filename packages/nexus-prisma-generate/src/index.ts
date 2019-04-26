@@ -70,14 +70,15 @@ function main(cli: meow.Result) {
   }
 
   const prisma = readPrismaYml()
-  const rootPath = process.cwd()
+  const rootPath = findRootDirectory()
+  const cwd = process.cwd()
   const resolvedOutput = output.startsWith('/')
     ? output
-    : join(rootPath, output)
+    : join(cwd, output)
   const resolvedPrismaClientDir = getPrismaClientDir(
     prismaClientDir,
     prisma,
-    rootPath,
+    cwd,
   )
 
   try {
@@ -111,19 +112,17 @@ function main(cli: meow.Result) {
 
     writeFileSync(nexusPrismaTypesPath, nexusPrismaTypes)
 
-    if (jsMode) {
-      const datamodelPath = join(resolvedOutput, 'datamodel-info.js')
-      const indexPath = join(resolvedOutput, 'index.js')
+    const datamodelPath = join(
+      resolvedOutput,
+      jsMode ? 'datamodel-info.js' : 'datamodel-info.ts',
+    )
+    const indexPath = join(resolvedOutput, jsMode ? 'index.js' : 'index.ts')
 
-      writeFileSync(datamodelPath, renderedDatamodel)
-      writeFileSync(indexPath, withHeader(renderIndexJs()))
-    } else {
-      const datamodelPath = join(resolvedOutput, 'datamodel-info.ts')
-      const indexPath = join(resolvedOutput, 'index.ts')
-
-      writeFileSync(datamodelPath, renderedDatamodel)
-      writeFileSync(indexPath, withHeader(renderIndexTs()))
-    }
+    writeFileSync(datamodelPath, renderedDatamodel)
+    writeFileSync(
+      indexPath,
+      withHeader(jsMode ? renderIndexJs() : renderIndexTs()),
+    )
 
     console.log(`Types generated at ${output}`)
   } catch (e) {
