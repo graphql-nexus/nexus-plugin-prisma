@@ -70,7 +70,7 @@ function main(cli: meow.Result) {
   }
 
   const prisma = readPrismaYml()
-  const rootPath = findRootDirectory()
+  const rootPath = process.cwd()
   const resolvedOutput = output.startsWith('/')
     ? output
     : join(rootPath, output)
