@@ -12,6 +12,7 @@ import {
   isCreateMutation,
   isDeleteMutation,
   isNotArrayOrConnectionType,
+  isSubscriptionType,
 } from './utils'
 import { camelCase } from './camelcase'
 
@@ -38,6 +39,10 @@ export function shouldRelyOnDefaultResolver(
 
   if (isConnectionTypeName(typeName) && fieldName !== 'aggregate') {
     // returns `pageInfo` and `edges` queries by the client
+    return true
+  }
+
+  if (isSubscriptionType(typeName)) {
     return true
   }
 

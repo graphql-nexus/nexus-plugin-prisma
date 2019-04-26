@@ -134,6 +134,14 @@ export function isConnectionTypeName(typeName: string): boolean {
   return typeName.endsWith('Connection') && typeName !== 'Connection'
 }
 
+export function isSubscriptionType(typeName: string): boolean {
+  // *SubscriptionPayload
+  return (
+    typeName.endsWith('SubscriptionPayload') &&
+    typeName !== 'SubscriptionPayload'
+  )
+}
+
 export function flatMap<T, U>(
   array: T[],
   callbackfn: (value: T, index: number, array: T[]) => U[],
