@@ -1,4 +1,9 @@
-import { GraphQLField, GraphQLFieldResolver, isScalarType } from 'graphql'
+import {
+  GraphQLField,
+  GraphQLFieldResolver,
+  isScalarType,
+  isEnumType,
+} from 'graphql'
 import { getFinalType } from './graphql'
 import { throwIfNoUniqFieldName, throwIfUnknownClientFunction } from './throw'
 import { PrismaClient, PrismaClientInput, InternalDatamodelInfo } from './types'
@@ -16,8 +21,13 @@ export function shouldRelyOnDefaultResolver(
   datamodelInfo: InternalDatamodelInfo,
 ) {
   const fieldName = fieldToResolve.name
+  const finalType = getFinalType(fieldToResolve.type)
 
-  if (isScalarType(getFinalType(fieldToResolve.type))) {
+  if (isScalarType(finalType)) {
+    return true
+  }
+
+  if (isEnumType(finalType)) {
     return true
   }
 
