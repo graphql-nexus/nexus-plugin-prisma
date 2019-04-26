@@ -6402,15 +6402,6 @@ prisma-client-lib@1.30.2:
     ws "^6.1.0"
     zen-observable "^0.8.10"
 
-prisma-datamodel@1.28.3:
-  version "1.28.3"
-  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.28.3.tgz#24046eb85d88a7eff9354d83ad2e37cab1ea00d9"
-  integrity sha512-EdkI+7RIEOdj+7IeoRdlmZhI+n8UlmUNiWTIfJ1K5YqGgDT51qUicAK5qRGptoqrvctjxu1WOFIT0LfH8YaCGg==
-  dependencies:
-    graphql "^14.0.2"
-    pluralize "^7.0.0"
-    popsicle "10"
-
 prisma-datamodel@1.30.2:
   version "1.30.2"
   resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.30.2.tgz#5c85eac74f56adc7dc83968e613dfc95ec76d54c"
