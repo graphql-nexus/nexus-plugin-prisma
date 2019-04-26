@@ -2,7 +2,7 @@ import { buildClientSchema, GraphQLObjectType } from 'graphql'
 import { generateDefaultResolver } from '../src/resolver'
 import datamodelInfo from './prisma/nexus-prisma'
 import { prisma } from './prisma/prisma-client'
-import { mockedDatamodelInfo } from './prisma/mockedArtifacts';
+import { mockedDatamodelInfo } from './prisma/mockedArtifacts'
 
 const schema = buildClientSchema(datamodelInfo.schema as any)
 
@@ -19,7 +19,12 @@ const getData = async (
   args: Record<string, any> = {},
 ) => {
   const field = getField(typeName, fieldName)
-  const resolver = generateDefaultResolver(typeName, field, prisma, mockedDatamodelInfo)
+  const resolver = generateDefaultResolver(
+    typeName,
+    field,
+    prisma,
+    mockedDatamodelInfo,
+  )
 
   return resolver(root, args, { prisma }, {} as any)
 }
@@ -106,5 +111,17 @@ describe('generateDefaultResolver', () => {
     })
 
     expect(result).toBe(null)
+  })
+
+  test('Enum should use default resolver', async () => {
+    const field = getField('User', 'gender')
+    const resolver = generateDefaultResolver(
+      'User',
+      field,
+      prisma,
+      mockedDatamodelInfo,
+    )
+
+    expect(resolver).toBe(undefined)
   })
 })
