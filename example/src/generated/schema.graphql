@@ -2,14 +2,6 @@
 ### Do not make changes to this file directly
 
 
-type AggregatePost {
-  count: Int!
-}
-
-type AggregateUser {
-  count: Int!
-}
-
 scalar DateTime
 
 enum GENDER {
@@ -24,13 +16,6 @@ type Mutation {
   signupUser(email: String!, name: String!): User!
 }
 
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
-}
-
 type Post {
   author: User!
   content: String
@@ -39,17 +24,6 @@ type Post {
   published: Boolean!
   title: String!
   updatedAt: DateTime!
-}
-
-type PostConnection {
-  aggregate: AggregatePost!
-  edges: [PostEdge!]!
-  pageInfo: PageInfo!
-}
-
-type PostEdge {
-  cursor: String!
-  node: Post!
 }
 
 enum PostOrderByInput {
@@ -134,19 +108,9 @@ input PostWhereInput {
   updatedAt_not_in: [DateTime!]
 }
 
-input PostWhereUniqueInput {
-  id: ID
-}
-
 type Query {
   feed: [Post!]!
   filterPosts(searchString: String!): [Post!]!
-  post(where: PostWhereUniqueInput!): Post
-  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
-  postsConnection(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): PostConnection!
-  user(where: UserWhereUniqueInput!): User
-  users(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int, where: UserWhereInput): [User!]!
-  usersConnection(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int, where: UserWhereInput): UserConnection!
 }
 
 type User {
@@ -157,32 +121,6 @@ type User {
   name: String
   posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
   updatedAt: DateTime!
-}
-
-type UserConnection {
-  aggregate: AggregateUser!
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-}
-
-type UserEdge {
-  cursor: String!
-  node: User!
-}
-
-enum UserOrderByInput {
-  createdAt_ASC
-  createdAt_DESC
-  email_ASC
-  email_DESC
-  gender_ASC
-  gender_DESC
-  id_ASC
-  id_DESC
-  name_ASC
-  name_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 input UserWhereInput {
@@ -254,9 +192,4 @@ input UserWhereInput {
   updatedAt_lte: DateTime
   updatedAt_not: DateTime
   updatedAt_not_in: [DateTime!]
-}
-
-input UserWhereUniqueInput {
-  email: String
-  id: ID
 }
