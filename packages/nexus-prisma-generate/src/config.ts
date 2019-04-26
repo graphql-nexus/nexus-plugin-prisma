@@ -29,10 +29,10 @@ export function findDatamodelAndComputeSchema(
   }
 }
 
-export function readPrismaYml() {
-  const configPath = findPrismaConfigFile()
+export function readPrismaYml(prismaYamlPath: string | undefined) {
+  const configPath = prismaYamlPath ? prismaYamlPath : findPrismaConfigFile()
 
-  if (!configPath) {
+  if (!configPath || (configPath && !fs.existsSync(configPath))) {
     throw new Error('Could not find `prisma.yml` file')
   }
 

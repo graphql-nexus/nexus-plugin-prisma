@@ -39,9 +39,10 @@ const cli = meow(
     
     Inputs should be relative to the root of your project
 
-    --output (required): Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
-    --client (optional): Path to your prisma-client directory (eg: ./generated/prisma-client/)
-    --js     (optional): Whether to generate the types for Javascript
+    --output  (required): Path to directory where you want to output the typings (eg: ./generated/nexus-prisma)
+    --project (optional): Path to Prisma definition file (prisma.yml)
+    --client  (optional): Path to your prisma-client directory (eg: ./generated/prisma-client/)
+    --js      (optional): Whether to generate the types for Javascript
 `,
   {
     flags: {
@@ -55,6 +56,9 @@ const cli = meow(
         type: 'boolean',
         default: false,
       },
+      project: {
+        type: 'string',
+      },
     },
   },
 )
@@ -62,19 +66,28 @@ const cli = meow(
 main(cli)
 
 function main(cli: meow.Result) {
-  const { client: prismaClientDir, output, js: jsMode } = cli.flags
+  const {
+    client: prismaClientDir,
+    output,
+    js: jsMode,
+    project: prismaYmlPath,
+  } = cli.flags
 
   if (!output) {
     console.log('ERROR: Missing argument --output')
     process.exit(1)
   }
 
-  const prisma = readPrismaYml()
-  const rootPath = findRootDirectory()
   const cwd = process.cwd()
-  const resolvedOutput = output.startsWith('/')
-    ? output
-    : join(cwd, output)
+  const resolvedPrismaYmlPath =
+    prismaYmlPath !== undefined
+      ? prismaYmlPath.startsWith('/')
+        ? prismaYmlPath
+        : join(cwd, prismaYmlPath)
+      : undefined
+  const prisma = readPrismaYml(resolvedPrismaYmlPath)
+  const rootPath = findRootDirectory()
+  const resolvedOutput = output.startsWith('/') ? output : join(cwd, output)
   const resolvedPrismaClientDir = getPrismaClientDir(
     prismaClientDir,
     prisma,
