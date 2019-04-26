@@ -78,20 +78,19 @@ function main(cli: meow.Result) {
     process.exit(1)
   }
 
-  const cwd = process.cwd()
+  const rootPath = findRootDirectory()
   const resolvedPrismaYmlPath =
     prismaYmlPath !== undefined
       ? prismaYmlPath.startsWith('/')
         ? prismaYmlPath
-        : join(cwd, prismaYmlPath)
+        : join(rootPath, prismaYmlPath)
       : undefined
   const prisma = readPrismaYml(resolvedPrismaYmlPath)
-  const rootPath = findRootDirectory()
-  const resolvedOutput = output.startsWith('/') ? output : join(cwd, output)
+  const resolvedOutput = output.startsWith('/') ? output : join(rootPath, output)
   const resolvedPrismaClientDir = getPrismaClientDir(
     prismaClientDir,
     prisma,
-    cwd,
+    rootPath,
   )
 
   try {
