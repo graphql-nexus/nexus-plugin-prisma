@@ -34,7 +34,7 @@
     "@types/lodash": "4.14.122",
     "graphql-tag": "2.10.1",
     "jest": "24.4.0",
-    "nexus": "0.11.2",
+    "nexus": "0.11.6",
     "prettier": "1.16.4",
     "prisma": "1.28.3",
     "prisma-client-lib": "1.28.3",
