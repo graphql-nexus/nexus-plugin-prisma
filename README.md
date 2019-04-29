@@ -112,7 +112,7 @@ const server = new GraphQLServer({
 server.start(() => console.log('Server is running on http://localhost:4000'))
 ```
 
-<Details><Summary>Expand to view the generated SDL for the final GraphQL API</Summary>
+**Generated GraphQL schema**:
 
 ```graphql
 # The fully exposed "Query" building block
@@ -139,11 +139,10 @@ type Todo {
 # e.g. `TodoWhereUniqueInput`, `TodoCreateInput`, `TodoConnection`, ...
 ```
 
-</Details>
-
 You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples`](https://github.com/prisma/prisma-examples/):
 
 - [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
+- [GraphQL (Apollo Server)](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file using `apollo-server`.
 - [GraphQL CRUD](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-crud): Full CRUD operations with minimal boilerplate.
 - [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema. 
 
