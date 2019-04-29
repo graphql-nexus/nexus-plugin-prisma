@@ -5476,10 +5476,10 @@ neo-async@^2.6.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.0.tgz#b9d15e4d71c6762908654b5183ed38b753340835"
   integrity sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==
 
-nexus@0.11.6:
-  version "0.11.6"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.11.6.tgz#2d2b7c30a0c6816ecbf671ba3f826a67b1488f4e"
-  integrity sha512-H9cSPGpPZejniI77O429fUVKUqEzFr/n6Q5poCbixpPsisQwADAI8C6GrTLe7ojFCfVcUHhhpEaDHyWg2+bSYA==
+nexus@0.11.7:
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.11.7.tgz#db580f1d6feb5e590fe395d9cd218c969c46b9ed"
+  integrity sha512-d5iD9jKn8n8tfFerisxYmKlrJmj5omPS49+s1xv2O2q5GiagDH4ySxajg0vsf0EMT2K+OvlCuSxT0xarS1gqKw==
   dependencies:
     tslib "^1.9.3"
 
