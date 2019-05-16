@@ -67,8 +67,8 @@ export function readPrismaYml(prismaYamlPath: string | undefined) {
 function findPrismaConfigFile(
   prismaYmlPath: string | undefined,
 ): string | null {
-  if (prismaYmlPath && !fs.existsSync(prismaYmlPath)) {
-    return null
+  if (prismaYmlPath && fs.existsSync(prismaYmlPath)) {
+    return prismaYmlPath
   }
 
   let definitionPath: string | null = path.join(process.cwd(), 'prisma.yml')
