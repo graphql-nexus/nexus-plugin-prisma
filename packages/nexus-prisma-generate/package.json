@@ -39,7 +39,7 @@
     "@types/meow": "5.0.0",
     "@types/node": "10.14.5",
     "jest": "24.7.1",
-    "prettier": "1.17.0",
+    "prettier": "1.18.2",
     "ts-jest": "24.0.2",
     "typescript": "3.4.5"
   },
