@@ -1,25 +1,36 @@
 {
-  "private": true,
-  "scripts": {
-    "dev": "lerna run start",
-    "bootstrap": "yarn install && lerna bootstrap && yarn graphql-once",
-    "graphql-once": "rm -rf ./node_modules/graphql ./packages/nexus-prisma/node_modules/graphql && mv ./example/node_modules/graphql ./node_modules/graphql",
-    "clean": "lerna clean -y && yarn clean:packages && yarn clean:root",
-    "clean:packages": "lerna exec -- rm -rf node_modules yarn.lock package-lock.json dist",
-    "clean:root": "rm -rf node_modules yarn.lock package-lock.json",
-    "reset": "yarn clean && yarn bootstrap",
-    "build": "lerna run build"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "prettier": {
-    "semi": false,
-    "trailingComma": "all",
-    "singleQuote": true
-  },
+  "name": "nexus-prisma",
+  "version": "0.0.1-beta.2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
+  "author": "Flavian Desverne <desverne@prisma.io>",
+  "files": [
+    "dist",
+    "nexus_prisma_ncc_build"
+  ],
+  "bin": {
+    "photogen": "dist/index.js"
+  },
+  "scripts": {
+    "build": "rm -rf dist && rm -rf nexus_prisma_ncc_build && tsc && ncc build -e @prisma/nexus src/nexus-prisma/index.ts -o nexus_prisma_ncc_build",
+    "prepublish": "yarn build",
+    "prettify": "prettier --write src/**/*.ts"
+  },
+  "dependencies": {
+    "@prisma/nexus": "^0.0.1",
+    "pkg-up": "^3.1.0"
+  },
   "devDependencies": {
-    "lerna": "3.13.4"
+    "@prisma/cli": "^0.0.17",
+    "@types/node": "^12.0.8",
+    "@zeit/ncc": "^0.19.1",
+    "prettier": "^1.17.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true
   }
 }

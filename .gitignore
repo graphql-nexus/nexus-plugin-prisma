@@ -1,6 +1,6 @@
-.DS_Store
-node_modules
 dist
-package-lock.json
-*.log
-.idea
+nexus_prisma_ncc_build
+node_modules
+example/db
+example/migrations
+example/generated
