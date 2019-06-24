@@ -4,13 +4,14 @@ import {
   enumType,
   inputObjectType
 } from '@prisma/nexus';
+import { NexusPrismaParams } from '.';
 import { transformDMMF } from '../dmmf/dmmf-transformer';
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types';
 import { DMMFClass } from '../dmmf/DMMFClass';
-import { NexusPrismaParams } from '.';
+import { assertPhotonInContext, flatMap, nexusOpts } from '../utils';
+import { dateTimeScalar, GQL_SCALARS_NAMES } from './scalars';
 import { defaultNamingStrategy, INamingStrategy } from './StrategyNaming';
 import { getSupportedMutations, getSupportedQueries } from './supported-ops';
-import { assertPhotonInContext, nexusOpts } from '../utils';
 
 interface NexusPrismaMethodParams {
   alias?: string;
@@ -51,11 +52,29 @@ export class NexusPrismaBuilder {
     }
   }
 
+  getPrismaScalars() {
+    const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
+      .filter(
+        f =>
+          f.outputType.kind === 'scalar' &&
+          !GQL_SCALARS_NAMES.includes(f.outputType.type)
+      )
+      .map(f => f.outputType.type);
+    const dedupScalarNames = [...new Set(allScalarNames)];
+    const scalars: any[] = [];
+
+    if (dedupScalarNames.includes('DateTime')) {
+      scalars.push(dateTimeScalar);
+    }
+
+    return scalars;
+  }
+
   getNexusPrismaMethod() {
     return [
       this.getCRUDDynamicOutputMethod(),
-      this.getModelDynamicOutputMethod()
-      //this.getModelsDynamicOutputMethod()
+      this.getModelDynamicOutputMethod(),
+      ...this.getPrismaScalars()
     ];
   }
 
@@ -142,7 +161,7 @@ export class NexusPrismaBuilder {
     //   : 'models';
     return dynamicOutputMethod({
       name: 'models',
-      typeDefinition: `: NexusPrisma<TypeName, 'models', 'models'>`,
+      typeDefinition: `: NexusPrisma<TypeName, 'models'>`,
       factory: ({ typeDef: t }) => {
         const allModels = this.dmmf.datamodel.models.reduce<
           Record<string, any>

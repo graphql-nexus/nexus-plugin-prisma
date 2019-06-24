@@ -5,19 +5,19 @@ datasource db {
 }
 
 generator photon {
-  provider   = "javascript"
-  output     = "node_modules/@generated/photon"
-  methodName = ""
+  provider = "photonjs"
+  output   = "node_modules/@generated/photon"
 }
 
 generator photon_for_lib {
-  provider   = "javascript"
-  output     = "../node_modules/@generated/photon"
-  methodName = ""
+  provider = "photonjs"
+  output   = "../node_modules/@generated/photon"
 }
 
 model Blog {
   id        Int      @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   name      String
   viewCount Int
   posts     Post[]

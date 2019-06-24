@@ -4,3 +4,4 @@ node_modules
 example/db
 example/migrations
 example/generated
+.DS_Store

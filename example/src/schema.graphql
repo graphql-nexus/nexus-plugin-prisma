@@ -6,7 +6,7 @@ type Author {
   blog: Blog!
   id: Int!
   name: String
-  posts(after: String, before: String, first: Int, last: Int, skip: String): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
 }
 
 input AuthorCreateManyWithoutAuthorsInput {
@@ -34,10 +34,12 @@ input AuthorWhereUniqueInput {
 }
 
 type Blog {
-  authors(after: String, before: String, first: Int, last: Int, skip: String): [Author!]
+  authors(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
+  createdAt: DateTime!
   id: Int!
   name: String!
-  posts(after: String, before: String, first: Int, last: Int, skip: String): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
+  updatedAt: DateTime!
   viewCount: Int!
 }
 
@@ -69,16 +71,8 @@ type CustomPost {
   title: String!
 }
 
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
-}
+"""DateTime"""
+scalar DateTime
 
 type Mutation {
   createOneBlog(data: BlogCreateInput!): Blog!
@@ -105,11 +99,7 @@ input PostWhereUniqueInput {
 
 type Query {
   blog(where: BlogWhereUniqueInput!): Blog
-  blogs(after: String, before: String, first: Int, last: Int, skip: String, where: QueryFindManyBlogWhereInput): [Blog!]
-  findManyAuthor(after: String, before: String, first: Int, last: Int, skip: String): [Author!]
-  findManyPost(after: String, before: String, first: Int, last: Int, skip: String): [CustomPost!]
-}
-
-input QueryFindManyBlogWhereInput {
-  id: IntFilter
+  blogs(after: String, before: String, first: Int, last: Int, skip: Int): [Blog!]
+  findManyAuthor(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
+  findManyPost(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
 }

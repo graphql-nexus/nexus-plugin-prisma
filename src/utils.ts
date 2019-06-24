@@ -14,6 +14,13 @@ export const upperFirst = (s: string): string => {
   return s.replace(/^\w/, c => c.toUpperCase());
 };
 
+export function flatMap<T, U>(
+  array: T[],
+  callbackfn: (value: T, index: number, array: T[]) => U[]
+): U[] {
+  return Array.prototype.concat(...array.map(callbackfn));
+}
+
 export function nexusOpts(param: {
   type: string;
   isList: boolean;
@@ -43,7 +50,7 @@ export function trimIfInNodeModules(path: string) {
     );
   }
 
-  return path
+  return path;
 }
 
 export function getImportPathRelativeToOutput(
@@ -51,7 +58,7 @@ export function getImportPathRelativeToOutput(
   to: string
 ): string {
   if (to.includes('node_modules')) {
-    return trimIfInNodeModules(to)
+    return trimIfInNodeModules(to);
   }
 
   let relativePath = relative(from, to);

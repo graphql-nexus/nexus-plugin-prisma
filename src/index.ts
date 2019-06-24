@@ -8,7 +8,6 @@ import { generateNexusPrismaTypes } from './typegen';
 import { getImportPathRelativeToOutput } from './utils';
 
 const writeFileAsync = promisify(fs.writeFile);
-const copyFileAsync = promisify(fs.copyFile);
 
 function getNexusPrismaRuntime(photonOutput: string) {
   const dmmf = require(photonOutput).dmmf as ExternalDMMF.Document;
