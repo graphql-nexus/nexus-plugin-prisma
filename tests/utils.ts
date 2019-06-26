@@ -14,8 +14,7 @@ export async function generateSchema(datamodel: string, types: any[]) {
   });
 
   const { nexusPrismaRuntime } = getNexusPrismaRuntime(photonOutput.name);
-  const nexusPrismaModule = eval(nexusPrismaRuntime);
-  const nexusPrismaPlugin = nexusPrismaModule.nexusPrismaPlugin;
+  const { nexusPrismaPlugin } = eval(nexusPrismaRuntime);
 
   const nexusPrisma = nexusPrismaPlugin({ photon: (ctx: any) => ctx.photon });
 

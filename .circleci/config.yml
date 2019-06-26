@@ -3,11 +3,18 @@ jobs:
   build:
     working_directory: ~/repo
     docker:
-      # Node 10 LTS
-      - image: circleci/node:10
+    - image: circleci/node:10
     steps:
-      - checkout
-      - run: yarn install
-      - run:
-          name: run-tests
-          command: yarn test
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
+    - run: yarn install
+    - save_cache:
+        paths:
+        - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+    - run:
+        name: run-tests
+        command: yarn test
