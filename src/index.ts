@@ -82,7 +82,7 @@ export const generatorDefinition: GeneratorDefinition = {
   defaultOutput: 'node_modules/@generated/nexus-prisma'
 };
 
-if (process.env.NEXUS_PRISMA_DEBUG) {
+if (process.env.NEXUS_PRISMA_DEV) {
   generatorDefinition.generate({
     cwd: process.cwd(),
     generator: {
