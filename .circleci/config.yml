@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/repo
+    docker:
+      # Node 10 LTS
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn install
+      - run:
+          name: run-tests
+          command: yarn test
