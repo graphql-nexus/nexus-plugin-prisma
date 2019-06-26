@@ -81,12 +81,11 @@ export class DMMFClass implements DMMF.Document {
     const model = this.modelMap[modelName];
 
     if (!model) {
-      return false
+      return false;
     }
 
     return true;
   }
-
 
   getMapping(modelName: string) {
     const mapping = this.mappings.find(m => m.model === modelName);

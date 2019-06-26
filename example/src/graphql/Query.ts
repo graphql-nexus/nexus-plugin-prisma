@@ -7,9 +7,9 @@ export const Query = objectType({
       alias: 'blogs',
       pagination: false
     });
-    
+
     t.crud.findOneBlog({ alias: 'blog' });
     t.crud.findManyAuthor();
-    t.crud.findManyPost({ type: 'CustomPost' });
+    t.crud.findManyPost({ type: 'CustomPost', ordering: true });
   }
 });

@@ -8,9 +8,19 @@ import { NexusPrismaParams } from '.';
 import { transformDMMF } from '../dmmf/dmmf-transformer';
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types';
 import { DMMFClass } from '../dmmf/DMMFClass';
-import { assertPhotonInContext, flatMap, nexusOpts } from '../utils';
+import {
+  assertPhotonInContext,
+  flatMap,
+  nexusOpts as nexusFieldOpts
+} from '../utils';
+import {
+  defaultArgsNamingStrategy,
+  defaultFieldNamingStrategy,
+  IArgsNamingStrategy,
+  IFieldNamingStrategy,
+  OperationName
+} from './NamingStrategies';
 import { dateTimeScalar, GQL_SCALARS_NAMES } from './scalars';
-import { defaultNamingStrategy, INamingStrategy } from './StrategyNaming';
 import { getSupportedMutations, getSupportedQueries } from './supported-ops';
 
 interface NexusPrismaMethodParams {
@@ -28,9 +38,10 @@ type FieldsWithModelName = {
 
 export class NexusPrismaBuilder {
   protected readonly dmmf: DMMFClass;
-  protected builtInputTypesMap: Record<string, boolean>;
+  protected visitedInputTypesMap: Record<string, boolean>;
   protected whitelistMap: Record<string, string[]>;
-  protected namingStrategy: INamingStrategy;
+  protected argsNamingStrategy: IArgsNamingStrategy;
+  protected fieldNamingStrategy: IFieldNamingStrategy;
 
   constructor(protected params: NexusPrismaParams) {
     let transformedDMMF;
@@ -44,30 +55,13 @@ export class NexusPrismaBuilder {
     }
 
     this.dmmf = new DMMFClass(transformedDMMF as any);
-    this.namingStrategy = defaultNamingStrategy;
-    this.builtInputTypesMap = {};
+    this.argsNamingStrategy = defaultArgsNamingStrategy;
+    this.fieldNamingStrategy = defaultFieldNamingStrategy;
+    this.visitedInputTypesMap = {};
     this.whitelistMap = {};
     if (!this.params.photon) {
       this.params.photon = ctx => ctx.photon;
     }
-  }
-
-  getPrismaScalars() {
-    const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
-      .filter(
-        f =>
-          f.outputType.kind === 'scalar' &&
-          !GQL_SCALARS_NAMES.includes(f.outputType.type)
-      )
-      .map(f => f.outputType.type);
-    const dedupScalarNames = [...new Set(allScalarNames)];
-    const scalars: any[] = [];
-
-    if (dedupScalarNames.includes('DateTime')) {
-      scalars.push(dateTimeScalar);
-    }
-
-    return scalars;
   }
 
   getNexusPrismaMethod() {
@@ -78,6 +72,9 @@ export class NexusPrismaBuilder {
     ];
   }
 
+  /**
+   * Generate `t.crud` output method
+   */
   protected getCRUDDynamicOutputMethod() {
     //const methodName = this.params.methodName ? this.params.methodName : 'crud';
 
@@ -132,6 +129,9 @@ export class NexusPrismaBuilder {
     });
   }
 
+  /**
+   * Generate `t.model` output method
+   */
   protected getModelDynamicOutputMethod() {
     // const methodName = this.params.methodName
     //   ? this.params.methodName
@@ -144,39 +144,7 @@ export class NexusPrismaBuilder {
           ? this.buildModel(t, graphQLTypeName)
           : (modelName: string) => this.buildModel(t, modelName);
 
-        // if (this.params.methodName) {
-        //   return {
-        //     [this.params.methodName]: modelDefinition
-        //   };
-        // }
-
         return modelDefinition;
-      }
-    });
-  }
-
-  protected getModelsDynamicOutputMethod() {
-    // const methodName = this.params.methodName
-    //   ? this.params.methodName
-    //   : 'models';
-    return dynamicOutputMethod({
-      name: 'models',
-      typeDefinition: `: NexusPrisma<TypeName, 'models'>`,
-      factory: ({ typeDef: t }) => {
-        const allModels = this.dmmf.datamodel.models.reduce<
-          Record<string, any>
-        >((acc, model) => {
-          acc[model.name] = this.buildModel(t, model.name);
-          return acc;
-        }, {});
-
-        // if (this.params.methodName) {
-        //   return {
-        //     [this.params.methodName]: allModels
-        //   };
-        // }
-
-        return allModels;
       }
     });
   }
@@ -185,14 +153,6 @@ export class NexusPrismaBuilder {
     t: core.OutputDefinitionBlock<any>,
     graphQLTypeName: string
   ) {
-    const model = this.dmmf.hasModel(graphQLTypeName);
-
-    if (!model) {
-      throw new Error(
-        `No model find with name ${graphQLTypeName}. Please use 't.models. instead.'`
-      );
-    }
-
     return this.buildSchemaForPrismaModel(graphQLTypeName, graphQLTypeName, t);
   }
 
@@ -309,7 +269,7 @@ export class NexusPrismaBuilder {
   ) {
     return args.reduce<Record<string, any>>((acc, arg) => {
       if (arg.inputType.kind === 'scalar') {
-        acc[arg.name] = core.arg(nexusOpts(arg.inputType));
+        acc[arg.name] = core.arg(nexusFieldOpts(arg.inputType));
       } else {
         const typeName = this.argTypeName(
           parentTypeName,
@@ -317,11 +277,11 @@ export class NexusPrismaBuilder {
           arg.inputType.type,
           arg.inputType.kind
         );
-        if (!this.builtInputTypesMap[typeName]) {
+        if (!this.visitedInputTypesMap[typeName]) {
           acc[arg.name] = this.createInputEnumType(parentTypeName, field, arg);
         } else {
           acc[arg.name] = core.arg(
-            nexusOpts({
+            nexusFieldOpts({
               ...arg.inputType,
               type: typeName
             })
@@ -344,14 +304,19 @@ export class NexusPrismaBuilder {
 
       mappedField.fields.forEach(field => {
         acc[field.name] = opts => {
-          if (!opts) {
-            opts = {};
-          }
-          if (!opts.pagination) {
-            opts.pagination = true;
-          }
-          const fieldName = opts.alias ? opts.alias : field.name;
-          const type = opts.type ? opts.type : field.outputType.type;
+          const mergedOpts: NexusPrismaMethodParams = {
+            pagination: true,
+            type: field.outputType.type,
+            ...opts
+          };
+          const fieldName = mergedOpts.alias
+            ? mergedOpts.alias
+            : this.getCRUDFieldName(
+                prismaModelName,
+                field.name,
+                mappedField.mapping
+              );
+          const type = mergedOpts.type!;
           const operationName = Object.keys(mappedField.mapping).find(
             key => (mappedField.mapping as any)[key] === field.name
           ) as keyof DMMF.Mapping | undefined;
@@ -363,13 +328,13 @@ export class NexusPrismaBuilder {
           }
 
           t.field(fieldName, {
-            ...nexusOpts({ ...field.outputType, type }),
+            ...nexusFieldOpts({ ...field.outputType, type }),
             args: this.computeArgsFromField(
               prismaModelName,
               parentTypeName,
               operationName,
               field,
-              opts
+              mergedOpts
             ),
             resolve: (_, args, ctx) => {
               const photon = this.params.photon(ctx);
@@ -395,7 +360,7 @@ export class NexusPrismaBuilder {
     field: DMMF.SchemaField,
     arg: DMMF.SchemaArg
   ) {
-    this.builtInputTypesMap[
+    this.visitedInputTypesMap[
       this.argTypeName(
         parentTypeName,
         field.name,
@@ -432,7 +397,7 @@ export class NexusPrismaBuilder {
         definition: t => {
           filteredFields.forEach(inputArg => {
             if (inputArg.inputType.kind === 'scalar') {
-              t.field(inputArg.name, nexusOpts(inputArg.inputType));
+              t.field(inputArg.name, nexusFieldOpts(inputArg.inputType));
             } else {
               const argumentTypeName = this.argTypeName(
                 parentTypeName,
@@ -441,7 +406,7 @@ export class NexusPrismaBuilder {
                 inputArg.inputType.kind
               );
               const type =
-                this.builtInputTypesMap[argumentTypeName] === true
+                this.visitedInputTypesMap[argumentTypeName] === true
                   ? argumentTypeName
                   : (this.createInputEnumType(
                       parentTypeName,
@@ -451,7 +416,7 @@ export class NexusPrismaBuilder {
 
               t.field(
                 inputArg.name,
-                nexusOpts({ ...inputArg.inputType, type })
+                nexusFieldOpts({ ...inputArg.inputType, type })
               );
             }
           });
@@ -468,19 +433,9 @@ export class NexusPrismaBuilder {
     const model = this.dmmf.getModelOrThrow(prismaModelName);
     const outputType = this.dmmf.getOutputType(model.name);
 
-    const result = model.fields.reduce<
+    const result = outputType.fields.reduce<
       Record<string, (opts?: NexusPrismaMethodParams) => any>
-    >((acc, modelField) => {
-      const graphqlField = outputType.fields.find(
-        f => f.name === modelField.name
-      )!;
-
-      if (!graphqlField) {
-        throw new Error(
-          `Could not find graphql field ${model.name}.${modelField.name}`
-        );
-      }
-
+    >((acc, graphqlField) => {
       acc[graphqlField.name] = opts => {
         if (!opts) {
           opts = {};
@@ -488,10 +443,10 @@ export class NexusPrismaBuilder {
         if (!opts.pagination) {
           opts.pagination = true;
         }
-        const fieldName = opts.alias ? opts.alias : modelField.name;
+        const fieldName = opts.alias ? opts.alias : graphqlField.name;
         const type = opts.type ? opts.type : graphqlField.outputType.type;
         const fieldOpts: core.NexusOutputFieldConfig<any, string> = {
-          ...nexusOpts({ ...graphqlField.outputType, type }),
+          ...nexusFieldOpts({ ...graphqlField.outputType, type }),
           args: this.computeArgsFromField(
             prismaModelName,
             graphQLTypeName,
@@ -501,7 +456,7 @@ export class NexusPrismaBuilder {
           )
         };
         // Rely on default resolvers for scalars
-        if (modelField.kind !== 'scalar') {
+        if (graphqlField.outputType.kind !== 'scalar') {
           const mapping = this.dmmf.getMapping(prismaModelName);
 
           fieldOpts.resolve = (root, args, ctx) => {
@@ -525,7 +480,7 @@ export class NexusPrismaBuilder {
     return result;
   }
 
-  isRelationFilterArg(type: string) {
+  protected isRelationFilterArg(type: string) {
     return (
       type.endsWith('Filter') &&
       ![
@@ -539,7 +494,7 @@ export class NexusPrismaBuilder {
     );
   }
 
-  argTypeName(
+  protected argTypeName(
     graphQLTypeName: string,
     fieldName: string,
     inputTypeName: string,
@@ -553,15 +508,15 @@ export class NexusPrismaBuilder {
       }
 
       if (input.isWhereType) {
-        return this.namingStrategy.whereInput(graphQLTypeName, fieldName);
+        return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName);
       }
 
       if (input.isOrderType) {
-        return this.namingStrategy.orderByInput(graphQLTypeName, fieldName);
+        return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName);
       }
 
       if (this.isRelationFilterArg(inputTypeName)) {
-        return this.namingStrategy.relationFilterInput(
+        return this.argsNamingStrategy.relationFilterInput(
           graphQLTypeName,
           fieldName
         );
@@ -575,5 +530,39 @@ export class NexusPrismaBuilder {
     }
 
     return inputTypeName;
+  }
+
+  protected getCRUDFieldName(
+    modelName: string,
+    fieldName: string,
+    mapping: DMMF.Mapping
+  ) {
+    const operationName = Object.keys(mapping).find(
+      key => (mapping as any)[key] === fieldName
+    ) as OperationName | undefined;
+
+    if (!operationName || !this.fieldNamingStrategy[operationName]) {
+      throw new Error(`Could not find mapping for field ${fieldName}`);
+    }
+
+    return this.fieldNamingStrategy[operationName](fieldName, modelName);
+  }
+
+  protected getPrismaScalars() {
+    const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
+      .filter(
+        f =>
+          f.outputType.kind === 'scalar' &&
+          !GQL_SCALARS_NAMES.includes(f.outputType.type)
+      )
+      .map(f => f.outputType.type);
+    const dedupScalarNames = [...new Set(allScalarNames)];
+    const scalars: any[] = [];
+
+    if (dedupScalarNames.includes('DateTime')) {
+      scalars.push(dateTimeScalar);
+    }
+
+    return scalars;
   }
 }

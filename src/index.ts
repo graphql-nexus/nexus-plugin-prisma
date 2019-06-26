@@ -9,7 +9,7 @@ import { getImportPathRelativeToOutput } from './utils';
 
 const writeFileAsync = promisify(fs.writeFile);
 
-function getNexusPrismaRuntime(photonOutput: string) {
+export function getNexusPrismaRuntime(photonOutput: string) {
   const dmmf = require(photonOutput).dmmf as ExternalDMMF.Document;
   const transformedDmmf = transformDMMF(dmmf);
   const nccPath = eval(
@@ -54,7 +54,6 @@ const generate: GeneratorFunction = async ({ generator, otherGenerators }) => {
   const globalTypingsPath = path.join(nexusPrismaOutput, 'index.d.ts');
 
   const typingsPathSource = path.join(__dirname, 'nexus-prisma', 'index.d.ts');
-  //const typingsPathTarget = path.join(output, 'index.d.ts');
 
   try {
     fs.unlinkSync(globalTypingsPath);
@@ -105,6 +104,9 @@ if (process.env.NEXUS_PRISMA_DEBUG) {
           '../example/node_modules/@generated/photon'
         )
       }
-    ]
+    ],
+    dataSources: null,
+    dmmf: null,
+    datamodel: ''
   });
 }

@@ -9,11 +9,6 @@ generator photon {
   output   = "node_modules/@generated/photon"
 }
 
-generator photon_for_lib {
-  provider = "photonjs"
-  output   = "../node_modules/@generated/photon"
-}
-
 model Blog {
   id        Int      @id
   createdAt DateTime @default(now())

@@ -2,7 +2,7 @@ import Photon from '@generated/photon';
 import { GraphQLServer } from 'graphql-yoga';
 import { makeSchema } from '@prisma/nexus';
 import { join } from 'path';
-import { nexusPrismaMethod } from '@generated/nexus-prisma';
+import { nexusPrismaPlugin } from '@generated/nexus-prisma';
 import * as allTypes from './graphql';
 
 main();
@@ -12,7 +12,7 @@ async function main() {
 
   await photon.connect();
 
-  const nexusPrisma = nexusPrismaMethod({
+  const nexusPrisma = nexusPrismaPlugin({
     photon: ctx => ctx.photon
   });
 

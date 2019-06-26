@@ -38,7 +38,7 @@ type Blog {
   createdAt: DateTime!
   id: Int!
   name: String!
-  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: BlogPostsOrderByInput, skip: Int): [CustomPost!]
   updatedAt: DateTime!
   viewCount: Int!
 }
@@ -61,6 +61,14 @@ input BlogCreateWithoutAuthorsInput {
   viewCount: Int!
 }
 
+input BlogPostsOrderByInput {
+  createdAt: OrderByArg
+  id: OrderByArg
+  name: OrderByArg
+  updatedAt: OrderByArg
+  viewCount: OrderByArg
+}
+
 input BlogWhereUniqueInput {
   id: Int
 }
@@ -76,6 +84,11 @@ scalar DateTime
 
 type Mutation {
   createOneBlog(data: BlogCreateInput!): Blog!
+}
+
+enum OrderByArg {
+  asc
+  desc
 }
 
 input PostCreateManyWithoutPostsInput {
@@ -99,7 +112,12 @@ input PostWhereUniqueInput {
 
 type Query {
   blog(where: BlogWhereUniqueInput!): Blog
-  blogs(after: String, before: String, first: Int, last: Int, skip: Int): [Blog!]
+  blogs: [Blog!]
   findManyAuthor(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
-  findManyPost(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
+  findManyPost(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
+}
+
+input QueryFindManyPostOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
 }

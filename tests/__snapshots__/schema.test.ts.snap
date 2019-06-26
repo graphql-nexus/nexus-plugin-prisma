@@ -1,0 +1,170 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`schema generation it exposes filtering only if filtering: true 1`] = `
+"input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type Post {
+  id: Int!
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(where: UserPostsWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserPostsFilter {
+  every: UserPostsWhereInput
+  some: UserPostsWhereInput
+  none: UserPostsWhereInput
+}
+
+input UserPostsWhereInput {
+  id: IntFilter
+  posts: UserPostsFilter
+  AND: [UserPostsWhereInput!]
+  OR: [UserPostsWhereInput!]
+  NOT: [UserPostsWhereInput!]
+}
+"
+`;
+
+exports[`schema generation it exposes findOne and findMany 1`] = `
+"type Query {
+  findOneUser(where: UserWhereUniqueInput!): User
+  findManyUser(skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+type User {
+  id: Int!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+"
+`;
+
+exports[`schema generation it exposes id ordering 1`] = `
+"enum OrderByArg {
+  asc
+  desc
+}
+
+type Post {
+  id: Int!
+  name: String!
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(orderBy: UserPostsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserPostsOrderByInput {
+  id: OrderByArg
+}
+"
+`;
+
+exports[`schema generation it exposes only id filters 1`] = `
+"input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type Post {
+  id: Int!
+  name: String!
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(where: UserPostsWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserPostsWhereInput {
+  id: IntFilter
+}
+"
+`;
+
+exports[`schema generation it exposes only pagination on relations by default 1`] = `
+"type Post {
+  id: Int!
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+"
+`;
+
+exports[`schema generation it exposes ordering only if ordering: true 1`] = `
+"enum OrderByArg {
+  asc
+  desc
+}
+
+type Post {
+  id: Int!
+  name: String!
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(orderBy: UserPostsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserPostsOrderByInput {
+  id: OrderByArg
+}
+"
+`;
+
+exports[`schema generation simple schema 1`] = `
+"type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  name: String!
+}
+"
+`;

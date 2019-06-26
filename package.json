@@ -12,17 +12,26 @@
   "scripts": {
     "build": "rm -rf dist && rm -rf nexus_prisma_ncc_build && tsc && ncc build -e @prisma/nexus src/nexus-prisma/index.ts -o nexus_prisma_ncc_build",
     "prepublish": "yarn build",
-    "prettify": "prettier --write src/**/*.ts"
+    "prettify": "prettier --write src/**/*.ts",
+    "test": "yarn build && yarn jest"
   },
   "dependencies": {
     "@prisma/nexus": "^0.0.1"
   },
   "devDependencies": {
-    "@prisma/cli": "^0.0.19",
-    "@types/graphql": "^14.2.1",
+    "@prisma/cli": "^0.0.21",
+    "@prisma/lift": "^0.0.114",
+    "@prisma/photon": "^0.0.122",
+    "@types/graphql": "^14.2.2",
+    "@types/jest": "^24.0.15",
     "@types/node": "^12.0.10",
+    "@types/tmp": "^0.1.0",
     "@zeit/ncc": "^0.20.1",
+    "jest": "^24.8.0",
     "prettier": "^1.17.1",
+    "prisma2": "^0.0.95",
+    "tmp": "^0.1.0",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.2"
   },

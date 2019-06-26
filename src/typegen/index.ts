@@ -131,10 +131,6 @@ function renderNexusPrismaInputs(dmmf: DMMF) {
         .map(f => {
           const whereArg = f.args.find(a => a.name === 'where')!;
 
-          if (!whereArg) {
-            console.log(f.name, f.args);
-          }
-
           const orderByArg = f.args.find(a => a.name === 'orderBy')!;
           const whereInput = dmmf.schema.inputTypes.find(
             i => i.name === whereArg.inputType.type

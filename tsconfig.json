@@ -11,5 +11,5 @@
     "esModuleInterop": true,
     "sourceMap": true
   },
-  "exclude": ["node_modules", "example"]
+  "exclude": ["node_modules", "example", "tests"]
 }

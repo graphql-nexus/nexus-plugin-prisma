@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src/index.ts",
     "install": "yarn generate",
-    "generate": "prisma2 generate && NEXUS_PRISMA_DEBUG=true yarn node ../dist/index.js || echo \"\""
+    "generate": "prisma2 generate && NEXUS_PRISMA_DEV=true yarn node ../dist/index.js || echo \"\""
   },
   "dependencies": {
     "@prisma/nexus": "^0.0.1",
