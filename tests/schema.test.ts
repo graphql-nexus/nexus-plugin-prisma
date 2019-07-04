@@ -207,8 +207,8 @@ describe('schema generation', () => {
     const Query = objectType({
       name: 'Query',
       definition(t: any) {
-        t.crud.findOneUser();
-        t.crud.findManyUser();
+        t.crud.user();
+        t.crud.users();
       }
     });
     const User = objectType({

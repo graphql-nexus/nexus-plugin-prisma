@@ -43,8 +43,8 @@ input UserPostsWhereInput {
 
 exports[`schema generation it exposes findOne and findMany 1`] = `
 "type Query {
-  findOneUser(where: UserWhereUniqueInput!): User
-  findManyUser(skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  user(where: UserWhereUniqueInput!): User
+  users(skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
 
 type User {
