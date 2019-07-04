@@ -11,14 +11,14 @@ import { DMMFClass } from '../dmmf/DMMFClass';
 import {
   assertPhotonInContext,
   flatMap,
+  getCRUDFieldName,
   nexusOpts as nexusFieldOpts
 } from '../utils';
 import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   IArgsNamingStrategy,
-  IFieldNamingStrategy,
-  OperationName
+  IFieldNamingStrategy
 } from './NamingStrategies';
 import { dateTimeScalar, GQL_SCALARS_NAMES } from './scalars';
 import { getSupportedMutations, getSupportedQueries } from './supported-ops';
@@ -303,7 +303,13 @@ export class NexusPrismaBuilder {
       const prismaModelName = mappedField.mapping.model;
 
       mappedField.fields.forEach(field => {
-        acc[field.name] = opts => {
+        const mappedFieldName = getCRUDFieldName(
+          prismaModelName,
+          field.name,
+          mappedField.mapping,
+          this.fieldNamingStrategy
+        );
+        acc[mappedFieldName] = opts => {
           const mergedOpts: NexusPrismaMethodParams = {
             pagination: true,
             type: field.outputType.type,
@@ -311,11 +317,7 @@ export class NexusPrismaBuilder {
           };
           const fieldName = mergedOpts.alias
             ? mergedOpts.alias
-            : this.getCRUDFieldName(
-                prismaModelName,
-                field.name,
-                mappedField.mapping
-              );
+            : mappedFieldName;
           const type = mergedOpts.type!;
           const operationName = Object.keys(mappedField.mapping).find(
             key => (mappedField.mapping as any)[key] === field.name
@@ -530,22 +532,6 @@ export class NexusPrismaBuilder {
     }
 
     return inputTypeName;
-  }
-
-  protected getCRUDFieldName(
-    modelName: string,
-    fieldName: string,
-    mapping: DMMF.Mapping
-  ) {
-    const operationName = Object.keys(mapping).find(
-      key => (mapping as any)[key] === fieldName
-    ) as OperationName | undefined;
-
-    if (!operationName || !this.fieldNamingStrategy[operationName]) {
-      throw new Error(`Could not find mapping for field ${fieldName}`);
-    }
-
-    return this.fieldNamingStrategy[operationName](fieldName, modelName);
   }
 
   protected getPrismaScalars() {

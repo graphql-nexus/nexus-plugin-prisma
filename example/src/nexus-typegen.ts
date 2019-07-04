@@ -149,10 +149,10 @@ export interface NexusGenFieldTypes {
     createOneBlog: NexusGenRootTypes['Blog']; // Blog!
   }
   Query: { // field return type
+    authors: NexusGenRootTypes['Author'][] | null; // [Author!]
     blog: NexusGenRootTypes['Blog'] | null; // Blog
     blogs: NexusGenRootTypes['Blog'][] | null; // [Blog!]
-    findManyAuthor: NexusGenRootTypes['Author'][] | null; // [Author!]
-    findManyPost: NexusGenRootTypes['CustomPost'][] | null; // [CustomPost!]
+    posts: NexusGenRootTypes['CustomPost'][] | null; // [CustomPost!]
   }
 }
 
@@ -189,17 +189,17 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    blog: { // args
-      where: NexusGenInputs['BlogWhereUniqueInput']; // BlogWhereUniqueInput!
-    }
-    findManyAuthor: { // args
+    authors: { // args
       after?: string | null; // String
       before?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
     }
-    findManyPost: { // args
+    blog: { // args
+      where: NexusGenInputs['BlogWhereUniqueInput']; // BlogWhereUniqueInput!
+    }
+    posts: { // args
       after?: string | null; // String
       before?: string | null; // String
       first?: number | null; // Int

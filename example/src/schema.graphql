@@ -111,10 +111,10 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  authors(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
   blog(where: BlogWhereUniqueInput!): Blog
   blogs: [Blog!]
-  findManyAuthor(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
-  findManyPost(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
 }
 
 input QueryFindManyPostOrderByInput {

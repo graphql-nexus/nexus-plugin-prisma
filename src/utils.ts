@@ -1,4 +1,9 @@
 import { relative } from 'path';
+import { ExternalDMMF as DMMF } from './dmmf/dmmf-types';
+import {
+  OperationName,
+  IFieldNamingStrategy
+} from './nexus-prisma/NamingStrategies';
 
 export const keyBy: <T>(
   collection: T[],
@@ -77,4 +82,21 @@ export function getImportPathRelativeToOutput(
   relativePath = relativePath.replace(/\\/g, '/');
 
   return relativePath;
+}
+
+export function getCRUDFieldName(
+  modelName: string,
+  fieldName: string,
+  mapping: DMMF.Mapping,
+  namingStrategy: IFieldNamingStrategy
+) {
+  const operationName = Object.keys(mapping).find(
+    key => (mapping as any)[key] === fieldName
+  ) as OperationName | undefined;
+
+  if (!operationName || !namingStrategy[operationName]) {
+    throw new Error(`Could not find mapping for field ${fieldName}`);
+  }
+
+  return namingStrategy[operationName](fieldName, modelName);
 }

@@ -1,5 +1,6 @@
-import { upperFirst } from '../utils';
+import pluralize from 'pluralize';
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types';
+import { upperFirst } from '../utils';
 
 export interface IArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string;
@@ -27,8 +28,8 @@ export type IFieldNamingStrategy = Record<
 >;
 
 export const defaultFieldNamingStrategy: IFieldNamingStrategy = {
-  findOne: fieldName => fieldName,
-  findMany: fieldName => fieldName,
+  findOne: (_, modelName) => modelName.toLowerCase(),
+  findMany: (_, modelName) => pluralize(modelName).toLowerCase(),
   create: fieldName => fieldName,
   update: fieldName => fieldName,
   delete: fieldName => fieldName,
