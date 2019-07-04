@@ -79,8 +79,8 @@ import { GraphQLServer } from 'graphql-yoga';
 const Query = objectType({
   name: 'Query',
   definition(t) {
-    t.crud.findOneTodo();
-    t.crud.findManyTodo();
+    t.crud.todo();
+    t.crud.todos();
   }
 });
 
@@ -141,8 +141,8 @@ server.start(() => console.log('Server is running on http://localhost:4000'));
 ```graphql
 # The fully exposed "Query" building block
 type Query {
-  findOneTodo(where: TodoWhereUniqueInput!): Todo
-  findManyTodo(
+  todo(where: TodoWhereUniqueInput!): Todo
+  todos(
     after: String
     before: String
     first: Int
