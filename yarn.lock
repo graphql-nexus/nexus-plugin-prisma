@@ -1902,7 +1902,7 @@ camelcase@^4.0.0, camelcase@^4.1.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
   integrity sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=
 
-camelcase@^5.0.0, camelcase@^5.2.0:
+camelcase@^5.0.0:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
@@ -3462,10 +3462,17 @@ graphql-tag@2.10.1, graphql-tag@^2.10.0:
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.1.tgz#10aa41f1cd8fae5373eaf11f1f67260a3cad5e02"
   integrity sha512-jApXqWBzNXQ8jYa/HLkZJaVw9jgwNqZkywa2zfFn16Iv1Zb7ELNHkJaXHR7Quvd5SIGsy6Ny7SUKATgnu05uEg==
 
-graphql@14.2.1, "graphql@^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0", graphql@^14.0.2:
+graphql@14.2.1, graphql@^14.0.2:
   version "14.2.1"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.2.1.tgz#779529bf9a01e7207b977a54c20670b48ca6e95c"
   integrity sha512-2PL1UbvKeSjy/lUeJqHk+eR9CvuErXoCNwJI4jm3oNFEeY+9ELqHNKO1ZuSxAkasPkpWbmT/iMRMFxd3cEL3tQ==
+  dependencies:
+    iterall "^1.2.2"
+
+graphql@^14.3.0:
+  version "14.4.2"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.4.2.tgz#553a7d546d524663eda49ed6df77577be3203ae3"
+  integrity sha512-6uQadiRgnpnSS56hdZUSvFrVcQ6OF9y6wkxJfKquFtHlnl7+KSuWwSJsdwiK1vybm1HgcdbpGkCpvhvsVQ0UZQ==
   dependencies:
     iterall "^1.2.2"
 
@@ -6302,6 +6309,11 @@ prettier@1.14.3:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.14.3.tgz#90238dd4c0684b7edce5f83b0fb7328e48bd0895"
   integrity sha512-qZDVnCrnpsRJJq5nSsiHCE3BYMED2OtsI+cmzIzF1QIfqm5ALf8tEJcO27zV1gKNKRPdhjO0dNWnrzssDQ1tFg==
 
+prettier@1.16.4:
+  version "1.16.4"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.4.tgz#73e37e73e018ad2db9c76742e2647e21790c9717"
+  integrity sha512-ZzWuos7TI5CKUeQAtFd6Zhm2s6EpAD/ZLApIhsF9pRvRtM1RFo61dM/4MSRUA0SuLugA/zgrZD8m0BaY46Og7g==
+
 prettier@1.17.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.17.0.tgz#53b303676eed22cc14a9f0cec09b477b3026c008"
@@ -6317,10 +6329,10 @@ pretty-format@^24.7.0:
     ansi-styles "^3.2.0"
     react-is "^16.8.4"
 
-prisma-cli-core@1.30.2:
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/prisma-cli-core/-/prisma-cli-core-1.30.2.tgz#4af94f3ab913c0b2b33f482e4bb4af704696168f"
-  integrity sha512-HNay9tvghjSl7EEA+qPc7ewpNp9HKiJPuHe7KZeIDjygJ4GK0fYXSBWTSV7VQ/GBBNHkiq/jmmokd7MwCwikww==
+prisma-cli-core@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-cli-core/-/prisma-cli-core-1.34.1.tgz#1ae1460d627f9d649edb8517158c284aae06e17f"
+  integrity sha512-tu5dMJgell4IV4pD7xMbAzNUF30yNsrYNeaIvqxSGvwv3qOuT/CAki9mW1MQew6ASQOvJyyQ5+Nxe2cdk6Mv1Q==
   dependencies:
     "@types/express" "^4.16.1"
     adm-zip "^0.4.7"
@@ -6334,7 +6346,7 @@ prisma-cli-core@1.30.2:
     figures "^2.0.0"
     fs-extra "^7.0.0"
     globby "^8.0.1"
-    graphql "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
+    graphql "^14.3.0"
     graphql-config "2.2.1"
     graphql-config-extension-prisma "0.2.5"
     graphql-playground-middleware-express "^1.6.2"
@@ -6348,21 +6360,21 @@ prisma-cli-core@1.30.2:
     node-forge "^0.7.1"
     npm-run "4.1.2"
     opn "^5.1.0"
-    prisma-client-lib "1.30.2"
-    prisma-datamodel "1.30.2"
-    prisma-db-introspection "1.30.2"
-    prisma-generate-schema "1.30.2"
-    prisma-yml "1.30.2"
+    prisma-client-lib "1.34.1"
+    prisma-datamodel "1.34.1"
+    prisma-db-introspection "1.34.1"
+    prisma-generate-schema "1.34.1"
+    prisma-yml "1.34.1"
     scuid "^1.0.2"
     semver "^5.6.0"
     sillyname "^0.1.0"
     source-map-support "^0.4.18"
     table "^4.0.1"
 
-prisma-cli-engine@1.30.2:
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/prisma-cli-engine/-/prisma-cli-engine-1.30.2.tgz#c3f4b5d32c5999fe7abec8feb180d3bcca56428b"
-  integrity sha512-OPQGdGSTFqHUL1kJIaEVcSUJMqWPXkOtp9r2r14er4ymz4QaU8d8Jmuuw6DedRPUPs9Vl1BgqraEnnUUuIdiVQ==
+prisma-cli-engine@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-cli-engine/-/prisma-cli-engine-1.34.1.tgz#2b8b05ec4a140602ac135fe9890a22eff84573e3"
+  integrity sha512-jvmja2vp3XfKxxV5k247TN1cPhbLEAS72ZK3u0qI8zusHkRmBHgg+RazLZRzjk9KjNfoP9pp2+80+bVeRR8/MA==
   dependencies:
     "@heroku/linewrap" "^1.0.0"
     ansi-escapes "^3.0.0"
@@ -6375,7 +6387,7 @@ prisma-cli-engine@1.30.2:
     figures "^2.0.0"
     find-up "^3.0.0"
     fs-extra "^7.0.0"
-    graphql "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
+    graphql "^14.3.0"
     graphql-request "^1.5.0"
     inquirer "^6.2.0"
     isomorphic-fetch "^2.2.1"
@@ -6398,7 +6410,7 @@ prisma-cli-engine@1.30.2:
     mkdirp "^0.5.1"
     opn "^5.1.0"
     prisma-json-schema "0.1.3"
-    prisma-yml "1.30.2"
+    prisma-yml "1.34.1"
     raven "2.6.4"
     rwlockfile "^1.4.8"
     scuid "^1.0.2"
@@ -6431,6 +6443,27 @@ prisma-client-lib@1.30.2:
     ws "^6.1.0"
     zen-observable "^0.8.10"
 
+prisma-client-lib@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-client-lib/-/prisma-client-lib-1.34.1.tgz#94a223357f59228eac6d51eb3ce7ed0b766fbd8c"
+  integrity sha512-1/gVrj/GORMcdl9CGRJE397blgOLIzVLJgMPrzRga76mXOqztaEMLvNABrjmE+99/2kHzefzjsBWic7+VrvIgQ==
+  dependencies:
+    "@types/node" "^10.12.0"
+    "@types/prettier" "^1.13.2"
+    debug "^4.1.0"
+    flow-bin "^0.87.0"
+    graphql-tag "^2.10.0"
+    http-link-dataloader "^0.1.6"
+    jsonwebtoken "^8.3.0"
+    lodash.flatten "^4.4.0"
+    prettier "1.16.4"
+    prisma-datamodel "1.34.1"
+    prisma-generate-schema "1.34.1"
+    subscriptions-transport-ws "^0.9.15"
+    uppercamelcase "^3.0.0"
+    ws "^6.1.0"
+    zen-observable "^0.8.10"
+
 prisma-datamodel@1.30.2:
   version "1.30.2"
   resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.30.2.tgz#5c85eac74f56adc7dc83968e613dfc95ec76d54c"
@@ -6440,24 +6473,31 @@ prisma-datamodel@1.30.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma-db-introspection@1.30.2:
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/prisma-db-introspection/-/prisma-db-introspection-1.30.2.tgz#4f670739e53ce3a94f003cf2183ce7ffedbe820f"
-  integrity sha512-cn2yx7jBFnEmek7nIfXp5KAqkUVq7yGDLhbuBD7I5g/R512z71r0NCSco9efyDdQyi3FCynGpTqACiJvYz1JOg==
+prisma-datamodel@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-datamodel/-/prisma-datamodel-1.34.1.tgz#098c5c9a7ee71e8669053af27df186a1198db406"
+  integrity sha512-ZNWW45VtmkAgDXuQQe8K4rQ4AWHbfUiOWv3or/zEaD4yYnRf4bJLmcXbWXVg47S9RdyxNA20M5m6EkxLFkSqlw==
+  dependencies:
+    graphql "^14.3.0"
+    pluralize "^7.0.0"
+    popsicle "10"
+
+prisma-db-introspection@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-db-introspection/-/prisma-db-introspection-1.34.1.tgz#2f91b157c5c9d0475952af1afd2c25c15a188e80"
+  integrity sha512-qAegVZW9fAPUGvPw4HM4b9gWHahnUTv10ZKhDySZ5DxxfpDGFC1Ji+j9S2Djqr144drH9Wn5DfsUgYgKQYYoTQ==
   dependencies:
     "@types/mongodb" "^3.1.14"
     "@types/mysql" "^2.15.5"
-    camelcase "^5.2.0"
     graphql-request "^1.5.0"
     lodash "^4.17.4"
     mongodb "^3.1.10"
     mysql "^2.16.0"
     pg "^7.4.1"
     pluralize "^7.0.0"
-    prisma-datamodel "1.30.2"
-    prisma-yml "1.30.2"
+    prisma-datamodel "1.34.1"
+    prisma-yml "1.34.1"
     scuid "^1.0.2"
-    uppercamelcase "^3.0.0"
 
 prisma-generate-schema@1.30.2:
   version "1.30.2"
@@ -6468,6 +6508,16 @@ prisma-generate-schema@1.30.2:
     pluralize "^7.0.0"
     popsicle "10"
     prisma-datamodel "1.30.2"
+
+prisma-generate-schema@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-generate-schema/-/prisma-generate-schema-1.34.1.tgz#a6458149d9fcda8d5d5cb4e04110cd13732efd3a"
+  integrity sha512-NMsPYYRCQ93f5AtY3P3XYsOWWBVeBsjANfqtiautH6ye9POHlXxru1u3nn1dtCvKcjMiOxBvUPiPPi2SsgrS3Q==
+  dependencies:
+    graphql "^14.3.0"
+    pluralize "^7.0.0"
+    popsicle "10"
+    prisma-datamodel "1.34.1"
 
 prisma-json-schema@0.1.3:
   version "0.1.3"
@@ -6498,10 +6548,10 @@ prisma-yml@1.20.0-beta.18:
     scuid "^1.0.2"
     yaml-ast-parser "^0.0.40"
 
-prisma-yml@1.30.2:
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/prisma-yml/-/prisma-yml-1.30.2.tgz#191593218bba4de2187884e55334869c7c63a331"
-  integrity sha512-sAFK+LN9tjgNjK9p5ivNtQJp70ErYEgU3kn7xlLVqgJI097zYcUaOhyh0LA3crIq697jG5nNBp4uLuuWoixRLA==
+prisma-yml@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma-yml/-/prisma-yml-1.34.1.tgz#ebed154b0bc54a754fcea4c8cc206fa31101b529"
+  integrity sha512-QyFnznzpGzohxvIzMbsC9EMcCGr18uEB8Djoagq3y3yd1HLkuOkArstkfQd8QqgPILkN0P8uYuf9NbS/VW58FA==
   dependencies:
     ajv "5"
     bluebird "^3.5.1"
@@ -6522,14 +6572,14 @@ prisma-yml@1.30.2:
     scuid "^1.0.2"
     yaml-ast-parser "^0.0.40"
 
-prisma@1.30.2:
-  version "1.30.2"
-  resolved "https://registry.yarnpkg.com/prisma/-/prisma-1.30.2.tgz#9348a0a6daf7b2c5efe1247ebc0f89dc681fa3b0"
-  integrity sha512-c2Mj+EiiLwDE8d+i8SshA8rQrKoYFZRcpDAck+qltrMv7GPE0mThM/uCX6MUVgOatnDEgYOp90sHGh3HCtfHsg==
+prisma@1.34.1:
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/prisma/-/prisma-1.34.1.tgz#ca4c8e4d64c4f32695a2d59dccf1c7483a4924e2"
+  integrity sha512-0xo03Pa2jtdHG2LBTYPaaOByG5ae5Yu0G84KLbSEnmFNz0Cx3L5PjJo0H15Gs3zpuTYQNmiVy4ABwD5VhdRDaw==
   dependencies:
     fs-extra "^7.0.0"
-    prisma-cli-core "1.30.2"
-    prisma-cli-engine "1.30.2"
+    prisma-cli-core "1.34.1"
+    prisma-cli-engine "1.34.1"
     semver "^5.4.1"
     source-map-support "^0.4.18"
 
