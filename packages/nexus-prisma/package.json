@@ -39,7 +39,7 @@
     "prisma": "1.30.2",
     "prisma-client-lib": "1.30.2",
     "ts-jest": "24.0.2",
-    "typescript": "3.4.5"
+    "typescript": "3.5.3"
   },
   "prettier": {
     "singleQuote": true,
