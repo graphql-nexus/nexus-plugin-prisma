@@ -198,7 +198,9 @@ export class NexusPrismaBuilder {
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${prismaModelName}.${field.name}`
+          `Could not find filtering argument for ${prismaModelName}.${
+            field.name
+          }`
         );
       }
 
@@ -227,7 +229,9 @@ export class NexusPrismaBuilder {
 
       if (!orderByArg) {
         throw new Error(
-          `Could not find ordering argument for ${prismaModelName}.${field.name}`
+          `Could not find ordering argument for ${prismaModelName}.${
+            field.name
+          }`
         );
       }
 
@@ -457,8 +461,8 @@ export class NexusPrismaBuilder {
             opts
           )
         };
-        // Rely on default resolvers for scalars
-        if (graphqlField.outputType.kind !== 'scalar') {
+        // Rely on default resolvers for scalars and enums
+        if (graphqlField.outputType.kind === 'object') {
           const mapping = this.dmmf.getMapping(prismaModelName);
 
           fieldOpts.resolve = (root, args, ctx) => {
