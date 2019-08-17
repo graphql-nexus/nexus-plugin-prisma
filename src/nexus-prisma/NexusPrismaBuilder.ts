@@ -190,11 +190,7 @@ export class NexusPrismaBuilder {
     let args: DMMF.SchemaArg[] = [];
 
     if (opts.filtering) {
-      const whereArg = field.args.find(
-        a =>
-          a.inputType.type === `${prismaModelName}WhereInput` &&
-          a.name === 'where'
-      );
+      const whereArg = field.args.find(a => a.name === 'where');
 
       if (!whereArg) {
         throw new Error(
