@@ -1,22 +1,10 @@
 import { objectType } from '@prisma/nexus';
 import { printSchema } from 'graphql';
-import { generateSchema } from './utils';
+import { generateSchema } from './__utils';
 
 jest.setTimeout(20000);
 
 describe('schema generation', () => {
-  /**
-   * /!\ Do not remove this test. For some reason, the first test always fail.
-   * /!\ TODO: Fix this ugly mess
-   */
-  test('warmup', async () => {
-    const datamodel = 'model User { id Int @id }';
-
-    try {
-      await generateSchema(datamodel, []);
-    } catch {}
-  });
-
   test('simple schema', async () => {
     const User = objectType({
       name: 'User',
