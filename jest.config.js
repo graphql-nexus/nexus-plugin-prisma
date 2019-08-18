@@ -1,3 +1,6 @@
+/**
+ * @type {jest.InitialOptions}
+ */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
