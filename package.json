@@ -20,11 +20,11 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/cli": "^0.0.46",
-    "@prisma/lift": "^0.2.3",
-    "@prisma/photon": "^0.2.4",
+    "@prisma/cli": "^0.0.47",
+    "@prisma/lift": "^0.2.5",
+    "@prisma/photon": "^0.2.6",
     "@types/graphql": "^14.2.3",
-    "@types/jest": "^24.0.17",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
     "@types/pluralize": "^0.0.29",
     "@types/tmp": "^0.1.0",
