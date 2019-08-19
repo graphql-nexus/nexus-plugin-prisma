@@ -39,7 +39,8 @@
     "typescript": "^3.5.3"
   },
   "prettier": {
-    "semi": true,
-    "singleQuote": true
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }

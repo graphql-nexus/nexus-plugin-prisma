@@ -1,7 +1,7 @@
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types';
+import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
 
 export function getSupportedQueries(mapping: DMMF.Mapping): string[] {
-  return [mapping.findOne, mapping.findMany].filter(Boolean) as string[];
+  return [mapping.findOne, mapping.findMany].filter(Boolean) as string[]
 }
 
 export function getSupportedMutations(mapping: DMMF.Mapping): string[] {
@@ -11,6 +11,6 @@ export function getSupportedMutations(mapping: DMMF.Mapping): string[] {
     mapping.updateMany,
     mapping.delete,
     mapping.deleteMany,
-    mapping.upsert
-  ].filter(Boolean) as string[];
+    mapping.upsert,
+  ].filter(Boolean) as string[]
 }

@@ -6,13 +6,13 @@ module.exports = {
   testEnvironment: 'node',
   watchPlugins: [
     'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname'
+    'jest-watch-typeahead/testname',
   ],
   globals: {
     'ts-jest': {
       diagnostics: {
-        warnOnly: !process.env.CI
-      }
-    }
-  }
-};
+        warnOnly: !process.env.CI,
+      },
+    },
+  },
+}
