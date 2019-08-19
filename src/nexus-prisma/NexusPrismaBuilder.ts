@@ -456,8 +456,8 @@ export class NexusPrismaBuilder {
             opts,
           ),
         }
-        // Rely on default resolvers for scalars
-        if (graphqlField.outputType.kind !== 'scalar') {
+        // Rely on default resolvers for scalars and enums
+        if (graphqlField.outputType.kind === 'object') {
           const mapping = this.dmmf.getMapping(prismaModelName)
 
           fieldOpts.resolve = (root, args, ctx) => {
