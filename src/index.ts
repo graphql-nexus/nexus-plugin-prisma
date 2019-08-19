@@ -86,6 +86,7 @@ if (process.env.NEXUS_PRISMA_DEV) {
   generatorDefinition.generate({
     cwd: process.cwd(),
     generator: {
+      platforms: [],
       output: path.join(
         __dirname,
         '../example/node_modules/@generated/nexus-prisma'
@@ -99,6 +100,7 @@ if (process.env.NEXUS_PRISMA_DEV) {
         provider: 'photonjs',
         name: 'photon',
         config: {},
+        platforms: [],
         output: path.join(
           __dirname,
           '../example/node_modules/@generated/photon'

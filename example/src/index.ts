@@ -1,41 +1,41 @@
-import Photon from '@generated/photon';
-import { GraphQLServer } from 'graphql-yoga';
-import { makeSchema } from '@prisma/nexus';
-import { join } from 'path';
-import { nexusPrismaPlugin } from '@generated/nexus-prisma';
-import * as allTypes from './graphql';
+import Photon from '@generated/photon'
+import { GraphQLServer } from 'graphql-yoga'
+import { makeSchema } from '@prisma/nexus'
+import { join } from 'path'
+import { nexusPrismaPlugin } from '@generated/nexus-prisma'
+import * as allTypes from './graphql'
 
-main();
+main()
 
 async function main() {
-  const photon = new Photon();
+  const photon = new Photon()
 
-  await photon.connect();
+  await photon.connect()
 
   const nexusPrisma = nexusPrismaPlugin({
-    photon: ctx => ctx.photon
-  });
+    photon: ctx => ctx.photon,
+  })
 
   const schema = makeSchema({
     types: [allTypes, nexusPrisma],
     outputs: {
       typegen: join(__dirname, './nexus-typegen.ts'),
-      schema: join(__dirname, '/schema.graphql')
+      schema: join(__dirname, '/schema.graphql'),
     },
     typegenAutoConfig: {
       sources: [
         {
           source: '@generated/photon',
-          alias: 'photon'
-        }
-      ]
-    }
-  });
+          alias: 'photon',
+        },
+      ],
+    },
+  })
 
   const server = new GraphQLServer({
     schema,
-    context: () => ({ photon })
-  });
+    context: () => ({ photon }),
+  })
 
-  server.start(() => console.log(`🚀 Server ready at http://localhost:4000`));
+  server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
 }

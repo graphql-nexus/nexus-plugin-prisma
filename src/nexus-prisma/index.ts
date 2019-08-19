@@ -1,11 +1,11 @@
-import { NexusPrismaBuilder } from './NexusPrismaBuilder';
+import { NexusPrismaBuilder } from './NexusPrismaBuilder'
 
 export interface NexusPrismaParams {
-  photon: (ctx: any) => any;
+  photon: (ctx: any) => any
 }
 
 export function nexusPrismaPlugin(params: NexusPrismaParams) {
-  const builder = new NexusPrismaBuilder(params);
+  const builder = new NexusPrismaBuilder(params)
 
-  return builder.getNexusPrismaMethod();
+  return builder.getNexusPrismaMethod()
 }
