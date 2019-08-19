@@ -118,8 +118,6 @@ describe('schema generation', () => {
     expect(printSchema(schema)).toMatchSnapshot();
   });
 
-  // TODO: The generated snapshot is wrong because photon has a bug in its generated DMMF
-  // Regenerate snapshot once its fixed. The OrderByInput should have `id` and `name` as field
   test('it exposes ordering only if ordering: true', async () => {
     const datamodel = `
     model User {

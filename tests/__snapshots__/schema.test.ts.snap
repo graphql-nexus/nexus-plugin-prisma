@@ -25,18 +25,12 @@ type User {
   posts(where: UserPostsWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 
-input UserPostsFilter {
-  every: UserPostsWhereInput
-  some: UserPostsWhereInput
-  none: UserPostsWhereInput
-}
-
 input UserPostsWhereInput {
   id: IntFilter
-  posts: UserPostsFilter
   AND: [UserPostsWhereInput!]
   OR: [UserPostsWhereInput!]
   NOT: [UserPostsWhereInput!]
+  user: UserPostsWhereInput
 }
 "
 `;
@@ -153,6 +147,7 @@ type User {
 
 input UserPostsOrderByInput {
   id: OrderByArg
+  name: OrderByArg
 }
 "
 `;
