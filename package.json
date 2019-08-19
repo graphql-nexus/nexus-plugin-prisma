@@ -12,7 +12,7 @@
   "scripts": {
     "build": "rm -rf dist && rm -rf nexus_prisma_ncc_build && tsc && ncc build -e @prisma/nexus src/nexus-prisma/index.ts -o nexus_prisma_ncc_build",
     "prepublish": "yarn build",
-    "prettify": "prettier --write src/**/*.ts",
+    "prettify": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
     "test": "yarn build && yarn jest"
   },
   "dependencies": {

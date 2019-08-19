@@ -1,62 +1,62 @@
-import { GeneratorDefinition, GeneratorFunction } from '@prisma/cli';
-import * as fs from 'fs';
-import * as path from 'path';
-import { promisify } from 'util';
-import { transformDMMF } from './dmmf/dmmf-transformer';
-import { DMMF as ExternalDMMF } from './dmmf/dmmf-types';
-import { generateNexusPrismaTypes } from './typegen';
-import { getImportPathRelativeToOutput } from './utils';
+import { GeneratorDefinition, GeneratorFunction } from '@prisma/cli'
+import * as fs from 'fs'
+import * as path from 'path'
+import { promisify } from 'util'
+import { transformDMMF } from './dmmf/dmmf-transformer'
+import { DMMF as ExternalDMMF } from './dmmf/dmmf-types'
+import { generateNexusPrismaTypes } from './typegen'
+import { getImportPathRelativeToOutput } from './utils'
 
-const writeFileAsync = promisify(fs.writeFile);
+const writeFileAsync = promisify(fs.writeFile)
 
 export function getNexusPrismaRuntime(photonOutput: string) {
-  const dmmf = require(photonOutput).dmmf as ExternalDMMF.Document;
-  const transformedDmmf = transformDMMF(dmmf);
+  const dmmf = require(photonOutput).dmmf as ExternalDMMF.Document
+  const transformedDmmf = transformDMMF(dmmf)
   const nccPath = eval(
-    `path.join(__dirname, '../nexus_prisma_ncc_build/index.js')`
-  );
-  const nccedLibrary = fs.readFileSync(nccPath).toString();
+    `path.join(__dirname, '../nexus_prisma_ncc_build/index.js')`,
+  )
+  const nccedLibrary = fs.readFileSync(nccPath).toString()
   const nccedLibraryWithDMMF = nccedLibrary.replace(
     '__DMMF__',
-    JSON.stringify(transformedDmmf)
-  );
+    JSON.stringify(transformedDmmf),
+  )
 
-  return { nexusPrismaRuntime: nccedLibraryWithDMMF, dmmf: transformedDmmf };
+  return { nexusPrismaRuntime: nccedLibraryWithDMMF, dmmf: transformedDmmf }
 }
 
 const generate: GeneratorFunction = async ({ generator, otherGenerators }) => {
   const photonGenerator = otherGenerators.find(
-    generator => generator.provider === 'photonjs'
-  );
+    generator => generator.provider === 'photonjs',
+  )
 
   if (!photonGenerator) {
     throw new Error(
-      'Nexus prisma needs a photon generator to be defined in the datamodel'
-    );
+      'Nexus prisma needs a photon generator to be defined in the datamodel',
+    )
   }
 
-  const nexusPrismaOutput = generator.output!;
-  const photonGeneratorOutput = photonGenerator.output!;
+  const nexusPrismaOutput = generator.output!
+  const photonGeneratorOutput = photonGenerator.output!
   const { nexusPrismaRuntime, dmmf } = getNexusPrismaRuntime(
-    photonGeneratorOutput
-  );
+    photonGeneratorOutput,
+  )
 
   // Create the output directories if needed (mkdir -p)
   if (!fs.existsSync(nexusPrismaOutput)) {
     try {
-      fs.mkdirSync(nexusPrismaOutput, { recursive: true });
+      fs.mkdirSync(nexusPrismaOutput, { recursive: true })
     } catch (e) {
-      if (e.code !== 'EEXIST') throw e;
+      if (e.code !== 'EEXIST') throw e
     }
   }
 
-  const runtimePath = path.join(nexusPrismaOutput, 'index.js');
-  const globalTypingsPath = path.join(nexusPrismaOutput, 'index.d.ts');
+  const runtimePath = path.join(nexusPrismaOutput, 'index.js')
+  const globalTypingsPath = path.join(nexusPrismaOutput, 'index.d.ts')
 
-  const typingsPathSource = path.join(__dirname, 'nexus-prisma', 'index.d.ts');
+  const typingsPathSource = path.join(__dirname, 'nexus-prisma', 'index.d.ts')
 
   try {
-    fs.unlinkSync(globalTypingsPath);
+    fs.unlinkSync(globalTypingsPath)
   } catch {}
 
   await Promise.all([
@@ -65,22 +65,22 @@ const generate: GeneratorFunction = async ({ generator, otherGenerators }) => {
       globalTypingsPath,
       generateNexusPrismaTypes(
         dmmf,
-        getImportPathRelativeToOutput(nexusPrismaOutput, photonGeneratorOutput)
-      )
-    )
-  ]);
+        getImportPathRelativeToOutput(nexusPrismaOutput, photonGeneratorOutput),
+      ),
+    ),
+  ])
 
-  const typingsPathContent = fs.readFileSync(typingsPathSource).toString();
-  fs.appendFileSync(globalTypingsPath, typingsPathContent);
+  const typingsPathContent = fs.readFileSync(typingsPathSource).toString()
+  fs.appendFileSync(globalTypingsPath, typingsPathContent)
 
-  return '';
-};
+  return ''
+}
 
 export const generatorDefinition: GeneratorDefinition = {
   generate,
   prettyName: 'Nexus Prisma',
-  defaultOutput: 'node_modules/@generated/nexus-prisma'
-};
+  defaultOutput: 'node_modules/@generated/nexus-prisma',
+}
 
 if (process.env.NEXUS_PRISMA_DEV) {
   generatorDefinition.generate({
@@ -89,11 +89,11 @@ if (process.env.NEXUS_PRISMA_DEV) {
       platforms: [],
       output: path.join(
         __dirname,
-        '../example/node_modules/@generated/nexus-prisma'
+        '../example/node_modules/@generated/nexus-prisma',
       ),
       config: {},
       name: 'nexus_prisma',
-      provider: 'nexus-prisma'
+      provider: 'nexus-prisma',
     },
     otherGenerators: [
       {
@@ -103,12 +103,12 @@ if (process.env.NEXUS_PRISMA_DEV) {
         platforms: [],
         output: path.join(
           __dirname,
-          '../example/node_modules/@generated/photon'
-        )
-      }
+          '../example/node_modules/@generated/photon',
+        ),
+      },
     ],
     dataSources: null,
     dmmf: null,
-    datamodel: ''
-  });
+    datamodel: '',
+  })
 }
