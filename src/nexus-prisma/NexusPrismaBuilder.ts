@@ -190,15 +190,14 @@ export class NexusPrismaBuilder {
     let args: DMMF.SchemaArg[] = [];
 
     if (opts.filtering) {
+      const whereTypeName = `${field.outputType.type}WhereInput`;
       const whereArg = field.args.find(
-        a =>
-          a.inputType.type === `${prismaModelName}WhereInput` &&
-          a.name === 'where'
+        a => a.inputType.type === whereTypeName && a.name === 'where'
       );
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${prismaModelName}.${field.name}`
+          `Could not find filtering argument for ${prismaModelName}.${field.name}. Searched for a field param with type "${whereTypeName}". Actual fields were ${field.args}`
         );
       }
 
@@ -221,7 +220,7 @@ export class NexusPrismaBuilder {
     if (opts.ordering) {
       const orderByArg = field.args.find(
         a =>
-          a.inputType.type === `${prismaModelName}OrderByInput` &&
+          a.inputType.type === `${field.outputType.type}OrderByInput` &&
           a.name === 'orderBy'
       );
 
