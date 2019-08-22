@@ -415,13 +415,6 @@
     strip-indent "^3.0.0"
     supports-hyperlinks "^1.0.1"
 
-"@prisma/nexus@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@prisma/nexus/-/nexus-0.0.1.tgz#1b75b268f29714a8958e80d88d7141004a343650"
-  integrity sha512-eRAbVUOLPr0copaj7u7Q9w2hlPNHp77XuOMC+O7dmYiM/204Gl7Whp1SCmGq98hjb3NaJbNMJpq3lfJL4GTgqg==
-  dependencies:
-    tslib "^1.9.3"
-
 "@prisma/photon@^0.2.6":
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-0.2.6.tgz#b61172fc2bc9d6a41c328c5d3e9550207935ee16"
@@ -3568,6 +3561,13 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
+
+nexus@^0.12.0-beta.6:
+  version "0.12.0-beta.6"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.6.tgz#24829f4014365446972fdc066517893f36dd394e"
+  integrity sha512-6eqZslOSZFSMQ3RJSk5EAAkB6uOlg7aYK5AyLMLMVTYX5iY9Tm8GWTHso5+lhmwIqPZHw+kDOYux6rRcYi9heA==
+  dependencies:
+    tslib "^1.9.3"
 
 nice-try@^1.0.4:
   version "1.0.5"

@@ -3,7 +3,7 @@ import {
   dynamicOutputMethod,
   enumType,
   inputObjectType,
-} from '@prisma/nexus'
+} from 'nexus'
 import { NexusPrismaParams } from '.'
 import { transformDMMF } from '../dmmf/dmmf-transformer'
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'

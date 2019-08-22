@@ -21,7 +21,7 @@ export function generateNexusPrismaTypes(
 function render(dmmf: DMMFClass, photonPath: string) {
   return `\
 import * as photon from '${photonPath}';
-import { core } from '@prisma/nexus';
+import { core } from 'nexus';
 // Types helpers
 ${renderStaticTypes()}
 

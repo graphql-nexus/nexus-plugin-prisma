@@ -1,6 +1,6 @@
 import Photon from '@generated/photon'
 import { GraphQLServer } from 'graphql-yoga'
-import { makeSchema } from '@prisma/nexus'
+import { makeSchema } from 'nexus'
 import { join } from 'path'
 import { nexusPrismaPlugin } from '@generated/nexus-prisma'
 import * as allTypes from './graphql'

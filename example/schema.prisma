@@ -4,6 +4,11 @@ datasource db {
   default  = true
 }
 
+generator nexus_prisma {
+  provider = "nexus-prisma"
+  output   = "node_modules/@generated/photon"
+}
+
 generator photon {
   provider = "photonjs"
   output   = "node_modules/@generated/photon"

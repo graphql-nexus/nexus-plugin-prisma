@@ -10,13 +10,13 @@
     "nexus_prisma_ncc_build"
   ],
   "scripts": {
-    "build": "rm -rf dist && rm -rf nexus_prisma_ncc_build && tsc && ncc build -e @prisma/nexus src/nexus-prisma/index.ts -o nexus_prisma_ncc_build",
+    "build": "rm -rf dist && rm -rf nexus_prisma_ncc_build && tsc && ncc build -e nexus src/nexus-prisma/index.ts -o nexus_prisma_ncc_build",
     "prepublish": "yarn build",
     "prettify": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
     "test": "yarn build && yarn jest"
   },
   "dependencies": {
-    "@prisma/nexus": "^0.0.1",
+    "nexus": "^0.12.0-beta.6",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
