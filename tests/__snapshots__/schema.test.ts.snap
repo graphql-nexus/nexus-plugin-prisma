@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`schema generation it exposes filtering only if filtering: true 1`] = `
+exports[`it exposes filtering only if filtering: true 1`] = `
 "input IntFilter {
   equals: Int
   not: Int
@@ -35,7 +35,7 @@ input UserPostsWhereInput {
 "
 `;
 
-exports[`schema generation it exposes findOne and findMany 1`] = `
+exports[`it exposes findOne and findMany 1`] = `
 "type Query {
   user(where: UserWhereUniqueInput!): User
   users(skip: Int, after: String, before: String, first: Int, last: Int): [User!]
@@ -51,7 +51,7 @@ input UserWhereUniqueInput {
 "
 `;
 
-exports[`schema generation it exposes id ordering 1`] = `
+exports[`it exposes id ordering 1`] = `
 "enum OrderByArg {
   asc
   desc
@@ -77,7 +77,7 @@ input UserPostsOrderByInput {
 "
 `;
 
-exports[`schema generation it exposes only id filters 1`] = `
+exports[`it exposes only id filters 1`] = `
 "input IntFilter {
   equals: Int
   not: Int
@@ -109,7 +109,7 @@ input UserPostsWhereInput {
 "
 `;
 
-exports[`schema generation it exposes only pagination on relations by default 1`] = `
+exports[`it exposes only pagination on relations by default 1`] = `
 "type Post {
   id: Int!
 }
@@ -125,7 +125,7 @@ type User {
 "
 `;
 
-exports[`schema generation it exposes ordering only if ordering: true 1`] = `
+exports[`it exposes ordering only if ordering: true 1`] = `
 "enum OrderByArg {
   asc
   desc
@@ -152,7 +152,7 @@ input UserPostsOrderByInput {
 "
 `;
 
-exports[`schema generation simple schema 1`] = `
+exports[`simple schema 1`] = `
 "type Query {
   ok: Boolean!
 }
