@@ -13,11 +13,11 @@ test('simple schema', async () => {
     },
   })
   const datamodel = `
-  model User {
-    id    Int @id
-    name  String
-  }
-  `
+    model User {
+      id    Int @id
+      name  String
+    }
+    `
 
   const schema = await generateSchema(datamodel, [User])
 
@@ -26,15 +26,15 @@ test('simple schema', async () => {
 
 test('it exposes only pagination on relations by default', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-    posts Post[]
-  }
+    model User {
+      id    Int @id
+      posts Post[]
+    }
 
-  model Post {
-    id    Int @id
-  }
-  `
+    model Post {
+      id    Int @id
+    }
+    `
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -56,15 +56,15 @@ test('it exposes only pagination on relations by default', async () => {
 
 test('it exposes filtering only if filtering: true', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-    posts Post[]
-  }
+    model User {
+      id    Int @id
+      posts Post[]
+    }
 
-  model Post {
-    id    Int @id
-  }
-  `
+    model Post {
+      id    Int @id
+    }
+    `
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -86,16 +86,16 @@ test('it exposes filtering only if filtering: true', async () => {
 
 test('it exposes only id filters', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-    posts Post[]
-  }
+    model User {
+      id    Int @id
+      posts Post[]
+    }
 
-  model Post {
-    id    Int     @id
-    name  String
-  }
-  `
+    model Post {
+      id    Int     @id
+      name  String
+    }
+    `
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -119,16 +119,16 @@ test('it exposes only id filters', async () => {
 
 test('it exposes ordering only if ordering: true', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-    posts Post[]
-  }
+    model User {
+      id    Int @id
+      posts Post[]
+    }
 
-  model Post {
-    id    Int     @id
-    name  String
-  }
-  `
+    model Post {
+      id    Int     @id
+      name  String
+    }
+    `
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -152,16 +152,16 @@ test('it exposes ordering only if ordering: true', async () => {
 
 test('it exposes id ordering', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-    posts Post[]
-  }
+    model User {
+      id    Int @id
+      posts Post[]
+    }
 
-  model Post {
-    id    Int     @id
-    name  String
-  }
-  `
+    model Post {
+      id    Int     @id
+      name  String
+    }
+    `
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -185,10 +185,10 @@ test('it exposes id ordering', async () => {
 
 test('it exposes findOne and findMany', async () => {
   const datamodel = `
-  model User {
-    id    Int @id
-  }
-  `
+    model User {
+      id    Int @id
+    }
+    `
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
