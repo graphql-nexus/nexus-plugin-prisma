@@ -1,6 +1,5 @@
 import {
   core,
-  dynamicOutputMethod,
   enumType,
   inputObjectType,
   dynamicOutputProperty,
