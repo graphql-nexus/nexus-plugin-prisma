@@ -6,7 +6,7 @@ datasource db {
 
 generator nexus_prisma {
   provider = "nexus-prisma"
-  output   = "node_modules/@generated/photon"
+  output   = "node_modules/@generated/nexus-prisma"
 }
 
 generator photon {
