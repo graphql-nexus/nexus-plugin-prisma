@@ -1,17 +1,17 @@
-import { scalarType } from '@prisma/nexus'
+import { scalarType } from 'nexus';
 
-export const GQL_SCALARS_NAMES = ['Int', 'Float', 'String', 'ID', 'Boolean']
+export const GQL_SCALARS_NAMES = ['Int', 'Float', 'String', 'ID', 'Boolean'];
 
 export const dateTimeScalar = scalarType({
   name: 'DateTime',
   description: 'DateTime',
   parseLiteral(value) {
-    return value
+    return value;
   },
   serialize(value) {
-    return value
+    return value;
   },
   parseValue(value) {
-    return value
+    return value;
   },
-})
+});

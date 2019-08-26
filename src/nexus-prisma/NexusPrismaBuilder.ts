@@ -1,9 +1,9 @@
 import {
   core,
-  dynamicOutputMethod,
   enumType,
   inputObjectType,
-} from '@prisma/nexus'
+  dynamicOutputProperty,
+} from 'nexus'
 import { NexusPrismaParams } from '.'
 import { transformDMMF } from '../dmmf/dmmf-transformer'
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
@@ -78,53 +78,43 @@ export class NexusPrismaBuilder {
   protected getCRUDDynamicOutputMethod() {
     //const methodName = this.params.methodName ? this.params.methodName : 'crud';
 
-    return dynamicOutputMethod({
+    return dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
-        const buildCrud = () => {
-          if (graphQLTypeName !== 'Query' && graphQLTypeName !== 'Mutation') {
-            throw new Error(
-              `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
-            )
-          }
-
-          if (graphQLTypeName === 'Query') {
-            const queryFields = this.dmmf.mappings.map(mapping => {
-              const queriesNames = getSupportedQueries(mapping)
-              return {
-                fields: this.dmmf.queryType.fields.filter(query =>
-                  queriesNames.includes(query.name),
-                ),
-                mapping,
-              }
-            })
-
-            return this.buildSchemaForCRUD(t, 'Query', queryFields)
-          }
-
-          if (graphQLTypeName === 'Mutation') {
-            const mutationFields = this.dmmf.mappings.map(mapping => {
-              const mutationsNames = getSupportedMutations(mapping)
-              return {
-                fields: this.dmmf.mutationType.fields.filter(mutation =>
-                  mutationsNames.includes(mutation.name),
-                ),
-                mapping,
-              }
-            })
-
-            return this.buildSchemaForCRUD(t, 'Mutation', mutationFields)
-          }
+        if (graphQLTypeName !== 'Query' && graphQLTypeName !== 'Mutation') {
+          throw new Error(
+            `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
+          )
         }
 
-        // if (this.params.methodName) {
-        //   return {
-        //     [this.params.methodName]: buildCrud()
-        //   };
-        // }
+        if (graphQLTypeName === 'Query') {
+          const queryFields = this.dmmf.mappings.map(mapping => {
+            const queriesNames = getSupportedQueries(mapping)
+            return {
+              fields: this.dmmf.queryType.fields.filter(query =>
+                queriesNames.includes(query.name),
+              ),
+              mapping,
+            }
+          })
 
-        return buildCrud()
+          return this.buildSchemaForCRUD(t, 'Query', queryFields)
+        }
+
+        if (graphQLTypeName === 'Mutation') {
+          const mutationFields = this.dmmf.mappings.map(mapping => {
+            const mutationsNames = getSupportedMutations(mapping)
+            return {
+              fields: this.dmmf.mutationType.fields.filter(mutation =>
+                mutationsNames.includes(mutation.name),
+              ),
+              mapping,
+            }
+          })
+
+          return this.buildSchemaForCRUD(t, 'Mutation', mutationFields)
+        }
       },
     })
   }
@@ -136,7 +126,7 @@ export class NexusPrismaBuilder {
     // const methodName = this.params.methodName
     //   ? this.params.methodName
     //   : 'model';
-    return dynamicOutputMethod({
+    return dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
       factory: ({ typeDef: t, typeName: graphQLTypeName }) => {

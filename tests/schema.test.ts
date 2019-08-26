@@ -1,4 +1,4 @@
-import { objectType } from '@prisma/nexus'
+import { objectType } from 'nexus'
 import { printSchema } from 'graphql'
 import { generateSchema } from './__utils'
 

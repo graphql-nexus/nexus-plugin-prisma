@@ -45,8 +45,10 @@ type Blog {
 
 input BlogCreateInput {
   authors: AuthorCreateManyWithoutAuthorsInput
+  createdAt: DateTime
   name: String!
   posts: PostCreateManyWithoutPostsInput
+  updatedAt: DateTime
   viewCount: Int!
 }
 
@@ -56,17 +58,16 @@ input BlogCreateOneWithoutBlogInput {
 }
 
 input BlogCreateWithoutAuthorsInput {
+  createdAt: DateTime
   name: String!
   posts: PostCreateManyWithoutPostsInput
+  updatedAt: DateTime
   viewCount: Int!
 }
 
 input BlogPostsOrderByInput {
-  createdAt: OrderByArg
   id: OrderByArg
-  name: OrderByArg
-  updatedAt: OrderByArg
-  viewCount: OrderByArg
+  title: OrderByArg
 }
 
 input BlogWhereUniqueInput {

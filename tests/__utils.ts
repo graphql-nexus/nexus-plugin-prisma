@@ -1,4 +1,4 @@
-import { makeSchema } from '@prisma/nexus'
+import { makeSchema } from 'nexus'
 import { generateClient as generatePhoton } from '@prisma/photon'
 import tmp from 'tmp'
 import { getNexusPrismaRuntime } from '../src'
