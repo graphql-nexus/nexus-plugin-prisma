@@ -19,8 +19,8 @@ async function main() {
   const schema = makeSchema({
     types: [allTypes, nexusPrisma],
     outputs: {
-      typegen: join(__dirname, './nexus-typegen.ts'),
-      schema: join(__dirname, '/schema.graphql'),
+      typegen: join(__dirname, './generated/nexus.d.ts'),
+      schema: join(__dirname, '/generated/schema.graphql'),
     },
     typegenAutoConfig: {
       sources: [
