@@ -6,6 +6,6 @@ export const Author = objectType({
     t.model.id()
     t.model.name()
     t.model.blog()
-    // t.model.posts({ type: 'CustomPost' })
+    t.model.posts({ type: 'CustomPost' })
   },
 })

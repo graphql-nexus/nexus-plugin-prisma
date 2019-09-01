@@ -37,6 +37,7 @@ type Blog {
   createdAt: DateTime!
   id: Int!
   name: String!
+  posts(after: String, before: String, first: Int, last: Int, orderBy: BlogPostsOrderByInput, skip: Int): [CustomPost!]
   updatedAt: DateTime!
   viewCount: Int!
 }
@@ -61,6 +62,11 @@ input BlogCreateWithoutAuthorsInput {
   posts: PostCreateManyWithoutPostsInput
   updatedAt: DateTime
   viewCount: Int!
+}
+
+input BlogPostsOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
 }
 
 input BlogWhereUniqueInput {
@@ -105,6 +111,11 @@ input NullableStringFilter {
   startsWith: String
 }
 
+enum OrderByArg {
+  asc
+  desc
+}
+
 input PostCreateManyWithoutPostsInput {
   connect: [PostWhereUniqueInput!]
   create: [PostCreateWithoutBlogInput!]
@@ -128,6 +139,7 @@ type Query {
   authors(after: String, before: String, first: Int, last: Int, skip: Int, where: QueryFindManyAuthorWhereInput): [Author!]
   blog(where: BlogWhereUniqueInput!): Blog
   blogs: [Blog!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
 }
 
 input QueryFindManyAuthorFilter {
@@ -144,4 +156,9 @@ input QueryFindManyAuthorWhereInput {
   NOT: [QueryFindManyAuthorWhereInput!]
   OR: [QueryFindManyAuthorWhereInput!]
   posts: QueryFindManyAuthorFilter
+}
+
+input QueryFindManyPostOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
 }
