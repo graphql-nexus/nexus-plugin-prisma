@@ -898,10 +898,14 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus@^0.12.0-beta.7:
+"nexus-prisma@file:../":
+  version "0.0.1-beta.6"
+  dependencies:
+    nexus "^0.12.0-beta.7"
+    pluralize "^8.0.0"
+
+nexus@^0.12.0-beta.7, "nexus@file:../../nexus":
   version "0.12.0-beta.7"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.7.tgz#0feaa39d03fc44e48cfaa51c394341001b041c77"
-  integrity sha512-jBUoTW4UIQP2jg6eD6AsPkuTMlMGoMwPtOEcJP7twP/eA3TZseF+s8Bos+iDQipU53ivqMr0dJ0IOB52jq1zlQ==
   dependencies:
     tslib "^1.9.3"
 
@@ -1014,6 +1018,11 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
+
+pluralize@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-8.0.0.tgz#1a6fa16a38d12a1901e0320fa017051c539ce3b1"
+  integrity sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==
 
 prisma2@^2.0.0-alpha.155:
   version "2.0.0-alpha.155"

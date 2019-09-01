@@ -16,10 +16,10 @@ async function main() {
     photon: ctx => ctx.photon,
   })
 
-  const schema = makeSchema({
+  const schema: any = makeSchema({
     types: [allTypes, nexusPrisma],
     outputs: {
-      typegen: join(__dirname, './generated/nexus.d.ts'),
+      typegen: join(__dirname, '/generated/nexus.d.ts'),
       schema: join(__dirname, '/generated/schema.graphql'),
     },
     typegenAutoConfig: {
