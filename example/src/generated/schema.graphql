@@ -83,8 +83,33 @@ type CustomPost {
 """DateTime"""
 scalar DateTime
 
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
 type Mutation {
   createOneBlog(data: BlogCreateInput!): Blog!
+}
+
+input NullableStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
 }
 
 enum OrderByArg {
@@ -112,10 +137,26 @@ input PostWhereUniqueInput {
 }
 
 type Query {
-  authors(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
+  authors(after: String, before: String, first: Int, last: Int, skip: Int, where: QueryFindManyAuthorWhereInput): [Author!]
   blog(where: BlogWhereUniqueInput!): Blog
   blogs: [Blog!]
   posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
+}
+
+input QueryFindManyAuthorFilter {
+  every: QueryFindManyAuthorWhereInput
+  none: QueryFindManyAuthorWhereInput
+  some: QueryFindManyAuthorWhereInput
+}
+
+input QueryFindManyAuthorWhereInput {
+  AND: [QueryFindManyAuthorWhereInput!]
+  blog: QueryFindManyAuthorWhereInput
+  id: IntFilter
+  name: NullableStringFilter
+  NOT: [QueryFindManyAuthorWhereInput!]
+  OR: [QueryFindManyAuthorWhereInput!]
+  posts: QueryFindManyAuthorFilter
 }
 
 input QueryFindManyPostOrderByInput {

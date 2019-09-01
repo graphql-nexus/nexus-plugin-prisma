@@ -1,17 +1,16 @@
 datasource db {
   provider = "sqlite"
-  url      = "file:db/next.db"
-  default  = true
+  url      = "file:dev.db"
 }
 
 generator nexus_prisma {
   provider = "nexus-prisma"
-  output   = "node_modules/@generated/nexus-prisma"
+  output   = "../node_modules/@generated/nexus-prisma"
 }
 
 generator photon {
   provider = "photonjs"
-  output   = "node_modules/@generated/photon"
+  output   = "../node_modules/@generated/photon"
 }
 
 model Blog {

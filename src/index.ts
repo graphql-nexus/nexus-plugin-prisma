@@ -81,34 +81,3 @@ export const generatorDefinition: GeneratorDefinition = {
   prettyName: 'Nexus Prisma',
   defaultOutput: 'node_modules/@generated/nexus-prisma',
 }
-
-if (process.env.NEXUS_PRISMA_DEV) {
-  generatorDefinition.generate({
-    cwd: process.cwd(),
-    generator: {
-      platforms: [],
-      output: path.join(
-        __dirname,
-        '../example/node_modules/@generated/nexus-prisma',
-      ),
-      config: {},
-      name: 'nexus_prisma',
-      provider: 'nexus-prisma',
-    },
-    otherGenerators: [
-      {
-        provider: 'photonjs',
-        name: 'photon',
-        config: {},
-        platforms: [],
-        output: path.join(
-          __dirname,
-          '../example/node_modules/@generated/photon',
-        ),
-      },
-    ],
-    dataSources: null,
-    dmmf: null,
-    datamodel: '',
-  })
-}

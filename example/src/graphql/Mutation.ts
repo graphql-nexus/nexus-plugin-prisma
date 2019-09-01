@@ -1,7 +1,6 @@
-import { objectType } from 'nexus'
+import { mutationType } from 'nexus'
 
-export const Mutation = objectType({
-  name: 'Mutation',
+export const Mutation = mutationType({
   definition(t) {
     t.crud.createOneBlog()
   },
