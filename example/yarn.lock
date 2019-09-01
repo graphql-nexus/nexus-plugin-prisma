@@ -901,15 +901,8 @@ negotiator@0.6.2:
 "nexus-prisma@file:..":
   version "0.0.1-beta.6"
   dependencies:
-    nexus "^0.12.0-beta.7"
+    nexus "^0.12.0-beta.8"
     pluralize "^8.0.0"
-
-nexus@^0.12.0-beta.7:
-  version "0.12.0-beta.7"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.7.tgz#0feaa39d03fc44e48cfaa51c394341001b041c77"
-  integrity sha512-jBUoTW4UIQP2jg6eD6AsPkuTMlMGoMwPtOEcJP7twP/eA3TZseF+s8Bos+iDQipU53ivqMr0dJ0IOB52jq1zlQ==
-  dependencies:
-    tslib "^1.9.3"
 
 nexus@^0.12.0-beta.8:
   version "0.12.0-beta.8"
