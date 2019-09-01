@@ -172,6 +172,7 @@ export interface NexusGenFieldTypes {
     blog: NexusGenRootTypes['Blog']; // Blog!
     id: number; // Int!
     name: string | null; // String
+    posts: NexusGenRootTypes['CustomPost'][] | null; // [CustomPost!]
   }
   Blog: { // field return type
     authors: NexusGenRootTypes['Author'][] | null; // [Author!]
@@ -199,6 +200,15 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenArgTypes {
+  Author: {
+    posts: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+  }
   Blog: {
     authors: { // args
       after?: string | null; // String

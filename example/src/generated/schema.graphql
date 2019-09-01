@@ -6,6 +6,7 @@ type Author {
   blog: Blog!
   id: Int!
   name: String
+  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
 }
 
 input AuthorCreateManyWithoutAuthorsInput {
