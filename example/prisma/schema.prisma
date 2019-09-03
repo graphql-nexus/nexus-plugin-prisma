@@ -31,8 +31,15 @@ model Author {
 }
 
 model Post {
-  id    Int      @id
-  title String
-  tags  String[]
-  blog  Blog
+  id     Int         @id
+  title  String
+  tags   String[]
+  blog   Blog
+  status POST_STATUS
+}
+
+enum POST_STATUS {
+  DRAFT
+  REVIEW
+  PUBLISHED
 }

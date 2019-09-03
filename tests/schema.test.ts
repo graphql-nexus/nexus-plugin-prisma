@@ -1,4 +1,4 @@
-import { objectType } from 'nexus'
+import { objectType, queryType } from 'nexus'
 import { printSchema } from 'graphql'
 import { generateSchema } from './__utils'
 
@@ -204,6 +204,37 @@ test('it exposes findOne and findMany', async () => {
   })
 
   const schema = await generateSchema(datamodel, [User, Query])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
+
+test('enum can be filtered on', async () => {
+  const datamodel = `
+    enum EA {
+      A
+      B
+      C
+    }
+    model MA {
+      fa Int @id
+      fb EA
+    }
+  `
+  const Query = queryType({
+    definition(t: any) {
+      t.crud.fa()
+      t.crud.fas()
+    },
+  })
+  const MA = objectType({
+    name: 'MA',
+    definition(t: any) {
+      t.model.fa()
+      t.model.fb()
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [MA, Query])
 
   expect(printSchema(schema)).toMatchSnapshot()
 })

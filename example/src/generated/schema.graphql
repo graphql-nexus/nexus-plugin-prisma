@@ -86,6 +86,7 @@ input BlogCreateWithoutAuthorsInput {
 
 input BlogPostsOrderByInput {
   id: OrderByArg
+  status: OrderByArg
   title: OrderByArg
 }
 
@@ -142,6 +143,12 @@ enum OrderByArg {
   desc
 }
 
+enum POST_STATUS {
+  DRAFT
+  PUBLISHED
+  REVIEW
+}
+
 input PostCreateManyWithoutPostsInput {
   connect: [PostWhereUniqueInput!]
   create: [PostCreateWithoutBlogInput!]
@@ -153,6 +160,7 @@ input PostCreatetagsInput {
 
 input PostCreateWithoutBlogInput {
   author: AuthorCreateOneWithoutAuthorInput
+  status: POST_STATUS!
   tags: PostCreatetagsInput
   title: String!
 }
@@ -199,8 +207,11 @@ input QueryFindManyAuthorWhereInput {
   posts: QueryFindManyAuthorFilter
 }
 
+input QueryFindManyPostFilter
+
 input QueryFindManyPostOrderByInput {
   id: OrderByArg
+  status: OrderByArg
   title: OrderByArg
 }
 
@@ -211,6 +222,7 @@ input QueryFindManyPostWhereInput {
   id: IntFilter
   NOT: [QueryFindManyPostWhereInput!]
   OR: [QueryFindManyPostWhereInput!]
+  status: QueryFindManyPostFilter
   title: StringFilter
 }
 

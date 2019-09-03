@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`enum can be filtered on 1`] = `
+"type A {
+  a: Int!
+}
+
+input AWhereUniqueInput {
+  a: Int
+}
+
+type Query {
+  a(where: AWhereUniqueInput!): A
+}
+"
+`;
+
 exports[`it exposes filtering only if filtering: true 1`] = `
 "input IntFilter {
   equals: Int
