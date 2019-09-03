@@ -61,6 +61,9 @@ export interface NexusGenInputs {
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     title?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
+  BlogPostsWhereInput: { // input type
+    title?: NexusGenInputs['StringFilter'] | null; // StringFilter
+  }
   BlogWhereUniqueInput: { // input type
     id?: number | null; // Int
   }
@@ -176,6 +179,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   BlogCreateOneWithoutBlogInput: NexusGenInputs['BlogCreateOneWithoutBlogInput'];
   BlogCreateWithoutAuthorsInput: NexusGenInputs['BlogCreateWithoutAuthorsInput'];
   BlogPostsOrderByInput: NexusGenInputs['BlogPostsOrderByInput'];
+  BlogPostsWhereInput: NexusGenInputs['BlogPostsWhereInput'];
   BlogWhereUniqueInput: NexusGenInputs['BlogWhereUniqueInput'];
   IntFilter: NexusGenInputs['IntFilter'];
   NullableStringFilter: NexusGenInputs['NullableStringFilter'];
@@ -248,6 +252,7 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       orderBy?: NexusGenInputs['BlogPostsOrderByInput'] | null; // BlogPostsOrderByInput
       skip?: number | null; // Int
+      where?: NexusGenInputs['BlogPostsWhereInput'] | null; // BlogPostsWhereInput
     }
   }
   Mutation: {
@@ -286,7 +291,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Author" | "Blog" | "CustomPost" | "Mutation" | "Query";
 
-export type NexusGenInputNames = "AuthorCreateManyWithoutAuthorsInput" | "AuthorCreateOneWithoutAuthorInput" | "AuthorCreateWithoutBlogInput" | "AuthorCreateWithoutPostsInput" | "AuthorWhereUniqueInput" | "BlogCreateInput" | "BlogCreateOneWithoutBlogInput" | "BlogCreateWithoutAuthorsInput" | "BlogPostsOrderByInput" | "BlogWhereUniqueInput" | "IntFilter" | "NullableStringFilter" | "PostCreateManyWithoutPostsInput" | "PostCreateWithoutBlogInput" | "PostCreatetagsInput" | "PostWhereUniqueInput" | "QueryFindManyAuthorFilter" | "QueryFindManyAuthorWhereInput" | "QueryFindManyPostOrderByInput" | "QueryFindManyPostWhereInput" | "StringFilter";
+export type NexusGenInputNames = "AuthorCreateManyWithoutAuthorsInput" | "AuthorCreateOneWithoutAuthorInput" | "AuthorCreateWithoutBlogInput" | "AuthorCreateWithoutPostsInput" | "AuthorWhereUniqueInput" | "BlogCreateInput" | "BlogCreateOneWithoutBlogInput" | "BlogCreateWithoutAuthorsInput" | "BlogPostsOrderByInput" | "BlogPostsWhereInput" | "BlogWhereUniqueInput" | "IntFilter" | "NullableStringFilter" | "PostCreateManyWithoutPostsInput" | "PostCreateWithoutBlogInput" | "PostCreatetagsInput" | "PostWhereUniqueInput" | "QueryFindManyAuthorFilter" | "QueryFindManyAuthorWhereInput" | "QueryFindManyPostOrderByInput" | "QueryFindManyPostWhereInput" | "StringFilter";
 
 export type NexusGenEnumNames = "OrderByArg";
 

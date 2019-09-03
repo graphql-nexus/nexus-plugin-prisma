@@ -11,6 +11,7 @@ export const Blog = objectType({
       type: 'CustomPost',
       pagination: false,
       ordering: true,
+      filtering: { title: true },
     })
     t.model.viewCount()
     t.model.authors()

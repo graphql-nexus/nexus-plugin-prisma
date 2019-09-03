@@ -38,7 +38,7 @@ type Blog {
   createdAt: DateTime!
   id: Int!
   name: String!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: BlogPostsOrderByInput, skip: Int): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: BlogPostsOrderByInput, skip: Int, where: BlogPostsWhereInput): [CustomPost!]
   updatedAt: DateTime!
   viewCount: Int!
 }
@@ -68,6 +68,10 @@ input BlogCreateWithoutAuthorsInput {
 input BlogPostsOrderByInput {
   id: OrderByArg
   title: OrderByArg
+}
+
+input BlogPostsWhereInput {
+  title: StringFilter
 }
 
 input BlogWhereUniqueInput {
