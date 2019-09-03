@@ -120,6 +120,28 @@ export interface NexusGenInputs {
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     title?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
+  QueryFindManyPostWhereInput: { // input type
+    AND?: NexusGenInputs['QueryFindManyPostWhereInput'][] | null; // [QueryFindManyPostWhereInput!]
+    author?: NexusGenInputs['QueryFindManyPostWhereInput'] | null; // QueryFindManyPostWhereInput
+    blog?: NexusGenInputs['QueryFindManyPostWhereInput'] | null; // QueryFindManyPostWhereInput
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    NOT?: NexusGenInputs['QueryFindManyPostWhereInput'][] | null; // [QueryFindManyPostWhereInput!]
+    OR?: NexusGenInputs['QueryFindManyPostWhereInput'][] | null; // [QueryFindManyPostWhereInput!]
+    title?: NexusGenInputs['StringFilter'] | null; // StringFilter
+  }
+  StringFilter: { // input type
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: string | null; // String
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -164,6 +186,8 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   QueryFindManyAuthorFilter: NexusGenInputs['QueryFindManyAuthorFilter'];
   QueryFindManyAuthorWhereInput: NexusGenInputs['QueryFindManyAuthorWhereInput'];
   QueryFindManyPostOrderByInput: NexusGenInputs['QueryFindManyPostOrderByInput'];
+  QueryFindManyPostWhereInput: NexusGenInputs['QueryFindManyPostWhereInput'];
+  StringFilter: NexusGenInputs['StringFilter'];
   OrderByArg: NexusGenEnums['OrderByArg'];
 }
 
@@ -250,6 +274,7 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       orderBy?: NexusGenInputs['QueryFindManyPostOrderByInput'] | null; // QueryFindManyPostOrderByInput
       skip?: number | null; // Int
+      where?: NexusGenInputs['QueryFindManyPostWhereInput'] | null; // QueryFindManyPostWhereInput
     }
   }
 }
@@ -261,7 +286,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Author" | "Blog" | "CustomPost" | "Mutation" | "Query";
 
-export type NexusGenInputNames = "AuthorCreateManyWithoutAuthorsInput" | "AuthorCreateOneWithoutAuthorInput" | "AuthorCreateWithoutBlogInput" | "AuthorCreateWithoutPostsInput" | "AuthorWhereUniqueInput" | "BlogCreateInput" | "BlogCreateOneWithoutBlogInput" | "BlogCreateWithoutAuthorsInput" | "BlogPostsOrderByInput" | "BlogWhereUniqueInput" | "IntFilter" | "NullableStringFilter" | "PostCreateManyWithoutPostsInput" | "PostCreateWithoutBlogInput" | "PostCreatetagsInput" | "PostWhereUniqueInput" | "QueryFindManyAuthorFilter" | "QueryFindManyAuthorWhereInput" | "QueryFindManyPostOrderByInput";
+export type NexusGenInputNames = "AuthorCreateManyWithoutAuthorsInput" | "AuthorCreateOneWithoutAuthorInput" | "AuthorCreateWithoutBlogInput" | "AuthorCreateWithoutPostsInput" | "AuthorWhereUniqueInput" | "BlogCreateInput" | "BlogCreateOneWithoutBlogInput" | "BlogCreateWithoutAuthorsInput" | "BlogPostsOrderByInput" | "BlogWhereUniqueInput" | "IntFilter" | "NullableStringFilter" | "PostCreateManyWithoutPostsInput" | "PostCreateWithoutBlogInput" | "PostCreatetagsInput" | "PostWhereUniqueInput" | "QueryFindManyAuthorFilter" | "QueryFindManyAuthorWhereInput" | "QueryFindManyPostOrderByInput" | "QueryFindManyPostWhereInput" | "StringFilter";
 
 export type NexusGenEnumNames = "OrderByArg";
 

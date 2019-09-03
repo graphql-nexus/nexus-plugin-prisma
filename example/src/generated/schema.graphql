@@ -140,7 +140,7 @@ type Query {
   authors(after: String, before: String, first: Int, last: Int, skip: Int, where: QueryFindManyAuthorWhereInput): [Author!]
   blog(where: BlogWhereUniqueInput!): Blog
   blogs: [Blog!]
-  posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int, where: QueryFindManyPostWhereInput): [CustomPost!]
 }
 
 input QueryFindManyAuthorFilter {
@@ -162,4 +162,28 @@ input QueryFindManyAuthorWhereInput {
 input QueryFindManyPostOrderByInput {
   id: OrderByArg
   title: OrderByArg
+}
+
+input QueryFindManyPostWhereInput {
+  AND: [QueryFindManyPostWhereInput!]
+  author: QueryFindManyPostWhereInput
+  blog: QueryFindManyPostWhereInput
+  id: IntFilter
+  NOT: [QueryFindManyPostWhereInput!]
+  OR: [QueryFindManyPostWhereInput!]
+  title: StringFilter
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
 }
