@@ -222,8 +222,8 @@ test('enum can be filtered on', async () => {
   `
   const Query = queryType({
     definition(t: any) {
-      t.crud.fa()
-      t.crud.fas()
+      t.crud.ma()
+      t.crud.mas()
     },
   })
   const MA = objectType({
