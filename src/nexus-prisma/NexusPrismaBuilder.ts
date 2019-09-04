@@ -61,7 +61,7 @@ export class NexusPrismaBuilder {
   }
 
   build() {
-    return [this.buildCRUD(), this.buildModel(), ...this.buildScalers()]
+    return [this.buildCRUD(), this.buildModel(), ...this.buildScalars()]
   }
 
   /**
@@ -504,7 +504,7 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
-  protected buildScalers() {
+  protected buildScalars() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
         f =>
