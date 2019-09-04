@@ -1,16 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`enum can be filtered on 1`] = `
-"type A {
-  a: Int!
+"enum EA {
+  A
+  B
+  C
 }
 
-input AWhereUniqueInput {
-  a: Int
+type MA {
+  fa: Int!
+  fb: EA!
+}
+
+input MAWhereUniqueInput {
+  fa: Int
 }
 
 type Query {
-  a(where: AWhereUniqueInput!): A
+  ma(where: MAWhereUniqueInput!): MA
+  mas(skip: Int, after: String, before: String, first: Int, last: Int): [MA!]
 }
 "
 `;

@@ -1,4 +1,4 @@
-import { objectType, queryType } from 'nexus'
+import { objectType, queryType, enumType } from 'nexus'
 import { printSchema } from 'graphql'
 import { generateSchema } from './__utils'
 
@@ -233,8 +233,9 @@ test('enum can be filtered on', async () => {
       t.model.fb()
     },
   })
+  const EA = enumType({ name: 'EA', members: ['A', 'B', 'C'] })
 
-  const schema = await generateSchema(datamodel, [MA, Query])
+  const schema = await generateSchema(datamodel, [EA, MA, Query])
 
   expect(printSchema(schema)).toMatchSnapshot()
 })
