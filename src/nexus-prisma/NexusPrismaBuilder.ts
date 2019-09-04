@@ -61,7 +61,7 @@ export class NexusPrismaBuilder {
   }
 
   build() {
-    return [this.buildCRUD(), this.buildModel(), ...this.buildScalars()]
+    return [this.buildCRUD(), this.buildModel(), ...this.buildScalers()]
   }
 
   /**
@@ -72,34 +72,35 @@ export class NexusPrismaBuilder {
     return dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
-      factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
-        let mappedFields: FieldsWithModelName[]
-
-        if (graphQLTypeName === 'Query') {
-          mappedFields = this.dmmf.mappings.map(mapping => {
-            const queriesNames = getSupportedQueries(mapping)
-            return {
-              fields: this.dmmf.queryType.fields.filter(query =>
-                queriesNames.includes(query.name),
-              ),
-              mapping,
-            }
-          })
-        } else if (graphQLTypeName === 'Mutation') {
-          mappedFields = this.dmmf.mappings.map(mapping => {
-            const mutationsNames = getSupportedMutations(mapping)
-            return {
-              fields: this.dmmf.mutationType.fields.filter(mutation =>
-                mutationsNames.includes(mutation.name),
-              ),
-              mapping,
-            }
-          })
-        } else {
+      factory: ({ typeDef: t, typeName: gqlTypeName }) => {
+        if (gqlTypeName !== 'Query' && gqlTypeName !== 'Mutation') {
           throw new Error(
             `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
           )
         }
+
+        const mappedFields =
+          gqlTypeName === 'Query'
+            ? this.dmmf.mappings.map(mapping => {
+                const queriesNames = getSupportedQueries(mapping)
+                return {
+                  fields: this.dmmf.queryType.fields.filter(query =>
+                    queriesNames.includes(query.name),
+                  ),
+                  mapping,
+                }
+              })
+            : gqlTypeName === 'Mutation'
+            ? this.dmmf.mappings.map(mapping => {
+                const mutationsNames = getSupportedMutations(mapping)
+                return {
+                  fields: this.dmmf.mutationType.fields.filter(mutation =>
+                    mutationsNames.includes(mutation.name),
+                  ),
+                  mapping,
+                }
+              })
+            : (undefined as never)
 
         type FieldPublisher = (opts?: FieldPublisherConfig) => CRUDMethods // Fluent API
         type CRUDMethods = Record<string, FieldPublisher>
@@ -140,7 +141,7 @@ export class NexusPrismaBuilder {
                 nullable: !field.outputType.isRequired,
                 args: this.computeArgsFromField(
                   prismaModelName,
-                  graphQLTypeName,
+                  gqlTypeName,
                   operationName,
                   field,
                   resolvedConfig,
@@ -504,7 +505,7 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
-  protected buildScalars() {
+  protected buildScalers() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
         f =>
