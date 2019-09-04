@@ -7,5 +7,5 @@ export interface NexusPrismaParams {
 export function nexusPrismaPlugin(params: NexusPrismaParams) {
   const builder = new NexusPrismaBuilder(params)
 
-  return builder.getNexusPrismaMethod()
+  return builder.build()
 }
