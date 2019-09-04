@@ -1,9 +1,4 @@
-import {
-  core,
-  enumType,
-  inputObjectType,
-  dynamicOutputProperty,
-} from 'nexus'
+import { core, enumType, inputObjectType, dynamicOutputProperty } from 'nexus'
 import { NexusPrismaParams } from '.'
 import { transformDMMF } from '../dmmf/dmmf-transformer'
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
@@ -22,8 +17,9 @@ import {
 } from './NamingStrategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
+import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 
-interface NexusPrismaMethodParams {
+interface FieldPublisherConfig {
   alias?: string
   type?: string
   pagination?: boolean | Record<string, boolean>
@@ -64,32 +60,23 @@ export class NexusPrismaBuilder {
     }
   }
 
-  getNexusPrismaMethod() {
-    return [
-      this.getCRUDDynamicOutputMethod(),
-      this.getModelDynamicOutputMethod(),
-      ...this.getPrismaScalars(),
-    ]
+  build() {
+    return [this.buildCRUD(), this.buildModel(), ...this.buildScalers()]
   }
 
   /**
    * Generate `t.crud` output method
    */
-  protected getCRUDDynamicOutputMethod() {
+  protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     //const methodName = this.params.methodName ? this.params.methodName : 'crud';
-
     return dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
-        if (graphQLTypeName !== 'Query' && graphQLTypeName !== 'Mutation') {
-          throw new Error(
-            `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
-          )
-        }
+        let mappedFields: FieldsWithModelName[]
 
         if (graphQLTypeName === 'Query') {
-          const queryFields = this.dmmf.mappings.map(mapping => {
+          mappedFields = this.dmmf.mappings.map(mapping => {
             const queriesNames = getSupportedQueries(mapping)
             return {
               fields: this.dmmf.queryType.fields.filter(query =>
@@ -98,12 +85,8 @@ export class NexusPrismaBuilder {
               mapping,
             }
           })
-
-          return this.buildSchemaForCRUD(t, 'Query', queryFields)
-        }
-
-        if (graphQLTypeName === 'Mutation') {
-          const mutationFields = this.dmmf.mappings.map(mapping => {
+        } else if (graphQLTypeName === 'Mutation') {
+          mappedFields = this.dmmf.mappings.map(mapping => {
             const mutationsNames = getSupportedMutations(mapping)
             return {
               fields: this.dmmf.mutationType.fields.filter(mutation =>
@@ -112,9 +95,72 @@ export class NexusPrismaBuilder {
               mapping,
             }
           })
-
-          return this.buildSchemaForCRUD(t, 'Mutation', mutationFields)
+        } else {
+          throw new Error(
+            `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
+          )
         }
+
+        type FieldPublisher = (opts?: FieldPublisherConfig) => CRUDMethods // Fluent API
+        type CRUDMethods = Record<string, FieldPublisher>
+
+        return mappedFields.reduce<CRUDMethods>((crud, mappedField) => {
+          const prismaModelName = mappedField.mapping.model
+
+          mappedField.fields.forEach(field => {
+            const mappedFieldName = getCRUDFieldName(
+              prismaModelName,
+              field.name,
+              mappedField.mapping,
+              this.fieldNamingStrategy,
+            )
+            const fieldPublisher: FieldPublisher = givenConfig => {
+              const resolvedConfig: FieldPublisherConfig = {
+                pagination: true,
+                type: field.outputType.type,
+                ...givenConfig,
+              }
+              const gqlFieldName = resolvedConfig.alias
+                ? resolvedConfig.alias
+                : mappedFieldName
+              const gqlType = resolvedConfig.type!
+              const operationName = Object.keys(mappedField.mapping).find(
+                key => (mappedField.mapping as any)[key] === field.name,
+              ) as keyof DMMF.Mapping | undefined
+
+              if (!operationName) {
+                throw new Error(
+                  `Could not find operation name for field ${field.name}`,
+                )
+              }
+
+              t.field(gqlFieldName, {
+                type: gqlType,
+                list: field.outputType.isList || undefined,
+                nullable: !field.outputType.isRequired,
+                args: this.computeArgsFromField(
+                  prismaModelName,
+                  graphQLTypeName,
+                  operationName,
+                  field,
+                  resolvedConfig,
+                ),
+                resolve: (_parent, args, ctx) => {
+                  const photon = this.params.photon(ctx)
+                  assertPhotonInContext(photon)
+                  return photon[mappedField.mapping.plural!][operationName](
+                    args,
+                  )
+                },
+              })
+
+              return crud
+            }
+            crud[mappedFieldName] = fieldPublisher
+          })
+
+          return crud
+        }, {})
       },
     })
   }
@@ -122,7 +168,7 @@ export class NexusPrismaBuilder {
   /**
    * Generate `t.model` output method
    */
-  protected getModelDynamicOutputMethod() {
+  protected buildModel() {
     // const methodName = this.params.methodName
     //   ? this.params.methodName
     //   : 'model';
@@ -131,15 +177,15 @@ export class NexusPrismaBuilder {
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
       factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
         const modelDefinition = this.dmmf.hasModel(graphQLTypeName)
-          ? this.buildModel(t, graphQLTypeName)
-          : (modelName: string) => this.buildModel(t, modelName)
+          ? this.doBuildModel(t, graphQLTypeName)
+          : (modelName: string) => this.doBuildModel(t, modelName)
 
         return modelDefinition
       },
     })
   }
 
-  protected buildModel(
+  protected doBuildModel(
     t: core.OutputDefinitionBlock<any>,
     graphQLTypeName: string,
   ) {
@@ -151,7 +197,7 @@ export class NexusPrismaBuilder {
     graphQLTypeName: string,
     operationName: keyof DMMF.Mapping | null,
     field: DMMF.SchemaField,
-    opts: NexusPrismaMethodParams,
+    opts: FieldPublisherConfig,
   ) {
     let args: DMMF.SchemaArg[] = []
 
@@ -175,7 +221,7 @@ export class NexusPrismaBuilder {
     prismaModelName: string,
     graphQLTypeName: string,
     field: DMMF.SchemaField,
-    opts: NexusPrismaMethodParams,
+    opts: FieldPublisherConfig,
   ) {
     let args: DMMF.SchemaArg[] = []
 
@@ -281,71 +327,6 @@ export class NexusPrismaBuilder {
     }, {})
   }
 
-  protected buildSchemaForCRUD(
-    t: core.OutputDefinitionBlock<any>,
-    parentTypeName: string,
-    mappedFields: FieldsWithModelName[],
-  ) {
-    const result = mappedFields.reduce<
-      Record<string, (opts?: NexusPrismaMethodParams) => any>
-    >((acc, mappedField) => {
-      const prismaModelName = mappedField.mapping.model
-
-      mappedField.fields.forEach(field => {
-        const mappedFieldName = getCRUDFieldName(
-          prismaModelName,
-          field.name,
-          mappedField.mapping,
-          this.fieldNamingStrategy,
-        )
-        acc[mappedFieldName] = opts => {
-          const mergedOpts: NexusPrismaMethodParams = {
-            pagination: true,
-            type: field.outputType.type,
-            ...opts,
-          }
-          const fieldName = mergedOpts.alias
-            ? mergedOpts.alias
-            : mappedFieldName
-          const type = mergedOpts.type!
-          const operationName = Object.keys(mappedField.mapping).find(
-            key => (mappedField.mapping as any)[key] === field.name,
-          ) as keyof DMMF.Mapping | undefined
-
-          if (!operationName) {
-            throw new Error(
-              'Could not find operation name for field ' + field.name,
-            )
-          }
-
-          t.field(fieldName, {
-            ...nexusFieldOpts({ ...field.outputType, type }),
-            args: this.computeArgsFromField(
-              prismaModelName,
-              parentTypeName,
-              operationName,
-              field,
-              mergedOpts,
-            ),
-            resolve: (_, args, ctx) => {
-              const photon = this.params.photon(ctx)
-
-              assertPhotonInContext(photon)
-
-              return photon[mappedField.mapping.plural!][operationName](args)
-            },
-          })
-
-          return result
-        }
-      })
-
-      return acc
-    }, {})
-
-    return result
-  }
-
   protected createInputEnumType(
     parentTypeName: string,
     field: DMMF.SchemaField,
@@ -425,7 +406,7 @@ export class NexusPrismaBuilder {
     const outputType = this.dmmf.getOutputType(model.name)
 
     const result = outputType.fields.reduce<
-      Record<string, (opts?: NexusPrismaMethodParams) => any>
+      Record<string, (opts?: FieldPublisherConfig) => any>
     >((acc, graphqlField) => {
       acc[graphqlField.name] = opts => {
         if (!opts) {
@@ -523,7 +504,7 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
-  protected getPrismaScalars() {
+  protected buildScalers() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
         f =>
