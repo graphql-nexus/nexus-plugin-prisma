@@ -1,4 +1,5 @@
-import { core, enumType, inputObjectType, dynamicOutputProperty } from 'nexus'
+import { core, dynamicOutputProperty, enumType, inputObjectType } from 'nexus'
+import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import { NexusPrismaParams } from '.'
 import { transformDMMF } from '../dmmf/dmmf-transformer'
 import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
@@ -15,9 +16,8 @@ import {
   IArgsNamingStrategy,
   IFieldNamingStrategy,
 } from './NamingStrategies'
-import { dateTimeScalar, GQL_SCALARS_NAMES } from './scalars'
+import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
-import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -25,11 +25,6 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-}
-
-type FieldsWithModelName = {
-  fields: DMMF.SchemaField[]
-  mapping: DMMF.Mapping
 }
 
 export class NexusPrismaBuilder {
@@ -61,7 +56,7 @@ export class NexusPrismaBuilder {
   }
 
   build() {
-    return [this.buildCRUD(), this.buildModel(), ...this.buildScalers()]
+    return [this.buildCRUD(), this.buildModel(), ...this.buildScalars()]
   }
 
   /**
@@ -505,7 +500,7 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
-  protected buildScalers() {
+  protected buildScalars() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
         f =>
@@ -518,6 +513,10 @@ export class NexusPrismaBuilder {
 
     if (dedupScalarNames.includes('DateTime')) {
       scalars.push(dateTimeScalar)
+    }
+
+    if (dedupScalarNames.includes('UUID')) {
+      scalars.push(uuidScalar)
     }
 
     return scalars

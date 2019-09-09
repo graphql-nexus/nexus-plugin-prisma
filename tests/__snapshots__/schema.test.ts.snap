@@ -152,6 +152,26 @@ input UserPostsOrderByInput {
 "
 `;
 
+exports[`it exposes prisma scalars 1`] = `
+"type A {
+  id: UUID!
+  createdAt: DateTime!
+}
+
+type B {
+  id: ID!
+}
+
+scalar DateTime
+
+type Query {
+  ok: Boolean!
+}
+
+scalar UUID
+"
+`;
+
 exports[`simple schema 1`] = `
 "type Query {
   ok: Boolean!
