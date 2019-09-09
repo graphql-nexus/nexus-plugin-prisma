@@ -172,6 +172,17 @@ scalar UUID
 "
 `;
 
+exports[`it only exposes pagination 'first' parameter 1`] = `
+"type Query {
+  users(first: Int): [User!]
+}
+
+type User {
+  id: Int!
+}
+"
+`;
+
 exports[`simple schema 1`] = `
 "type Query {
   ok: Boolean!

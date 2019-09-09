@@ -284,9 +284,9 @@ export class NexusPrismaBuilder {
 
         args.push(...field.args.filter(a => paginationKeys.includes(a.name)))
       } else {
-        const paginationKeys = Object.keys(opts.pagination)
-
-        args.push(...field.args.filter(a => paginationKeys.includes(a.name)))
+        args.push(
+          ...field.args.filter(a => (opts.pagination as any)[a.name] === true),
+        )
       }
     }
 
