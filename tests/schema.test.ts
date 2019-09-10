@@ -239,3 +239,53 @@ test('it exposes prisma scalars', async () => {
 
   expect(printSchema(schema)).toMatchSnapshot()
 })
+
+test("it only exposes pagination 'first' parameter", async () => {
+  const datamodel = `
+  model User {
+    id    Int @id
+  }
+  `
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model.id()
+    },
+  })
+
+  const Query = objectType({
+    name: 'Query',
+    definition(t: any) {
+      t.crud.users({ pagination: { first: true, skip: false } })
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [Query, User])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
+
+test("it does not expose pagination", async () => {
+  const datamodel = `
+  model User {
+    id    Int @id
+  }
+  `
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model.id()
+    },
+  })
+
+  const Query = objectType({
+    name: 'Query',
+    definition(t: any) {
+      t.crud.users({ pagination: false })
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [Query, User])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
