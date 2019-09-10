@@ -24,10 +24,13 @@ model Blog {
 }
 
 model Author {
-  id    Int     @id
-  name  String?
-  posts Post[]
-  blog  Blog
+  id        Int      @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  posts     Post[]
+  blog      Blog
+  rating    Float
 }
 
 model Post {

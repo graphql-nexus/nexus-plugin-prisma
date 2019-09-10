@@ -25,13 +25,19 @@ input AuthorCreateOneWithoutAuthorInput {
 }
 
 input AuthorCreateWithoutBlogInput {
+  createdAt: DateTime
   name: String
   posts: PostCreateManyWithoutPostsInput
+  rating: Float!
+  updatedAt: DateTime
 }
 
 input AuthorCreateWithoutPostsInput {
   blog: BlogCreateOneWithoutBlogInput!
+  createdAt: DateTime
   name: String
+  rating: Float!
+  updatedAt: DateTime
 }
 
 input AuthorWhereUniqueInput {
@@ -107,6 +113,17 @@ type CustomPost {
 DateTime
 """
 scalar DateTime
+
+input FloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: Float
+  notIn: [Float!]
+}
 
 input IntFilter {
   equals: Int
@@ -184,19 +201,27 @@ type Query {
 }
 
 input QueryFindManyAuthorFilter {
-  every: QueryFindManyAuthorWhereInput
-  none: QueryFindManyAuthorWhereInput
-  some: QueryFindManyAuthorWhereInput
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
 }
 
 input QueryFindManyAuthorWhereInput {
   AND: [QueryFindManyAuthorWhereInput!]
   blog: QueryFindManyAuthorWhereInput
+  createdAt: QueryFindManyAuthorFilter
   id: IntFilter
   name: NullableStringFilter
   NOT: [QueryFindManyAuthorWhereInput!]
   OR: [QueryFindManyAuthorWhereInput!]
   posts: QueryFindManyAuthorFilter
+  rating: FloatFilter
+  updatedAt: QueryFindManyAuthorFilter
 }
 
 input QueryFindManyPostOrderByInput {
