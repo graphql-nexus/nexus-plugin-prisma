@@ -168,8 +168,8 @@ type Todo {
 # e.g. `TodoWhereUniqueInput`, `TodoCreateInput`, ...
 ```
 
-- You can find some easy-to-run example projects based on `nexus-prisma` in the [`photonjs repository`](https://github.com/prisma/photonjs/tree/master/examples):
+- You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples repository`](https://github.com/prisma/prisma-examples):
 
-  \- [GraphQL](https://github.com/prisma/photonjs/tree/master/examples/typescript/graphql): Simple setup keeping the entire schema in a single file.
+  \- [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
 
-  \- [GraphQL + Auth](https://github.com/prisma/photonjs/tree/master/examples/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema.
+  \- [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema.
