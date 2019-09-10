@@ -207,3 +207,35 @@ test('it exposes findOne and findMany', async () => {
 
   expect(printSchema(schema)).toMatchSnapshot()
 })
+
+test('it exposes prisma scalars', async () => {
+  const datamodel = `
+  model A {
+    id  String  @default(uuid()) @id @unique
+    createdAt DateTime @default(now())
+  }
+  model B {
+    id  String  @default(cuid()) @id @unique
+  }
+  `
+  // uuid scalar + datetime
+  const A = objectType({
+    name: 'A',
+    definition(t: any) {
+      t.model.id()
+      t.model.createdAt()
+    },
+  })
+
+  // cuid scalar (should map to graphql's 'ID' scalar)
+  const B = objectType({
+    name: 'B',
+    definition(t: any) {
+      t.model.id()
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [A, B])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
