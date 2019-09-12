@@ -903,6 +903,7 @@ negotiator@0.6.2:
   dependencies:
     nexus "^0.12.0-beta.8"
     pluralize "^8.0.0"
+    prisma2 "^2.0.0-alpha.178"
 
 nexus@^0.12.0-beta.8:
   version "0.12.0-beta.8"
@@ -1031,10 +1032,10 @@ prettier@^1.18.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
   integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
-prisma2@^2.0.0-alpha.155:
-  version "2.0.0-alpha.155"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.155.tgz#9b56166853f61cd0b7d6807cf76590dbfbebca45"
-  integrity sha512-eRy18IbhxRt2AZimyK8jK/ZlgBBQJA1dt3IlA8qvGrUP+3uNqCVcJkYKNuxgEA+uiwJ3x9tey/jUiIDZuzlDTQ==
+prisma2@^2.0.0-alpha.178:
+  version "2.0.0-preview-10"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-10.tgz#8baec075715b8cc197be9b39d4070aa2e901fde0"
+  integrity sha512-i+JVR1C4FFfclD1XCcQrPjaXwHXg6mTUkJnfuJaM20IUhTOQzFAIU6KWlcYAh8kzUzrZsieZuut/HKRCBtpzKQ==
 
 proxy-addr@~2.0.5:
   version "2.0.5"

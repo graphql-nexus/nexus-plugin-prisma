@@ -1,8 +1,8 @@
 import Photon from '@generated/photon'
-import { GraphQLServer } from 'graphql-yoga'
-import { makeSchema } from 'nexus'
-import { join } from 'path'
-import { nexusPrismaPlugin } from '@generated/nexus-prisma'
+import * as Yoga from 'graphql-yoga'
+import * as Nexus from 'nexus'
+import * as Path from 'path'
+import * as NexusPrisma from 'nexus-prisma'
 import * as allTypes from './graphql'
 
 main()
@@ -12,15 +12,17 @@ async function main() {
 
   await photon.connect()
 
-  const nexusPrisma = nexusPrismaPlugin({
+  const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
     photon: ctx => ctx.photon,
   })
 
-  const schema: any = makeSchema({
+  NexusPrisma.generateTypes()
+
+  const schema: any = Nexus.makeSchema({
     types: [allTypes, nexusPrisma],
     outputs: {
-      typegen: join(__dirname, '/generated/nexus.d.ts'),
-      schema: join(__dirname, '/generated/schema.graphql'),
+      typegen: Path.join(__dirname, '/generated/nexus.d.ts'),
+      schema: Path.join(__dirname, '/generated/schema.graphql'),
     },
     typegenAutoConfig: {
       sources: [
@@ -32,7 +34,7 @@ async function main() {
     },
   })
 
-  const server = new GraphQLServer({
+  const server = new Yoga.GraphQLServer({
     schema,
     context: () => ({ photon }),
   })

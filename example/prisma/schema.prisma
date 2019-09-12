@@ -3,14 +3,8 @@ datasource db {
   url      = "file:dev.db"
 }
 
-generator nexus_prisma {
-  provider = "nexus-prisma"
-  output   = "../node_modules/@generated/nexus-prisma"
-}
-
 generator photon {
   provider = "photonjs"
-  output   = "../node_modules/@generated/photon"
 }
 
 model Blog {

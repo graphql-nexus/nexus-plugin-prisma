@@ -1,19 +1,33 @@
 import { ExternalDMMF as DMMF } from './dmmf/types'
 import { DMMFClass } from './dmmf/DMMFClass'
+import { transformDMMF } from './dmmf/transformer'
 import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
 import { defaultFieldNamingStrategy } from './NamingStrategies'
+import { writeFileSync } from 'fs'
+import * as Path from 'path'
 
 type DMMF = DMMF.Document
 
-export function generate(dmmf: DMMF, photonPath?: string): string {
+type Options = {
+  photonPath?: string
+  typegenPath?: string
+}
+
+export function generate(options: Options = {}): Promise<void> {
   // TODO Default should be updated once resolved:
   // https://github.com/prisma/photonjs/issues/88
   // TODO when photon not found log hints of what to do for the user
   // TODO DRY this with same logic in builder
-  photonPath = photonPath || '@generated/photon'
-  const dmmfClass = new DMMFClass(dmmf)
-  return render(dmmfClass, photonPath)
+  const photonPath = options.photonPath || '@generated/photon'
+  const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+  const dmmfClass = new DMMFClass(transformedDMMF)
+  const tsDeclaration = render(dmmfClass, photonPath)
+  const typegenPath =
+    options.typegenPath || Path.join(__dirname, './nexus-prisma.d.ts')
+  // TODO async
+  writeFileSync(typegenPath, tsDeclaration)
+  return Promise.resolve()
 }
 
 function render(dmmf: DMMFClass, photonPath: string) {
