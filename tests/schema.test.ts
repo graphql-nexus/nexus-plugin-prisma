@@ -265,7 +265,7 @@ test("it only exposes pagination 'first' parameter", async () => {
   expect(printSchema(schema)).toMatchSnapshot()
 })
 
-test("it does not expose pagination", async () => {
+test('it does not expose pagination', async () => {
   const datamodel = `
   model User {
     id    Int @id
