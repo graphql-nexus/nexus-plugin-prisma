@@ -1,4 +1,4 @@
-import { DMMF, ExternalDMMF } from './dmmf-types'
+import { DMMF, ExternalDMMF } from './types'
 
 export function transformDMMF(document: DMMF.Document): ExternalDMMF.Document {
   return {

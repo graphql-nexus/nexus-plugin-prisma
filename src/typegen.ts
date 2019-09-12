@@ -1,20 +1,18 @@
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
-import { DMMFClass } from '../dmmf/DMMFClass'
-import {
-  getSupportedQueries,
-  getSupportedMutations,
-} from '../nexus-prisma/supported-ops'
-import { flatMap, getCRUDFieldName } from '../utils'
-import { defaultFieldNamingStrategy } from '../nexus-prisma/NamingStrategies'
+import { ExternalDMMF as DMMF } from './dmmf/types'
+import { DMMFClass } from './dmmf/DMMFClass'
+import { getSupportedQueries, getSupportedMutations } from './supported-ops'
+import { flatMap, getCRUDFieldName } from './utils'
+import { defaultFieldNamingStrategy } from './NamingStrategies'
 
 type DMMF = DMMF.Document
 
-export function generateNexusPrismaTypes(
-  dmmf: DMMF,
-  photonPath: string,
-): string {
+export function generate(dmmf: DMMF, photonPath?: string): string {
+  // TODO Default should be updated once resolved:
+  // https://github.com/prisma/photonjs/issues/88
+  // TODO when photon not found log hints of what to do for the user
+  // TODO DRY this with same logic in builder
+  photonPath = photonPath || '@generated/photon'
   const dmmfClass = new DMMFClass(dmmf)
-
   return render(dmmfClass, photonPath)
 }
 

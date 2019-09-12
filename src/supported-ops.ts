@@ -1,4 +1,4 @@
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
+import { ExternalDMMF as DMMF } from './dmmf/types'
 
 export function getSupportedQueries(mapping: DMMF.Mapping): string[] {
   return [mapping.findOne, mapping.findMany].filter(Boolean) as string[]

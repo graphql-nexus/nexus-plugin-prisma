@@ -1,15 +1,14 @@
 import { core, dynamicOutputProperty, enumType, inputObjectType } from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
-import { NexusPrismaParams } from '.'
-import { transformDMMF } from '../dmmf/dmmf-transformer'
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
-import { DMMFClass } from '../dmmf/DMMFClass'
+import { transformDMMF } from './dmmf/transformer'
+import { ExternalDMMF as DMMF } from './dmmf/types'
+import { DMMFClass } from './dmmf/DMMFClass'
 import {
   assertPhotonInContext,
   flatMap,
   getCRUDFieldName,
   nexusOpts as nexusFieldOpts,
-} from '../utils'
+} from './utils'
 import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
@@ -27,6 +26,16 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
+export interface Options {
+  photon: (ctx: any) => any
+  photonPath?: string
+}
+
+export function build(options: Options) {
+  const builder = new NexusPrismaBuilder(options)
+  return builder.build()
+}
+
 export class NexusPrismaBuilder {
   protected readonly dmmf: DMMFClass
   protected visitedInputTypesMap: Record<string, boolean>
@@ -34,24 +43,20 @@ export class NexusPrismaBuilder {
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
 
-  constructor(protected params: NexusPrismaParams) {
-    let transformedDMMF
-
-    if (process.env.NEXUS_PRISMA_DEBUG) {
-      // Using eval so that ncc doesn't include it in the build
-      transformedDMMF = transformDMMF(eval(`require('@generated/photon'`).dmmf)
-    } else {
-      // @ts-ignore
-      transformedDMMF = __DMMF__
-    }
-
-    this.dmmf = new DMMFClass(transformedDMMF as any)
+  constructor(protected options: Options) {
+    // TODO Default should be updated once resolved:
+    // https://github.com/prisma/photonjs/issues/88
+    // TODO when photon not found log hints of what to do for the user
+    // TODO DRY this with same logic in typegen
+    const photonPath = options.photonPath || '@generated/photon'
+    const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+    this.dmmf = new DMMFClass(transformedDMMF)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
     this.whitelistMap = {}
-    if (!this.params.photon) {
-      this.params.photon = ctx => ctx.photon
+    if (!this.options.photon) {
+      this.options.photon = ctx => ctx.photon
     }
   }
 
@@ -142,7 +147,7 @@ export class NexusPrismaBuilder {
                   resolvedConfig,
                 ),
                 resolve: (_parent, args, ctx) => {
-                  const photon = this.params.photon(ctx)
+                  const photon = this.options.photon(ctx)
                   assertPhotonInContext(photon)
                   return photon[mappedField.mapping.plural!][operationName](
                     args,
@@ -428,7 +433,7 @@ export class NexusPrismaBuilder {
           const mapping = this.dmmf.getMapping(prismaModelName)
 
           fieldOpts.resolve = (root, args, ctx) => {
-            const photon = this.params.photon(ctx)
+            const photon = this.options.photon(ctx)
 
             assertPhotonInContext(photon)
 

@@ -1,6 +1,6 @@
 import pluralize from 'pluralize'
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
-import { upperFirst } from '../utils'
+import { ExternalDMMF as DMMF } from './dmmf/types'
+import { upperFirst } from './utils'
 
 export interface IArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string

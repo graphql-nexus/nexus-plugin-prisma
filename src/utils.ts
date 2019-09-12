@@ -1,9 +1,6 @@
 import { relative } from 'path'
-import { ExternalDMMF as DMMF } from './dmmf/dmmf-types'
-import {
-  OperationName,
-  IFieldNamingStrategy,
-} from './nexus-prisma/NamingStrategies'
+import { ExternalDMMF as DMMF } from './dmmf/types'
+import { OperationName, IFieldNamingStrategy } from './NamingStrategies'
 
 export const keyBy: <T>(
   collection: T[],
