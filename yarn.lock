@@ -479,9 +479,11 @@
     "@types/node" "*"
 
 "@types/graphql@^14.2.3":
-  version "14.2.3"
-  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.2.3.tgz#cfc6420a67eb20420786f90112357921974593b9"
-  integrity sha512-UoCovaxbJIxagCvVfalfK7YaNhmxj3BQFRQ2RHQKLiu+9wNXhJnlbspsLHt/YQM99IaLUUFJNzCwzc6W0ypMeQ==
+  version "14.5.0"
+  resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-14.5.0.tgz#a545fb3bc8013a3547cf2f07f5e13a33642b75d6"
+  integrity sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==
+  dependencies:
+    graphql "*"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
@@ -1773,6 +1775,13 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.2.tgz#6f0952605d0140c1cfdb138ed005775b92d67b02"
   integrity sha512-IItsdsea19BoLC7ELy13q1iJFNmd7ofZH5+X/pJr90/nRoPEX0DJo1dHDbgtYWOhJhcCgMDTOw84RZ72q6lB+Q==
+
+graphql@*:
+  version "14.5.4"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.4.tgz#b33fe957854e90c10d4c07c7d26b6c8e9f159a13"
+  integrity sha512-dPLvHoxy5m9FrkqWczPPRnH0X80CyvRE6e7Fa5AWEqEAzg9LpxHvKh24po/482E6VWHigOkAmb4xCp6P9yT9gw==
+  dependencies:
+    iterall "^1.2.2"
 
 graphql@^14.3.0:
   version "14.4.2"
@@ -3492,10 +3501,10 @@ prisma-datamodel@^1.36.0-test.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-preview-7:
-  version "2.0.0-preview-7"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-7.tgz#b12e4d3d801099fce96f3719f938e690e19def0a"
-  integrity sha512-wUcFypCfr7pnAeP5V/Tz9REeWCL1XTAKsVXm2cJl/jXj+XdbWxNKLybKFxgCasM91XLSRKLG5EibkIP2lZitVA==
+prisma2@^2.0.0-alpha.178:
+  version "2.0.0-preview-11"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-11.tgz#103cf2b969339840b2301482034d63959c17cf79"
+  integrity sha512-sEv/d0a1OGvirtLasyAW+fuDZUssStRpxtg2YTpei52sBi1OvlizC66QqL0NQn0CGexWHEkVuVOaIOOmFHJGpA==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

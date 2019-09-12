@@ -1,6 +1,6 @@
 generator photonjs {
   provider = "photonjs"
-  output   = "../../node_modules/@prisma/generated/photon"
+  output   = "../../node_modules/@generated/photon"
 }
 
 model A {
