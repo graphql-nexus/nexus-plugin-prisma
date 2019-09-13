@@ -1,3 +1,6 @@
+// TODO
+// Test ideas:
+// - show we gracefully handle case of photon import failing
 import * as cp from 'child_process'
 import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
@@ -9,7 +12,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  // NOTE:
+  // NOTE
   // Comment out this line if you want to play around with the integration
   // test app in VSCode with actual IDE TS type check feedback.
   await fs.remove(relative('generated'))
@@ -18,50 +21,50 @@ afterAll(async () => {
 it('integrates together', async () => {
   // Run Prisma generation:
   // - Photon JS Client
-  await prismaGenerate()
-
-  // Bootstrap Nexus generation that enables subsequent compilation
-  // - Core TypeScript Declaration
-  // - Prisma TypeScript Declaration
-  // TODO
+  cp.execSync('../../node_modules/.bin/prisma2 generate', {
+    cwd: __dirname,
+  })
 
   // Run Nexus generation:
   // - Core TypeScript Declaration
   // - Prisma TypeScript Declaration
   // - GraphQL Schema
-  await nexusGenerate()
-
-  // Assert the app type checks. In effect this is testing that our
-  // typegen works.
-  expect(relative('tsconfig.json')).toTypeCheck()
-
-  // Snapshot our generated results
-  // - snapshot Nexus core TSD
-  // - snapshot Nexus prisma TSD
-  // - snapshot graphql schema
-  // TODO
-})
-
-async function nexusGenerate() {
+  //
+  // NOTE
+  // This also acts as a bootstrap phase, producing types that
+  // enable subsequent type checks. A user currently has to figure
+  // this part out on their own more or less.
+  //
   await nexusPrisma.generateTypes({
-    typegenPath: relative(`generated/nexus-types/prisma.d.ts`),
+    typegenPath: generatedPath(`nexus-types/prisma.d.ts`),
   })
+
   await nexusBuilder.generateSchema({
     types: [
       require('./app'),
       nexusPrisma.nexusPrismaPlugin({ photon: ctx => ctx.photon }),
     ],
     outputs: {
-      typegen: relative(`generated/nexus-types/core.d.ts`),
-      schema: relative(`generated/schema.graphql`),
+      typegen: generatedPath(`nexus-types/core.d.ts`),
+      schema: generatedPath(`schema.graphql`),
     },
   })
+
+  // Assert the app type checks. In effect this is testing that our
+  // typegen works. Snapshot our generated files for manual correctness
+  // tracking.
+  expect(relative('tsconfig.json')).toTypeCheck()
+  expect(await getGenerated('schema.graphql')).toMatchSnapshot()
+  expect(await getGenerated('nexus-types/core.d.ts')).toMatchSnapshot()
+  expect(await getGenerated('nexus-types/prisma.d.ts')).toMatchSnapshot()
+})
+
+async function getGenerated(relPath: string): Promise<string> {
+  return fs.readFile(path.join(generatedPath(relPath))).then(b => b.toString())
 }
 
-async function prismaGenerate() {
-  cp.execSync('../../node_modules/.bin/prisma2 generate', {
-    cwd: __dirname,
-  })
+function generatedPath(relPath: string): string {
+  return path.join(relative('generated'), relPath)
 }
 
 function relative(relPath: string): string {
