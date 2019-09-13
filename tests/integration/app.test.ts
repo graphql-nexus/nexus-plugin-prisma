@@ -4,17 +4,6 @@ import * as nexusBuilder from 'nexus/dist/builder'
 import * as nexusPrisma from '../../src'
 import * as fs from 'fs-extra'
 
-beforeAll(async () => {
-  await fs.mkdirp(relative('generated/nexus-types'))
-})
-
-afterAll(async () => {
-  // NOTE
-  // Comment out this line if you want to play around with the integration
-  // test app in VSCode with actual IDE TS type check feedback.
-  await fs.remove(relative('generated'))
-})
-
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
 
@@ -65,6 +54,17 @@ it('integrates together', async () => {
   expect(
     await getRelative('../../node_modules/@generated/photon/index.js'),
   ).toMatchSnapshot()
+})
+
+beforeAll(async () => {
+  await fs.mkdirp(relative('generated/nexus-types'))
+})
+
+afterAll(async () => {
+  // NOTE
+  // Comment out this line if you want to play around with the integration
+  // test app in VSCode with actual IDE TS type check feedback.
+  await fs.remove(relative('generated'))
 })
 
 async function getGenerated(relPath: string): Promise<string> {
