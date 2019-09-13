@@ -51,13 +51,20 @@ it('integrates together', async () => {
   })
 
   // Assert the app type checks. In effect this is testing that our
-  // typegen works. Snapshot our generated files for manual correctness
-  // tracking.
+  // typegen works. Snapshot generated files for manual correctness
+  // tracking. Generated files from deps are tracked too, for easier
+  // debugging, learning, and detecting unexpected changes.
   //
   expect(relative('tsconfig.json')).toTypeCheck()
   expect(await getGenerated('schema.graphql')).toMatchSnapshot()
   expect(await getGenerated('nexus-types/prisma.d.ts')).toMatchSnapshot()
   expect(await getGenerated('nexus-types/core.d.ts')).toMatchSnapshot()
+  expect(
+    await getRelative('../../node_modules/@generated/photon/index.d.ts'),
+  ).toMatchSnapshot()
+  expect(
+    await getRelative('../../node_modules/@generated/photon/index.js'),
+  ).toMatchSnapshot()
 })
 
 async function getGenerated(relPath: string): Promise<string> {
