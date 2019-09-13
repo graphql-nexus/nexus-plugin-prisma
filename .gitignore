@@ -7,5 +7,3 @@ example/generated
 .DS_Store
 yarn-error.log
 failed-*.md
-tests/integration/generated/*.graphql
-tests/integration/generated/nexus-types/*.d.ts

@@ -1,4 +1,13 @@
 /**
+ * @type {ts-jest/types.TsJestGlobalOptions} FIXME <-- make this work :(
+ */
+const tsJestConfig = {
+  diagnostics: {
+    warnOnly: !process.env.CI,
+  },
+}
+
+/**
  * @type {jest.InitialOptions}
  */
 module.exports = {
@@ -10,10 +19,6 @@ module.exports = {
     'jest-watch-typeahead/testname',
   ],
   globals: {
-    'ts-jest': {
-      diagnostics: {
-        warnOnly: !process.env.CI,
-      },
-    },
+    'ts-jest': tsJestConfig,
   },
 }

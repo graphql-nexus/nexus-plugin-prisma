@@ -1,6 +1,7 @@
 import ts from 'typescript'
 ;(global as any).TS_FORMAT_PROJECT_ROOT = 'src/'
 import * as tsm from 'ts-morph'
+import * as path from 'path'
 
 const formatTSDiagonsticsForJest = (
   diagnostics: readonly tsm.Diagnostic[],
@@ -36,9 +37,9 @@ const formatTSDiagonsticsForJest = (
 }
 
 expect.extend({
-  toTypeCheck(tsConfigFilePath: string) {
+  toTypeCheck(projectRootPath: string) {
     const project = new tsm.Project({
-      tsConfigFilePath,
+      tsConfigFilePath: path.join(projectRootPath, 'tsconfig.json'),
     })
     if (project.getSourceFiles().length === 0) {
       throw new Error(
