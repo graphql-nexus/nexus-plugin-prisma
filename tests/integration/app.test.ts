@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
 import * as nexusPrisma from '../../src'
 import * as fs from 'fs-extra'
+import * as typeDefs from './app'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
@@ -49,7 +50,7 @@ it('integrates together', async () => {
 
   await nexusBuilder.generateSchema({
     types: [
-      require('./app'),
+      typeDefs,
       nexusPrisma.nexusPrismaPlugin({ photon: ctx => ctx.photon }),
     ],
     outputs: {
