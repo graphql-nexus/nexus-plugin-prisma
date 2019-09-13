@@ -4,6 +4,6 @@ export const A = objectType({
   name: 'A',
   definition(t) {
     t.string('hash')
-    // t.model.id()
+    t.model.id()
   },
 })
