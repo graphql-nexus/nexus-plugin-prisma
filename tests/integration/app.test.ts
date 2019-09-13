@@ -8,6 +8,25 @@ import * as fs from 'fs-extra'
 // - show we gracefully handle case of photon import failing
 
 it('integrates together', async () => {
+  // Remove generated files before test run. The idea here is as follows:
+  //
+  //   - We commit the generated files so that we can navigate the integration test
+  //     fixture project like a real one
+  //   - Upon a test, we want to start from scratch, though
+  //   - The test will produce something identical to what was there before
+  //   - If it does not, the snapshots will fail
+  //
+  // Yes, its a bit like having snapshots twice. But the files on disk and the snapshots
+  // serve different purposes:
+  //
+  //   - Snapshots automate test suite failure on diff, great for CI, has purpose-built
+  //     workflow to accept changes.
+  //   - Committed generated files in fixture make it navigable and maintaining it more
+  //     realisitc to a real app.
+
+  await fs.emptyDir(relative('generated'))
+  await fs.mkdirp(relative('generated/nexus-types'))
+
   // Run Prisma generation:
   // - Photon JS Client
   cp.execSync('../../node_modules/.bin/prisma2 generate', {
@@ -54,27 +73,6 @@ it('integrates together', async () => {
   expect(
     await getRelative('../../node_modules/@generated/photon/index.js'),
   ).toMatchSnapshot()
-})
-
-beforeAll(async () => {
-  // The idea here is as follows:
-  //
-  //   - We commit the generated files so that we can navigate the integration test
-  //     fixture project like a real one
-  //   - Upon a test, we want to start from scratch, though
-  //   - The test will produce something identical to what was there before
-  //   - If it does not, the snapshots will fail
-  //
-  // Yes, its a bit like having snapshots twice. But the files on disk and the snapshots
-  // serve different purposes:
-  //
-  //   - Snapshots automate test suite failure on diff, great for CI, has purpose-built
-  //     workflow to accept changes.
-  //   - Committed generated files in fixture make it navigable and maintaining it more
-  //     realisitc to a real app.
-
-  await fs.emptyDir(relative('generated'))
-  await fs.mkdirp(relative('generated/nexus-types'))
 })
 
 async function getGenerated(relPath: string): Promise<string> {
