@@ -17,10 +17,9 @@ import {
 } from './NamingStrategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
-
 interface FieldPublisherConfig {
   alias?: string
-  type?: string
+  type?: core.AllOutputTypes
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
@@ -516,11 +515,16 @@ export class NexusPrismaBuilder {
     const dedupScalarNames = [...new Set(allScalarNames)]
     const scalars: any[] = []
 
-    if (dedupScalarNames.includes('DateTime')) {
+    // FIXME The type of .type above is nexus.core.AllOutputTypes
+    // but this does not account for custom scalars. Nexus
+    // should change its AllOutputTypes type, or export a new type,
+    // that integrates custom scalers. Conversely, nexus-prisma
+    // typegen should contribute (e.g. via interface merging) to it
+    // the scalars found in DMMF.
+    if (dedupScalarNames.includes('DateTime' as any)) {
       scalars.push(dateTimeScalar)
     }
-
-    if (dedupScalarNames.includes('UUID')) {
+    if (dedupScalarNames.includes('UUID' as any)) {
       scalars.push(uuidScalar)
     }
 
