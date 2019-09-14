@@ -26,7 +26,7 @@ export interface NexusGenEnums {
 
 export interface NexusGenRootTypes {
   A: { // root type
-    hash: string; // String!
+    f1: string; // String!
     id: number; // Int!
   }
   Query: {};
@@ -42,7 +42,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   A: { // field return type
-    hash: string; // String!
+    f1: string; // String!
     id: number; // Int!
   }
   Query: { // field return type

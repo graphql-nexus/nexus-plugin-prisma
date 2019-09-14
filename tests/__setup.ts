@@ -16,6 +16,7 @@ const formatTSDiagonsticsForJest = (
   }
 
   const tsReport = ts.formatDiagnosticsWithColorAndContext(
+    // FIXME Fat type error without any, but it works...
     tsDiagnostics as any,
     formatHost,
   )
@@ -28,9 +29,7 @@ const formatTSDiagonsticsForJest = (
   const summaryReport = `${
     tsDiagnostics.length
   } Type Error(s):\n\n${tsDiagnostics
-    .map(d =>
-      d.file ? d.file.fileName.replace(sourcePath, '') : '<unknown file>',
-    )
+    .map(d => (d.file ? d.file.fileName.replace(sourcePath, '') : '<no file>'))
     .join('\n')}`
 
   const jestReport = `${summaryReport}\n\n${tsReport}`
