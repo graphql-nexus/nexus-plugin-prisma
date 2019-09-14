@@ -9,7 +9,9 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}
             - v1-dependencies-
-      - run: install deps
+      - run:
+          name: install dependencies
+          command: yarn install
       - save_cache:
           paths:
             - .cache/yarn
