@@ -3,6 +3,8 @@ import ts from 'typescript'
 import * as tsm from 'ts-morph'
 import * as path from 'path'
 
+jest.setTimeout(20000)
+
 const formatTSDiagonsticsForJest = (
   diagnostics: readonly tsm.Diagnostic[],
 ): string => {

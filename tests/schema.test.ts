@@ -2,8 +2,6 @@ import { objectType } from 'nexus'
 import { printSchema } from 'graphql'
 import { generateSchema } from './__utils'
 
-jest.setTimeout(20000)
-
 test('simple schema', async () => {
   const User = objectType({
     name: 'User',
