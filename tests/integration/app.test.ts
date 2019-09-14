@@ -65,15 +65,24 @@ it('integrates together', async () => {
   // debugging, learning, and detecting unexpected changes.
   //
   expect(relative('.')).toTypeCheck()
-  expect(await getGenerated('schema.graphql')).toMatchSnapshot()
-  expect(await getGenerated('nexus-types/prisma.d.ts')).toMatchSnapshot()
-  expect(await getGenerated('nexus-types/core.d.ts')).toMatchSnapshot()
+  expect(await getGenerated('schema.graphql')).toMatchSnapshot('graphql schema')
+  expect(await getGenerated('nexus-types/prisma.d.ts')).toMatchSnapshot(
+    'nexus prisma typegen',
+  )
+  expect(await getGenerated('nexus-types/core.d.ts')).toMatchSnapshot(
+    'nexus core typegen',
+  )
   expect(
     await getRelative('../../node_modules/@generated/photon/index.d.ts'),
-  ).toMatchSnapshot()
+  ).toMatchSnapshot('photon typescript declaration')
   expect(
-    await getRelative('../../node_modules/@generated/photon/index.js'),
-  ).toMatchSnapshot()
+    (await getRelative('../../node_modules/@generated/photon/index.js'))
+      .replace(
+        /(path\.join\(__dirname, 'runtime\/).*('\);)/,
+        '$1__STRIPPED__$2',
+      )
+      .replace(/"output": ".*",/, '"output": "__STRIPPED__"'),
+  ).toMatchSnapshot('photon source code')
 })
 
 async function getGenerated(relPath: string): Promise<string> {
