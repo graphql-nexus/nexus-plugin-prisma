@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn -s clean && tsc",
+    "build": "yarn -s clean && tsc --project tsconfig.build.json",
     "dev": "tsc --watch",
     "prepublish": "yarn build",
     "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
