@@ -416,7 +416,7 @@ class Photon {
         const internal = options.__internal || {};
         const engineConfig = internal.engine || {};
         this.engine = new runtime_1.Engine({
-            cwd: engineConfig.cwd || path.resolve(__dirname, \\"../../../tests/integration\\"),
+            cwd: engineConfig.cwd || path.resolve(__dirname, \\"../../../tests/__app\\"),
             debug: debugEngine,
             datamodel: this.datamodel,
             prismaPath: engineConfig.binaryPath || undefined,

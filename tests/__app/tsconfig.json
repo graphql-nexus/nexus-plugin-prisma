@@ -7,6 +7,5 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["."],
-  "exclude": ["*.test.ts"]
+  "include": ["."]
 }
