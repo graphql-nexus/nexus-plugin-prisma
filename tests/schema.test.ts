@@ -2,26 +2,6 @@ import { objectType } from 'nexus'
 import { printSchema } from 'graphql'
 import { generateSchema } from './__utils'
 
-test('simple schema', async () => {
-  const User = objectType({
-    name: 'User',
-    definition(t: any) {
-      t.model.id()
-      t.model.name()
-    },
-  })
-  const datamodel = `
-    model User {
-      id    Int @id
-      name  String
-    }
-    `
-
-  const schema = await generateSchema(datamodel, [User])
-
-  expect(printSchema(schema)).toMatchSnapshot()
-})
-
 test('it exposes only pagination on relations by default', async () => {
   const datamodel = `
     model User {
