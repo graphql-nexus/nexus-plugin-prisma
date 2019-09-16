@@ -4,8 +4,7 @@ import { transformDMMF } from './dmmf/transformer'
 import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
 import { defaultFieldNamingStrategy } from './naming-strategies'
-import { writeFileSync } from 'fs'
-import { writeFile, mkdirpSync, mkdirp } from 'fs-extra'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 
 type DMMF = DMMF.Document
@@ -37,12 +36,12 @@ export function doGenerate(
   const dmmfClass = new DMMFClass(transformedDMMF)
   const tsDeclaration = render(dmmfClass, options.photonPath)
   if (sync) {
-    mkdirpSync(path.dirname(options.typegenPath))
-    writeFileSync(options.typegenPath, tsDeclaration)
+    fs.mkdirpSync(path.dirname(options.typegenPath))
+    fs.writeFileSync(options.typegenPath, tsDeclaration)
   } else {
-    return mkdirp(path.dirname(options.typegenPath)).then(() =>
-      writeFile(options.typegenPath, tsDeclaration),
-    )
+    return fs
+      .mkdirp(path.dirname(options.typegenPath))
+      .then(() => fs.writeFile(options.typegenPath, tsDeclaration))
   }
 }
 
