@@ -33,17 +33,15 @@ export function doGenerate(
   // https://github.com/prisma/photonjs/issues/88
   // TODO when photon not found log hints of what to do for the user
   // TODO DRY this with same logic in builder
-  const photonPath = options.photonPath
-  const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+  const transformedDMMF = transformDMMF(require(options.photonPath).dmmf)
   const dmmfClass = new DMMFClass(transformedDMMF)
-  const tsDeclaration = render(dmmfClass, photonPath)
-  const typegenPath = options.typegenPath
+  const tsDeclaration = render(dmmfClass, options.photonPath)
   if (sync) {
-    mkdirpSync(path.dirname(typegenPath))
-    writeFileSync(typegenPath, tsDeclaration)
+    mkdirpSync(path.dirname(options.typegenPath))
+    writeFileSync(options.typegenPath, tsDeclaration)
   } else {
-    return mkdirp(path.dirname(typegenPath)).then(() =>
-      writeFile(typegenPath, tsDeclaration),
+    return mkdirp(path.dirname(options.typegenPath)).then(() =>
+      writeFile(options.typegenPath, tsDeclaration),
     )
   }
 }
