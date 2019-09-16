@@ -13,7 +13,9 @@ export async function generateSchema(datamodel: string, types: any[]) {
   })
   const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
     photon: (ctx: any) => ctx.photon,
-    photonPath: photonPath.name,
+    inputs: {
+      photon: photonPath.name,
+    },
   })
   const schema = Nexus.makeSchema({
     types: [types, nexusPrisma],
