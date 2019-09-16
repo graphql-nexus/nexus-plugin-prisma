@@ -14,7 +14,7 @@ import {
   defaultFieldNamingStrategy,
   IArgsNamingStrategy,
   IFieldNamingStrategy,
-} from './NamingStrategies'
+} from './naming-strategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
 

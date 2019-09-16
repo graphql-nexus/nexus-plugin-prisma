@@ -3,7 +3,7 @@ import { DMMFClass } from './dmmf/DMMFClass'
 import { transformDMMF } from './dmmf/transformer'
 import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
-import { defaultFieldNamingStrategy } from './NamingStrategies'
+import { defaultFieldNamingStrategy } from './naming-strategies'
 import { writeFileSync } from 'fs'
 import * as Path from 'path'
 
