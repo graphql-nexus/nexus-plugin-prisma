@@ -18,6 +18,7 @@ import {
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
 import * as Typegen from './typegen'
+import * as path from 'path'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -29,12 +30,32 @@ interface FieldPublisherConfig {
 
 export interface Options {
   photon: (ctx: any) => any
-  photonPath?: string
+  shouldGenerateArtifacts?: boolean
+  inputs?: {
+    photon?: string
+  }
+  outputs?: {
+    typegen?: string
+  }
 }
 
 export function build(options: Options) {
   const builder = new NexusPrismaBuilder(options)
   return builder.build()
+}
+
+const defaultOptions = {
+  shouldGenerateArtifacts: Boolean(
+    !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
+  ),
+  inputs: {
+    // TODO Default should be updated once resolved:
+    // https://github.com/prisma/photonjs/issues/88
+    photon: '@generated/photon',
+  },
+  outputs: {
+    typegen: path.join(__dirname, './typegen.d.ts'),
+  },
 }
 
 export class NexusPrismaBuilder {
@@ -45,12 +66,15 @@ export class NexusPrismaBuilder {
   protected fieldNamingStrategy: IFieldNamingStrategy
 
   constructor(protected options: Options) {
-    // TODO Default should be updated once resolved:
-    // https://github.com/prisma/photonjs/issues/88
+    const config = {
+      ...defaultOptions,
+      ...options,
+      inputs: { ...defaultOptions.inputs, ...options.inputs },
+      outputs: { ...defaultOptions.outputs, ...options.outputs },
+    }
     // TODO when photon not found log hints of what to do for the user
     // TODO DRY this with same logic in typegen
-    const photonPath = options.photonPath || '@generated/photon'
-    const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+    const transformedDMMF = transformDMMF(require(config.inputs.photon).dmmf)
     this.dmmf = new DMMFClass(transformedDMMF)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
@@ -59,7 +83,12 @@ export class NexusPrismaBuilder {
     if (!this.options.photon) {
       this.options.photon = ctx => ctx.photon
     }
-    // TODO typegen production
+    if (config.shouldGenerateArtifacts) {
+      Typegen.generateSync({
+        photonPath: config.inputs.photon,
+        typegenPath: config.outputs.typegen,
+      })
+    }
   }
 
   build() {
