@@ -57,6 +57,8 @@ const defaultOptions = {
     photon: '@generated/photon',
   },
   outputs: {
+    // This default is based on the privledge given to @types
+    // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
     typegen: path.join(
       __dirname,
       '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
