@@ -19,8 +19,7 @@
   "dependencies": {
     "@types/fs-extra": "^8.0.0",
     "nexus": "^0.12.0-beta.8",
-    "pluralize": "^8.0.0",
-    "prisma2": "^2.0.0-alpha.178"
+    "pluralize": "^8.0.0"
   },
   "devDependencies": {
     "@prisma/photon": "^0.2.6",
@@ -32,6 +31,7 @@
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.3.1",
     "prettier": "^1.17.1",
+    "prisma2": "^2.0.0-alpha.185",
     "tmp": "^0.1.0",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
