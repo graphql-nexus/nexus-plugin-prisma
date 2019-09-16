@@ -54,7 +54,10 @@ const defaultOptions = {
     photon: '@generated/photon',
   },
   outputs: {
-    typegen: path.join(__dirname, './typegen.d.ts'),
+    typegen: path.join(
+      __dirname,
+      '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
+    ),
   },
 }
 

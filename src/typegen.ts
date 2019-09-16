@@ -5,21 +5,21 @@ import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { writeFileSync } from 'fs'
-import * as Path from 'path'
-import { writeFile } from 'fs-extra'
+import { writeFile, mkdirpSync, mkdirp } from 'fs-extra'
+import * as path from 'path'
 
 type DMMF = DMMF.Document
 
 type Options = {
-  photonPath?: string
-  typegenPath?: string
+  photonPath: string
+  typegenPath: string
 }
 
-export function generateSync(options: Options = {}): void {
+export function generateSync(options: Options): void {
   doGenerate(true, options)
 }
 
-export function generate(options: Options = {}): Promise<void> {
+export function generate(options: Options): Promise<void> {
   return doGenerate(false, options)
 }
 
@@ -33,16 +33,18 @@ export function doGenerate(
   // https://github.com/prisma/photonjs/issues/88
   // TODO when photon not found log hints of what to do for the user
   // TODO DRY this with same logic in builder
-  const photonPath = options.photonPath || '@generated/photon'
+  const photonPath = options.photonPath
   const transformedDMMF = transformDMMF(require(photonPath).dmmf)
   const dmmfClass = new DMMFClass(transformedDMMF)
   const tsDeclaration = render(dmmfClass, photonPath)
-  const typegenPath =
-    options.typegenPath || Path.join(__dirname, './nexus-prisma.d.ts')
+  const typegenPath = options.typegenPath
   if (sync) {
+    mkdirpSync(path.dirname(typegenPath))
     writeFileSync(typegenPath, tsDeclaration)
   } else {
-    return writeFile(typegenPath, tsDeclaration)
+    return mkdirp(path.dirname(typegenPath)).then(() =>
+      writeFile(typegenPath, tsDeclaration),
+    )
   }
 }
 

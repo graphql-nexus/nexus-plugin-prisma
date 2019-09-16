@@ -9,6 +9,7 @@ async function main() {
     data: {
       name: name.firstName(),
       blog: {},
+      rating: 0.5,
     },
   })
   console.log('added author:\n', author)

@@ -469,6 +469,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/fs-extra@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.0.0.tgz#d3e2c313ca29f95059f198dd60d1f774642d4b25"
+  integrity sha512-bCtL5v9zdbQW86yexOlXWTEGvLNqWxMFyi7gQA7Gcthbezr2cPSOb8SkESVKA937QD5cIwOFLDFt0MQoXOEr9Q==
+  dependencies:
+    "@types/node" "*"
+
 "@types/glob@^7.1.1":
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"
@@ -3492,10 +3499,10 @@ prisma-datamodel@^1.36.0-test.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-preview-7:
-  version "2.0.0-preview-7"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-7.tgz#b12e4d3d801099fce96f3719f938e690e19def0a"
-  integrity sha512-wUcFypCfr7pnAeP5V/Tz9REeWCL1XTAKsVXm2cJl/jXj+XdbWxNKLybKFxgCasM91XLSRKLG5EibkIP2lZitVA==
+prisma2@^2.0.0-alpha.178:
+  version "2.0.0-preview-11"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-11.tgz#103cf2b969339840b2301482034d63959c17cf79"
+  integrity sha512-sEv/d0a1OGvirtLasyAW+fuDZUssStRpxtg2YTpei52sBi1OvlizC66QqL0NQn0CGexWHEkVuVOaIOOmFHJGpA==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
