@@ -39,6 +39,9 @@ export interface Options {
   }
 }
 
+/**
+ * TODO documentation for end-users here.
+ */
 export function build(options: Options) {
   const builder = new NexusPrismaBuilder(options)
   return builder.build()
@@ -539,6 +542,8 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
+  // FIXME strongly type this so that build() does not return any[]
+  //
   protected buildScalars() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
