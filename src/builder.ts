@@ -17,6 +17,7 @@ import {
 } from './naming-strategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
+import * as Typegen from './typegen'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -58,6 +59,7 @@ export class NexusPrismaBuilder {
     if (!this.options.photon) {
       this.options.photon = ctx => ctx.photon
     }
+    // TODO typegen production
   }
 
   build() {

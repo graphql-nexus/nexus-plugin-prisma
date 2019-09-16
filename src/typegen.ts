@@ -6,6 +6,7 @@ import { flatMap, getCRUDFieldName } from './utils'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { writeFileSync } from 'fs'
 import * as Path from 'path'
+import { writeFile } from 'fs-extra'
 
 type DMMF = DMMF.Document
 
@@ -14,7 +15,20 @@ type Options = {
   typegenPath?: string
 }
 
+export function generateSync(options: Options = {}): void {
+  doGenerate(true, options)
+}
+
 export function generate(options: Options = {}): Promise<void> {
+  return doGenerate(false, options)
+}
+
+export function doGenerate(sync: true, options: Options): void
+export function doGenerate(sync: false, options: Options): Promise<void>
+export function doGenerate(
+  sync: boolean,
+  options: Options,
+): void | Promise<void> {
   // TODO Default should be updated once resolved:
   // https://github.com/prisma/photonjs/issues/88
   // TODO when photon not found log hints of what to do for the user
@@ -25,9 +39,11 @@ export function generate(options: Options = {}): Promise<void> {
   const tsDeclaration = render(dmmfClass, photonPath)
   const typegenPath =
     options.typegenPath || Path.join(__dirname, './nexus-prisma.d.ts')
-  // TODO async
-  writeFileSync(typegenPath, tsDeclaration)
-  return Promise.resolve()
+  if (sync) {
+    writeFileSync(typegenPath, tsDeclaration)
+  } else {
+    return writeFile(typegenPath, tsDeclaration)
+  }
 }
 
 function render(dmmf: DMMFClass, photonPath: string) {
