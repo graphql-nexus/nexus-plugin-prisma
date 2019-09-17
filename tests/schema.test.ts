@@ -265,7 +265,7 @@ test("it only exposes pagination 'first' parameter", async () => {
   expect(printSchema(schema)).toMatchSnapshot()
 })
 
-test("it does not expose pagination", async () => {
+test('it does not expose pagination', async () => {
   const datamodel = `
   model User {
     id    Int @id
@@ -286,6 +286,49 @@ test("it does not expose pagination", async () => {
   })
 
   const schema = await generateSchema(datamodel, [Query, User])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
+
+test('alias top-level input types only if not customized', async () => {
+  const datamodel = `
+  model User {
+    id    String  @default(cuid()) @id
+    name  String?
+    posts Post[]
+  }
+  
+  model Post {
+    id        String   @default(cuid()) @id
+    author    User?
+  }
+  `
+
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model
+        .id()
+        .name()
+        .posts({ filtering: true })
+    },
+  })
+
+  const Post = objectType({
+    name: 'Post',
+    definition(t: any) {
+      t.model.id().author()
+    },
+  })
+
+  const Query = objectType({
+    name: 'Query',
+    definition(t: any) {
+      t.crud.posts({ filtering: { author: true } })
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [Query, User, Post])
 
   expect(printSchema(schema)).toMatchSnapshot()
 })

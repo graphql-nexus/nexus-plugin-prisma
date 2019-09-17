@@ -1,5 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`alias top-level input types only if not customized 1`] = `
+"input NullableStringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type Post {
+  id: ID!
+  author: User
+}
+
+input PostFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input PostWhereInput {
+  id: StringFilter
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  author: UserWhereInput
+}
+
+type Query {
+  posts(where: QueryFindManyPostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input QueryFindManyPostWhereInput {
+  author: UserWhereInput
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type User {
+  id: ID!
+  name: String
+  posts(where: PostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserWhereInput {
+  id: StringFilter
+  name: NullableStringFilter
+  posts: PostFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+}
+"
+`;
+
 exports[`it does not expose pagination 1`] = `
 "type Query {
   users: [User!]
@@ -27,21 +100,35 @@ type Post {
   id: Int!
 }
 
+input PostFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input PostWhereInput {
+  id: IntFilter
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  user: UserWhereInput
+}
+
 type Query {
   ok: Boolean!
 }
 
 type User {
   id: Int!
-  posts(where: UserPostsWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+  posts(where: PostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 
-input UserPostsWhereInput {
+input UserWhereInput {
   id: IntFilter
-  AND: [UserPostsWhereInput!]
-  OR: [UserPostsWhereInput!]
-  NOT: [UserPostsWhereInput!]
-  user: UserPostsWhereInput
+  posts: PostFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
 }
 "
 `;
@@ -147,18 +234,18 @@ type Post {
   name: String!
 }
 
+input PostOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+}
+
 type Query {
   ok: Boolean!
 }
 
 type User {
   id: Int!
-  posts(orderBy: UserPostsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
-}
-
-input UserPostsOrderByInput {
-  id: OrderByArg
-  name: OrderByArg
+  posts(orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 "
 `;
