@@ -57,15 +57,14 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
-  await nexusPrisma.generateTypes({
-    typegenPath: projectPath(`/generated/nexus-types/prisma.d.ts`),
+  const nexusPrismaTypeDefs = nexusPrisma.nexusPrismaPlugin({
+    shouldGenerateArtifacts: true,
+    outputs: {
+      typegen: projectPath(`/generated/nexus-types/prisma.d.ts`),
+    },
   })
-
   await nexusBuilder.generateSchema({
-    types: [
-      typeDefs,
-      nexusPrisma.nexusPrismaPlugin({ photon: ctx => ctx.photon }),
-    ],
+    types: [typeDefs, nexusPrismaTypeDefs],
     outputs: {
       typegen: projectPath(`/generated/nexus-types/core.d.ts`),
       schema: projectPath(`/generated/schema.graphql`),
