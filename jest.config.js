@@ -11,6 +11,12 @@ module.exports = {
   ],
   globals: {
     'ts-jest': {
+      diagnostics: {
+        // During development, updating the integration test can require
+        // allowing the app to enter an invalid type state until following
+        // typegen.
+        warnOnly: !process.env.CI,
+      },
       tsConfig: 'tests/tsconfig.json',
     },
   },

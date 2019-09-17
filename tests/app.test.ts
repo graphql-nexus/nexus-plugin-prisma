@@ -38,7 +38,6 @@ it('integrates together', async () => {
   //     realisitc to a real app.
   //
   await fs.emptyDir(projectPath('/generated'))
-  await fs.mkdirp(projectPath('/generated/nexus-types'))
 
   // Run Prisma generation:
   // - Photon JS Client
@@ -60,13 +59,13 @@ it('integrates together', async () => {
   const nexusPrismaTypeDefs = nexusPrisma.nexusPrismaPlugin({
     shouldGenerateArtifacts: true,
     outputs: {
-      typegen: projectPath(`/generated/nexus-types/prisma.d.ts`),
+      typegen: projectPath(`/generated/nexus-types-prisma.d.ts`),
     },
   })
   await nexusBuilder.generateSchema({
     types: [typeDefs, nexusPrismaTypeDefs],
     outputs: {
-      typegen: projectPath(`/generated/nexus-types/core.d.ts`),
+      typegen: projectPath(`/generated/nexus-types-core.d.ts`),
       schema: projectPath(`/generated/schema.graphql`),
     },
   })
@@ -82,10 +81,10 @@ it('integrates together', async () => {
   //
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
   const nexusPrismaTypeGen = await projectReadFile(
-    '/generated/nexus-types/prisma.d.ts',
+    '/generated/nexus-types-prisma.d.ts',
   )
   const nexusCoreTypegen = await projectReadFile(
-    '/generated/nexus-types/core.d.ts',
+    '/generated/nexus-types-core.d.ts',
   )
   const photonTSD = await projectReadFile(
     '../../node_modules/@generated/photon/index.d.ts',
