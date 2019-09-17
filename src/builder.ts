@@ -42,7 +42,7 @@ export interface Options {
 /**
  * TODO documentation for end-users here.
  */
-export function build(options: Options) {
+export function build(options: Options = {}) {
   const builder = new NexusPrismaBuilder(options)
   return builder.build()
 }
