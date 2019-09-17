@@ -29,7 +29,7 @@ interface FieldPublisherConfig {
 }
 
 export interface Options {
-  photon: (ctx: any) => any
+  photon?: (ctx: any) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
     photon?: string
@@ -51,6 +51,7 @@ const defaultOptions = {
   shouldGenerateArtifacts: Boolean(
     !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
   ),
+  photon: (ctx: any) => ctx.photon,
   inputs: {
     // TODO Default should be updated once resolved:
     // https://github.com/prisma/photonjs/issues/88
@@ -72,6 +73,7 @@ export class NexusPrismaBuilder {
   protected whitelistMap: Record<string, string[]>
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
+  protected getPhoton: any
 
   constructor(protected options: Options) {
     const config = {
@@ -88,9 +90,7 @@ export class NexusPrismaBuilder {
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
     this.whitelistMap = {}
-    if (!this.options.photon) {
-      this.options.photon = ctx => ctx.photon
-    }
+    this.getPhoton = config.photon
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
         photonPath: config.inputs.photon,
@@ -186,7 +186,7 @@ export class NexusPrismaBuilder {
                   resolvedConfig,
                 ),
                 resolve: (_parent, args, ctx) => {
-                  const photon = this.options.photon(ctx)
+                  const photon = this.getPhoton(ctx)
                   assertPhotonInContext(photon)
                   return photon[mappedField.mapping.plural!][operationName](
                     args,
@@ -472,7 +472,7 @@ export class NexusPrismaBuilder {
           const mapping = this.dmmf.getMapping(prismaModelName)
 
           fieldOpts.resolve = (root, args, ctx) => {
-            const photon = this.options.photon(ctx)
+            const photon = this.getPhoton(ctx)
 
             assertPhotonInContext(photon)
 
