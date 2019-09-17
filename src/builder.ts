@@ -14,9 +14,11 @@ import {
   defaultFieldNamingStrategy,
   IArgsNamingStrategy,
   IFieldNamingStrategy,
-} from './NamingStrategies'
+} from './naming-strategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
+import * as Typegen from './typegen'
+import * as path from 'path'
 interface FieldPublisherConfig {
   alias?: string
   type?: core.AllOutputTypes
@@ -26,13 +28,42 @@ interface FieldPublisherConfig {
 }
 
 export interface Options {
-  photon: (ctx: any) => any
-  photonPath?: string
+  photon?: (ctx: any) => any
+  shouldGenerateArtifacts?: boolean
+  inputs?: {
+    photon?: string
+  }
+  outputs?: {
+    typegen?: string
+  }
 }
 
-export function build(options: Options) {
+/**
+ * TODO documentation for end-users here.
+ */
+export function build(options: Options = {}) {
   const builder = new NexusPrismaBuilder(options)
   return builder.build()
+}
+
+const defaultOptions = {
+  shouldGenerateArtifacts: Boolean(
+    !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
+  ),
+  photon: (ctx: any) => ctx.photon,
+  inputs: {
+    // TODO Default should be updated once resolved:
+    // https://github.com/prisma/photonjs/issues/88
+    photon: '@generated/photon',
+  },
+  outputs: {
+    // This default is based on the privledge given to @types
+    // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
+    typegen: path.join(
+      __dirname,
+      '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
+    ),
+  },
 }
 
 export class NexusPrismaBuilder {
@@ -41,21 +72,29 @@ export class NexusPrismaBuilder {
   protected whitelistMap: Record<string, string[]>
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
+  protected getPhoton: any
 
   constructor(protected options: Options) {
-    // TODO Default should be updated once resolved:
-    // https://github.com/prisma/photonjs/issues/88
+    const config = {
+      ...defaultOptions,
+      ...options,
+      inputs: { ...defaultOptions.inputs, ...options.inputs },
+      outputs: { ...defaultOptions.outputs, ...options.outputs },
+    }
     // TODO when photon not found log hints of what to do for the user
     // TODO DRY this with same logic in typegen
-    const photonPath = options.photonPath || '@generated/photon'
-    const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+    const transformedDMMF = transformDMMF(require(config.inputs.photon).dmmf)
     this.dmmf = new DMMFClass(transformedDMMF)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
     this.whitelistMap = {}
-    if (!this.options.photon) {
-      this.options.photon = ctx => ctx.photon
+    this.getPhoton = config.photon
+    if (config.shouldGenerateArtifacts) {
+      Typegen.generateSync({
+        photonPath: config.inputs.photon,
+        typegenPath: config.outputs.typegen,
+      })
     }
   }
 
@@ -146,7 +185,7 @@ export class NexusPrismaBuilder {
                   resolvedConfig,
                 ),
                 resolve: (_parent, args, ctx) => {
-                  const photon = this.options.photon(ctx)
+                  const photon = this.getPhoton(ctx)
                   assertPhotonInContext(photon)
                   return photon[mappedField.mapping.plural!][operationName](
                     args,
@@ -432,7 +471,7 @@ export class NexusPrismaBuilder {
           const mapping = this.dmmf.getMapping(prismaModelName)
 
           fieldOpts.resolve = (root, args, ctx) => {
-            const photon = this.options.photon(ctx)
+            const photon = this.getPhoton(ctx)
 
             assertPhotonInContext(photon)
 
@@ -504,6 +543,8 @@ export class NexusPrismaBuilder {
     return inputTypeName
   }
 
+  // FIXME strongly type this so that build() does not return any[]
+  //
   protected buildScalars() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(

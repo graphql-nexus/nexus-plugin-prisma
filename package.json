@@ -6,8 +6,7 @@
   "license": "MIT",
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
-    "dist",
-    "nexus_prisma_ncc_build"
+    "dist"
   ],
   "scripts": {
     "clean": "rm -rf dist",
@@ -19,8 +18,7 @@
   },
   "dependencies": {
     "nexus": "^0.12.0-beta.8",
-    "pluralize": "^8.0.0",
-    "prisma2": "^2.0.0-alpha.178"
+    "pluralize": "^8.0.0"
   },
   "devDependencies": {
     "@prisma/photon": "^0.2.6",
@@ -35,6 +33,7 @@
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.3.1",
     "prettier": "^1.17.1",
+    "prisma2": "^2.0.0-alpha.185",
     "tmp": "^0.1.0",
     "ts-jest": "^24.0.2",
     "ts-morph": "^4.0.1",

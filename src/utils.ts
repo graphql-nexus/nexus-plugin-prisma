@@ -1,6 +1,6 @@
 import { relative } from 'path'
 import { ExternalDMMF as DMMF } from './dmmf/types'
-import { OperationName, IFieldNamingStrategy } from './NamingStrategies'
+import { OperationName, IFieldNamingStrategy } from './naming-strategies'
 
 export const keyBy: <T>(
   collection: T[],

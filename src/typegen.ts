@@ -3,31 +3,46 @@ import { DMMFClass } from './dmmf/DMMFClass'
 import { transformDMMF } from './dmmf/transformer'
 import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
-import { defaultFieldNamingStrategy } from './NamingStrategies'
-import { writeFileSync } from 'fs'
-import * as Path from 'path'
+import { defaultFieldNamingStrategy } from './naming-strategies'
+import * as fs from 'fs-extra'
+import * as path from 'path'
 
 type DMMF = DMMF.Document
 
 type Options = {
-  photonPath?: string
-  typegenPath?: string
+  photonPath: string
+  typegenPath: string
 }
 
-export function generate(options: Options = {}): Promise<void> {
+export function generateSync(options: Options): void {
+  doGenerate(true, options)
+}
+
+export function generate(options: Options): Promise<void> {
+  return doGenerate(false, options)
+}
+
+export function doGenerate(sync: true, options: Options): void
+export function doGenerate(sync: false, options: Options): Promise<void>
+export function doGenerate(
+  sync: boolean,
+  options: Options,
+): void | Promise<void> {
   // TODO Default should be updated once resolved:
   // https://github.com/prisma/photonjs/issues/88
   // TODO when photon not found log hints of what to do for the user
   // TODO DRY this with same logic in builder
-  const photonPath = options.photonPath || '@generated/photon'
-  const transformedDMMF = transformDMMF(require(photonPath).dmmf)
+  const transformedDMMF = transformDMMF(require(options.photonPath).dmmf)
   const dmmfClass = new DMMFClass(transformedDMMF)
-  const tsDeclaration = render(dmmfClass, photonPath)
-  const typegenPath =
-    options.typegenPath || Path.join(__dirname, './nexus-prisma.d.ts')
-  // TODO async
-  writeFileSync(typegenPath, tsDeclaration)
-  return Promise.resolve()
+  const tsDeclaration = render(dmmfClass, options.photonPath)
+  if (sync) {
+    fs.mkdirpSync(path.dirname(options.typegenPath))
+    fs.writeFileSync(options.typegenPath, tsDeclaration)
+  } else {
+    return fs
+      .mkdirp(path.dirname(options.typegenPath))
+      .then(() => fs.writeFile(options.typegenPath, tsDeclaration))
+  }
 }
 
 function render(dmmf: DMMFClass, photonPath: string) {
