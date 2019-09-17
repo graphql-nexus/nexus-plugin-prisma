@@ -3,6 +3,23 @@ generator photonjs {
   output   = "../../node_modules/@generated/photon"
 }
 
-model A {
-  id Int @id
+model Bubble {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  members   User[]
+}
+
+model User {
+  id        String @id @default(cuid())
+  posts     Post[]
+  firstName String
+  lastName  String
+  // likes     Post[]
+}
+
+model Post {
+  id      Int    @id
+  authors User[]
+  rating  Float
+  // likers  User[] @relation(references: likers)
 }

@@ -2,11 +2,100 @@
 ### Do not make changes to this file directly
 
 
-type A {
-  f1: String!
-  id: Int!
+type Bubble {
+  createdAt: DateTime!
+  id: UUID!
+  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]
+}
+
+input BubbleMembersOrderByInput {
+  firstName: OrderByArg
+}
+
+input BubbleMembersWhereInput {
+  id: StringFilter
+}
+
+scalar DateTime
+
+input FloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: Float
+  notIn: [Float!]
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
+
+type Post {
+  authors(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
 }
 
 type Query {
-  ok: Boolean!
+  user(where: UserWhereUniqueInput!): User
+  users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
 }
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  firstName: String!
+  id: ID!
+  posts(after: String, before: String, first: Int, last: Int, orderBy: UserPostsOrderByInput, skip: Int, where: UserPostsWhereInput): [Post!]
+}
+
+input UserPostsFilter {
+  every: UserPostsWhereInput
+  none: UserPostsWhereInput
+  some: UserPostsWhereInput
+}
+
+input UserPostsOrderByInput {
+  id: OrderByArg
+  rating: OrderByArg
+}
+
+input UserPostsWhereInput {
+  AND: [UserPostsWhereInput!]
+  authors: UserPostsFilter
+  id: IntFilter
+  NOT: [UserPostsWhereInput!]
+  OR: [UserPostsWhereInput!]
+  rating: FloatFilter
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
+
+scalar UUID
