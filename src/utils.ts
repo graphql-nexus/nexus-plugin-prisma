@@ -1,6 +1,7 @@
 import { relative } from 'path'
 import { ExternalDMMF as DMMF } from './dmmf/types'
 import { OperationName, IFieldNamingStrategy } from './naming-strategies'
+import { core } from 'nexus'
 
 export const keyBy: <T>(
   collection: T[],
@@ -10,6 +11,20 @@ export const keyBy: <T>(
     acc[iteratee(curr)] = curr
     return acc
   }, {})
+}
+
+export function partition<T>(
+  arr: T[],
+  iteratee: (val: T) => boolean,
+): [T[], T[]] {
+  const partitioned: [T[], T[]] = [[], []]
+
+  for (const val of arr) {
+    const partitionIndex: 0 | 1 = iteratee(val) ? 0 : 1
+    partitioned[partitionIndex].push(val)
+  }
+
+  return partitioned
 }
 
 export const upperFirst = (s: string): string => {
@@ -24,7 +39,7 @@ export function flatMap<T, U>(
 }
 
 export function nexusOpts(param: {
-  type: string
+  type: string | object
   isList: boolean
   isRequired: boolean
 }): {
@@ -33,7 +48,7 @@ export function nexusOpts(param: {
   nullable: boolean
 } {
   return {
-    type: param.type as any,
+    type: param.type,
     list: param.isList ? true : undefined,
     nullable: !param.isRequired,
   }

@@ -8,6 +8,7 @@ import {
   flatMap,
   getCRUDFieldName,
   nexusOpts as nexusFieldOpts,
+  partition,
 } from './utils'
 import {
   defaultArgsNamingStrategy,
@@ -67,10 +68,14 @@ const defaultOptions = {
   },
 }
 
+interface CustomInputArg {
+  arg: DMMF.SchemaArg
+  type: DMMF.InputType | DMMF.Enum | 'scalar'
+}
+
 export class NexusPrismaBuilder {
   protected readonly dmmf: DMMFClass
   protected visitedInputTypesMap: Record<string, boolean>
-  protected whitelistMap: Record<string, string[]>
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
   protected getPhoton: any
@@ -89,7 +94,6 @@ export class NexusPrismaBuilder {
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
-    this.whitelistMap = {}
     this.getPhoton = config.photon
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
@@ -239,12 +243,13 @@ export class NexusPrismaBuilder {
     field: DMMF.SchemaField,
     opts: FieldPublisherConfig,
   ) {
-    let args: DMMF.SchemaArg[] = []
+    let args: CustomInputArg[] = []
 
-    if (graphQLTypeName === 'Mutation') {
-      args = field.args
-    } else if (operationName === 'findOne') {
-      args = field.args
+    if (graphQLTypeName === 'Mutation' || operationName === 'findOne') {
+      args = field.args.map(arg => ({
+        arg,
+        type: this.dmmf.getInputType(arg.inputType.type),
+      }))
     } else {
       args = this.argsForQueryOrModelField(
         prismaModelName,
@@ -254,7 +259,7 @@ export class NexusPrismaBuilder {
       )
     }
 
-    return this.dmmfArgsToNexusArgs(graphQLTypeName, field, args)
+    return this.dmmfArgsToNexusArgs(args)
   }
 
   protected argsForQueryOrModelField(
@@ -263,7 +268,7 @@ export class NexusPrismaBuilder {
     field: DMMF.SchemaField,
     opts: FieldPublisherConfig,
   ) {
-    let args: DMMF.SchemaArg[] = []
+    let args: CustomInputArg[] = []
 
     if (opts.filtering) {
       const whereTypeName = `${field.outputType.type}WhereInput`
@@ -273,31 +278,25 @@ export class NexusPrismaBuilder {
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${prismaModelName}.${field.name}. Searched for a field param with type "${whereTypeName}". Actual fields were ${field.args}`,
+          `Could not find filtering argument for ${prismaModelName}.${field.name}`,
         )
       }
 
-      if (opts.filtering !== true) {
-        this.whitelistMap[
-          this.argTypeName(
-            graphQLTypeName,
-            field.name,
-            whereArg.inputType.type,
-            whereArg.inputType.kind,
-          )
-        ] = Object.keys(opts.filtering).filter(
-          fieldName => (opts.filtering as any)[fieldName] === true,
-        )
-      }
-
-      args.push(whereArg)
+      args.push({
+        arg: whereArg,
+        type: this.customizeInputType(
+          opts.filtering,
+          whereTypeName,
+          field.name,
+          graphQLTypeName,
+        ),
+      })
     }
 
     if (opts.ordering) {
+      const orderByTypeName = `${field.outputType.type}OrderByInput`
       const orderByArg = field.args.find(
-        a =>
-          a.inputType.type === `${field.outputType.type}OrderByInput` &&
-          a.name === 'orderBy',
+        a => a.inputType.type === orderByTypeName && a.name === 'orderBy',
       )
 
       if (!orderByArg) {
@@ -306,59 +305,69 @@ export class NexusPrismaBuilder {
         )
       }
 
-      if (opts.ordering !== true) {
-        this.whitelistMap[
-          this.argTypeName(
-            graphQLTypeName,
-            field.name,
-            orderByArg.inputType.type,
-            orderByArg.inputType.kind,
-          )
-        ] = Object.keys(opts.ordering).filter(
-          fieldName => (opts.ordering as any)[fieldName] === true,
-        )
-      }
-
-      args.push(orderByArg)
+      args.push({
+        arg: orderByArg,
+        type: this.customizeInputType(
+          opts.ordering,
+          orderByTypeName,
+          field.name,
+          graphQLTypeName,
+        ),
+      })
     }
 
     if (opts.pagination) {
-      if (opts.pagination === true) {
-        const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
+      const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
+      const paginationsArgs =
+        opts.pagination === true
+          ? field.args.filter(a => paginationKeys.includes(a.name))
+          : field.args.filter(a => (opts.pagination as any)[a.name] === true)
 
-        args.push(...field.args.filter(a => paginationKeys.includes(a.name)))
-      } else {
-        args.push(
-          ...field.args.filter(a => (opts.pagination as any)[a.name] === true),
-        )
-      }
+      args.push(
+        ...paginationsArgs.map(a => ({ arg: a, type: 'scalar' as 'scalar' })),
+      )
     }
 
     return args
   }
 
-  protected dmmfArgsToNexusArgs(
-    parentTypeName: string,
-    field: DMMF.SchemaField,
-    args: DMMF.SchemaArg[],
-  ) {
-    return args.reduce<Record<string, any>>((acc, arg) => {
-      if (arg.inputType.kind === 'scalar') {
-        acc[arg.name] = core.arg(nexusFieldOpts(arg.inputType))
-      } else {
-        const typeName = this.argTypeName(
-          parentTypeName,
-          field.name,
-          arg.inputType.type,
-          arg.inputType.kind,
+  protected customizeInputType(
+    input: Record<string, boolean> | boolean,
+    inputTypeName: string,
+    fieldName: string,
+    graphQLTypeName: string,
+  ): DMMF.InputType {
+    const type = this.dmmf.getInputType(inputTypeName)
+
+    // Do not alias type name if type is not customized
+    if (input === true) {
+      return type
+    }
+
+    const argsNames = Object.keys(input)
+
+    // Rename the InputObject type definition if some fields are whitelisted
+    return {
+      ...type,
+      name: this.aliasInputTypeName(graphQLTypeName, fieldName, type),
+      fields: type.fields.filter(f => argsNames.includes(f.name)),
+    }
+  }
+
+  protected dmmfArgsToNexusArgs(args: CustomInputArg[]) {
+    return args.reduce<Record<string, any>>((acc, customArg) => {
+      if (customArg.type === 'scalar') {
+        acc[customArg.arg.name] = core.arg(
+          nexusFieldOpts(customArg.arg.inputType),
         )
-        if (!this.visitedInputTypesMap[typeName]) {
-          acc[arg.name] = this.createInputEnumType(parentTypeName, field, arg)
+      } else {
+        if (!this.visitedInputTypesMap[customArg.type.name]) {
+          acc[customArg.arg.name] = this.createInputEnumType(customArg)
         } else {
-          acc[arg.name] = core.arg(
+          acc[customArg.arg.name] = core.arg(
             nexusFieldOpts({
-              ...arg.inputType,
-              type: typeName,
+              ...customArg.arg.inputType,
+              type: customArg.type.name,
             }),
           )
         }
@@ -367,70 +376,46 @@ export class NexusPrismaBuilder {
     }, {})
   }
 
-  protected createInputEnumType(
-    parentTypeName: string,
-    field: DMMF.SchemaField,
-    arg: DMMF.SchemaArg,
-  ) {
-    this.visitedInputTypesMap[
-      this.argTypeName(
-        parentTypeName,
-        field.name,
-        arg.inputType.type,
-        arg.inputType.kind,
-      )
-    ] = true
+  protected createInputEnumType(customArg: CustomInputArg) {
+    if (typeof customArg.type !== 'string') {
+      this.visitedInputTypesMap[customArg.type.name] = true
+    }
 
-    if (arg.inputType.kind === 'enum') {
-      const eType = this.dmmf.getEnumType(arg.inputType.type)
+    if (customArg.arg.inputType.kind === 'enum') {
+      const eType = customArg.type as DMMF.Enum
 
       return enumType({
         name: eType.name,
         members: eType.values,
       })
     } else {
-      const input = this.dmmf.getInputType(arg.inputType.type)
-
-      const inputName =
-        input.isWhereType ||
-        input.isOrderType ||
-        this.isRelationFilterArg(input.name)
-          ? this.argTypeName(parentTypeName, field.name, input.name, 'object')
-          : input.name
-
-      const filteredFields = this.whitelistMap[inputName]
-        ? input.fields.filter(f =>
-            this.whitelistMap[inputName].includes(f.name),
-          )
-        : input.fields
-
+      const inputType = customArg.type as DMMF.InputType
       return inputObjectType({
-        name: inputName,
+        name: inputType.name,
         definition: t => {
-          filteredFields.forEach(inputArg => {
-            if (inputArg.inputType.kind === 'scalar') {
-              t.field(inputArg.name, nexusFieldOpts(inputArg.inputType))
-            } else {
-              const argumentTypeName = this.argTypeName(
-                parentTypeName,
-                field.name,
-                inputArg.inputType.type,
-                inputArg.inputType.kind,
-              )
-              const type =
-                this.visitedInputTypesMap[argumentTypeName] === true
-                  ? argumentTypeName
-                  : (this.createInputEnumType(
-                      parentTypeName,
-                      field,
-                      inputArg,
-                    ) as any)
-
-              t.field(
-                inputArg.name,
-                nexusFieldOpts({ ...inputArg.inputType, type }),
-              )
-            }
+          const [scalarFields, objectFields] = partition(
+            inputType.fields,
+            f => f.inputType.kind === 'scalar',
+          )
+          const remappedObjectFields = objectFields.map(field => ({
+            ...field,
+            inputType: {
+              ...field.inputType,
+              type:
+                this.visitedInputTypesMap[field.inputType.type] === true
+                  ? // Simply reference the field input type if it's already been visited, otherwise create it
+                    field.inputType.type
+                  : this.createInputEnumType({
+                      arg: field,
+                      type:
+                        field.inputType.kind === 'enum'
+                          ? this.dmmf.getEnumType(field.inputType.type)
+                          : this.dmmf.getInputType(field.inputType.type),
+                    }),
+            },
+          }))
+          ;[...scalarFields, ...remappedObjectFields].forEach(field => {
+            t.field(field.name, nexusFieldOpts(field.inputType))
           })
         },
       })
@@ -492,56 +477,16 @@ export class NexusPrismaBuilder {
     return result
   }
 
-  protected isRelationFilterArg(type: string) {
-    return (
-      type.endsWith('Filter') &&
-      ![
-        'IntFilter',
-        'StringFilter',
-        'BooleanFilter',
-        'NullableStringFilter',
-        'FloatFilter',
-      ].includes(type) &&
-      type !== 'Filter'
-    )
-  }
-
-  protected argTypeName(
+  protected aliasInputTypeName(
     graphQLTypeName: string,
     fieldName: string,
-    inputTypeName: string,
-    kind: DMMF.FieldKind,
+    inputType: DMMF.InputType,
   ) {
-    if (kind === 'object') {
-      const input = this.dmmf.getInputType(inputTypeName)
-
-      if (!input) {
-        throw new Error('Could not find input with name: ' + graphQLTypeName)
-      }
-
-      if (input.isWhereType) {
-        return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
-      }
-
-      if (input.isOrderType) {
-        return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
-      }
-
-      if (this.isRelationFilterArg(inputTypeName)) {
-        return this.argsNamingStrategy.relationFilterInput(
-          graphQLTypeName,
-          fieldName,
-        )
-      }
-
-      return inputTypeName
+    if (inputType.isWhereType) {
+      return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
     }
 
-    if (kind === 'enum') {
-      return inputTypeName
-    }
-
-    return inputTypeName
+    return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
   }
 
   // FIXME strongly type this so that build() does not return any[]
