@@ -280,15 +280,3 @@ input UserWhereInput {
 }
 "
 `;
-
-exports[`simple schema 1`] = `
-"type Query {
-  ok: Boolean!
-}
-
-type User {
-  id: Int!
-  name: String!
-}
-"
-`;
