@@ -5,13 +5,153 @@ exports[`integrates together: graphql schema 1`] = `
 ### Do not make changes to this file directly
 
 
-type A {
-  f1: String!
-  id: Int!
+type Bubble {
+  createdAt: DateTime!
+  id: UUID!
+  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]
+}
+
+input BubbleMembersOrderByInput {
+  firstName: OrderByArg
+}
+
+input BubbleMembersWhereInput {
+  id: StringFilter
+}
+
+input BubbleWhereInput {
+  AND: [BubbleWhereInput!]
+  createdAt: DateTimeFilter
+  id: UUIDFilter
+  members: UserFilter
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
+}
+
+scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
+
+input FloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: Float
+  notIn: [Float!]
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
+
+type Post {
+  authors(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
+}
+
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostOrderByInput {
+  id: OrderByArg
+  rating: OrderByArg
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  authors: UserFilter
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  rating: FloatFilter
 }
 
 type Query {
-  ok: Boolean!
+  user(where: UserWhereUniqueInput!): User
+  users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  firstName: String!
+  id: ID!
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
+}
+
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  bubble: BubbleWhereInput
+  firstName: StringFilter
+  id: StringFilter
+  lastName: StringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
+
+scalar UUID
+
+input UUIDFilter {
+  contains: UUID
+  endsWith: UUID
+  equals: UUID
+  gt: UUID
+  gte: UUID
+  in: [UUID!]
+  lt: UUID
+  lte: UUID
+  not: UUID
+  notIn: [UUID!]
+  startsWith: UUID
 }
 "
 `;
@@ -38,38 +178,215 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  BubbleMembersOrderByInput: { // input type
+    firstName?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+  }
+  BubbleMembersWhereInput: { // input type
+    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+  }
+  BubbleWhereInput: { // input type
+    AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
+    members?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+  }
+  DateTimeFilter: { // input type
+    equals?: any | null; // DateTime
+    gt?: any | null; // DateTime
+    gte?: any | null; // DateTime
+    in?: any[] | null; // [DateTime!]
+    lt?: any | null; // DateTime
+    lte?: any | null; // DateTime
+    not?: any | null; // DateTime
+    notIn?: any[] | null; // [DateTime!]
+  }
+  FloatFilter: { // input type
+    equals?: number | null; // Float
+    gt?: number | null; // Float
+    gte?: number | null; // Float
+    in?: number[] | null; // [Float!]
+    lt?: number | null; // Float
+    lte?: number | null; // Float
+    not?: number | null; // Float
+    notIn?: number[] | null; // [Float!]
+  }
+  IntFilter: { // input type
+    equals?: number | null; // Int
+    gt?: number | null; // Int
+    gte?: number | null; // Int
+    in?: number[] | null; // [Int!]
+    lt?: number | null; // Int
+    lte?: number | null; // Int
+    not?: number | null; // Int
+    notIn?: number[] | null; // [Int!]
+  }
+  PostFilter: { // input type
+    every?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    none?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    some?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+  }
+  PostOrderByInput: { // input type
+    id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+  }
+  PostWhereInput: { // input type
+    AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    authors?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+  }
+  StringFilter: { // input type
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: string | null; // String
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
+  }
+  UUIDFilter: { // input type
+    contains?: any | null; // UUID
+    endsWith?: any | null; // UUID
+    equals?: any | null; // UUID
+    gt?: any | null; // UUID
+    gte?: any | null; // UUID
+    in?: any[] | null; // [UUID!]
+    lt?: any | null; // UUID
+    lte?: any | null; // UUID
+    not?: any | null; // UUID
+    notIn?: any[] | null; // [UUID!]
+    startsWith?: any | null; // UUID
+  }
+  UserFilter: { // input type
+    every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    none?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    some?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+  }
+  UserWhereInput: { // input type
+    AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
+    firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    posts?: NexusGenInputs['PostFilter'] | null; // PostFilter
+  }
+  UserWhereUniqueInput: { // input type
+    id?: string | null; // ID
+  }
 }
 
 export interface NexusGenEnums {
+  OrderByArg: \\"asc\\" | \\"desc\\"
 }
 
 export interface NexusGenRootTypes {
-  A: { // root type
-    f1: string; // String!
-    id: number; // Int!
+  Bubble: { // root type
+    createdAt: any; // DateTime!
+    id: any; // UUID!
   }
+  Post: {};
   Query: {};
+  User: { // root type
+    firstName: string; // String!
+    id: string; // ID!
+  }
   String: string;
   Int: number;
   Float: number;
   Boolean: boolean;
   ID: string;
+  DateTime: any;
+  UUID: any;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  BubbleMembersOrderByInput: NexusGenInputs['BubbleMembersOrderByInput'];
+  BubbleMembersWhereInput: NexusGenInputs['BubbleMembersWhereInput'];
+  BubbleWhereInput: NexusGenInputs['BubbleWhereInput'];
+  DateTimeFilter: NexusGenInputs['DateTimeFilter'];
+  FloatFilter: NexusGenInputs['FloatFilter'];
+  IntFilter: NexusGenInputs['IntFilter'];
+  PostFilter: NexusGenInputs['PostFilter'];
+  PostOrderByInput: NexusGenInputs['PostOrderByInput'];
+  PostWhereInput: NexusGenInputs['PostWhereInput'];
+  StringFilter: NexusGenInputs['StringFilter'];
+  UUIDFilter: NexusGenInputs['UUIDFilter'];
+  UserFilter: NexusGenInputs['UserFilter'];
+  UserWhereInput: NexusGenInputs['UserWhereInput'];
+  UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
+  OrderByArg: NexusGenEnums['OrderByArg'];
 }
 
 export interface NexusGenFieldTypes {
-  A: { // field return type
-    f1: string; // String!
-    id: number; // Int!
+  Bubble: { // field return type
+    createdAt: any; // DateTime!
+    id: any; // UUID!
+    members: NexusGenRootTypes['User'][] | null; // [User!]
+  }
+  Post: { // field return type
+    authors: NexusGenRootTypes['User'][] | null; // [User!]
   }
   Query: { // field return type
-    ok: boolean; // Boolean!
+    user: NexusGenRootTypes['User'] | null; // User
+    users: NexusGenRootTypes['User'][] | null; // [User!]
+  }
+  User: { // field return type
+    firstName: string; // String!
+    id: string; // ID!
+    posts: NexusGenRootTypes['Post'][] | null; // [Post!]
   }
 }
 
 export interface NexusGenArgTypes {
+  Bubble: {
+    members: { // args
+      first?: number | null; // Int
+      orderBy?: NexusGenInputs['BubbleMembersOrderByInput'] | null; // BubbleMembersOrderByInput
+      where?: NexusGenInputs['BubbleMembersWhereInput'] | null; // BubbleMembersWhereInput
+    }
+  }
+  Post: {
+    authors: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+  }
+  Query: {
+    user: { // args
+      where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+    }
+    users: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+  }
+  User: {
+    posts: { // args
+      after?: string | null; // String
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
+      orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
+      skip?: number | null; // Int
+      where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    }
+  }
 }
 
 export interface NexusGenAbstractResolveReturnTypes {
@@ -77,15 +394,15 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = \\"A\\" | \\"Query\\";
+export type NexusGenObjectNames = \\"Bubble\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"PostFilter\\" | \\"PostOrderByInput\\" | \\"PostWhereInput\\" | \\"StringFilter\\" | \\"UUIDFilter\\" | \\"UserFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
-export type NexusGenEnumNames = never;
+export type NexusGenEnumNames = \\"OrderByArg\\";
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = \\"Boolean\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\";
+export type NexusGenScalarNames = \\"Boolean\\" | \\"DateTime\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\" | \\"UUID\\";
 
 export type NexusGenUnionNames = never;
 
@@ -271,45 +588,103 @@ type GetNexusPrisma<
 
 // Generated
 interface ModelTypes {
-  A: photon.A
+  Bubble: photon.Bubble
+  User: photon.User
+  Post: photon.Post
 }
   
 interface NexusPrismaInputs {
   Query: {
-    as: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id'
+    bubbles: {
+  filtering: 'id' | 'createdAt' | 'members' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'createdAt'
+}
+    users: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
+    posts: {
+  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating'
 }
 
   },
-    A: {
+    Bubble: {
+    members: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
 
+  },  User: {
+    posts: {
+  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating'
+}
+
+  },  Post: {
+    authors: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
 
   }
 }
 
 interface NexusPrismaTypes {
   Query: {
-    as: 'A'
-    a: 'A'
+    bubbles: 'Bubble'
+    bubble: 'Bubble'
+    users: 'User'
+    user: 'User'
+    posts: 'Post'
+    post: 'Post'
 
   },
   Mutation: {
-    createOneA: 'A'
-    deleteOneA: 'A'
-    updateOneA: 'A'
-    updateManyA: 'BatchPayload'
-    deleteManyA: 'BatchPayload'
+    createOneBubble: 'Bubble'
+    deleteOneBubble: 'Bubble'
+    updateOneBubble: 'Bubble'
+    upsertOneBubble: 'Bubble'
+    updateManyBubble: 'BatchPayload'
+    deleteManyBubble: 'BatchPayload'
+    createOneUser: 'User'
+    deleteOneUser: 'User'
+    updateOneUser: 'User'
+    upsertOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteManyUser: 'BatchPayload'
+    createOnePost: 'Post'
+    deleteOnePost: 'Post'
+    updateOnePost: 'Post'
+    upsertOnePost: 'Post'
+    updateManyPost: 'BatchPayload'
+    deleteManyPost: 'BatchPayload'
 
   },
-  A: {
+  Bubble: {
+    id: 'String'
+    createdAt: 'DateTime'
+    members: 'User'
+
+},  User: {
+    id: 'String'
+    posts: 'Post'
+    firstName: 'String'
+    lastName: 'String'
+    bubble: 'Bubble'
+
+},  Post: {
     id: 'Int'
+    authors: 'User'
+    rating: 'Float'
 
 }
 }
 
 interface NexusPrismaMethods {
-  A: NexusPrismaFields<'A'>
+  Bubble: NexusPrismaFields<'Bubble'>
+  User: NexusPrismaFields<'User'>
+  Post: NexusPrismaFields<'Post'>
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
@@ -409,7 +784,7 @@ class Photon {
         }
         const debugEngine = options.debug === true ? true : typeof options.debug === 'object' ? Boolean(options.debug.engine) : false;
         // datamodel = datamodel without datasources + printed datasources
-        this.datamodel = \\"generator photonjs {\\\\n  provider = \\\\\\"photonjs\\\\\\"\\\\n  output   = \\\\\\"../../node_modules/@generated/photon\\\\\\"\\\\n}\\\\n\\\\nmodel A {\\\\n  id Int @id\\\\n}\\\\n\\";
+        this.datamodel = \\"generator photonjs {\\\\n  provider = \\\\\\"photonjs\\\\\\"\\\\n  output   = \\\\\\"../../node_modules/@generated/photon\\\\\\"\\\\n}\\\\n\\\\nmodel Bubble {\\\\n  id        String   @id @default(uuid())\\\\n  createdAt DateTime @default(now())\\\\n  members   User[]\\\\n}\\\\n\\\\nmodel User {\\\\n  id        String @id @default(cuid())\\\\n  posts     Post[]\\\\n  firstName String\\\\n  lastName  String\\\\n  // likes     Post[]\\\\n}\\\\n\\\\nmodel Post {\\\\n  id      Int    @id\\\\n  authors User[]\\\\n  rating  Float\\\\n  // likers  User[] @relation(references: likers)\\\\n}\\\\n\\";
         const predefinedDatasources = [];
         const inputDatasources = Object.entries(options.datasources || {}).map(([name, url]) => ({ name, url: url }));
         const datasources = runtime_1.mergeBy(predefinedDatasources, inputDatasources, (source) => source.name);
@@ -449,8 +824,14 @@ class Photon {
     // get query(): QueryDelegate {
     //   return this._query ? this._query: (this._query = QueryDelegate(this.dmmf, this.fetcher))
     // }
-    get as() {
-        return ADelegate(this.dmmf, this.fetcher);
+    get bubbles() {
+        return BubbleDelegate(this.dmmf, this.fetcher);
+    }
+    get users() {
+        return UserDelegate(this.dmmf, this.fetcher);
+    }
+    get posts() {
+        return PostDelegate(this.dmmf, this.fetcher);
     }
 }
 exports.default = Photon;
@@ -464,19 +845,20 @@ exports.OrderByArg = makeEnum({
     asc: 'asc',
     desc: 'desc'
 });
-function ADelegate(dmmf, fetcher) {
-    const A = (args) => new AClient(dmmf, fetcher, 'query', 'findManyA', 'as', args, []);
-    A.findOne = (args) => args.select ? new AClient(dmmf, fetcher, 'query', 'findOneA', 'as.findOne', args, []) : new AClient(dmmf, fetcher, 'query', 'findOneA', 'as.findOne', args, []);
-    A.findMany = (args) => new AClient(dmmf, fetcher, 'query', 'findManyA', 'as.findMany', args, []);
-    A.create = (args) => args.select ? new AClient(dmmf, fetcher, 'mutation', 'createOneA', 'as.create', args, []) : new AClient(dmmf, fetcher, 'mutation', 'createOneA', 'as.create', args, []);
-    A.delete = (args) => args.select ? new AClient(dmmf, fetcher, 'mutation', 'deleteOneA', 'as.delete', args, []) : new AClient(dmmf, fetcher, 'mutation', 'deleteOneA', 'as.delete', args, []);
-    A.update = (args) => args.select ? new AClient(dmmf, fetcher, 'mutation', 'updateOneA', 'as.update', args, []) : new AClient(dmmf, fetcher, 'mutation', 'updateOneA', 'as.update', args, []);
-    A.deleteMany = (args) => new AClient(dmmf, fetcher, 'mutation', 'deleteManyA', 'as.deleteMany', args, []);
-    A.updateMany = (args) => new AClient(dmmf, fetcher, 'mutation', 'updateManyA', 'as.updateMany', args, []);
-    A.count = () => new AClient(dmmf, fetcher, 'query', 'aggregateA', 'as.count', {}, ['count']);
-    return A; // any needed until https://github.com/microsoft/TypeScript/issues/31335 is resolved
+function BubbleDelegate(dmmf, fetcher) {
+    const Bubble = (args) => new BubbleClient(dmmf, fetcher, 'query', 'findManyBubble', 'bubbles', args, []);
+    Bubble.findOne = (args) => args.select ? new BubbleClient(dmmf, fetcher, 'query', 'findOneBubble', 'bubbles.findOne', args, []) : new BubbleClient(dmmf, fetcher, 'query', 'findOneBubble', 'bubbles.findOne', args, []);
+    Bubble.findMany = (args) => new BubbleClient(dmmf, fetcher, 'query', 'findManyBubble', 'bubbles.findMany', args, []);
+    Bubble.create = (args) => args.select ? new BubbleClient(dmmf, fetcher, 'mutation', 'createOneBubble', 'bubbles.create', args, []) : new BubbleClient(dmmf, fetcher, 'mutation', 'createOneBubble', 'bubbles.create', args, []);
+    Bubble.delete = (args) => args.select ? new BubbleClient(dmmf, fetcher, 'mutation', 'deleteOneBubble', 'bubbles.delete', args, []) : new BubbleClient(dmmf, fetcher, 'mutation', 'deleteOneBubble', 'bubbles.delete', args, []);
+    Bubble.update = (args) => args.select ? new BubbleClient(dmmf, fetcher, 'mutation', 'updateOneBubble', 'bubbles.update', args, []) : new BubbleClient(dmmf, fetcher, 'mutation', 'updateOneBubble', 'bubbles.update', args, []);
+    Bubble.deleteMany = (args) => new BubbleClient(dmmf, fetcher, 'mutation', 'deleteManyBubble', 'bubbles.deleteMany', args, []);
+    Bubble.updateMany = (args) => new BubbleClient(dmmf, fetcher, 'mutation', 'updateManyBubble', 'bubbles.updateMany', args, []);
+    Bubble.upsert = (args) => args.select ? new BubbleClient(dmmf, fetcher, 'mutation', 'upsertOneBubble', 'bubbles.upsert', args, []) : new BubbleClient(dmmf, fetcher, 'mutation', 'upsertOneBubble', 'bubbles.upsert', args, []);
+    Bubble.count = () => new BubbleClient(dmmf, fetcher, 'query', 'aggregateBubble', 'bubbles.count', {}, ['count']);
+    return Bubble; // any needed until https://github.com/microsoft/TypeScript/issues/31335 is resolved
 }
-class AClient {
+class BubbleClient {
     constructor(_dmmf, _fetcher, _queryType, _rootField, _clientMethod, _args, _path, _isList = false) {
         this._dmmf = _dmmf;
         this._fetcher = _fetcher;
@@ -494,6 +876,13 @@ class AClient {
                 this._callsite = stack;
             }
         }
+    }
+    members(args) {
+        const prefix = this._path.includes('select') ? 'select' : this._path.includes('include') ? 'include' : 'select';
+        const path = [...this._path, prefix, 'members'];
+        const newArgs = runtime_1.deepSet(this._args, path, args || true);
+        this._isList = true;
+        return new UserClient(this._dmmf, this._fetcher, this._queryType, this._rootField, this._clientMethod, newArgs, path, this._isList);
     }
     get _document() {
         const { _rootField: rootField } = this;
@@ -525,7 +914,7 @@ class AClient {
      */
     then(onfulfilled, onrejected) {
         if (!this._requestPromise) {
-            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'A', this._isList, this._callsite);
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Bubble', this._isList, this._callsite);
         }
         return this._requestPromise.then(onfulfilled, onrejected);
     }
@@ -536,7 +925,7 @@ class AClient {
      */
     catch(onrejected) {
         if (!this._requestPromise) {
-            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'A', this._isList, this._callsite);
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Bubble', this._isList, this._callsite);
         }
         return this._requestPromise.catch(onrejected);
     }
@@ -548,16 +937,219 @@ class AClient {
      */
     finally(onfinally) {
         if (!this._requestPromise) {
-            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'A', this._isList, this._callsite);
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Bubble', this._isList, this._callsite);
         }
         return this._requestPromise.finally(onfinally);
     }
 }
-exports.AClient = AClient;
+exports.BubbleClient = BubbleClient;
+function UserDelegate(dmmf, fetcher) {
+    const User = (args) => new UserClient(dmmf, fetcher, 'query', 'findManyUser', 'users', args, []);
+    User.findOne = (args) => args.select ? new UserClient(dmmf, fetcher, 'query', 'findOneUser', 'users.findOne', args, []) : new UserClient(dmmf, fetcher, 'query', 'findOneUser', 'users.findOne', args, []);
+    User.findMany = (args) => new UserClient(dmmf, fetcher, 'query', 'findManyUser', 'users.findMany', args, []);
+    User.create = (args) => args.select ? new UserClient(dmmf, fetcher, 'mutation', 'createOneUser', 'users.create', args, []) : new UserClient(dmmf, fetcher, 'mutation', 'createOneUser', 'users.create', args, []);
+    User.delete = (args) => args.select ? new UserClient(dmmf, fetcher, 'mutation', 'deleteOneUser', 'users.delete', args, []) : new UserClient(dmmf, fetcher, 'mutation', 'deleteOneUser', 'users.delete', args, []);
+    User.update = (args) => args.select ? new UserClient(dmmf, fetcher, 'mutation', 'updateOneUser', 'users.update', args, []) : new UserClient(dmmf, fetcher, 'mutation', 'updateOneUser', 'users.update', args, []);
+    User.deleteMany = (args) => new UserClient(dmmf, fetcher, 'mutation', 'deleteManyUser', 'users.deleteMany', args, []);
+    User.updateMany = (args) => new UserClient(dmmf, fetcher, 'mutation', 'updateManyUser', 'users.updateMany', args, []);
+    User.upsert = (args) => args.select ? new UserClient(dmmf, fetcher, 'mutation', 'upsertOneUser', 'users.upsert', args, []) : new UserClient(dmmf, fetcher, 'mutation', 'upsertOneUser', 'users.upsert', args, []);
+    User.count = () => new UserClient(dmmf, fetcher, 'query', 'aggregateUser', 'users.count', {}, ['count']);
+    return User; // any needed until https://github.com/microsoft/TypeScript/issues/31335 is resolved
+}
+class UserClient {
+    constructor(_dmmf, _fetcher, _queryType, _rootField, _clientMethod, _args, _path, _isList = false) {
+        this._dmmf = _dmmf;
+        this._fetcher = _fetcher;
+        this._queryType = _queryType;
+        this._rootField = _rootField;
+        this._clientMethod = _clientMethod;
+        this._args = _args;
+        this._path = _path;
+        this._isList = _isList;
+        // @ts-ignore
+        if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
+            const error = new Error();
+            if (error && error.stack) {
+                const stack = error.stack;
+                this._callsite = stack;
+            }
+        }
+    }
+    posts(args) {
+        const prefix = this._path.includes('select') ? 'select' : this._path.includes('include') ? 'include' : 'select';
+        const path = [...this._path, prefix, 'posts'];
+        const newArgs = runtime_1.deepSet(this._args, path, args || true);
+        this._isList = true;
+        return new PostClient(this._dmmf, this._fetcher, this._queryType, this._rootField, this._clientMethod, newArgs, path, this._isList);
+    }
+    bubble(args) {
+        const prefix = this._path.includes('select') ? 'select' : this._path.includes('include') ? 'include' : 'select';
+        const path = [...this._path, prefix, 'bubble'];
+        const newArgs = runtime_1.deepSet(this._args, path, args || true);
+        this._isList = false;
+        return new BubbleClient(this._dmmf, this._fetcher, this._queryType, this._rootField, this._clientMethod, newArgs, path, this._isList);
+    }
+    get _document() {
+        const { _rootField: rootField } = this;
+        const document = runtime_1.makeDocument({
+            dmmf: this._dmmf,
+            rootField,
+            rootTypeName: this._queryType,
+            select: this._args
+        });
+        try {
+            document.validate(this._args, false, this._clientMethod);
+        }
+        catch (e) {
+            const x = e;
+            if (x.render) {
+                if (this._callsite) {
+                    e.message = x.render(this._callsite);
+                }
+            }
+            throw e;
+        }
+        return runtime_1.transformDocument(document);
+    }
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then(onfulfilled, onrejected) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'User', this._isList, this._callsite);
+        }
+        return this._requestPromise.then(onfulfilled, onrejected);
+    }
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch(onrejected) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'User', this._isList, this._callsite);
+        }
+        return this._requestPromise.catch(onrejected);
+    }
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'User', this._isList, this._callsite);
+        }
+        return this._requestPromise.finally(onfinally);
+    }
+}
+exports.UserClient = UserClient;
+function PostDelegate(dmmf, fetcher) {
+    const Post = (args) => new PostClient(dmmf, fetcher, 'query', 'findManyPost', 'posts', args, []);
+    Post.findOne = (args) => args.select ? new PostClient(dmmf, fetcher, 'query', 'findOnePost', 'posts.findOne', args, []) : new PostClient(dmmf, fetcher, 'query', 'findOnePost', 'posts.findOne', args, []);
+    Post.findMany = (args) => new PostClient(dmmf, fetcher, 'query', 'findManyPost', 'posts.findMany', args, []);
+    Post.create = (args) => args.select ? new PostClient(dmmf, fetcher, 'mutation', 'createOnePost', 'posts.create', args, []) : new PostClient(dmmf, fetcher, 'mutation', 'createOnePost', 'posts.create', args, []);
+    Post.delete = (args) => args.select ? new PostClient(dmmf, fetcher, 'mutation', 'deleteOnePost', 'posts.delete', args, []) : new PostClient(dmmf, fetcher, 'mutation', 'deleteOnePost', 'posts.delete', args, []);
+    Post.update = (args) => args.select ? new PostClient(dmmf, fetcher, 'mutation', 'updateOnePost', 'posts.update', args, []) : new PostClient(dmmf, fetcher, 'mutation', 'updateOnePost', 'posts.update', args, []);
+    Post.deleteMany = (args) => new PostClient(dmmf, fetcher, 'mutation', 'deleteManyPost', 'posts.deleteMany', args, []);
+    Post.updateMany = (args) => new PostClient(dmmf, fetcher, 'mutation', 'updateManyPost', 'posts.updateMany', args, []);
+    Post.upsert = (args) => args.select ? new PostClient(dmmf, fetcher, 'mutation', 'upsertOnePost', 'posts.upsert', args, []) : new PostClient(dmmf, fetcher, 'mutation', 'upsertOnePost', 'posts.upsert', args, []);
+    Post.count = () => new PostClient(dmmf, fetcher, 'query', 'aggregatePost', 'posts.count', {}, ['count']);
+    return Post; // any needed until https://github.com/microsoft/TypeScript/issues/31335 is resolved
+}
+class PostClient {
+    constructor(_dmmf, _fetcher, _queryType, _rootField, _clientMethod, _args, _path, _isList = false) {
+        this._dmmf = _dmmf;
+        this._fetcher = _fetcher;
+        this._queryType = _queryType;
+        this._rootField = _rootField;
+        this._clientMethod = _clientMethod;
+        this._args = _args;
+        this._path = _path;
+        this._isList = _isList;
+        // @ts-ignore
+        if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
+            const error = new Error();
+            if (error && error.stack) {
+                const stack = error.stack;
+                this._callsite = stack;
+            }
+        }
+    }
+    authors(args) {
+        const prefix = this._path.includes('select') ? 'select' : this._path.includes('include') ? 'include' : 'select';
+        const path = [...this._path, prefix, 'authors'];
+        const newArgs = runtime_1.deepSet(this._args, path, args || true);
+        this._isList = true;
+        return new UserClient(this._dmmf, this._fetcher, this._queryType, this._rootField, this._clientMethod, newArgs, path, this._isList);
+    }
+    get _document() {
+        const { _rootField: rootField } = this;
+        const document = runtime_1.makeDocument({
+            dmmf: this._dmmf,
+            rootField,
+            rootTypeName: this._queryType,
+            select: this._args
+        });
+        try {
+            document.validate(this._args, false, this._clientMethod);
+        }
+        catch (e) {
+            const x = e;
+            if (x.render) {
+                if (this._callsite) {
+                    e.message = x.render(this._callsite);
+                }
+            }
+            throw e;
+        }
+        return runtime_1.transformDocument(document);
+    }
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then(onfulfilled, onrejected) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Post', this._isList, this._callsite);
+        }
+        return this._requestPromise.then(onfulfilled, onrejected);
+    }
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch(onrejected) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Post', this._isList, this._callsite);
+        }
+        return this._requestPromise.catch(onrejected);
+    }
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally) {
+        if (!this._requestPromise) {
+            this._requestPromise = this._fetcher.request(this._document, this._path, this._rootField, 'Post', this._isList, this._callsite);
+        }
+        return this._requestPromise.finally(onfinally);
+    }
+}
+exports.PostClient = PostClient;
 /**
  * DMMF
  */
-exports.dmmf = { \\"datamodel\\": { \\"enums\\": [], \\"models\\": [{ \\"name\\": \\"A\\", \\"isEmbedded\\": false, \\"dbName\\": null, \\"fields\\": [{ \\"name\\": \\"id\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": true, \\"type\\": \\"Int\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }], \\"isGenerated\\": false }] }, \\"mappings\\": [{ \\"model\\": \\"A\\", \\"plural\\": \\"as\\", \\"findOne\\": \\"findOneA\\", \\"findMany\\": \\"findManyA\\", \\"create\\": \\"createOneA\\", \\"delete\\": \\"deleteOneA\\", \\"update\\": \\"updateOneA\\", \\"deleteMany\\": \\"deleteManyA\\", \\"updateMany\\": \\"updateManyA\\", \\"aggregate\\": \\"aggregateA\\" }], \\"schema\\": { \\"enums\\": [{ \\"name\\": \\"OrderByArg\\", \\"values\\": [\\"asc\\", \\"desc\\"] }], \\"outputTypes\\": [{ \\"name\\": \\"A\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"AggregateA\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"Query\\", \\"fields\\": [{ \\"name\\": \\"findManyA\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"AOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"A\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"aggregateA\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"AggregateA\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"findOneA\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"A\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }] }, { \\"name\\": \\"BatchPayload\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"Mutation\\", \\"fields\\": [{ \\"name\\": \\"createOneA\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"A\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteOneA\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"A\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"updateOneA\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"AUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"A\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"updateManyA\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"AUpdateManyMutationInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteManyA\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }] }], \\"inputTypes\\": [{ \\"name\\": \\"AWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }, { \\"type\\": \\"IntFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"AWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"AWhereUniqueInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"atLeastOne\\": true }, { \\"name\\": \\"AUpdateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"AUpdateManyMutationInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"IntFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"IntFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"AOrderByInput\\", \\"atLeastOne\\": true, \\"atMostOne\\": true, \\"isOrderType\\": true, \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }] }] } };
+exports.dmmf = { \\"datamodel\\": { \\"enums\\": [], \\"models\\": [{ \\"name\\": \\"Bubble\\", \\"isEmbedded\\": false, \\"dbName\\": null, \\"fields\\": [{ \\"name\\": \\"id\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": true, \\"type\\": \\"String\\", \\"default\\": { \\"name\\": \\"uuid\\", \\"returnType\\": \\"String\\", \\"args\\": [] }, \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"createdAt\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"DateTime\\", \\"default\\": { \\"name\\": \\"now\\", \\"returnType\\": \\"DateTime\\", \\"args\\": [] }, \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"members\\", \\"kind\\": \\"object\\", \\"dbName\\": null, \\"isList\\": true, \\"isRequired\\": false, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"User\\", \\"relationName\\": \\"BubbleToUser\\", \\"relationToFields\\": [], \\"relationOnDelete\\": \\"NONE\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }], \\"isGenerated\\": false }, { \\"name\\": \\"User\\", \\"isEmbedded\\": false, \\"dbName\\": null, \\"fields\\": [{ \\"name\\": \\"id\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": true, \\"type\\": \\"String\\", \\"default\\": { \\"name\\": \\"cuid\\", \\"returnType\\": \\"String\\", \\"args\\": [] }, \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"posts\\", \\"kind\\": \\"object\\", \\"dbName\\": null, \\"isList\\": true, \\"isRequired\\": false, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"Post\\", \\"relationName\\": \\"PostToUser\\", \\"relationToFields\\": [\\"id\\"], \\"relationOnDelete\\": \\"NONE\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"firstName\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"String\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"lastName\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"String\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"bubble\\", \\"kind\\": \\"object\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": false, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"Bubble\\", \\"relationName\\": \\"BubbleToUser\\", \\"relationToFields\\": [\\"id\\"], \\"relationOnDelete\\": \\"NONE\\", \\"isGenerated\\": true, \\"isUpdatedAt\\": false }], \\"isGenerated\\": false }, { \\"name\\": \\"Post\\", \\"isEmbedded\\": false, \\"dbName\\": null, \\"fields\\": [{ \\"name\\": \\"id\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": true, \\"type\\": \\"Int\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"authors\\", \\"kind\\": \\"object\\", \\"dbName\\": null, \\"isList\\": true, \\"isRequired\\": false, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"User\\", \\"relationName\\": \\"PostToUser\\", \\"relationToFields\\": [\\"id\\"], \\"relationOnDelete\\": \\"NONE\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }, { \\"name\\": \\"rating\\", \\"kind\\": \\"scalar\\", \\"dbName\\": null, \\"isList\\": false, \\"isRequired\\": true, \\"isUnique\\": false, \\"isId\\": false, \\"type\\": \\"Float\\", \\"isGenerated\\": false, \\"isUpdatedAt\\": false }], \\"isGenerated\\": false }] }, \\"mappings\\": [{ \\"model\\": \\"Bubble\\", \\"plural\\": \\"bubbles\\", \\"findOne\\": \\"findOneBubble\\", \\"findMany\\": \\"findManyBubble\\", \\"create\\": \\"createOneBubble\\", \\"delete\\": \\"deleteOneBubble\\", \\"update\\": \\"updateOneBubble\\", \\"deleteMany\\": \\"deleteManyBubble\\", \\"updateMany\\": \\"updateManyBubble\\", \\"upsert\\": \\"upsertOneBubble\\", \\"aggregate\\": \\"aggregateBubble\\" }, { \\"model\\": \\"User\\", \\"plural\\": \\"users\\", \\"findOne\\": \\"findOneUser\\", \\"findMany\\": \\"findManyUser\\", \\"create\\": \\"createOneUser\\", \\"delete\\": \\"deleteOneUser\\", \\"update\\": \\"updateOneUser\\", \\"deleteMany\\": \\"deleteManyUser\\", \\"updateMany\\": \\"updateManyUser\\", \\"upsert\\": \\"upsertOneUser\\", \\"aggregate\\": \\"aggregateUser\\" }, { \\"model\\": \\"Post\\", \\"plural\\": \\"posts\\", \\"findOne\\": \\"findOnePost\\", \\"findMany\\": \\"findManyPost\\", \\"create\\": \\"createOnePost\\", \\"delete\\": \\"deleteOnePost\\", \\"update\\": \\"updateOnePost\\", \\"deleteMany\\": \\"deleteManyPost\\", \\"updateMany\\": \\"updateManyPost\\", \\"upsert\\": \\"upsertOnePost\\", \\"aggregate\\": \\"aggregatePost\\" }], \\"schema\\": { \\"enums\\": [{ \\"name\\": \\"OrderByArg\\", \\"values\\": [\\"asc\\", \\"desc\\"] }], \\"outputTypes\\": [{ \\"name\\": \\"Post\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"authors\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"UserOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"rating\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"User\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"posts\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"PostOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"firstName\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"lastName\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"bubble\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }] }, { \\"name\\": \\"Bubble\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"createdAt\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"members\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"UserOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }] }, { \\"name\\": \\"AggregateBubble\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"AggregateUser\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"AggregatePost\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"Query\\", \\"fields\\": [{ \\"name\\": \\"findManyBubble\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"BubbleOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"aggregateBubble\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"AggregateBubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"findOneBubble\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"findManyUser\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"UserOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"aggregateUser\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"AggregateUser\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"findOneUser\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"findManyPost\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"orderBy\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"type\\": \\"PostOrderByInput\\", \\"kind\\": \\"object\\" }] }, { \\"name\\": \\"skip\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"after\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"before\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"first\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"last\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true } }, { \\"name\\": \\"aggregatePost\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"AggregatePost\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"findOnePost\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }] }, { \\"name\\": \\"BatchPayload\\", \\"fields\\": [{ \\"name\\": \\"count\\", \\"args\\": [], \\"outputType\\": { \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false } }] }, { \\"name\\": \\"Mutation\\", \\"fields\\": [{ \\"name\\": \\"createOneBubble\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteOneBubble\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"updateOneBubble\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"upsertOneBubble\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Bubble\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"updateManyBubble\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateManyMutationInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteManyBubble\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"createOneUser\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteOneUser\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"updateOneUser\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"upsertOneUser\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"User\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"updateManyUser\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyMutationInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteManyUser\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"createOnePost\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteOnePost\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"updateOnePost\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false } }, { \\"name\\": \\"upsertOnePost\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"Post\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"updateManyPost\\", \\"args\\": [{ \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateManyMutationInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }, { \\"name\\": \\"deleteManyPost\\", \\"args\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"outputType\\": { \\"type\\": \\"BatchPayload\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false } }] }], \\"inputTypes\\": [{ \\"name\\": \\"PostWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }, { \\"type\\": \\"IntFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"authors\\", \\"inputType\\": [{ \\"type\\": \\"UserFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }, { \\"type\\": \\"FloatFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"UserWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"bubble\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"BubbleWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }, { \\"type\\": \\"UUIDFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }, { \\"type\\": \\"DateTimeFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"members\\", \\"inputType\\": [{ \\"type\\": \\"UserFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"BubbleWhereUniqueInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"atLeastOne\\": true }, { \\"name\\": \\"UserWhereUniqueInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"atLeastOne\\": true }, { \\"name\\": \\"PostWhereUniqueInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }], \\"atLeastOne\\": true }, { \\"name\\": \\"PostCreateWithoutAuthorsInput\\", \\"fields\\": [{ \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"PostCreateManyWithoutPostsInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"UserCreateWithoutBubbleInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateManyWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserCreateManyWithoutMembersInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"BubbleCreateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"members\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateManyWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpdateWithoutAuthorsDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpdateWithWhereUniqueWithoutAuthorsInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateWithoutAuthorsDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"PostScalarWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }, { \\"type\\": \\"IntFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"authors\\", \\"inputType\\": [{ \\"type\\": \\"UserFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }, { \\"type\\": \\"FloatFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"PostScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"PostScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"PostScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"PostUpdateManyDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpdateManyWithWhereNestedInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateManyDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpsertWithWhereUniqueWithoutAuthorsInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateWithoutAuthorsDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpdateManyWithoutAuthorsInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"set\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"disconnect\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"delete\\", \\"inputType\\": [{ \\"type\\": \\"PostWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateWithWhereUniqueWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"updateMany\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateManyWithWhereNestedInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"deleteMany\\", \\"inputType\\": [{ \\"type\\": \\"PostScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"upsert\\", \\"inputType\\": [{ \\"type\\": \\"PostUpsertWithWhereUniqueWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"UserUpdateWithoutBubbleDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateManyWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateWithWhereUniqueWithoutBubbleInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithoutBubbleDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"UserScalarWhereInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"type\\": \\"StringFilter\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"AND\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"OR\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }, { \\"name\\": \\"NOT\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }], \\"isRelationFilter\\": true }], \\"isWhereType\\": true, \\"atLeastOne\\": false }, { \\"name\\": \\"UserUpdateManyDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateManyWithWhereNestedInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpsertWithWhereUniqueWithoutBubbleInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithoutBubbleDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateManyWithoutBubbleInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"set\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"disconnect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"delete\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithWhereUniqueWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"updateMany\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyWithWhereNestedInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"deleteMany\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"upsert\\", \\"inputType\\": [{ \\"type\\": \\"UserUpsertWithWhereUniqueWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"BubbleUpdateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"members\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleUpdateManyMutationInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleCreateWithoutMembersInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleCreateOneWithoutBubbleInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserCreateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostCreateManyWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"bubble\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateOneWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleUpdateWithoutMembersDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"UUID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"DateTime\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleUpsertWithoutMembersInput\\", \\"fields\\": [{ \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateWithoutMembersDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"BubbleUpdateOneWithoutMembersInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"BubbleWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"disconnect\\", \\"inputType\\": [{ \\"type\\": \\"Boolean\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"delete\\", \\"inputType\\": [{ \\"type\\": \\"Boolean\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateWithoutMembersDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"upsert\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpsertWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"posts\\", \\"inputType\\": [{ \\"type\\": \\"PostUpdateManyWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"bubble\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateOneWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateManyMutationInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserCreateWithoutPostsInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"bubble\\", \\"inputType\\": [{ \\"type\\": \\"BubbleCreateOneWithoutBubbleInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserCreateManyWithoutAuthorsInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"PostCreateInput\\", \\"fields\\": [{ \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"authors\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateManyWithoutAuthorsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateWithoutPostsDataInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"ID\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"String\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"bubble\\", \\"inputType\\": [{ \\"type\\": \\"BubbleUpdateOneWithoutMembersInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateWithWhereUniqueWithoutPostsInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"data\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithoutPostsDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpsertWithWhereUniqueWithoutPostsInput\\", \\"fields\\": [{ \\"name\\": \\"where\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithoutPostsDataInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }, { \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": true, \\"isList\\": false }] }] }, { \\"name\\": \\"UserUpdateManyWithoutPostsInput\\", \\"fields\\": [{ \\"name\\": \\"create\\", \\"inputType\\": [{ \\"type\\": \\"UserCreateWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"connect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"set\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"disconnect\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"delete\\", \\"inputType\\": [{ \\"type\\": \\"UserWhereUniqueInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"update\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateWithWhereUniqueWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"updateMany\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyWithWhereNestedInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"deleteMany\\", \\"inputType\\": [{ \\"type\\": \\"UserScalarWhereInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }, { \\"name\\": \\"upsert\\", \\"inputType\\": [{ \\"type\\": \\"UserUpsertWithWhereUniqueWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": true }] }] }, { \\"name\\": \\"PostUpdateInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"authors\\", \\"inputType\\": [{ \\"type\\": \\"UserUpdateManyWithoutPostsInput\\", \\"kind\\": \\"object\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"PostUpdateManyMutationInput\\", \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"Int\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"Float\\", \\"kind\\": \\"scalar\\", \\"isRequired\\": false, \\"isList\\": false }] }] }, { \\"name\\": \\"IntFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"IntFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Int\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"UserFilter\\", \\"fields\\": [{ \\"name\\": \\"every\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"UserWhereInput\\" }] }, { \\"name\\": \\"some\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"UserWhereInput\\" }] }, { \\"name\\": \\"none\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"UserWhereInput\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"FloatFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"FloatFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"Float\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"StringFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"StringFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"contains\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"startsWith\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }, { \\"name\\": \\"endsWith\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"String\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"PostFilter\\", \\"fields\\": [{ \\"name\\": \\"every\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"PostWhereInput\\" }] }, { \\"name\\": \\"some\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"PostWhereInput\\" }] }, { \\"name\\": \\"none\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"object\\", \\"type\\": \\"PostWhereInput\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"UUIDFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUIDFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"contains\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"startsWith\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }, { \\"name\\": \\"endsWith\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"UUID\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"DateTimeFilter\\", \\"fields\\": [{ \\"name\\": \\"equals\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"not\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }, { \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTimeFilter\\" }] }, { \\"name\\": \\"in\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"notIn\\", \\"inputType\\": [{ \\"isList\\": true, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"lt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"lte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"gt\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }, { \\"name\\": \\"gte\\", \\"inputType\\": [{ \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"scalar\\", \\"type\\": \\"DateTime\\" }] }], \\"atLeastOne\\": false }, { \\"name\\": \\"BubbleOrderByInput\\", \\"atLeastOne\\": true, \\"atMostOne\\": true, \\"isOrderType\\": true, \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"createdAt\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }] }, { \\"name\\": \\"UserOrderByInput\\", \\"atLeastOne\\": true, \\"atMostOne\\": true, \\"isOrderType\\": true, \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"firstName\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"lastName\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }] }, { \\"name\\": \\"PostOrderByInput\\", \\"atLeastOne\\": true, \\"atMostOne\\": true, \\"isOrderType\\": true, \\"fields\\": [{ \\"name\\": \\"id\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }, { \\"name\\": \\"rating\\", \\"inputType\\": [{ \\"type\\": \\"OrderByArg\\", \\"isList\\": false, \\"isRequired\\": false, \\"kind\\": \\"enum\\" }], \\"isRelationFilter\\": false }] }] } };
 
 module.exports = Photon; // needed to support const Photon = require('...') in js
 Object.defineProperty(module.exports, \\"__esModule\\", { value: true });
@@ -636,7 +1228,9 @@ export default class Photon {
     private connectEngine;
     connect(): Promise<void>;
     disconnect(): Promise<void>;
-    readonly as: ADelegate;
+    readonly bubbles: BubbleDelegate;
+    readonly users: UserDelegate;
+    readonly posts: PostDelegate;
 }
 export declare const OrderByArg: {
     asc: \\"asc\\";
@@ -644,37 +1238,44 @@ export declare const OrderByArg: {
 };
 export declare type OrderByArg = (typeof OrderByArg)[keyof typeof OrderByArg];
 /**
- * Model A
+ * Model Bubble
  */
-export declare type A = {
-    id: number;
+export declare type Bubble = {
+    id: string;
+    createdAt: string;
 };
-export declare type AScalars = 'id';
-export declare type ASelect = {
+export declare type BubbleScalars = 'id' | 'createdAt';
+export declare type BubbleSelect = {
     id?: boolean;
+    createdAt?: boolean;
+    members?: boolean | FindManyUserSelectArgsOptional;
 };
-export declare type AInclude = {};
-declare type ADefault = {
+export declare type BubbleInclude = {
+    members?: boolean | FindManyUserIncludeArgsOptional;
+};
+declare type BubbleDefault = {
     id: true;
+    createdAt: true;
 };
-declare type AGetSelectPayload<S extends boolean | ASelect> = S extends true ? A : S extends ASelect ? {
-    [P in CleanupNever<MergeTruthyValues<{}, S>>]: P extends AScalars ? A[P] : never;
+declare type BubbleGetSelectPayload<S extends boolean | BubbleSelect> = S extends true ? Bubble : S extends BubbleSelect ? {
+    [P in CleanupNever<MergeTruthyValues<{}, S>>]: P extends BubbleScalars ? Bubble[P] : P extends 'members' ? Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<S[P]>>> : never;
 } : never;
-declare type AGetIncludePayload<S extends boolean | AInclude> = S extends true ? A : S extends AInclude ? {
-    [P in CleanupNever<MergeTruthyValues<ADefault, S>>]: P extends AScalars ? A[P] : never;
+declare type BubbleGetIncludePayload<S extends boolean | BubbleInclude> = S extends true ? Bubble : S extends BubbleInclude ? {
+    [P in CleanupNever<MergeTruthyValues<BubbleDefault, S>>]: P extends BubbleScalars ? Bubble[P] : P extends 'members' ? Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<S[P]>>> : never;
 } : never;
-export interface ADelegate {
-    <T extends FindManyAArgs>(args?: Subset<T, FindManyAArgs>): T extends FindManyAArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyASelectArgs ? Promise<Array<AGetSelectPayload<ExtractFindManyASelectArgs<T>>>> : T extends FindManyAIncludeArgs ? Promise<Array<AGetIncludePayload<ExtractFindManyAIncludeArgs<T>>>> : Promise<Array<A>>;
-    findOne<T extends FindOneAArgs>(args: Subset<T, FindOneAArgs>): T extends FindOneAArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindOneASelectArgs ? Promise<AGetSelectPayload<ExtractFindOneASelectArgs<T>>> : T extends FindOneAIncludeArgs ? Promise<AGetIncludePayload<ExtractFindOneAIncludeArgs<T>>> : AClient<A>;
-    findMany<T extends FindManyAArgs>(args?: Subset<T, FindManyAArgs>): T extends FindManyAArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyASelectArgs ? Promise<Array<AGetSelectPayload<ExtractFindManyASelectArgs<T>>>> : T extends FindManyAIncludeArgs ? Promise<Array<AGetIncludePayload<ExtractFindManyAIncludeArgs<T>>>> : Promise<Array<A>>;
-    create<T extends ACreateArgs>(args: Subset<T, ACreateArgs>): T extends ACreateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends ASelectCreateArgs ? Promise<AGetSelectPayload<ExtractASelectCreateArgs<T>>> : T extends AIncludeCreateArgs ? Promise<AGetIncludePayload<ExtractAIncludeCreateArgs<T>>> : AClient<A>;
-    delete<T extends ADeleteArgs>(args: Subset<T, ADeleteArgs>): T extends ADeleteArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends ASelectDeleteArgs ? Promise<AGetSelectPayload<ExtractASelectDeleteArgs<T>>> : T extends AIncludeDeleteArgs ? Promise<AGetIncludePayload<ExtractAIncludeDeleteArgs<T>>> : AClient<A>;
-    update<T extends AUpdateArgs>(args: Subset<T, AUpdateArgs>): T extends AUpdateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends ASelectUpdateArgs ? Promise<AGetSelectPayload<ExtractASelectUpdateArgs<T>>> : T extends AIncludeUpdateArgs ? Promise<AGetIncludePayload<ExtractAIncludeUpdateArgs<T>>> : AClient<A>;
-    deleteMany<T extends ADeleteManyArgs>(args: Subset<T, ADeleteManyArgs>): Promise<BatchPayload>;
-    updateMany<T extends AUpdateManyArgs>(args: Subset<T, AUpdateManyArgs>): Promise<BatchPayload>;
+export interface BubbleDelegate {
+    <T extends FindManyBubbleArgs>(args?: Subset<T, FindManyBubbleArgs>): T extends FindManyBubbleArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyBubbleSelectArgs ? Promise<Array<BubbleGetSelectPayload<ExtractFindManyBubbleSelectArgs<T>>>> : T extends FindManyBubbleIncludeArgs ? Promise<Array<BubbleGetIncludePayload<ExtractFindManyBubbleIncludeArgs<T>>>> : Promise<Array<Bubble>>;
+    findOne<T extends FindOneBubbleArgs>(args: Subset<T, FindOneBubbleArgs>): T extends FindOneBubbleArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindOneBubbleSelectArgs ? Promise<BubbleGetSelectPayload<ExtractFindOneBubbleSelectArgs<T>>> : T extends FindOneBubbleIncludeArgs ? Promise<BubbleGetIncludePayload<ExtractFindOneBubbleIncludeArgs<T>>> : BubbleClient<Bubble>;
+    findMany<T extends FindManyBubbleArgs>(args?: Subset<T, FindManyBubbleArgs>): T extends FindManyBubbleArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyBubbleSelectArgs ? Promise<Array<BubbleGetSelectPayload<ExtractFindManyBubbleSelectArgs<T>>>> : T extends FindManyBubbleIncludeArgs ? Promise<Array<BubbleGetIncludePayload<ExtractFindManyBubbleIncludeArgs<T>>>> : Promise<Array<Bubble>>;
+    create<T extends BubbleCreateArgs>(args: Subset<T, BubbleCreateArgs>): T extends BubbleCreateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends BubbleSelectCreateArgs ? Promise<BubbleGetSelectPayload<ExtractBubbleSelectCreateArgs<T>>> : T extends BubbleIncludeCreateArgs ? Promise<BubbleGetIncludePayload<ExtractBubbleIncludeCreateArgs<T>>> : BubbleClient<Bubble>;
+    delete<T extends BubbleDeleteArgs>(args: Subset<T, BubbleDeleteArgs>): T extends BubbleDeleteArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends BubbleSelectDeleteArgs ? Promise<BubbleGetSelectPayload<ExtractBubbleSelectDeleteArgs<T>>> : T extends BubbleIncludeDeleteArgs ? Promise<BubbleGetIncludePayload<ExtractBubbleIncludeDeleteArgs<T>>> : BubbleClient<Bubble>;
+    update<T extends BubbleUpdateArgs>(args: Subset<T, BubbleUpdateArgs>): T extends BubbleUpdateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends BubbleSelectUpdateArgs ? Promise<BubbleGetSelectPayload<ExtractBubbleSelectUpdateArgs<T>>> : T extends BubbleIncludeUpdateArgs ? Promise<BubbleGetIncludePayload<ExtractBubbleIncludeUpdateArgs<T>>> : BubbleClient<Bubble>;
+    deleteMany<T extends BubbleDeleteManyArgs>(args: Subset<T, BubbleDeleteManyArgs>): Promise<BatchPayload>;
+    updateMany<T extends BubbleUpdateManyArgs>(args: Subset<T, BubbleUpdateManyArgs>): Promise<BatchPayload>;
+    upsert<T extends BubbleUpsertArgs>(args: Subset<T, BubbleUpsertArgs>): T extends BubbleUpsertArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends BubbleSelectUpsertArgs ? Promise<BubbleGetSelectPayload<ExtractBubbleSelectUpsertArgs<T>>> : T extends BubbleIncludeUpsertArgs ? Promise<BubbleGetIncludePayload<ExtractBubbleIncludeUpsertArgs<T>>> : BubbleClient<Bubble>;
     count(): Promise<number>;
 }
-export declare class AClient<T> implements Promise<T> {
+export declare class BubbleClient<T> implements Promise<T> {
     private readonly _dmmf;
     private readonly _fetcher;
     private readonly _queryType;
@@ -687,6 +1288,7 @@ export declare class AClient<T> implements Promise<T> {
     private _requestPromise?;
     constructor(_dmmf: DMMFClass, _fetcher: PhotonFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _path: string[], _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PhotonPromise';
+    members<T extends FindManyUserArgs = {}>(args?: Subset<T, FindManyUserArgs>): T extends FindManyUserArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyUserSelectArgs ? Promise<Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<T>>>> : T extends FindManyUserIncludeArgs ? Promise<Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<T>>>> : Promise<Array<User>>;
     private readonly _document;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -710,251 +1312,1237 @@ export declare class AClient<T> implements Promise<T> {
     finally(onfinally?: (() => void) | undefined | null): Promise<T>;
 }
 /**
- * A findOne
+ * Bubble findOne
  */
-export declare type FindOneAArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
 };
-export declare type FindOneAArgsRequired = {
-    select: ASelect;
-    include: AInclude;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
 };
-export declare type FindOneASelectArgs = {
-    select: ASelect;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleSelectArgs = {
+    select: BubbleSelect;
+    where: BubbleWhereUniqueInput;
 };
-export declare type FindOneASelectArgsOptional = {
-    select?: ASelect | null;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleSelectArgsOptional = {
+    select?: BubbleSelect | null;
+    where: BubbleWhereUniqueInput;
 };
-export declare type FindOneAIncludeArgs = {
-    include: AInclude;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleIncludeArgs = {
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
 };
-export declare type FindOneAIncludeArgsOptional = {
-    include?: AInclude | null;
-    where: AWhereUniqueInput;
+export declare type FindOneBubbleIncludeArgsOptional = {
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
 };
-export declare type ExtractFindOneASelectArgs<S extends undefined | boolean | FindOneASelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneASelectArgs ? S['select'] : true;
-export declare type ExtractFindOneAIncludeArgs<S extends undefined | boolean | FindOneAIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneAIncludeArgs ? S['include'] : true;
+export declare type ExtractFindOneBubbleSelectArgs<S extends undefined | boolean | FindOneBubbleSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneBubbleSelectArgs ? S['select'] : true;
+export declare type ExtractFindOneBubbleIncludeArgs<S extends undefined | boolean | FindOneBubbleIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneBubbleIncludeArgs ? S['include'] : true;
 /**
- * A findMany
+ * Bubble findMany
  */
-export declare type FindManyAArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type FindManyAArgsRequired = {
-    select: ASelect;
-    include: AInclude;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type FindManyASelectArgs = {
-    select: ASelect;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleSelectArgs = {
+    select: BubbleSelect;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type FindManyASelectArgsOptional = {
-    select?: ASelect | null;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleSelectArgsOptional = {
+    select?: BubbleSelect | null;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type FindManyAIncludeArgs = {
-    include: AInclude;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleIncludeArgs = {
+    include: BubbleInclude;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type FindManyAIncludeArgsOptional = {
-    include?: AInclude | null;
-    where?: AWhereInput | null;
-    orderBy?: AOrderByInput | null;
+export declare type FindManyBubbleIncludeArgsOptional = {
+    include?: BubbleInclude | null;
+    where?: BubbleWhereInput | null;
+    orderBy?: BubbleOrderByInput | null;
     skip?: number | null;
     after?: string | null;
     before?: string | null;
     first?: number | null;
     last?: number | null;
 };
-export declare type ExtractFindManyASelectArgs<S extends undefined | boolean | FindManyASelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyASelectArgs ? S['select'] : true;
-export declare type ExtractFindManyAIncludeArgs<S extends undefined | boolean | FindManyAIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyAIncludeArgs ? S['include'] : true;
+export declare type ExtractFindManyBubbleSelectArgs<S extends undefined | boolean | FindManyBubbleSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyBubbleSelectArgs ? S['select'] : true;
+export declare type ExtractFindManyBubbleIncludeArgs<S extends undefined | boolean | FindManyBubbleIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyBubbleIncludeArgs ? S['include'] : true;
 /**
- * A create
+ * Bubble create
  */
-export declare type ACreateArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
+export declare type BubbleCreateArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    data: BubbleCreateInput;
 };
-export declare type ACreateArgsRequired = {
-    select: ASelect;
-    include: AInclude;
+export declare type BubbleCreateArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    data: BubbleCreateInput;
 };
-export declare type ASelectCreateArgs = {
-    select: ASelect;
+export declare type BubbleSelectCreateArgs = {
+    select: BubbleSelect;
+    data: BubbleCreateInput;
 };
-export declare type ASelectCreateArgsOptional = {
-    select?: ASelect | null;
+export declare type BubbleSelectCreateArgsOptional = {
+    select?: BubbleSelect | null;
+    data: BubbleCreateInput;
 };
-export declare type AIncludeCreateArgs = {
-    include: AInclude;
+export declare type BubbleIncludeCreateArgs = {
+    include: BubbleInclude;
+    data: BubbleCreateInput;
 };
-export declare type AIncludeCreateArgsOptional = {
-    include?: AInclude | null;
+export declare type BubbleIncludeCreateArgsOptional = {
+    include?: BubbleInclude | null;
+    data: BubbleCreateInput;
 };
-export declare type ExtractASelectCreateArgs<S extends undefined | boolean | ASelectCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends ASelectCreateArgs ? S['select'] : true;
-export declare type ExtractAIncludeCreateArgs<S extends undefined | boolean | AIncludeCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends AIncludeCreateArgs ? S['include'] : true;
+export declare type ExtractBubbleSelectCreateArgs<S extends undefined | boolean | BubbleSelectCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleSelectCreateArgs ? S['select'] : true;
+export declare type ExtractBubbleIncludeCreateArgs<S extends undefined | boolean | BubbleIncludeCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleIncludeCreateArgs ? S['include'] : true;
 /**
- * A update
+ * Bubble update
  */
-export declare type AUpdateArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleUpdateArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type AUpdateArgsRequired = {
-    select: ASelect;
-    include: AInclude;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleUpdateArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type ASelectUpdateArgs = {
-    select: ASelect;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleSelectUpdateArgs = {
+    select: BubbleSelect;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type ASelectUpdateArgsOptional = {
-    select?: ASelect | null;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleSelectUpdateArgsOptional = {
+    select?: BubbleSelect | null;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type AIncludeUpdateArgs = {
-    include: AInclude;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleIncludeUpdateArgs = {
+    include: BubbleInclude;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type AIncludeUpdateArgsOptional = {
-    include?: AInclude | null;
-    data: AUpdateInput;
-    where: AWhereUniqueInput;
+export declare type BubbleIncludeUpdateArgsOptional = {
+    include?: BubbleInclude | null;
+    data: BubbleUpdateInput;
+    where: BubbleWhereUniqueInput;
 };
-export declare type ExtractASelectUpdateArgs<S extends undefined | boolean | ASelectUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends ASelectUpdateArgs ? S['select'] : true;
-export declare type ExtractAIncludeUpdateArgs<S extends undefined | boolean | AIncludeUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends AIncludeUpdateArgs ? S['include'] : true;
+export declare type ExtractBubbleSelectUpdateArgs<S extends undefined | boolean | BubbleSelectUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleSelectUpdateArgs ? S['select'] : true;
+export declare type ExtractBubbleIncludeUpdateArgs<S extends undefined | boolean | BubbleIncludeUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleIncludeUpdateArgs ? S['include'] : true;
 /**
- * A updateMany
+ * Bubble updateMany
  */
-export declare type AUpdateManyArgs = {
-    data: AUpdateManyMutationInput;
-    where?: AWhereInput | null;
-};
-/**
- * A delete
- */
-export declare type ADeleteArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
-    where: AWhereUniqueInput;
-};
-export declare type ADeleteArgsRequired = {
-    select: ASelect;
-    include: AInclude;
-    where: AWhereUniqueInput;
-};
-export declare type ASelectDeleteArgs = {
-    select: ASelect;
-    where: AWhereUniqueInput;
-};
-export declare type ASelectDeleteArgsOptional = {
-    select?: ASelect | null;
-    where: AWhereUniqueInput;
-};
-export declare type AIncludeDeleteArgs = {
-    include: AInclude;
-    where: AWhereUniqueInput;
-};
-export declare type AIncludeDeleteArgsOptional = {
-    include?: AInclude | null;
-    where: AWhereUniqueInput;
-};
-export declare type ExtractASelectDeleteArgs<S extends undefined | boolean | ASelectDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends ASelectDeleteArgs ? S['select'] : true;
-export declare type ExtractAIncludeDeleteArgs<S extends undefined | boolean | AIncludeDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends AIncludeDeleteArgs ? S['include'] : true;
-/**
- * A deleteMany
- */
-export declare type ADeleteManyArgs = {
-    where?: AWhereInput | null;
+export declare type BubbleUpdateManyArgs = {
+    data: BubbleUpdateManyMutationInput;
+    where?: BubbleWhereInput | null;
 };
 /**
- * A without action
+ * Bubble upsert
  */
-export declare type AArgs = {
-    select?: ASelect | null;
-    include?: AInclude | null;
+export declare type BubbleUpsertArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type AArgsRequired = {
-    select: ASelect;
-    include: AInclude;
+export declare type BubbleUpsertArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type ASelectArgs = {
-    select: ASelect;
+export declare type BubbleSelectUpsertArgs = {
+    select: BubbleSelect;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type ASelectArgsOptional = {
-    select?: ASelect | null;
+export declare type BubbleSelectUpsertArgsOptional = {
+    select?: BubbleSelect | null;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type AIncludeArgs = {
-    include: AInclude;
+export declare type BubbleIncludeUpsertArgs = {
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type AIncludeArgsOptional = {
-    include?: AInclude | null;
+export declare type BubbleIncludeUpsertArgsOptional = {
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
+    create: BubbleCreateInput;
+    update: BubbleUpdateInput;
 };
-export declare type ExtractASelectArgs<S extends undefined | boolean | ASelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends ASelectArgs ? S['select'] : true;
-export declare type ExtractAIncludeArgs<S extends undefined | boolean | AIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends AIncludeArgs ? S['include'] : true;
+export declare type ExtractBubbleSelectUpsertArgs<S extends undefined | boolean | BubbleSelectUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleSelectUpsertArgs ? S['select'] : true;
+export declare type ExtractBubbleIncludeUpsertArgs<S extends undefined | boolean | BubbleIncludeUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleIncludeUpsertArgs ? S['include'] : true;
+/**
+ * Bubble delete
+ */
+export declare type BubbleDeleteArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
+};
+export declare type BubbleDeleteArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
+};
+export declare type BubbleSelectDeleteArgs = {
+    select: BubbleSelect;
+    where: BubbleWhereUniqueInput;
+};
+export declare type BubbleSelectDeleteArgsOptional = {
+    select?: BubbleSelect | null;
+    where: BubbleWhereUniqueInput;
+};
+export declare type BubbleIncludeDeleteArgs = {
+    include: BubbleInclude;
+    where: BubbleWhereUniqueInput;
+};
+export declare type BubbleIncludeDeleteArgsOptional = {
+    include?: BubbleInclude | null;
+    where: BubbleWhereUniqueInput;
+};
+export declare type ExtractBubbleSelectDeleteArgs<S extends undefined | boolean | BubbleSelectDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleSelectDeleteArgs ? S['select'] : true;
+export declare type ExtractBubbleIncludeDeleteArgs<S extends undefined | boolean | BubbleIncludeDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleIncludeDeleteArgs ? S['include'] : true;
+/**
+ * Bubble deleteMany
+ */
+export declare type BubbleDeleteManyArgs = {
+    where?: BubbleWhereInput | null;
+};
+/**
+ * Bubble without action
+ */
+export declare type BubbleArgs = {
+    select?: BubbleSelect | null;
+    include?: BubbleInclude | null;
+};
+export declare type BubbleArgsRequired = {
+    select: BubbleSelect;
+    include: BubbleInclude;
+};
+export declare type BubbleSelectArgs = {
+    select: BubbleSelect;
+};
+export declare type BubbleSelectArgsOptional = {
+    select?: BubbleSelect | null;
+};
+export declare type BubbleIncludeArgs = {
+    include: BubbleInclude;
+};
+export declare type BubbleIncludeArgsOptional = {
+    include?: BubbleInclude | null;
+};
+export declare type ExtractBubbleSelectArgs<S extends undefined | boolean | BubbleSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleSelectArgs ? S['select'] : true;
+export declare type ExtractBubbleIncludeArgs<S extends undefined | boolean | BubbleIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends BubbleIncludeArgs ? S['include'] : true;
+/**
+ * Model User
+ */
+export declare type User = {
+    id: string;
+    firstName: string;
+    lastName: string;
+};
+export declare type UserScalars = 'id' | 'firstName' | 'lastName';
+export declare type UserSelect = {
+    id?: boolean;
+    posts?: boolean | FindManyPostSelectArgsOptional;
+    firstName?: boolean;
+    lastName?: boolean;
+    bubble?: boolean | BubbleSelectArgsOptional;
+};
+export declare type UserInclude = {
+    posts?: boolean | FindManyPostIncludeArgsOptional;
+    bubble?: boolean | BubbleIncludeArgsOptional;
+};
+declare type UserDefault = {
+    id: true;
+    firstName: true;
+    lastName: true;
+};
+declare type UserGetSelectPayload<S extends boolean | UserSelect> = S extends true ? User : S extends UserSelect ? {
+    [P in CleanupNever<MergeTruthyValues<{}, S>>]: P extends UserScalars ? User[P] : P extends 'posts' ? Array<PostGetSelectPayload<ExtractFindManyPostSelectArgs<S[P]>>> : P extends 'bubble' ? BubbleGetSelectPayload<ExtractBubbleSelectArgs<S[P]>> : never;
+} : never;
+declare type UserGetIncludePayload<S extends boolean | UserInclude> = S extends true ? User : S extends UserInclude ? {
+    [P in CleanupNever<MergeTruthyValues<UserDefault, S>>]: P extends UserScalars ? User[P] : P extends 'posts' ? Array<PostGetIncludePayload<ExtractFindManyPostIncludeArgs<S[P]>>> : P extends 'bubble' ? BubbleGetIncludePayload<ExtractBubbleIncludeArgs<S[P]>> : never;
+} : never;
+export interface UserDelegate {
+    <T extends FindManyUserArgs>(args?: Subset<T, FindManyUserArgs>): T extends FindManyUserArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyUserSelectArgs ? Promise<Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<T>>>> : T extends FindManyUserIncludeArgs ? Promise<Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<T>>>> : Promise<Array<User>>;
+    findOne<T extends FindOneUserArgs>(args: Subset<T, FindOneUserArgs>): T extends FindOneUserArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindOneUserSelectArgs ? Promise<UserGetSelectPayload<ExtractFindOneUserSelectArgs<T>>> : T extends FindOneUserIncludeArgs ? Promise<UserGetIncludePayload<ExtractFindOneUserIncludeArgs<T>>> : UserClient<User>;
+    findMany<T extends FindManyUserArgs>(args?: Subset<T, FindManyUserArgs>): T extends FindManyUserArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyUserSelectArgs ? Promise<Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<T>>>> : T extends FindManyUserIncludeArgs ? Promise<Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<T>>>> : Promise<Array<User>>;
+    create<T extends UserCreateArgs>(args: Subset<T, UserCreateArgs>): T extends UserCreateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends UserSelectCreateArgs ? Promise<UserGetSelectPayload<ExtractUserSelectCreateArgs<T>>> : T extends UserIncludeCreateArgs ? Promise<UserGetIncludePayload<ExtractUserIncludeCreateArgs<T>>> : UserClient<User>;
+    delete<T extends UserDeleteArgs>(args: Subset<T, UserDeleteArgs>): T extends UserDeleteArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends UserSelectDeleteArgs ? Promise<UserGetSelectPayload<ExtractUserSelectDeleteArgs<T>>> : T extends UserIncludeDeleteArgs ? Promise<UserGetIncludePayload<ExtractUserIncludeDeleteArgs<T>>> : UserClient<User>;
+    update<T extends UserUpdateArgs>(args: Subset<T, UserUpdateArgs>): T extends UserUpdateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends UserSelectUpdateArgs ? Promise<UserGetSelectPayload<ExtractUserSelectUpdateArgs<T>>> : T extends UserIncludeUpdateArgs ? Promise<UserGetIncludePayload<ExtractUserIncludeUpdateArgs<T>>> : UserClient<User>;
+    deleteMany<T extends UserDeleteManyArgs>(args: Subset<T, UserDeleteManyArgs>): Promise<BatchPayload>;
+    updateMany<T extends UserUpdateManyArgs>(args: Subset<T, UserUpdateManyArgs>): Promise<BatchPayload>;
+    upsert<T extends UserUpsertArgs>(args: Subset<T, UserUpsertArgs>): T extends UserUpsertArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends UserSelectUpsertArgs ? Promise<UserGetSelectPayload<ExtractUserSelectUpsertArgs<T>>> : T extends UserIncludeUpsertArgs ? Promise<UserGetIncludePayload<ExtractUserIncludeUpsertArgs<T>>> : UserClient<User>;
+    count(): Promise<number>;
+}
+export declare class UserClient<T> implements Promise<T> {
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _path;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: DMMFClass, _fetcher: PhotonFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _path: string[], _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PhotonPromise';
+    posts<T extends FindManyPostArgs = {}>(args?: Subset<T, FindManyPostArgs>): T extends FindManyPostArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyPostSelectArgs ? Promise<Array<PostGetSelectPayload<ExtractFindManyPostSelectArgs<T>>>> : T extends FindManyPostIncludeArgs ? Promise<Array<PostGetIncludePayload<ExtractFindManyPostIncludeArgs<T>>>> : Promise<Array<Post>>;
+    bubble<T extends BubbleArgs = {}>(args?: Subset<T, BubbleArgs>): T extends FindOneBubbleArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends BubbleSelectArgs ? Promise<BubbleGetSelectPayload<ExtractBubbleSelectArgs<T>>> : T extends BubbleIncludeArgs ? Promise<BubbleGetIncludePayload<ExtractBubbleIncludeArgs<T>>> : BubbleClient<Bubble>;
+    private readonly _document;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | Promise<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+}
+/**
+ * User findOne
+ */
+export declare type FindOneUserArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+};
+export declare type FindOneUserArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+};
+export declare type FindOneUserSelectArgs = {
+    select: UserSelect;
+    where: UserWhereUniqueInput;
+};
+export declare type FindOneUserSelectArgsOptional = {
+    select?: UserSelect | null;
+    where: UserWhereUniqueInput;
+};
+export declare type FindOneUserIncludeArgs = {
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+};
+export declare type FindOneUserIncludeArgsOptional = {
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+};
+export declare type ExtractFindOneUserSelectArgs<S extends undefined | boolean | FindOneUserSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneUserSelectArgs ? S['select'] : true;
+export declare type ExtractFindOneUserIncludeArgs<S extends undefined | boolean | FindOneUserIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOneUserIncludeArgs ? S['include'] : true;
+/**
+ * User findMany
+ */
+export declare type FindManyUserArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyUserArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyUserSelectArgs = {
+    select: UserSelect;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyUserSelectArgsOptional = {
+    select?: UserSelect | null;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyUserIncludeArgs = {
+    include: UserInclude;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyUserIncludeArgsOptional = {
+    include?: UserInclude | null;
+    where?: UserWhereInput | null;
+    orderBy?: UserOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type ExtractFindManyUserSelectArgs<S extends undefined | boolean | FindManyUserSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyUserSelectArgs ? S['select'] : true;
+export declare type ExtractFindManyUserIncludeArgs<S extends undefined | boolean | FindManyUserIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyUserIncludeArgs ? S['include'] : true;
+/**
+ * User create
+ */
+export declare type UserCreateArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    data: UserCreateInput;
+};
+export declare type UserCreateArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    data: UserCreateInput;
+};
+export declare type UserSelectCreateArgs = {
+    select: UserSelect;
+    data: UserCreateInput;
+};
+export declare type UserSelectCreateArgsOptional = {
+    select?: UserSelect | null;
+    data: UserCreateInput;
+};
+export declare type UserIncludeCreateArgs = {
+    include: UserInclude;
+    data: UserCreateInput;
+};
+export declare type UserIncludeCreateArgsOptional = {
+    include?: UserInclude | null;
+    data: UserCreateInput;
+};
+export declare type ExtractUserSelectCreateArgs<S extends undefined | boolean | UserSelectCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserSelectCreateArgs ? S['select'] : true;
+export declare type ExtractUserIncludeCreateArgs<S extends undefined | boolean | UserIncludeCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserIncludeCreateArgs ? S['include'] : true;
+/**
+ * User update
+ */
+export declare type UserUpdateArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type UserUpdateArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type UserSelectUpdateArgs = {
+    select: UserSelect;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type UserSelectUpdateArgsOptional = {
+    select?: UserSelect | null;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type UserIncludeUpdateArgs = {
+    include: UserInclude;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type UserIncludeUpdateArgsOptional = {
+    include?: UserInclude | null;
+    data: UserUpdateInput;
+    where: UserWhereUniqueInput;
+};
+export declare type ExtractUserSelectUpdateArgs<S extends undefined | boolean | UserSelectUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserSelectUpdateArgs ? S['select'] : true;
+export declare type ExtractUserIncludeUpdateArgs<S extends undefined | boolean | UserIncludeUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserIncludeUpdateArgs ? S['include'] : true;
+/**
+ * User updateMany
+ */
+export declare type UserUpdateManyArgs = {
+    data: UserUpdateManyMutationInput;
+    where?: UserWhereInput | null;
+};
+/**
+ * User upsert
+ */
+export declare type UserUpsertArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type UserUpsertArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type UserSelectUpsertArgs = {
+    select: UserSelect;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type UserSelectUpsertArgsOptional = {
+    select?: UserSelect | null;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type UserIncludeUpsertArgs = {
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type UserIncludeUpsertArgsOptional = {
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+    create: UserCreateInput;
+    update: UserUpdateInput;
+};
+export declare type ExtractUserSelectUpsertArgs<S extends undefined | boolean | UserSelectUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserSelectUpsertArgs ? S['select'] : true;
+export declare type ExtractUserIncludeUpsertArgs<S extends undefined | boolean | UserIncludeUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserIncludeUpsertArgs ? S['include'] : true;
+/**
+ * User delete
+ */
+export declare type UserDeleteArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+};
+export declare type UserDeleteArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+};
+export declare type UserSelectDeleteArgs = {
+    select: UserSelect;
+    where: UserWhereUniqueInput;
+};
+export declare type UserSelectDeleteArgsOptional = {
+    select?: UserSelect | null;
+    where: UserWhereUniqueInput;
+};
+export declare type UserIncludeDeleteArgs = {
+    include: UserInclude;
+    where: UserWhereUniqueInput;
+};
+export declare type UserIncludeDeleteArgsOptional = {
+    include?: UserInclude | null;
+    where: UserWhereUniqueInput;
+};
+export declare type ExtractUserSelectDeleteArgs<S extends undefined | boolean | UserSelectDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserSelectDeleteArgs ? S['select'] : true;
+export declare type ExtractUserIncludeDeleteArgs<S extends undefined | boolean | UserIncludeDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserIncludeDeleteArgs ? S['include'] : true;
+/**
+ * User deleteMany
+ */
+export declare type UserDeleteManyArgs = {
+    where?: UserWhereInput | null;
+};
+/**
+ * User without action
+ */
+export declare type UserArgs = {
+    select?: UserSelect | null;
+    include?: UserInclude | null;
+};
+export declare type UserArgsRequired = {
+    select: UserSelect;
+    include: UserInclude;
+};
+export declare type UserSelectArgs = {
+    select: UserSelect;
+};
+export declare type UserSelectArgsOptional = {
+    select?: UserSelect | null;
+};
+export declare type UserIncludeArgs = {
+    include: UserInclude;
+};
+export declare type UserIncludeArgsOptional = {
+    include?: UserInclude | null;
+};
+export declare type ExtractUserSelectArgs<S extends undefined | boolean | UserSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserSelectArgs ? S['select'] : true;
+export declare type ExtractUserIncludeArgs<S extends undefined | boolean | UserIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends UserIncludeArgs ? S['include'] : true;
+/**
+ * Model Post
+ */
+export declare type Post = {
+    id: number;
+    rating: number;
+};
+export declare type PostScalars = 'id' | 'rating';
+export declare type PostSelect = {
+    id?: boolean;
+    authors?: boolean | FindManyUserSelectArgsOptional;
+    rating?: boolean;
+};
+export declare type PostInclude = {
+    authors?: boolean | FindManyUserIncludeArgsOptional;
+};
+declare type PostDefault = {
+    id: true;
+    rating: true;
+};
+declare type PostGetSelectPayload<S extends boolean | PostSelect> = S extends true ? Post : S extends PostSelect ? {
+    [P in CleanupNever<MergeTruthyValues<{}, S>>]: P extends PostScalars ? Post[P] : P extends 'authors' ? Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<S[P]>>> : never;
+} : never;
+declare type PostGetIncludePayload<S extends boolean | PostInclude> = S extends true ? Post : S extends PostInclude ? {
+    [P in CleanupNever<MergeTruthyValues<PostDefault, S>>]: P extends PostScalars ? Post[P] : P extends 'authors' ? Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<S[P]>>> : never;
+} : never;
+export interface PostDelegate {
+    <T extends FindManyPostArgs>(args?: Subset<T, FindManyPostArgs>): T extends FindManyPostArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyPostSelectArgs ? Promise<Array<PostGetSelectPayload<ExtractFindManyPostSelectArgs<T>>>> : T extends FindManyPostIncludeArgs ? Promise<Array<PostGetIncludePayload<ExtractFindManyPostIncludeArgs<T>>>> : Promise<Array<Post>>;
+    findOne<T extends FindOnePostArgs>(args: Subset<T, FindOnePostArgs>): T extends FindOnePostArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindOnePostSelectArgs ? Promise<PostGetSelectPayload<ExtractFindOnePostSelectArgs<T>>> : T extends FindOnePostIncludeArgs ? Promise<PostGetIncludePayload<ExtractFindOnePostIncludeArgs<T>>> : PostClient<Post>;
+    findMany<T extends FindManyPostArgs>(args?: Subset<T, FindManyPostArgs>): T extends FindManyPostArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyPostSelectArgs ? Promise<Array<PostGetSelectPayload<ExtractFindManyPostSelectArgs<T>>>> : T extends FindManyPostIncludeArgs ? Promise<Array<PostGetIncludePayload<ExtractFindManyPostIncludeArgs<T>>>> : Promise<Array<Post>>;
+    create<T extends PostCreateArgs>(args: Subset<T, PostCreateArgs>): T extends PostCreateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends PostSelectCreateArgs ? Promise<PostGetSelectPayload<ExtractPostSelectCreateArgs<T>>> : T extends PostIncludeCreateArgs ? Promise<PostGetIncludePayload<ExtractPostIncludeCreateArgs<T>>> : PostClient<Post>;
+    delete<T extends PostDeleteArgs>(args: Subset<T, PostDeleteArgs>): T extends PostDeleteArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends PostSelectDeleteArgs ? Promise<PostGetSelectPayload<ExtractPostSelectDeleteArgs<T>>> : T extends PostIncludeDeleteArgs ? Promise<PostGetIncludePayload<ExtractPostIncludeDeleteArgs<T>>> : PostClient<Post>;
+    update<T extends PostUpdateArgs>(args: Subset<T, PostUpdateArgs>): T extends PostUpdateArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends PostSelectUpdateArgs ? Promise<PostGetSelectPayload<ExtractPostSelectUpdateArgs<T>>> : T extends PostIncludeUpdateArgs ? Promise<PostGetIncludePayload<ExtractPostIncludeUpdateArgs<T>>> : PostClient<Post>;
+    deleteMany<T extends PostDeleteManyArgs>(args: Subset<T, PostDeleteManyArgs>): Promise<BatchPayload>;
+    updateMany<T extends PostUpdateManyArgs>(args: Subset<T, PostUpdateManyArgs>): Promise<BatchPayload>;
+    upsert<T extends PostUpsertArgs>(args: Subset<T, PostUpsertArgs>): T extends PostUpsertArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends PostSelectUpsertArgs ? Promise<PostGetSelectPayload<ExtractPostSelectUpsertArgs<T>>> : T extends PostIncludeUpsertArgs ? Promise<PostGetIncludePayload<ExtractPostIncludeUpsertArgs<T>>> : PostClient<Post>;
+    count(): Promise<number>;
+}
+export declare class PostClient<T> implements Promise<T> {
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _path;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: DMMFClass, _fetcher: PhotonFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _path: string[], _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PhotonPromise';
+    authors<T extends FindManyUserArgs = {}>(args?: Subset<T, FindManyUserArgs>): T extends FindManyUserArgsRequired ? 'Please either choose \`select\` or \`include\`' : T extends FindManyUserSelectArgs ? Promise<Array<UserGetSelectPayload<ExtractFindManyUserSelectArgs<T>>>> : T extends FindManyUserIncludeArgs ? Promise<Array<UserGetIncludePayload<ExtractFindManyUserIncludeArgs<T>>>> : Promise<Array<User>>;
+    private readonly _document;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | Promise<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+}
+/**
+ * Post findOne
+ */
+export declare type FindOnePostArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+};
+export declare type FindOnePostArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+};
+export declare type FindOnePostSelectArgs = {
+    select: PostSelect;
+    where: PostWhereUniqueInput;
+};
+export declare type FindOnePostSelectArgsOptional = {
+    select?: PostSelect | null;
+    where: PostWhereUniqueInput;
+};
+export declare type FindOnePostIncludeArgs = {
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+};
+export declare type FindOnePostIncludeArgsOptional = {
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+};
+export declare type ExtractFindOnePostSelectArgs<S extends undefined | boolean | FindOnePostSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOnePostSelectArgs ? S['select'] : true;
+export declare type ExtractFindOnePostIncludeArgs<S extends undefined | boolean | FindOnePostIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindOnePostIncludeArgs ? S['include'] : true;
+/**
+ * Post findMany
+ */
+export declare type FindManyPostArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyPostArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyPostSelectArgs = {
+    select: PostSelect;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyPostSelectArgsOptional = {
+    select?: PostSelect | null;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyPostIncludeArgs = {
+    include: PostInclude;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type FindManyPostIncludeArgsOptional = {
+    include?: PostInclude | null;
+    where?: PostWhereInput | null;
+    orderBy?: PostOrderByInput | null;
+    skip?: number | null;
+    after?: string | null;
+    before?: string | null;
+    first?: number | null;
+    last?: number | null;
+};
+export declare type ExtractFindManyPostSelectArgs<S extends undefined | boolean | FindManyPostSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyPostSelectArgs ? S['select'] : true;
+export declare type ExtractFindManyPostIncludeArgs<S extends undefined | boolean | FindManyPostIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends FindManyPostIncludeArgs ? S['include'] : true;
+/**
+ * Post create
+ */
+export declare type PostCreateArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    data: PostCreateInput;
+};
+export declare type PostCreateArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    data: PostCreateInput;
+};
+export declare type PostSelectCreateArgs = {
+    select: PostSelect;
+    data: PostCreateInput;
+};
+export declare type PostSelectCreateArgsOptional = {
+    select?: PostSelect | null;
+    data: PostCreateInput;
+};
+export declare type PostIncludeCreateArgs = {
+    include: PostInclude;
+    data: PostCreateInput;
+};
+export declare type PostIncludeCreateArgsOptional = {
+    include?: PostInclude | null;
+    data: PostCreateInput;
+};
+export declare type ExtractPostSelectCreateArgs<S extends undefined | boolean | PostSelectCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostSelectCreateArgs ? S['select'] : true;
+export declare type ExtractPostIncludeCreateArgs<S extends undefined | boolean | PostIncludeCreateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostIncludeCreateArgs ? S['include'] : true;
+/**
+ * Post update
+ */
+export declare type PostUpdateArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type PostUpdateArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type PostSelectUpdateArgs = {
+    select: PostSelect;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type PostSelectUpdateArgsOptional = {
+    select?: PostSelect | null;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type PostIncludeUpdateArgs = {
+    include: PostInclude;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type PostIncludeUpdateArgsOptional = {
+    include?: PostInclude | null;
+    data: PostUpdateInput;
+    where: PostWhereUniqueInput;
+};
+export declare type ExtractPostSelectUpdateArgs<S extends undefined | boolean | PostSelectUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostSelectUpdateArgs ? S['select'] : true;
+export declare type ExtractPostIncludeUpdateArgs<S extends undefined | boolean | PostIncludeUpdateArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostIncludeUpdateArgs ? S['include'] : true;
+/**
+ * Post updateMany
+ */
+export declare type PostUpdateManyArgs = {
+    data: PostUpdateManyMutationInput;
+    where?: PostWhereInput | null;
+};
+/**
+ * Post upsert
+ */
+export declare type PostUpsertArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type PostUpsertArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type PostSelectUpsertArgs = {
+    select: PostSelect;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type PostSelectUpsertArgsOptional = {
+    select?: PostSelect | null;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type PostIncludeUpsertArgs = {
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type PostIncludeUpsertArgsOptional = {
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+    create: PostCreateInput;
+    update: PostUpdateInput;
+};
+export declare type ExtractPostSelectUpsertArgs<S extends undefined | boolean | PostSelectUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostSelectUpsertArgs ? S['select'] : true;
+export declare type ExtractPostIncludeUpsertArgs<S extends undefined | boolean | PostIncludeUpsertArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostIncludeUpsertArgs ? S['include'] : true;
+/**
+ * Post delete
+ */
+export declare type PostDeleteArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+};
+export declare type PostDeleteArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+};
+export declare type PostSelectDeleteArgs = {
+    select: PostSelect;
+    where: PostWhereUniqueInput;
+};
+export declare type PostSelectDeleteArgsOptional = {
+    select?: PostSelect | null;
+    where: PostWhereUniqueInput;
+};
+export declare type PostIncludeDeleteArgs = {
+    include: PostInclude;
+    where: PostWhereUniqueInput;
+};
+export declare type PostIncludeDeleteArgsOptional = {
+    include?: PostInclude | null;
+    where: PostWhereUniqueInput;
+};
+export declare type ExtractPostSelectDeleteArgs<S extends undefined | boolean | PostSelectDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostSelectDeleteArgs ? S['select'] : true;
+export declare type ExtractPostIncludeDeleteArgs<S extends undefined | boolean | PostIncludeDeleteArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostIncludeDeleteArgs ? S['include'] : true;
+/**
+ * Post deleteMany
+ */
+export declare type PostDeleteManyArgs = {
+    where?: PostWhereInput | null;
+};
+/**
+ * Post without action
+ */
+export declare type PostArgs = {
+    select?: PostSelect | null;
+    include?: PostInclude | null;
+};
+export declare type PostArgsRequired = {
+    select: PostSelect;
+    include: PostInclude;
+};
+export declare type PostSelectArgs = {
+    select: PostSelect;
+};
+export declare type PostSelectArgsOptional = {
+    select?: PostSelect | null;
+};
+export declare type PostIncludeArgs = {
+    include: PostInclude;
+};
+export declare type PostIncludeArgsOptional = {
+    include?: PostInclude | null;
+};
+export declare type ExtractPostSelectArgs<S extends undefined | boolean | PostSelectArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostSelectArgs ? S['select'] : true;
+export declare type ExtractPostIncludeArgs<S extends undefined | boolean | PostIncludeArgsOptional> = S extends undefined ? false : S extends boolean ? S : S extends PostIncludeArgs ? S['include'] : true;
 /**
  * Deep Input Types
  */
-export declare type AWhereInput = {
+export declare type PostWhereInput = {
     id?: number | IntFilter | null;
-    AND?: Enumerable<AWhereInput>;
-    OR?: Enumerable<AWhereInput>;
-    NOT?: Enumerable<AWhereInput>;
+    authors?: UserFilter | null;
+    rating?: number | FloatFilter | null;
+    AND?: Enumerable<PostWhereInput>;
+    OR?: Enumerable<PostWhereInput>;
+    NOT?: Enumerable<PostWhereInput>;
 };
-export declare type AWhereUniqueInput = {
+export declare type UserWhereInput = {
+    id?: string | StringFilter | null;
+    posts?: PostFilter | null;
+    firstName?: string | StringFilter | null;
+    lastName?: string | StringFilter | null;
+    AND?: Enumerable<UserWhereInput>;
+    OR?: Enumerable<UserWhereInput>;
+    NOT?: Enumerable<UserWhereInput>;
+    bubble?: BubbleWhereInput | null;
+};
+export declare type BubbleWhereInput = {
+    id?: string | UUIDFilter | null;
+    createdAt?: string | Date | DateTimeFilter | null;
+    members?: UserFilter | null;
+    AND?: Enumerable<BubbleWhereInput>;
+    OR?: Enumerable<BubbleWhereInput>;
+    NOT?: Enumerable<BubbleWhereInput>;
+};
+export declare type BubbleWhereUniqueInput = {
+    id?: string | null;
+};
+export declare type UserWhereUniqueInput = {
+    id?: string | null;
+};
+export declare type PostWhereUniqueInput = {
     id?: number | null;
 };
-export declare type AUpdateInput = {
-    id?: number | null;
+export declare type PostCreateWithoutAuthorsInput = {
+    rating: number;
 };
-export declare type AUpdateManyMutationInput = {
+export declare type PostCreateManyWithoutPostsInput = {
+    create?: Enumerable<PostCreateWithoutAuthorsInput>;
+    connect?: Enumerable<PostWhereUniqueInput>;
+};
+export declare type UserCreateWithoutBubbleInput = {
+    id?: string | null;
+    firstName: string;
+    lastName: string;
+    posts?: PostCreateManyWithoutPostsInput | null;
+};
+export declare type UserCreateManyWithoutMembersInput = {
+    create?: Enumerable<UserCreateWithoutBubbleInput>;
+    connect?: Enumerable<UserWhereUniqueInput>;
+};
+export declare type BubbleCreateInput = {
+    id?: string | null;
+    createdAt?: string | Date | null;
+    members?: UserCreateManyWithoutMembersInput | null;
+};
+export declare type PostUpdateWithoutAuthorsDataInput = {
     id?: number | null;
+    rating?: number | null;
+};
+export declare type PostUpdateWithWhereUniqueWithoutAuthorsInput = {
+    where: PostWhereUniqueInput;
+    data: PostUpdateWithoutAuthorsDataInput;
+};
+export declare type PostScalarWhereInput = {
+    id?: number | IntFilter | null;
+    authors?: UserFilter | null;
+    rating?: number | FloatFilter | null;
+    AND?: Enumerable<PostScalarWhereInput>;
+    OR?: Enumerable<PostScalarWhereInput>;
+    NOT?: Enumerable<PostScalarWhereInput>;
+};
+export declare type PostUpdateManyDataInput = {
+    id?: number | null;
+    rating?: number | null;
+};
+export declare type PostUpdateManyWithWhereNestedInput = {
+    where: PostScalarWhereInput;
+    data: PostUpdateManyDataInput;
+};
+export declare type PostUpsertWithWhereUniqueWithoutAuthorsInput = {
+    where: PostWhereUniqueInput;
+    update: PostUpdateWithoutAuthorsDataInput;
+    create: PostCreateWithoutAuthorsInput;
+};
+export declare type PostUpdateManyWithoutAuthorsInput = {
+    create?: Enumerable<PostCreateWithoutAuthorsInput>;
+    connect?: Enumerable<PostWhereUniqueInput>;
+    set?: Enumerable<PostWhereUniqueInput>;
+    disconnect?: Enumerable<PostWhereUniqueInput>;
+    delete?: Enumerable<PostWhereUniqueInput>;
+    update?: Enumerable<PostUpdateWithWhereUniqueWithoutAuthorsInput>;
+    updateMany?: Enumerable<PostUpdateManyWithWhereNestedInput>;
+    deleteMany?: Enumerable<PostScalarWhereInput>;
+    upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorsInput>;
+};
+export declare type UserUpdateWithoutBubbleDataInput = {
+    id?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    posts?: PostUpdateManyWithoutAuthorsInput | null;
+};
+export declare type UserUpdateWithWhereUniqueWithoutBubbleInput = {
+    where: UserWhereUniqueInput;
+    data: UserUpdateWithoutBubbleDataInput;
+};
+export declare type UserScalarWhereInput = {
+    id?: string | StringFilter | null;
+    posts?: PostFilter | null;
+    firstName?: string | StringFilter | null;
+    lastName?: string | StringFilter | null;
+    AND?: Enumerable<UserScalarWhereInput>;
+    OR?: Enumerable<UserScalarWhereInput>;
+    NOT?: Enumerable<UserScalarWhereInput>;
+};
+export declare type UserUpdateManyDataInput = {
+    id?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+};
+export declare type UserUpdateManyWithWhereNestedInput = {
+    where: UserScalarWhereInput;
+    data: UserUpdateManyDataInput;
+};
+export declare type UserUpsertWithWhereUniqueWithoutBubbleInput = {
+    where: UserWhereUniqueInput;
+    update: UserUpdateWithoutBubbleDataInput;
+    create: UserCreateWithoutBubbleInput;
+};
+export declare type UserUpdateManyWithoutBubbleInput = {
+    create?: Enumerable<UserCreateWithoutBubbleInput>;
+    connect?: Enumerable<UserWhereUniqueInput>;
+    set?: Enumerable<UserWhereUniqueInput>;
+    disconnect?: Enumerable<UserWhereUniqueInput>;
+    delete?: Enumerable<UserWhereUniqueInput>;
+    update?: Enumerable<UserUpdateWithWhereUniqueWithoutBubbleInput>;
+    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput>;
+    deleteMany?: Enumerable<UserScalarWhereInput>;
+    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutBubbleInput>;
+};
+export declare type BubbleUpdateInput = {
+    id?: string | null;
+    createdAt?: string | Date | null;
+    members?: UserUpdateManyWithoutBubbleInput | null;
+};
+export declare type BubbleUpdateManyMutationInput = {
+    id?: string | null;
+    createdAt?: string | Date | null;
+};
+export declare type BubbleCreateWithoutMembersInput = {
+    id?: string | null;
+    createdAt?: string | Date | null;
+};
+export declare type BubbleCreateOneWithoutBubbleInput = {
+    create?: BubbleCreateWithoutMembersInput | null;
+    connect?: BubbleWhereUniqueInput | null;
+};
+export declare type UserCreateInput = {
+    id?: string | null;
+    firstName: string;
+    lastName: string;
+    posts?: PostCreateManyWithoutPostsInput | null;
+    bubble?: BubbleCreateOneWithoutBubbleInput | null;
+};
+export declare type BubbleUpdateWithoutMembersDataInput = {
+    id?: string | null;
+    createdAt?: string | Date | null;
+};
+export declare type BubbleUpsertWithoutMembersInput = {
+    update: BubbleUpdateWithoutMembersDataInput;
+    create: BubbleCreateWithoutMembersInput;
+};
+export declare type BubbleUpdateOneWithoutMembersInput = {
+    create?: BubbleCreateWithoutMembersInput | null;
+    connect?: BubbleWhereUniqueInput | null;
+    disconnect?: boolean | null;
+    delete?: boolean | null;
+    update?: BubbleUpdateWithoutMembersDataInput | null;
+    upsert?: BubbleUpsertWithoutMembersInput | null;
+};
+export declare type UserUpdateInput = {
+    id?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    posts?: PostUpdateManyWithoutAuthorsInput | null;
+    bubble?: BubbleUpdateOneWithoutMembersInput | null;
+};
+export declare type UserUpdateManyMutationInput = {
+    id?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+};
+export declare type UserCreateWithoutPostsInput = {
+    id?: string | null;
+    firstName: string;
+    lastName: string;
+    bubble?: BubbleCreateOneWithoutBubbleInput | null;
+};
+export declare type UserCreateManyWithoutAuthorsInput = {
+    create?: Enumerable<UserCreateWithoutPostsInput>;
+    connect?: Enumerable<UserWhereUniqueInput>;
+};
+export declare type PostCreateInput = {
+    rating: number;
+    authors?: UserCreateManyWithoutAuthorsInput | null;
+};
+export declare type UserUpdateWithoutPostsDataInput = {
+    id?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    bubble?: BubbleUpdateOneWithoutMembersInput | null;
+};
+export declare type UserUpdateWithWhereUniqueWithoutPostsInput = {
+    where: UserWhereUniqueInput;
+    data: UserUpdateWithoutPostsDataInput;
+};
+export declare type UserUpsertWithWhereUniqueWithoutPostsInput = {
+    where: UserWhereUniqueInput;
+    update: UserUpdateWithoutPostsDataInput;
+    create: UserCreateWithoutPostsInput;
+};
+export declare type UserUpdateManyWithoutPostsInput = {
+    create?: Enumerable<UserCreateWithoutPostsInput>;
+    connect?: Enumerable<UserWhereUniqueInput>;
+    set?: Enumerable<UserWhereUniqueInput>;
+    disconnect?: Enumerable<UserWhereUniqueInput>;
+    delete?: Enumerable<UserWhereUniqueInput>;
+    update?: Enumerable<UserUpdateWithWhereUniqueWithoutPostsInput>;
+    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput>;
+    deleteMany?: Enumerable<UserScalarWhereInput>;
+    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutPostsInput>;
+};
+export declare type PostUpdateInput = {
+    id?: number | null;
+    rating?: number | null;
+    authors?: UserUpdateManyWithoutPostsInput | null;
+};
+export declare type PostUpdateManyMutationInput = {
+    id?: number | null;
+    rating?: number | null;
 };
 export declare type IntFilter = {
     equals?: number | null;
@@ -966,8 +2554,74 @@ export declare type IntFilter = {
     gt?: number | null;
     gte?: number | null;
 };
-export declare type AOrderByInput = {
+export declare type UserFilter = {
+    every?: UserWhereInput | null;
+    some?: UserWhereInput | null;
+    none?: UserWhereInput | null;
+};
+export declare type FloatFilter = {
+    equals?: number | null;
+    not?: number | FloatFilter | null;
+    in?: Enumerable<number>;
+    notIn?: Enumerable<number>;
+    lt?: number | null;
+    lte?: number | null;
+    gt?: number | null;
+    gte?: number | null;
+};
+export declare type StringFilter = {
+    equals?: string | null;
+    not?: string | StringFilter | null;
+    in?: Enumerable<string>;
+    notIn?: Enumerable<string>;
+    lt?: string | null;
+    lte?: string | null;
+    gt?: string | null;
+    gte?: string | null;
+    contains?: string | null;
+    startsWith?: string | null;
+    endsWith?: string | null;
+};
+export declare type PostFilter = {
+    every?: PostWhereInput | null;
+    some?: PostWhereInput | null;
+    none?: PostWhereInput | null;
+};
+export declare type UUIDFilter = {
+    equals?: string | null;
+    not?: string | UUIDFilter | null;
+    in?: Enumerable<string>;
+    notIn?: Enumerable<string>;
+    lt?: string | null;
+    lte?: string | null;
+    gt?: string | null;
+    gte?: string | null;
+    contains?: string | null;
+    startsWith?: string | null;
+    endsWith?: string | null;
+};
+export declare type DateTimeFilter = {
+    equals?: string | Date | null;
+    not?: string | Date | DateTimeFilter | null;
+    in?: Enumerable<string | Date>;
+    notIn?: Enumerable<string | Date>;
+    lt?: string | Date | null;
+    lte?: string | Date | null;
+    gt?: string | Date | null;
+    gte?: string | Date | null;
+};
+export declare type BubbleOrderByInput = {
     id?: OrderByArg | null;
+    createdAt?: OrderByArg | null;
+};
+export declare type UserOrderByInput = {
+    id?: OrderByArg | null;
+    firstName?: OrderByArg | null;
+    lastName?: OrderByArg | null;
+};
+export declare type PostOrderByInput = {
+    id?: OrderByArg | null;
+    rating?: OrderByArg | null;
 };
 /**
  * Batch Payload for updateMany & deleteMany

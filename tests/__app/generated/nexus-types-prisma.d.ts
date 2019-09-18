@@ -157,45 +157,103 @@ type GetNexusPrisma<
 
 // Generated
 interface ModelTypes {
-  A: photon.A
+  Bubble: photon.Bubble
+  User: photon.User
+  Post: photon.Post
 }
   
 interface NexusPrismaInputs {
   Query: {
-    as: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id'
+    bubbles: {
+  filtering: 'id' | 'createdAt' | 'members' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'createdAt'
+}
+    users: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
+    posts: {
+  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating'
 }
 
   },
-    A: {
+    Bubble: {
+    members: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
 
+  },  User: {
+    posts: {
+  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating'
+}
+
+  },  Post: {
+    authors: {
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
+}
 
   }
 }
 
 interface NexusPrismaTypes {
   Query: {
-    as: 'A'
-    a: 'A'
+    bubbles: 'Bubble'
+    bubble: 'Bubble'
+    users: 'User'
+    user: 'User'
+    posts: 'Post'
+    post: 'Post'
 
   },
   Mutation: {
-    createOneA: 'A'
-    deleteOneA: 'A'
-    updateOneA: 'A'
-    updateManyA: 'BatchPayload'
-    deleteManyA: 'BatchPayload'
+    createOneBubble: 'Bubble'
+    deleteOneBubble: 'Bubble'
+    updateOneBubble: 'Bubble'
+    upsertOneBubble: 'Bubble'
+    updateManyBubble: 'BatchPayload'
+    deleteManyBubble: 'BatchPayload'
+    createOneUser: 'User'
+    deleteOneUser: 'User'
+    updateOneUser: 'User'
+    upsertOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteManyUser: 'BatchPayload'
+    createOnePost: 'Post'
+    deleteOnePost: 'Post'
+    updateOnePost: 'Post'
+    upsertOnePost: 'Post'
+    updateManyPost: 'BatchPayload'
+    deleteManyPost: 'BatchPayload'
 
   },
-  A: {
+  Bubble: {
+    id: 'String'
+    createdAt: 'DateTime'
+    members: 'User'
+
+},  User: {
+    id: 'String'
+    posts: 'Post'
+    firstName: 'String'
+    lastName: 'String'
+    bubble: 'Bubble'
+
+},  Post: {
     id: 'Int'
+    authors: 'User'
+    rating: 'Float'
 
 }
 }
 
 interface NexusPrismaMethods {
-  A: NexusPrismaFields<'A'>
+  Bubble: NexusPrismaFields<'Bubble'>
+  User: NexusPrismaFields<'User'>
+  Post: NexusPrismaFields<'Post'>
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
