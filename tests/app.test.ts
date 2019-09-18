@@ -13,7 +13,7 @@ it('integrates together', async () => {
   //
   const projectRoot = path.join(__dirname, '/__app')
 
-  async function projectReadFile(relPath: string): Promise<string> {
+  function projectReadFile(relPath: string): Promise<string> {
     return fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
   }
 

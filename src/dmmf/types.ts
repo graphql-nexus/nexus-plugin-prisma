@@ -1,4 +1,4 @@
-import { core } from 'nexus'
+import * as Nexus from 'nexus'
 
 export declare namespace ExternalDMMF {
   interface Document {
@@ -68,7 +68,7 @@ export declare namespace ExternalDMMF {
   interface SchemaField {
     name: string
     outputType: {
-      type: core.AllOutputTypes
+      type: Nexus.core.AllOutputTypes
       isList: boolean
       isRequired: boolean
       kind: FieldKind
