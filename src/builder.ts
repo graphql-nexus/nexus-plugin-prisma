@@ -41,7 +41,17 @@ export interface Options {
 }
 
 /**
- * TODO documentation for end-users here.
+ * Create nexus type definitions and resolvers particular to your prisma
+ * schema. You must ensure the photon client has been generated prior as
+ * it provides a data representation of the available models and CRUD
+ * operations against them. Typically you will forward the type defs returned
+ * here to Nexus' makeSchema function.
+ *
+ * Additionally, typegen will be run synchronously upon construction by default
+ * if NODE_ENV is undefined or "development". Typegen can be explicitly enabled or
+ * disabled via the shouldGenerateArtifacts option. This mirrors Nexus'
+ * own typegen approach. This system will change once Nexus Plugins are
+ * released.
  */
 export function build(options: Options = {}) {
   const builder = new NexusPrismaBuilder(options)
