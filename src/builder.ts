@@ -1,8 +1,6 @@
 import { core, dynamicOutputProperty, enumType, inputObjectType } from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
-import { transformDMMF } from './dmmf/transformer'
-import { ExternalDMMF as DMMF } from './dmmf/types'
-import { DMMFClass } from './dmmf/DMMFClass'
+import * as DMMF from './dmmf'
 import {
   assertPhotonInContext,
   flatMap,
@@ -99,12 +97,12 @@ const defaultOptions = {
 }
 
 interface CustomInputArg {
-  arg: DMMF.SchemaArg
-  type: DMMF.InputType | DMMF.Enum | 'scalar'
+  arg: DMMF.External.SchemaArg
+  type: DMMF.External.InputType | DMMF.External.Enum | 'scalar'
 }
 
 export class NexusPrismaBuilder {
-  protected readonly dmmf: DMMFClass
+  protected readonly dmmf: DMMF.DMMF
   protected visitedInputTypesMap: Record<string, boolean>
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
@@ -119,8 +117,7 @@ export class NexusPrismaBuilder {
     }
     // TODO when photon not found log hints of what to do for the user
     // TODO DRY this with same logic in typegen
-    const transformedDMMF = transformDMMF(require(config.inputs.photon).dmmf)
-    this.dmmf = new DMMFClass(transformedDMMF)
+    this.dmmf = DMMF.get(config.inputs.photon)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
@@ -200,7 +197,7 @@ export class NexusPrismaBuilder {
               const gqlType = resolvedConfig.type!
               const operationName = Object.keys(mappedField.mapping).find(
                 key => (mappedField.mapping as any)[key] === field.name,
-              ) as keyof DMMF.Mapping | undefined
+              ) as keyof DMMF.External.Mapping | undefined
 
               if (!operationName) {
                 throw new Error(
@@ -269,8 +266,8 @@ export class NexusPrismaBuilder {
   protected computeArgsFromField(
     prismaModelName: string,
     graphQLTypeName: string,
-    operationName: keyof DMMF.Mapping | null,
-    field: DMMF.SchemaField,
+    operationName: keyof DMMF.External.Mapping | null,
+    field: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
@@ -295,7 +292,7 @@ export class NexusPrismaBuilder {
   protected argsForQueryOrModelField(
     prismaModelName: string,
     graphQLTypeName: string,
-    field: DMMF.SchemaField,
+    field: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
@@ -366,7 +363,7 @@ export class NexusPrismaBuilder {
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
-  ): DMMF.InputType {
+  ): DMMF.External.InputType {
     const type = this.dmmf.getInputType(inputTypeName)
 
     // Do not alias type name if type is not customized
@@ -412,14 +409,14 @@ export class NexusPrismaBuilder {
     }
 
     if (customArg.arg.inputType.kind === 'enum') {
-      const eType = customArg.type as DMMF.Enum
+      const eType = customArg.type as DMMF.External.Enum
 
       return enumType({
         name: eType.name,
         members: eType.values,
       })
     } else {
-      const inputType = customArg.type as DMMF.InputType
+      const inputType = customArg.type as DMMF.External.InputType
       return inputObjectType({
         name: inputType.name,
         definition: t => {
@@ -510,7 +507,7 @@ export class NexusPrismaBuilder {
   protected aliasInputTypeName(
     graphQLTypeName: string,
     fieldName: string,
-    inputType: DMMF.InputType,
+    inputType: DMMF.External.InputType,
   ) {
     if (inputType.isWhereType) {
       return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)

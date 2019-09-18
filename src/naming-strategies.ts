@@ -1,5 +1,5 @@
 import pluralize from 'pluralize'
-import { ExternalDMMF as DMMF } from './dmmf/types'
+import * as DMMF from './dmmf'
 import { upperFirst } from './utils'
 
 export interface IArgsNamingStrategy {
@@ -20,7 +20,10 @@ export const defaultArgsNamingStrategy: IArgsNamingStrategy = {
   },
 }
 
-export type OperationName = Exclude<keyof DMMF.Mapping, 'model' | 'plural'>
+export type OperationName = Exclude<
+  keyof DMMF.External.Mapping,
+  'model' | 'plural'
+>
 
 export type IFieldNamingStrategy = Record<
   OperationName,
