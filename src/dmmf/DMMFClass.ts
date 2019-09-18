@@ -1,4 +1,4 @@
-import { ExternalDMMF as DMMF } from './dmmf-types'
+import { ExternalDMMF as DMMF } from './types'
 import { keyBy } from '../utils'
 
 type Dictionary<T> = Record<string, T>

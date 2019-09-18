@@ -1,10 +1,6 @@
 import { relative } from 'path'
-import { ExternalDMMF as DMMF } from './dmmf/dmmf-types'
-import {
-  OperationName,
-  IFieldNamingStrategy,
-} from './nexus-prisma/NamingStrategies'
-import { core } from 'nexus'
+import * as DMMF from './dmmf'
+import { OperationName, IFieldNamingStrategy } from './naming-strategies'
 
 export const keyBy: <T>(
   collection: T[],
@@ -102,7 +98,7 @@ export function getImportPathRelativeToOutput(
 export function getCRUDFieldName(
   modelName: string,
   fieldName: string,
-  mapping: DMMF.Mapping,
+  mapping: DMMF.External.Mapping,
   namingStrategy: IFieldNamingStrategy,
 ) {
   const operationName = Object.keys(mapping).find(

@@ -1,27 +1,25 @@
-import { makeSchema } from 'nexus'
-import { generateClient as generatePhoton } from '@prisma/photon'
+import * as Nexus from 'nexus'
+import * as Photon from '@prisma/photon'
 import tmp from 'tmp'
-import { getNexusPrismaRuntime } from '../src'
+import * as NexusPrisma from '../src'
 
 export async function generateSchema(datamodel: string, types: any[]) {
-  const photonOutput = tmp.dirSync()
-
-  await generatePhoton({
+  const photonPath = tmp.dirSync()
+  await Photon.generateClient({
     datamodel,
-    outputDir: photonOutput.name,
+    outputDir: photonPath.name,
     cwd: __dirname,
     transpile: true,
   })
-
-  const { nexusPrismaRuntime } = getNexusPrismaRuntime(photonOutput.name)
-  const { nexusPrismaPlugin } = eval(nexusPrismaRuntime)
-
-  const nexusPrisma = nexusPrismaPlugin({ photon: (ctx: any) => ctx.photon })
-
-  const schema = makeSchema({
+  const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
+    photon: (ctx: any) => ctx.photon,
+    inputs: {
+      photon: photonPath.name,
+    },
+  })
+  const schema = Nexus.makeSchema({
     types: [types, nexusPrisma],
     outputs: false,
   })
-
   return schema
 }

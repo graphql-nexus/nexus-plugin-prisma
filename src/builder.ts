@@ -1,24 +1,23 @@
 import { core, dynamicOutputProperty, enumType, inputObjectType } from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
-import { NexusPrismaParams } from '.'
-import { transformDMMF } from '../dmmf/dmmf-transformer'
-import { ExternalDMMF as DMMF } from '../dmmf/dmmf-types'
-import { DMMFClass } from '../dmmf/DMMFClass'
+import * as DMMF from './dmmf'
 import {
   assertPhotonInContext,
   flatMap,
   getCRUDFieldName,
   nexusOpts as nexusFieldOpts,
   partition,
-} from '../utils'
+} from './utils'
 import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   IArgsNamingStrategy,
   IFieldNamingStrategy,
-} from './NamingStrategies'
+} from './naming-strategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
+import * as Typegen from './typegen'
+import * as path from 'path'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -28,35 +27,106 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
+export interface Options {
+  photon?: (ctx: any) => any
+  shouldGenerateArtifacts?: boolean
+  inputs?: {
+    photon?: string
+  }
+  outputs?: {
+    typegen?: string
+  }
+}
+
+/**
+ * Create nexus type definitions and resolvers particular to your prisma
+ * schema that extend the Nexus DSL with e.g. t.model and t.crud. Example
+ * effect in practice:
+ *
+ *    objectType({
+ *      name: 'User',
+ *      definition(t) {
+ *        t.model.id()
+ *        t.model.email()
+ *      }
+ *    })
+ *
+ *    queryType({
+ *      definition (t) {
+ *        t.crud.user()
+ *        t.crud.users({ filtering: true, ordering: true })
+ *      }
+ *    })
+ *
+ * You must ensure the photon client has been generated prior as
+ * it provides a data representation of the available models and CRUD
+ * operations against them.
+ *
+ * Typically you will forward the type defs returned
+ * here to Nexus' makeSchema function.
+ *
+ * Additionally, typegen will be run synchronously upon construction by default
+ * if NODE_ENV is undefined or "development". Typegen can be explicitly enabled or
+ * disabled via the shouldGenerateArtifacts option. This mirrors Nexus'
+ * own typegen approach. This system will change once Nexus Plugins are
+ * released.
+ */
+export function build(options: Options = {}) {
+  const builder = new NexusPrismaBuilder(options)
+  return builder.build()
+}
+
+const defaultOptions = {
+  shouldGenerateArtifacts: Boolean(
+    !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
+  ),
+  photon: (ctx: any) => ctx.photon,
+  inputs: {
+    // TODO Default should be updated once resolved:
+    // https://github.com/prisma/photonjs/issues/88
+    photon: '@generated/photon',
+  },
+  outputs: {
+    // This default is based on the privledge given to @types
+    // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
+    typegen: path.join(
+      __dirname,
+      '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
+    ),
+  },
+}
+
 interface CustomInputArg {
-  arg: DMMF.SchemaArg
-  type: DMMF.InputType | DMMF.Enum | 'scalar'
+  arg: DMMF.External.SchemaArg
+  type: DMMF.External.InputType | DMMF.External.Enum | 'scalar'
 }
 
 export class NexusPrismaBuilder {
-  protected readonly dmmf: DMMFClass
+  protected readonly dmmf: DMMF.DMMF
   protected visitedInputTypesMap: Record<string, boolean>
   protected argsNamingStrategy: IArgsNamingStrategy
   protected fieldNamingStrategy: IFieldNamingStrategy
+  protected getPhoton: any
 
-  constructor(protected params: NexusPrismaParams) {
-    let transformedDMMF
-
-    if (process.env.NEXUS_PRISMA_DEBUG) {
-      // Using eval so that ncc doesn't include it in the build
-      transformedDMMF = transformDMMF(eval(`require('@generated/photon'`).dmmf)
-    } else {
-      // @ts-ignore
-      transformedDMMF = __DMMF__
+  constructor(protected options: Options) {
+    const config = {
+      ...defaultOptions,
+      ...options,
+      inputs: { ...defaultOptions.inputs, ...options.inputs },
+      outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-
-    this.dmmf = new DMMFClass(transformedDMMF as any)
+    // TODO when photon not found log hints of what to do for the user
+    // TODO DRY this with same logic in typegen
+    this.dmmf = DMMF.get(config.inputs.photon)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
     this.visitedInputTypesMap = {}
-
-    if (!this.params.photon) {
-      this.params.photon = ctx => ctx.photon
+    this.getPhoton = config.photon
+    if (config.shouldGenerateArtifacts) {
+      Typegen.generateSync({
+        photonPath: config.inputs.photon,
+        typegenPath: config.outputs.typegen,
+      })
     }
   }
 
@@ -127,7 +197,7 @@ export class NexusPrismaBuilder {
               const gqlType = resolvedConfig.type!
               const operationName = Object.keys(mappedField.mapping).find(
                 key => (mappedField.mapping as any)[key] === field.name,
-              ) as keyof DMMF.Mapping | undefined
+              ) as keyof DMMF.External.Mapping | undefined
 
               if (!operationName) {
                 throw new Error(
@@ -147,7 +217,7 @@ export class NexusPrismaBuilder {
                   resolvedConfig,
                 ),
                 resolve: (_parent, args, ctx) => {
-                  const photon = this.params.photon(ctx)
+                  const photon = this.getPhoton(ctx)
                   assertPhotonInContext(photon)
                   return photon[mappedField.mapping.plural!][operationName](
                     args,
@@ -196,8 +266,8 @@ export class NexusPrismaBuilder {
   protected computeArgsFromField(
     prismaModelName: string,
     graphQLTypeName: string,
-    operationName: keyof DMMF.Mapping | null,
-    field: DMMF.SchemaField,
+    operationName: keyof DMMF.External.Mapping | null,
+    field: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
@@ -222,7 +292,7 @@ export class NexusPrismaBuilder {
   protected argsForQueryOrModelField(
     prismaModelName: string,
     graphQLTypeName: string,
-    field: DMMF.SchemaField,
+    field: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
@@ -293,7 +363,7 @@ export class NexusPrismaBuilder {
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
-  ): DMMF.InputType {
+  ): DMMF.External.InputType {
     const type = this.dmmf.getInputType(inputTypeName)
 
     // Do not alias type name if type is not customized
@@ -339,14 +409,14 @@ export class NexusPrismaBuilder {
     }
 
     if (customArg.arg.inputType.kind === 'enum') {
-      const eType = customArg.type as DMMF.Enum
+      const eType = customArg.type as DMMF.External.Enum
 
       return enumType({
         name: eType.name,
         members: eType.values,
       })
     } else {
-      const inputType = customArg.type as DMMF.InputType
+      const inputType = customArg.type as DMMF.External.InputType
       return inputObjectType({
         name: inputType.name,
         definition: t => {
@@ -414,7 +484,7 @@ export class NexusPrismaBuilder {
           const mapping = this.dmmf.getMapping(prismaModelName)
 
           fieldOpts.resolve = (root, args, ctx) => {
-            const photon = this.params.photon(ctx)
+            const photon = this.getPhoton(ctx)
 
             assertPhotonInContext(photon)
 
@@ -437,7 +507,7 @@ export class NexusPrismaBuilder {
   protected aliasInputTypeName(
     graphQLTypeName: string,
     fieldName: string,
-    inputType: DMMF.InputType,
+    inputType: DMMF.External.InputType,
   ) {
     if (inputType.isWhereType) {
       return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
@@ -446,6 +516,8 @@ export class NexusPrismaBuilder {
     return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
   }
 
+  // FIXME strongly type this so that build() does not return any[]
+  //
   protected buildScalars() {
     const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
       .filter(
