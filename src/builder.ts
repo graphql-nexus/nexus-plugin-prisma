@@ -42,9 +42,29 @@ export interface Options {
 
 /**
  * Create nexus type definitions and resolvers particular to your prisma
- * schema. You must ensure the photon client has been generated prior as
+ * schema that extend the Nexus DSL with e.g. t.model and t.crud. Example
+ * effect in practice:
+ *
+ *    objectType({
+ *      name: 'User',
+ *      definition(t) {
+ *        t.model.id()
+ *        t.model.email()
+ *      }
+ *    })
+ *
+ *    queryType({
+ *      definition (t) {
+ *        t.crud.user()
+ *        t.crud.users({ filtering: true, ordering: true })
+ *      }
+ *    })
+ *
+ * You must ensure the photon client has been generated prior as
  * it provides a data representation of the available models and CRUD
- * operations against them. Typically you will forward the type defs returned
+ * operations against them.
+ *
+ * Typically you will forward the type defs returned
  * here to Nexus' makeSchema function.
  *
  * Additionally, typegen will be run synchronously upon construction by default
