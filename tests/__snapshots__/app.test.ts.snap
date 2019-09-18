@@ -19,7 +19,27 @@ input BubbleMembersWhereInput {
   id: StringFilter
 }
 
+input BubbleWhereInput {
+  AND: [BubbleWhereInput!]
+  createdAt: DateTimeFilter
+  id: UUIDFilter
+  members: UserFilter
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
+}
+
 scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
 
 input FloatFilter {
   equals: Float
@@ -52,6 +72,26 @@ type Post {
   authors(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
 }
 
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostOrderByInput {
+  id: OrderByArg
+  rating: OrderByArg
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  authors: UserFilter
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  rating: FloatFilter
+}
+
 type Query {
   user(where: UserWhereUniqueInput!): User
   users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
@@ -74,27 +114,24 @@ input StringFilter {
 type User {
   firstName: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: UserPostsOrderByInput, skip: Int, where: UserPostsWhereInput): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
 }
 
-input UserPostsFilter {
-  every: UserPostsWhereInput
-  none: UserPostsWhereInput
-  some: UserPostsWhereInput
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
 }
 
-input UserPostsOrderByInput {
-  id: OrderByArg
-  rating: OrderByArg
-}
-
-input UserPostsWhereInput {
-  AND: [UserPostsWhereInput!]
-  authors: UserPostsFilter
-  id: IntFilter
-  NOT: [UserPostsWhereInput!]
-  OR: [UserPostsWhereInput!]
-  rating: FloatFilter
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  bubble: BubbleWhereInput
+  firstName: StringFilter
+  id: StringFilter
+  lastName: StringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
 }
 
 input UserWhereUniqueInput {
@@ -102,6 +139,20 @@ input UserWhereUniqueInput {
 }
 
 scalar UUID
+
+input UUIDFilter {
+  contains: UUID
+  endsWith: UUID
+  equals: UUID
+  gt: UUID
+  gte: UUID
+  in: [UUID!]
+  lt: UUID
+  lte: UUID
+  not: UUID
+  notIn: [UUID!]
+  startsWith: UUID
+}
 "
 `;
 
@@ -133,6 +184,24 @@ export interface NexusGenInputs {
   BubbleMembersWhereInput: { // input type
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
   }
+  BubbleWhereInput: { // input type
+    AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
+    members?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+  }
+  DateTimeFilter: { // input type
+    equals?: any | null; // DateTime
+    gt?: any | null; // DateTime
+    gte?: any | null; // DateTime
+    in?: any[] | null; // [DateTime!]
+    lt?: any | null; // DateTime
+    lte?: any | null; // DateTime
+    not?: any | null; // DateTime
+    notIn?: any[] | null; // [DateTime!]
+  }
   FloatFilter: { // input type
     equals?: number | null; // Float
     gt?: number | null; // Float
@@ -153,6 +222,23 @@ export interface NexusGenInputs {
     not?: number | null; // Int
     notIn?: number[] | null; // [Int!]
   }
+  PostFilter: { // input type
+    every?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    none?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+    some?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
+  }
+  PostOrderByInput: { // input type
+    id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+  }
+  PostWhereInput: { // input type
+    AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    authors?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+  }
   StringFilter: { // input type
     contains?: string | null; // String
     endsWith?: string | null; // String
@@ -166,22 +252,33 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
-  UserPostsFilter: { // input type
-    every?: NexusGenInputs['UserPostsWhereInput'] | null; // UserPostsWhereInput
-    none?: NexusGenInputs['UserPostsWhereInput'] | null; // UserPostsWhereInput
-    some?: NexusGenInputs['UserPostsWhereInput'] | null; // UserPostsWhereInput
+  UUIDFilter: { // input type
+    contains?: any | null; // UUID
+    endsWith?: any | null; // UUID
+    equals?: any | null; // UUID
+    gt?: any | null; // UUID
+    gte?: any | null; // UUID
+    in?: any[] | null; // [UUID!]
+    lt?: any | null; // UUID
+    lte?: any | null; // UUID
+    not?: any | null; // UUID
+    notIn?: any[] | null; // [UUID!]
+    startsWith?: any | null; // UUID
   }
-  UserPostsOrderByInput: { // input type
-    id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
-    rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+  UserFilter: { // input type
+    every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    none?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    some?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
   }
-  UserPostsWhereInput: { // input type
-    AND?: NexusGenInputs['UserPostsWhereInput'][] | null; // [UserPostsWhereInput!]
-    authors?: NexusGenInputs['UserPostsFilter'] | null; // UserPostsFilter
-    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
-    NOT?: NexusGenInputs['UserPostsWhereInput'][] | null; // [UserPostsWhereInput!]
-    OR?: NexusGenInputs['UserPostsWhereInput'][] | null; // [UserPostsWhereInput!]
-    rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+  UserWhereInput: { // input type
+    AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
+    firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    posts?: NexusGenInputs['PostFilter'] | null; // PostFilter
   }
   UserWhereUniqueInput: { // input type
     id?: string | null; // ID
@@ -215,12 +312,17 @@ export interface NexusGenRootTypes {
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   BubbleMembersOrderByInput: NexusGenInputs['BubbleMembersOrderByInput'];
   BubbleMembersWhereInput: NexusGenInputs['BubbleMembersWhereInput'];
+  BubbleWhereInput: NexusGenInputs['BubbleWhereInput'];
+  DateTimeFilter: NexusGenInputs['DateTimeFilter'];
   FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
+  PostFilter: NexusGenInputs['PostFilter'];
+  PostOrderByInput: NexusGenInputs['PostOrderByInput'];
+  PostWhereInput: NexusGenInputs['PostWhereInput'];
   StringFilter: NexusGenInputs['StringFilter'];
-  UserPostsFilter: NexusGenInputs['UserPostsFilter'];
-  UserPostsOrderByInput: NexusGenInputs['UserPostsOrderByInput'];
-  UserPostsWhereInput: NexusGenInputs['UserPostsWhereInput'];
+  UUIDFilter: NexusGenInputs['UUIDFilter'];
+  UserFilter: NexusGenInputs['UserFilter'];
+  UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
   OrderByArg: NexusGenEnums['OrderByArg'];
 }
@@ -280,9 +382,9 @@ export interface NexusGenArgTypes {
       before?: string | null; // String
       first?: number | null; // Int
       last?: number | null; // Int
-      orderBy?: NexusGenInputs['UserPostsOrderByInput'] | null; // UserPostsOrderByInput
+      orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
       skip?: number | null; // Int
-      where?: NexusGenInputs['UserPostsWhereInput'] | null; // UserPostsWhereInput
+      where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
 }
@@ -294,7 +396,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = \\"Bubble\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"StringFilter\\" | \\"UserPostsFilter\\" | \\"UserPostsOrderByInput\\" | \\"UserPostsWhereInput\\" | \\"UserWhereUniqueInput\\";
+export type NexusGenInputNames = \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"PostFilter\\" | \\"PostOrderByInput\\" | \\"PostWhereInput\\" | \\"StringFilter\\" | \\"UUIDFilter\\" | \\"UserFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
 export type NexusGenEnumNames = \\"OrderByArg\\";
 

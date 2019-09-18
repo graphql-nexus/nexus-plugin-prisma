@@ -16,7 +16,27 @@ input BubbleMembersWhereInput {
   id: StringFilter
 }
 
+input BubbleWhereInput {
+  AND: [BubbleWhereInput!]
+  createdAt: DateTimeFilter
+  id: UUIDFilter
+  members: UserFilter
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
+}
+
 scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
 
 input FloatFilter {
   equals: Float
@@ -49,6 +69,26 @@ type Post {
   authors(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
 }
 
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostOrderByInput {
+  id: OrderByArg
+  rating: OrderByArg
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  authors: UserFilter
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  rating: FloatFilter
+}
+
 type Query {
   user(where: UserWhereUniqueInput!): User
   users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
@@ -71,27 +111,24 @@ input StringFilter {
 type User {
   firstName: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: UserPostsOrderByInput, skip: Int, where: UserPostsWhereInput): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
 }
 
-input UserPostsFilter {
-  every: UserPostsWhereInput
-  none: UserPostsWhereInput
-  some: UserPostsWhereInput
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
 }
 
-input UserPostsOrderByInput {
-  id: OrderByArg
-  rating: OrderByArg
-}
-
-input UserPostsWhereInput {
-  AND: [UserPostsWhereInput!]
-  authors: UserPostsFilter
-  id: IntFilter
-  NOT: [UserPostsWhereInput!]
-  OR: [UserPostsWhereInput!]
-  rating: FloatFilter
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  bubble: BubbleWhereInput
+  firstName: StringFilter
+  id: StringFilter
+  lastName: StringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
 }
 
 input UserWhereUniqueInput {
@@ -99,3 +136,17 @@ input UserWhereUniqueInput {
 }
 
 scalar UUID
+
+input UUIDFilter {
+  contains: UUID
+  endsWith: UUID
+  equals: UUID
+  gt: UUID
+  gte: UUID
+  in: [UUID!]
+  lt: UUID
+  lte: UUID
+  not: UUID
+  notIn: [UUID!]
+  startsWith: UUID
+}
