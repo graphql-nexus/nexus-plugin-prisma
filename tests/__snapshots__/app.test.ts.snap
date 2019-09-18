@@ -400,7 +400,7 @@ class PhotonFetcher {
  * Build tool annotations
  * In order to make \`ncc\` and \`node-file-trace\` happy.
 **/
-path.join(__dirname, 'runtime/__STRIPPED__');
+path.join(__dirname, 'runtime/__NON_DETERMINISTIC_CONTENT__');
 class Photon {
     constructor(options = {}) {
         const useDebug = options.debug === true ? true : typeof options.debug === 'object' ? Boolean(options.debug.library) : false;
@@ -421,7 +421,7 @@ class Photon {
             datamodel: this.datamodel,
             prismaPath: engineConfig.binaryPath || undefined,
             datasources,
-            generator: { \\"name\\": \\"photonjs\\", \\"provider\\": \\"photonjs\\", \\"output\\": \\"__STRIPPED__\\" \\"platforms\\": [], \\"pinnedPlatform\\": null, \\"config\\": {} },
+            generator: { \\"name\\": \\"photonjs\\", \\"provider\\": \\"photonjs\\", \\"output\\": \\"__NON_DETERMINISTIC_CONTENT__\\" \\"platforms\\": [], \\"pinnedPlatform\\": null, \\"config\\": {} },
             platform: undefined
         });
         this.dmmf = new runtime_1.DMMFClass(exports.dmmf);
