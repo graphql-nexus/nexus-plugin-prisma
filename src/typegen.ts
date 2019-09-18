@@ -1,13 +1,9 @@
-import { ExternalDMMF as DMMF } from './dmmf/types'
-import { DMMFClass } from './dmmf/DMMFClass'
-import { transformDMMF } from './dmmf/transformer'
 import { getSupportedQueries, getSupportedMutations } from './supported-ops'
 import { flatMap, getCRUDFieldName } from './utils'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-
-type DMMF = DMMF.Document
+import * as DMMF from './dmmf'
 
 type Options = {
   photonPath: string
@@ -28,13 +24,8 @@ export function doGenerate(
   sync: boolean,
   options: Options,
 ): void | Promise<void> {
-  // TODO Default should be updated once resolved:
-  // https://github.com/prisma/photonjs/issues/88
-  // TODO when photon not found log hints of what to do for the user
-  // TODO DRY this with same logic in builder
-  const transformedDMMF = transformDMMF(require(options.photonPath).dmmf)
-  const dmmfClass = new DMMFClass(transformedDMMF)
-  const tsDeclaration = render(dmmfClass, options.photonPath)
+  const dmmf = DMMF.get(options.photonPath)
+  const tsDeclaration = render(dmmf, options.photonPath)
   if (sync) {
     fs.mkdirpSync(path.dirname(options.typegenPath))
     fs.writeFileSync(options.typegenPath, tsDeclaration)
@@ -45,7 +36,7 @@ export function doGenerate(
   }
 }
 
-function render(dmmf: DMMFClass, photonPath: string) {
+function render(dmmf: DMMF.DMMF, photonPath: string) {
   return `\
 import * as photon from '${photonPath}';
 import { core } from 'nexus';
@@ -67,7 +58,7 @@ declare global {
   `
 }
 
-function renderModelTypes(dmmf: DMMFClass) {
+function renderModelTypes(dmmf: DMMF.DMMF) {
   return `\
 interface ModelTypes {
 ${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
@@ -75,7 +66,7 @@ ${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
   `
 }
 
-function renderNexusPrismaTypes(dmmf: DMMFClass) {
+function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
   const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
     const queriesNames = getSupportedQueries(mapping)
     return {
@@ -157,7 +148,7 @@ ${renderNexusPrismaType(fields)}
 `
 }
 
-function renderNexusPrismaInputs(dmmf: DMMFClass) {
+function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
   const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
     const queriesNames = getSupportedQueries(mapping)
     return {
@@ -198,8 +189,8 @@ function renderNexusPrismaInputs(dmmf: DMMFClass) {
         string,
         {
           fieldName: string
-          filtering: DMMF.InputType
-          ordering: DMMF.InputType
+          filtering: DMMF.External.InputType
+          ordering: DMMF.External.InputType
         }[]
       >
     >((acc, type) => {
@@ -230,8 +221,8 @@ function renderNexusPrismaInputs(dmmf: DMMFClass) {
   const renderNexusPrismaInput = (
     input: {
       fieldName: string
-      filtering: DMMF.InputType
-      ordering: DMMF.InputType
+      filtering: DMMF.External.InputType
+      ordering: DMMF.External.InputType
     }[],
   ): string => `\
 ${input
@@ -258,7 +249,7 @@ ${renderNexusPrismaInput(fields)}
 `
 }
 
-function renderNexusPrismaMethods(dmmf: DMMFClass) {
+function renderNexusPrismaMethods(dmmf: DMMF.DMMF) {
   return `\
 interface NexusPrismaMethods {
 ${dmmf.datamodel.models

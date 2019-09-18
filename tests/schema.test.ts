@@ -267,3 +267,46 @@ test('it does not expose pagination', async () => {
 
   expect(printSchema(schema)).toMatchSnapshot()
 })
+
+test('renames top-level input types that are customized', async () => {
+  const datamodel = `
+  model User {
+    id    String  @default(cuid()) @id
+    name  String?
+    posts Post[]
+  }
+  
+  model Post {
+    id        String   @default(cuid()) @id
+    author    User?
+  }
+  `
+
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model
+        .id()
+        .name()
+        .posts({ filtering: true })
+    },
+  })
+
+  const Post = objectType({
+    name: 'Post',
+    definition(t: any) {
+      t.model.id().author()
+    },
+  })
+
+  const Query = objectType({
+    name: 'Query',
+    definition(t: any) {
+      t.crud.posts({ filtering: { author: true } })
+    },
+  })
+
+  const schema = await generateSchema(datamodel, [Query, User, Post])
+
+  expect(printSchema(schema)).toMatchSnapshot()
+})
