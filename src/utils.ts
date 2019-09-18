@@ -42,7 +42,7 @@ export function flatMap<T, U>(
 }
 
 export function nexusOpts(param: {
-  type: core.AllInputTypes | core.AllNexusInputTypeDefs<string>
+  type: string | object
   isList: boolean
   isRequired: boolean
 }): {
