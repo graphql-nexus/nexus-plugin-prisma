@@ -13,29 +13,18 @@ it('integrates together', async () => {
   //
   const projectRoot = path.join(__dirname, '/__app')
 
-  function projectReadFile(relPath: string): Promise<string> {
-    return fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
-  }
+  const projectReadFile = (relPath: string): Promise<string> =>
+    fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
 
-  function projectPath(...paths: string[]): string {
-    return path.join(projectRoot, ...paths)
-  }
+  const projectPath = (...paths: string[]): string =>
+    path.join(projectRoot, ...paths)
 
   // Remove generated files before test run. The idea here is as follows:
   //
-  //   - We commit the generated files so that we can navigate the integration test
-  //     fixture project like a real one
+  //   - We commit the generated files so that we can easily inspect them
   //   - Upon a test, we want to start from scratch, though
   //   - The test will produce something identical to what was there before
-  //   - If it does not, the snapshots will fail
-  //
-  // Yes, its a bit like having snapshots twice. But the files on disk and the snapshots
-  // serve different purposes:
-  //
-  //   - Snapshots automate test suite failure on diff, great for CI, has purpose-built
-  //     workflow to accept changes.
-  //   - Committed generated files in fixture make it navigable and maintaining it more
-  //     realisitc to a real app.
+  //   - If it does not, the snapshots will fail + git diff (redundant, though)
   //
   await fs.emptyDir(projectPath('/generated'))
 
@@ -92,8 +81,11 @@ it('integrates together', async () => {
   const photonSource = (await projectReadFile(
     '../../node_modules/@generated/photon/index.js',
   ))
-    .replace(/(path\.join\(__dirname, 'runtime\/).*('\);)/, '$1__STRIPPED__$2')
-    .replace(/"output": ".*",/, '"output": "__STRIPPED__"')
+    .replace(
+      /(path\.join\(__dirname, 'runtime\/).*('\);)/,
+      '$1__NON_DETERMINISTIC_CONTENT__$2',
+    )
+    .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
