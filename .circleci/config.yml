@@ -1,20 +1,21 @@
-version: 2
+version: 2.1
 jobs:
   build:
-    working_directory: ~/repo
     docker:
-    - image: circleci/node:10
+      - image: circleci/node:12
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "package.json" }}
-        - v1-dependencies-
-    - run: yarn install
-    - save_cache:
-        paths:
-        - node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
-    - run:
-        name: run-tests
-        command: yarn test
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: yarn install
+      - save_cache:
+          paths:
+            - .cache/yarn
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: test
+          command: yarn test

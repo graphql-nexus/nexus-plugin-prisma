@@ -1,0 +1,8 @@
+generator photonjs {
+  provider = "photonjs"
+  output   = "../../node_modules/@generated/photon"
+}
+
+model A {
+  id Int @id
+}

@@ -1,3 +1,5 @@
+import * as Nexus from 'nexus'
+
 export declare namespace ExternalDMMF {
   interface Document {
     datamodel: Datamodel
@@ -66,7 +68,7 @@ export declare namespace ExternalDMMF {
   interface SchemaField {
     name: string
     outputType: {
-      type: string
+      type: Nexus.core.AllOutputTypes
       isList: boolean
       isRequired: boolean
       kind: FieldKind

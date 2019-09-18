@@ -1,4 +1,4 @@
-import { core, dynamicOutputProperty, enumType, inputObjectType } from 'nexus'
+import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as DMMF from './dmmf'
 import {
@@ -21,7 +21,7 @@ import * as path from 'path'
 
 interface FieldPublisherConfig {
   alias?: string
-  type?: string
+  type?: Nexus.core.AllOutputTypes
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
@@ -117,6 +117,7 @@ export class NexusPrismaBuilder {
     }
     // TODO when photon not found log hints of what to do for the user
     // TODO DRY this with same logic in typegen
+
     this.dmmf = DMMF.get(config.inputs.photon)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
@@ -139,7 +140,7 @@ export class NexusPrismaBuilder {
    */
   protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     //const methodName = this.params.methodName ? this.params.methodName : 'crud';
-    return dynamicOutputProperty({
+    return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       factory: ({ typeDef: t, typeName: gqlTypeName }) => {
@@ -243,7 +244,7 @@ export class NexusPrismaBuilder {
     // const methodName = this.params.methodName
     //   ? this.params.methodName
     //   : 'model';
-    return dynamicOutputProperty({
+    return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
       factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
@@ -257,7 +258,7 @@ export class NexusPrismaBuilder {
   }
 
   protected doBuildModel(
-    t: core.OutputDefinitionBlock<any>,
+    t: Nexus.core.OutputDefinitionBlock<any>,
     graphQLTypeName: string,
   ) {
     return this.buildSchemaForPrismaModel(graphQLTypeName, graphQLTypeName, t)
@@ -384,14 +385,14 @@ export class NexusPrismaBuilder {
   protected dmmfArgsToNexusArgs(args: CustomInputArg[]) {
     return args.reduce<Record<string, any>>((acc, customArg) => {
       if (customArg.type === 'scalar') {
-        acc[customArg.arg.name] = core.arg(
+        acc[customArg.arg.name] = Nexus.core.arg(
           nexusFieldOpts(customArg.arg.inputType),
         )
       } else {
         if (!this.visitedInputTypesMap[customArg.type.name]) {
           acc[customArg.arg.name] = this.createInputEnumType(customArg)
         } else {
-          acc[customArg.arg.name] = core.arg(
+          acc[customArg.arg.name] = Nexus.core.arg(
             nexusFieldOpts({
               ...customArg.arg.inputType,
               type: customArg.type.name,
@@ -411,13 +412,13 @@ export class NexusPrismaBuilder {
     if (customArg.arg.inputType.kind === 'enum') {
       const eType = customArg.type as DMMF.External.Enum
 
-      return enumType({
+      return Nexus.enumType({
         name: eType.name,
         members: eType.values,
       })
     } else {
       const inputType = customArg.type as DMMF.External.InputType
-      return inputObjectType({
+      return Nexus.inputObjectType({
         name: inputType.name,
         definition: t => {
           const [scalarFields, objectFields] = partition(
@@ -452,7 +453,7 @@ export class NexusPrismaBuilder {
   protected buildSchemaForPrismaModel(
     prismaModelName: string,
     graphQLTypeName: string,
-    t: core.OutputDefinitionBlock<any>,
+    t: Nexus.core.OutputDefinitionBlock<any>,
   ) {
     const model = this.dmmf.getModelOrThrow(prismaModelName)
     const outputType = this.dmmf.getOutputType(model.name)
@@ -469,7 +470,7 @@ export class NexusPrismaBuilder {
         }
         const fieldName = opts.alias ? opts.alias : graphqlField.name
         const type = opts.type ? opts.type : graphqlField.outputType.type
-        const fieldOpts: core.NexusOutputFieldConfig<any, string> = {
+        const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
           ...nexusFieldOpts({ ...graphqlField.outputType, type }),
           args: this.computeArgsFromField(
             prismaModelName,
@@ -529,11 +530,16 @@ export class NexusPrismaBuilder {
     const dedupScalarNames = [...new Set(allScalarNames)]
     const scalars: any[] = []
 
-    if (dedupScalarNames.includes('DateTime')) {
+    // FIXME The type of .type above is nexus.core.AllOutputTypes
+    // but this does not account for custom scalars. Nexus
+    // should change its AllOutputTypes type, or export a new type,
+    // that integrates custom scalers. Conversely, nexus-prisma
+    // typegen should contribute (e.g. via interface merging) to it
+    // the scalars found in DMMF.
+    if (dedupScalarNames.includes('DateTime' as any)) {
       scalars.push(dateTimeScalar)
     }
-
-    if (dedupScalarNames.includes('UUID')) {
+    if (dedupScalarNames.includes('UUID' as any)) {
       scalars.push(uuidScalar)
     }
 
