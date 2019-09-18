@@ -290,7 +290,7 @@ test('it does not expose pagination', async () => {
   expect(printSchema(schema)).toMatchSnapshot()
 })
 
-test('alias top-level input types only if not customized', async () => {
+test('renames top-level input types that are customized', async () => {
   const datamodel = `
   model User {
     id    String  @default(cuid()) @id

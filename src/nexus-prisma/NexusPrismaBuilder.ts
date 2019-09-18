@@ -235,11 +235,7 @@ export class NexusPrismaBuilder {
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument in ${prismaModelName}.${
-            field.name
-          }(${field.args
-            .map(a => `${a.name}: ${a.inputType.type}`)
-            .join(', ')}): ${field.outputType.type}`,
+          `Could not find filtering argument for ${prismaModelName}.${field.name}`,
         )
       }
 
@@ -307,7 +303,7 @@ export class NexusPrismaBuilder {
 
     const argsNames = Object.keys(input)
 
-    // Alias type name if some fields are whitelisted
+    // Rename the InputObject type definition if some fields are whitelisted
     return {
       ...type,
       name: this.aliasInputTypeName(graphQLTypeName, fieldName, type),

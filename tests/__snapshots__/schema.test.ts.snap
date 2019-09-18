@@ -1,78 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`alias top-level input types only if not customized 1`] = `
-"input NullableStringFilter {
-  equals: String
-  not: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-}
-
-type Post {
-  id: ID!
-  author: User
-}
-
-input PostFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
-}
-
-input PostWhereInput {
-  id: StringFilter
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  NOT: [PostWhereInput!]
-  author: UserWhereInput
-}
-
-type Query {
-  posts(where: QueryFindManyPostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
-}
-
-input QueryFindManyPostWhereInput {
-  author: UserWhereInput
-}
-
-input StringFilter {
-  equals: String
-  not: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-}
-
-type User {
-  id: ID!
-  name: String
-  posts(where: PostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
-}
-
-input UserWhereInput {
-  id: StringFilter
-  name: NullableStringFilter
-  posts: PostFilter
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
-}
-"
-`;
-
 exports[`it does not expose pagination 1`] = `
 "type Query {
   users: [User!]
@@ -277,6 +204,79 @@ exports[`it only exposes pagination 'first' parameter 1`] = `
 
 type User {
   id: Int!
+}
+"
+`;
+
+exports[`renames top-level input types that are customized 1`] = `
+"input NullableStringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type Post {
+  id: ID!
+  author: User
+}
+
+input PostFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
+}
+
+input PostWhereInput {
+  id: StringFilter
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  author: UserWhereInput
+}
+
+type Query {
+  posts(where: QueryFindManyPostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input QueryFindManyPostWhereInput {
+  author: UserWhereInput
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+
+type User {
+  id: ID!
+  name: String
+  posts(where: PostWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+input UserWhereInput {
+  id: StringFilter
+  name: NullableStringFilter
+  posts: PostFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
 }
 "
 `;
