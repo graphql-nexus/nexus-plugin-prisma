@@ -40,7 +40,10 @@ function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
 }
 
 function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
-  let inputType = arg.inputType.find(a => a.kind === 'object')!
+  // FIXME: *Enum*Filter are currently empty
+  let inputType = arg.inputType.some(a => a.kind === 'enum')
+    ? arg.inputType[0]
+    : arg.inputType.find(a => a.kind === 'object')!
 
   if (!inputType) {
     inputType = arg.inputType[0]
