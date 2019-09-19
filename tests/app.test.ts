@@ -89,7 +89,10 @@ it('integrates together', async () => {
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
+
+  // For convenience
   expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
+  expect(require('@generated/photon').dmmf).toMatchSnapshot('photon dmmf')
 })
