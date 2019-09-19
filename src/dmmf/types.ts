@@ -38,8 +38,6 @@ export declare namespace ExternalDMMF {
     relationName?: string
   }
   interface Schema {
-    rootQueryType?: string
-    rootMutationType?: string
     inputTypes: InputType[]
     outputTypes: OutputType[]
     enums: Enum[]

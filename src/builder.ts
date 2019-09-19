@@ -250,9 +250,6 @@ export class NexusPrismaBuilder {
    * Generate `t.model` output method
    */
   protected buildModel() {
-    // const methodName = this.params.methodName
-    //   ? this.params.methodName
-    //   : 'model';
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
