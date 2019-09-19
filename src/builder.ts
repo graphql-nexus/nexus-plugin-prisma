@@ -3,6 +3,7 @@ import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as DMMF from './dmmf'
 import * as Typegen from './typegen'
+import * as GraphQL from './graphql'
 import {
   assertPhotonInContext,
   flatMap,
@@ -16,7 +17,7 @@ import {
   IArgsNamingStrategy,
   IFieldNamingStrategy,
 } from './naming-strategies'
-import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
+import { dateTimeScalar, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
 
 interface FieldPublisherConfig {
@@ -133,17 +134,28 @@ export class NexusPrismaBuilder {
   }
 
   /**
-   * Generate `t.crud` output method
+   * Generate `t.crud` output property
    */
   protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
-    //const methodName = this.params.methodName ? this.params.methodName : 'crud';
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
+      // FIXME
+      // Nexus should improve the type of typeName to be AllOutputTypes
       factory: ({ typeDef: t, typeName: gqlTypeName }) => {
-        if (gqlTypeName !== 'Query' && gqlTypeName !== 'Mutation') {
+        if (gqlTypeName === GraphQL.rootNames.Subscription) {
+          // TODO Lets put a GitHub issue link in this error message
           throw new Error(
-            `t.crud can only be used on a 'Query' & 'Mutation' objectType. Please use 't.model' instead`,
+            `t.crud is not yet supported on the 'Subscription' type.`,
+          )
+        }
+
+        if (
+          gqlTypeName !== GraphQL.rootNames.Query &&
+          gqlTypeName !== GraphQL.rootNames.Mutation
+        ) {
+          throw new Error(
+            `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${gqlTypeName}'. Please use 't.model' instead`,
           )
         }
 
@@ -521,7 +533,7 @@ export class NexusPrismaBuilder {
       .filter(
         f =>
           f.outputType.kind === 'scalar' &&
-          !GQL_SCALARS_NAMES.includes(f.outputType.type as any),
+          !GraphQL.scalarsNameValues.includes(f.outputType.type as any),
       )
       .map(f => f.outputType.type)
     const dedupScalarNames = [...new Set(allScalarNames)]
