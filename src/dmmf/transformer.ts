@@ -8,13 +8,6 @@ export function transformDMMF(document: DMMF.Document): ExternalDMMF.Document {
   }
 }
 
-function transformMappings(mappings: DMMF.Mapping[]) {
-  return mappings.map(mapping => ({
-    ...mapping,
-    findOne: mapping.model.toLowerCase(),
-  }))
-}
-
 function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
   return {
     enums: datamodel.enums,
@@ -36,7 +29,7 @@ function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
       ...o,
       fields: o.fields.map(f => ({
         ...f,
-        args: transformArgs(f.args),
+        args: f.args.map(transformArg),
         outputType: {
           ...f.outputType,
           type: getReturnTypeName(f.outputType.type),
@@ -44,10 +37,6 @@ function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
       })),
     })),
   }
-}
-
-function transformArgs(args: DMMF.SchemaArg[]): ExternalDMMF.SchemaArg[] {
-  return args.map(transformArg)
 }
 
 function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
@@ -70,7 +59,7 @@ function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
 function transformInputType(inputType: DMMF.InputType): ExternalDMMF.InputType {
   return {
     ...inputType,
-    fields: transformArgs(inputType.fields),
+    fields: inputType.fields.map(transformArg),
   }
 }
 
@@ -80,38 +69,4 @@ function getReturnTypeName(type: any) {
   }
 
   return type.name
-}
-
-function isWhereOrOrderByArgOrFilter(typeName: string) {
-  if (typeName.endsWith('WhereInput') && typeName !== 'WhereInput') {
-    return true
-  }
-
-  if (isRelationFilterArg(typeName)) {
-    return true
-  }
-
-  return typeName.endsWith('OrderByInput') && typeName !== 'OrderByInput'
-}
-
-function isRelationFilterArg(type: string) {
-  return (
-    type.endsWith('Filter') &&
-    ![
-      'IntFilter',
-      'StringFilter',
-      'BooleanFilter',
-      'NullableStringFilter',
-      'FloatFilter',
-    ].includes(type) &&
-    type !== 'Filter'
-  )
-}
-
-function argTypeName(modelName: string, typeName: string) {
-  if (isWhereOrOrderByArgOrFilter(typeName)) {
-    return `${modelName}${typeName}`
-  }
-
-  return typeName
 }

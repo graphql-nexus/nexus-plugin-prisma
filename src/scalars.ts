@@ -1,17 +1,21 @@
-import { scalarType } from 'nexus'
+import * as Nexus from 'nexus'
 
-export const GQL_SCALARS_NAMES = ['Int', 'Float', 'String', 'ID', 'Boolean']
+export type GQL_SCALAR_NAME = 'Int' | 'Float' | 'String' | 'ID' | 'Boolean'
 
-export const dateTimeScalar = scalarType({
+export const GQL_SCALARS_NAMES: GQL_SCALAR_NAME[] = [
+  'Int',
+  'Float',
+  'String',
+  'ID',
+  'Boolean',
+]
+
+export const dateTimeScalar = Nexus.scalarType({
   name: 'DateTime',
-  serialize(value) {
-    return value
-  },
+  serialize: value => value,
 })
 
-export const uuidScalar = scalarType({
+export const uuidScalar = Nexus.scalarType({
   name: 'UUID',
-  serialize(value) {
-    return value
-  },
+  serialize: value => value,
 })

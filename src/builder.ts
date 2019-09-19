@@ -1,6 +1,8 @@
+import * as path from 'path'
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as DMMF from './dmmf'
+import * as Typegen from './typegen'
 import {
   assertPhotonInContext,
   flatMap,
@@ -16,8 +18,6 @@ import {
 } from './naming-strategies'
 import { dateTimeScalar, GQL_SCALARS_NAMES, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
-import * as Typegen from './typegen'
-import * as path from 'path'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -115,9 +115,6 @@ export class NexusPrismaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    // TODO when photon not found log hints of what to do for the user
-    // TODO DRY this with same logic in typegen
-
     this.dmmf = DMMF.get(config.inputs.photon)
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
@@ -524,7 +521,7 @@ export class NexusPrismaBuilder {
       .filter(
         f =>
           f.outputType.kind === 'scalar' &&
-          !GQL_SCALARS_NAMES.includes(f.outputType.type),
+          !GQL_SCALARS_NAMES.includes(f.outputType.type as any),
       )
       .map(f => f.outputType.type)
     const dedupScalarNames = [...new Set(allScalarNames)]
