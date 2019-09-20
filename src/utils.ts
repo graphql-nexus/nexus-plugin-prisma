@@ -1,3 +1,5 @@
+import { isNamedType } from 'graphql'
+import { core } from 'nexus'
 import { relative } from 'path'
 import * as DMMF from './dmmf'
 import { OperationName, FieldNamingStrategy } from './naming-strategies'
@@ -54,7 +56,7 @@ export function flatMap<T, U>(
   return Array.prototype.concat(...array.map(callbackfn))
 }
 
-export function nexusOpts(param: {
+export function nexusFieldOpts(param: {
   type: string | object
   isList: boolean
   isRequired: boolean
@@ -127,4 +129,35 @@ export function getCRUDFieldName(
   }
 
   return namingStrategy[operationName](fieldName, modelName)
+}
+
+/**
+ * Unwrap nexus user-defined types and convert them to a map<TypeName, boolean>
+ */
+export function unwrapTypes(types: any): Record<string, boolean> {
+  let output: Record<string, boolean> = {}
+
+  if (!types) {
+    return {}
+  }
+
+  if (core.isNexusNamedTypeDef(types) || isNamedType(types)) {
+    output[types.name] = true
+  } else if (Array.isArray(types)) {
+    types.forEach(typeDef => {
+      output = {
+        ...output,
+        ...unwrapTypes(typeDef),
+      }
+    })
+  } else if (core.isObject(types)) {
+    Object.keys(types).forEach(key => {
+      output = {
+        ...output,
+        ...unwrapTypes(types[key]),
+      }
+    })
+  }
+
+  return output
 }

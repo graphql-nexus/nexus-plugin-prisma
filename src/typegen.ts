@@ -36,7 +36,7 @@ export function doGenerate(
   }
 }
 
-function render(dmmf: DMMF.DMMF, photonPath: string) {
+export function render(dmmf: DMMF.DMMF, photonPath: string) {
   return `\
 import * as photon from '${photonPath}';
 import { core } from 'nexus';

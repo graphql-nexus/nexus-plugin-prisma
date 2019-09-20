@@ -6,7 +6,13 @@ import * as allTypes from './graphql'
 import Photon from '@generated/photon'
 
 const photon = new Photon()
-const nexusPrisma = NexusPrisma.nexusPrismaPlugin()
+const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
+  types: allTypes,
+  // FIXME: Because nexus-prisma is required from parent folder, it requires photon from the parent node_modules
+  inputs: {
+    photon: Path.join(__dirname, '../node_modules/@generated/photon'),
+  },
+})
 
 const schema = Nexus.makeSchema({
   types: [allTypes, nexusPrisma],

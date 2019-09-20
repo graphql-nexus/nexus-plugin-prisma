@@ -46,11 +46,13 @@ it('integrates together', async () => {
   // this part out on their own more or less.
   //
   const nexusPrismaTypeDefs = nexusPrisma.nexusPrismaPlugin({
+    types: typeDefs,
     shouldGenerateArtifacts: true,
     outputs: {
       typegen: projectPath(`/generated/nexus-types-prisma.d.ts`),
     },
   })
+  
   await nexusBuilder.generateSchema({
     types: [typeDefs, nexusPrismaTypeDefs],
     outputs: {
