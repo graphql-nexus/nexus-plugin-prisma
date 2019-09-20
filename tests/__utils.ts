@@ -7,7 +7,7 @@ import { printSchema } from 'graphql'
 
 export async function generateSchemaAndTypes(datamodel: string, types: any) {
   const dmmf = await getDMMF({ datamodel })
-  const transformedDmmf = DMMF.transformDMMF(dmmf)
+  const transformedDmmf = DMMF.transform(dmmf)
   const dmmfClass = new DMMF.DMMF(transformedDmmf)
 
   const nexusPrisma = new SchemaBuilder({

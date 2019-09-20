@@ -1,6 +1,6 @@
 import { DMMF, ExternalDMMF } from './types'
 
-export function transformDMMF(document: DMMF.Document): ExternalDMMF.Document {
+export function transform(document: DMMF.Document): ExternalDMMF.Document {
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as ExternalDMMF.Mapping[],
