@@ -73,7 +73,7 @@ export interface Options {
  * released.
  */
 export function build(options: Options = {}) {
-  const builder = new NexusPrismaBuilder(options)
+  const builder = new Builder(options)
   return builder.build()
 }
 
@@ -102,7 +102,7 @@ interface CustomInputArg {
   type: DMMF.External.InputType | DMMF.External.Enum | 'scalar'
 }
 
-export class NexusPrismaBuilder {
+export class Builder {
   protected readonly dmmf: DMMF.DMMF
   protected visitedInputTypesMap: Record<string, boolean>
   protected argsNamingStrategy: IArgsNamingStrategy
@@ -253,21 +253,56 @@ export class NexusPrismaBuilder {
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
-      factory: ({ typeDef: t, typeName: graphQLTypeName }) => {
-        const modelDefinition = this.dmmf.hasModel(graphQLTypeName)
-          ? this.doBuildModel(t, graphQLTypeName)
-          : (modelName: string) => this.doBuildModel(t, modelName)
-
-        return modelDefinition
-      },
+      /**
+       * This factory implements what .model will actually be.
+       *
+       * If the user's GQL typedef name matches a PSL model name,
+       * then we infer that the user is trying to create a mapping
+       * between them. This is the implicit mapping case.
+       *
+       * Otherwise we need the user to specify what PSL model
+       * their GQL object maps to. This is the explicit mapping case.
+       *
+       * In the implicit case we eagerly do the .model implementation,
+       * but in the explicit case we return a function in order that the
+       * user may specify the mapping.
+       *
+       * Examples:
+       *
+       *    // Given PSL that contains:
+       *
+       *    model User {
+       *      id    String @unique @id @default(uuid())
+       *      email String @unique
+       *    }
+       *
+       *    // Example of implicit mapping
+       *
+       *    objectType({
+       *      name: 'User',
+       *      definition(t) {
+       *        t.model.id()
+       *        t.model.email()
+       *      }
+       *    })
+       *
+       *    // Example of explicit mapping
+       *
+       *    objectType({
+       *      name: 'Customer',
+       *      definition(t) {
+       *        t.model('User').id()
+       *        t.model('User').email()
+       *      }
+       *    })
+       *
+       */
+      factory: ({ typeDef, typeName }) =>
+        this.dmmf.hasModel(typeName)
+          ? this.buildSchemaForPrismaModel(typeName, typeName, typeDef)
+          : (modelName: string) =>
+              this.buildSchemaForPrismaModel(modelName, modelName, typeDef),
     })
-  }
-
-  protected doBuildModel(
-    t: Nexus.core.OutputDefinitionBlock<any>,
-    graphQLTypeName: string,
-  ) {
-    return this.buildSchemaForPrismaModel(graphQLTypeName, graphQLTypeName, t)
   }
 
   protected computeArgsFromField(
@@ -299,52 +334,53 @@ export class NexusPrismaBuilder {
   protected argsForQueryOrModelField(
     prismaModelName: string,
     graphQLTypeName: string,
-    field: DMMF.External.SchemaField,
+    dmmfField: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
 
     if (opts.filtering) {
-      const whereTypeName = `${field.outputType.type}WhereInput`
-      const whereArg = field.args.find(
-        a => a.inputType.type === whereTypeName && a.name === 'where',
+      const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
+      const whereArg = dmmfField.args.find(
+        arg =>
+          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
       )
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${prismaModelName}.${field.name}`,
+          `Could not find filtering argument for ${prismaModelName}.${dmmfField.name}`,
         )
       }
 
       args.push({
         arg: whereArg,
-        type: this.customizeInputType(
+        type: this.handleInputObjectCustomization(
           opts.filtering,
-          whereTypeName,
-          field.name,
+          inputObjectTypeDefName,
+          dmmfField.name,
           graphQLTypeName,
         ),
       })
     }
 
     if (opts.ordering) {
-      const orderByTypeName = `${field.outputType.type}OrderByInput`
-      const orderByArg = field.args.find(
-        a => a.inputType.type === orderByTypeName && a.name === 'orderBy',
+      const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
+      const orderByArg = dmmfField.args.find(
+        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
         throw new Error(
-          `Could not find ordering argument for ${prismaModelName}.${field.name}`,
+          `Could not find ordering argument for ${prismaModelName}.${dmmfField.name}`,
         )
       }
 
       args.push({
         arg: orderByArg,
-        type: this.customizeInputType(
+        type: this.handleInputObjectCustomization(
           opts.ordering,
           orderByTypeName,
-          field.name,
+          dmmfField.name,
           graphQLTypeName,
         ),
       })
@@ -354,8 +390,10 @@ export class NexusPrismaBuilder {
       const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
       const paginationsArgs =
         opts.pagination === true
-          ? field.args.filter(a => paginationKeys.includes(a.name))
-          : field.args.filter(a => (opts.pagination as any)[a.name] === true)
+          ? dmmfField.args.filter(a => paginationKeys.includes(a.name))
+          : dmmfField.args.filter(
+              arg => (opts.pagination as any)[arg.name] === true,
+            )
 
       args.push(
         ...paginationsArgs.map(a => ({ arg: a, type: 'scalar' as 'scalar' })),
@@ -365,26 +403,59 @@ export class NexusPrismaBuilder {
     return args
   }
 
-  protected customizeInputType(
-    input: Record<string, boolean> | boolean,
+  protected handleInputObjectCustomization(
+    fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
   ): DMMF.External.InputType {
-    const type = this.dmmf.getInputType(inputTypeName)
+    // TODO Trying out this naming. Might be the wrong mental model.
+    // Revisit this in the near future for reflection.
+    const photonObject = this.dmmf.getInputType(inputTypeName)
 
-    // Do not alias type name if type is not customized
-    if (input === true) {
-      return type
+    // If the publishing for this field feature (filtering, ordering, ...)
+    // has not been tailored then we may simply pass through the backing
+    // version as-is.
+    //
+    if (fieldWhitelist === true) {
+      return photonObject
     }
 
-    const argsNames = Object.keys(input)
+    // CHECK
+    // ... only some fields of the PSL model are exposed ...
+    // vs
+    // ... only some fields of the field's type are exposed ...
+    //
+    // With tailord field feature publishing, users can specify that only
+    // some fields of the PSL model are exposed under the given field feature.
+    // For example, in the following...
+    //
+    //    t.model.friends({ filtering: { firstName: true, location: true } })
+    //
+    // ...the field feature is "filtering" and the user has tailored it so
+    // that only "firstName" and "location" of the field's type (e.g. "User")
+    // are exposed to filtering on this field. So the resulting GQL TypeDef
+    // would look something like:
+    //
+    //    ...
+    //    friends(where: { firstName: ..., location: ..., }): [User]
+    //    ...
+    //
+    // REFACTOR use an intersection function
+    //
+    const whitelistedFieldNames = Object.keys(fieldWhitelist)
+    const userExposedObjectFields = photonObject.fields.filter(field =>
+      whitelistedFieldNames.includes(field.name),
+    )
 
-    // Rename the InputObject type definition if some fields are whitelisted
+    const uniqueName = photonObject.isWhereType
+      ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
+      : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
+
     return {
-      ...type,
-      name: this.aliasInputTypeName(graphQLTypeName, fieldName, type),
-      fields: type.fields.filter(f => argsNames.includes(f.name)),
+      ...photonObject,
+      name: uniqueName,
+      fields: userExposedObjectFields,
     }
   }
 
@@ -511,7 +582,7 @@ export class NexusPrismaBuilder {
     return result
   }
 
-  protected aliasInputTypeName(
+  protected renameInputObject(
     graphQLTypeName: string,
     fieldName: string,
     inputType: DMMF.External.InputType,

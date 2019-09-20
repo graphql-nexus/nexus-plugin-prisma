@@ -59,11 +59,6 @@ it('integrates together', async () => {
     },
   })
 
-  // Assert the app type checks. In effect this is testing that our
-  // typegen works.
-  //
-  expect(projectRoot).toTypeCheck()
-
   // Snapshot generated files for manual correctness tracking.
   // Generated files from deps are tracked too, for easier debugging,
   // learning, and detecting unexpected changes.
@@ -95,4 +90,9 @@ it('integrates together', async () => {
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
   expect(require('@generated/photon').dmmf).toMatchSnapshot('photon dmmf')
+
+  // Assert the app type checks. In effect this is testing that our
+  // typegen works.
+  //
+  expect(projectRoot).toTypeCheck()
 })
