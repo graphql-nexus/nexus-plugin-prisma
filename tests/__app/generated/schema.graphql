@@ -5,24 +5,24 @@
 type Bubble {
   createdAt: DateTime!
   id: UUID!
-  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]
+  members(first: Int, orderBy: BubbleMembersOrderBy, where: BubbleMembersWhere): [User!]
 }
 
-input BubbleMembersOrderByInput {
+input BubbleMembersOrderBy {
   firstName: OrderByArg
 }
 
-input BubbleMembersWhereInput {
+input BubbleMembersWhere {
   id: StringFilter
 }
 
-input BubbleWhereInput {
-  AND: [BubbleWhereInput!]
+input BubbleWhere {
+  AND: [BubbleWhere!]
   createdAt: DateTimeFilter
   id: UUIDFilter
   members: UserFilter
-  NOT: [BubbleWhereInput!]
-  OR: [BubbleWhereInput!]
+  NOT: [BubbleWhere!]
+  OR: [BubbleWhere!]
 }
 
 scalar DateTime
@@ -70,27 +70,27 @@ type Post {
 }
 
 input PostFilter {
-  every: PostWhereInput
-  none: PostWhereInput
-  some: PostWhereInput
+  every: PostWhere
+  none: PostWhere
+  some: PostWhere
 }
 
-input PostOrderByInput {
+input PostOrderBy {
   id: OrderByArg
   rating: OrderByArg
 }
 
-input PostWhereInput {
-  AND: [PostWhereInput!]
+input PostWhere {
+  AND: [PostWhere!]
   authors: UserFilter
   id: IntFilter
-  NOT: [PostWhereInput!]
-  OR: [PostWhereInput!]
+  NOT: [PostWhere!]
+  OR: [PostWhere!]
   rating: FloatFilter
 }
 
 type Query {
-  user(where: UserWhereUniqueInput!): User
+  user(where: UserWhereUnique!): User
   users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
 }
 
@@ -111,27 +111,27 @@ input StringFilter {
 type User {
   firstName: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderBy, skip: Int, where: PostWhere): [Post!]
 }
 
 input UserFilter {
-  every: UserWhereInput
-  none: UserWhereInput
-  some: UserWhereInput
+  every: UserWhere
+  none: UserWhere
+  some: UserWhere
 }
 
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  bubble: BubbleWhereInput
+input UserWhere {
+  AND: [UserWhere!]
+  bubble: BubbleWhere
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
-  NOT: [UserWhereInput!]
-  OR: [UserWhereInput!]
+  NOT: [UserWhere!]
+  OR: [UserWhere!]
   posts: PostFilter
 }
 
-input UserWhereUniqueInput {
+input UserWhereUnique {
   id: ID
 }
 

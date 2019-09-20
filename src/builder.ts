@@ -28,6 +28,15 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
+const stripInputSuffix = (
+  dmmf: DMMF.External.InputType,
+): DMMF.External.InputType => {
+  return {
+    ...dmmf,
+    name: dmmf.name.replace(/Input$/, ''),
+  }
+}
+
 export interface Options {
   photon?: (ctx: any) => any
   shouldGenerateArtifacts?: boolean
@@ -317,7 +326,7 @@ export class Builder {
     if (graphQLTypeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => ({
         arg,
-        type: this.dmmf.getInputType(arg.inputType.type),
+        type: stripInputSuffix(this.dmmf.getInputType(arg.inputType.type)),
       }))
     } else {
       args = this.argsFromQueryOrModelField(
@@ -340,10 +349,11 @@ export class Builder {
     let args: CustomInputArg[] = []
 
     if (opts.filtering) {
-      const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
+      const inputObjectTypeDefName = `${dmmfField.outputType.type}Where`
       const whereArg = dmmfField.args.find(
         arg =>
-          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
+          arg.inputType.type === inputObjectTypeDefName + 'Input' &&
+          arg.name === 'where',
       )
 
       if (!whereArg) {
@@ -364,9 +374,11 @@ export class Builder {
     }
 
     if (opts.ordering) {
-      const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
+      const orderByTypeName = `${dmmfField.outputType.type}OrderBy`
       const orderByArg = dmmfField.args.find(
-        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
+        arg =>
+          arg.inputType.type === orderByTypeName + 'Input' &&
+          arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
@@ -411,14 +423,14 @@ export class Builder {
   ): DMMF.External.InputType {
     // TODO Trying out this naming. Might be the wrong mental model.
     // Revisit this in the near future for reflection.
-    const photonObject = this.dmmf.getInputType(inputTypeName)
+    const photonObject = this.dmmf.getInputType(inputTypeName + 'Input')
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
     // version as-is.
     //
     if (fieldWhitelist === true) {
-      return photonObject
+      return stripInputSuffix(photonObject)
     }
 
     // CHECK
@@ -449,8 +461,8 @@ export class Builder {
     )
 
     const uniqueName = photonObject.isWhereType
-      ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
-      : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
+      ? this.argsNamingStrategy.where(graphQLTypeName, fieldName)
+      : this.argsNamingStrategy.orderBy(graphQLTypeName, fieldName)
 
     return {
       ...photonObject,
@@ -472,7 +484,7 @@ export class Builder {
           acc[customArg.arg.name] = Nexus.core.arg(
             nexusFieldOpts({
               ...customArg.arg.inputType,
-              type: customArg.type.name,
+              type: customArg.type.name.replace(/Input$/, ''),
             }),
           )
         }
@@ -483,7 +495,9 @@ export class Builder {
 
   protected createInputOrEnumType(customArg: CustomInputArg) {
     if (typeof customArg.type !== 'string') {
-      this.visitedInputTypesMap[customArg.type.name] = true
+      this.visitedInputTypesMap[
+        customArg.type.name.replace(/Input$/, '')
+      ] = true
     }
 
     if (customArg.arg.inputType.kind === 'enum') {
@@ -496,7 +510,7 @@ export class Builder {
     } else {
       const inputType = customArg.type as DMMF.External.InputType
       return Nexus.inputObjectType({
-        name: inputType.name,
+        name: inputType.name.replace(/Input$/, ''),
         definition: t => {
           const [scalarFields, objectFields] = partition(
             inputType.fields,
@@ -507,15 +521,19 @@ export class Builder {
             inputType: {
               ...field.inputType,
               type:
-                this.visitedInputTypesMap[field.inputType.type] === true
+                this.visitedInputTypesMap[
+                  field.inputType.type.replace(/Input$/, '')
+                ] === true
                   ? // Simply reference the field input type if it's already been visited, otherwise create it
-                    field.inputType.type
+                    field.inputType.type.replace(/Input$/, '')
                   : this.createInputOrEnumType({
                       arg: field,
                       type:
                         field.inputType.kind === 'enum'
                           ? this.dmmf.getEnumType(field.inputType.type)
-                          : this.dmmf.getInputType(field.inputType.type),
+                          : stripInputSuffix(
+                              this.dmmf.getInputType(field.inputType.type),
+                            ),
                     }),
             },
           }))
@@ -587,10 +605,10 @@ export class Builder {
     inputType: DMMF.External.InputType,
   ) {
     if (inputType.isWhereType) {
-      return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
+      return this.argsNamingStrategy.where(graphQLTypeName, fieldName)
     }
 
-    return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
+    return this.argsNamingStrategy.orderBy(graphQLTypeName, fieldName)
   }
 
   // FIXME strongly type this so that build() does not return any[]
