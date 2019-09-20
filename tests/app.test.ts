@@ -98,4 +98,5 @@ it('integrates together', async () => {
   // typegen works.
   //
   expect(projectRoot).toTypeCheck()
+  fs.emptyDir(projectPath('../../node_modules/@generated'))
 })
