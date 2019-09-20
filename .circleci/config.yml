@@ -7,15 +7,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "yarn.lock" }}
-            - v2-dependencies-
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            - v1-dependencies-
       - run:
           name: install dependencies
           command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - .cache/yarn
-          key: v2-dependencies-{{ checksum "yarn.lock" }}
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: test
           command: yarn -s test
