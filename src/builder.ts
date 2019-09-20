@@ -333,7 +333,7 @@ export class SchemaBuilder {
     }
 
     return args.reduce<Nexus.core.ArgsRecord>((acc, customArg) => {
-      acc[customArg.arg.name] = this.publisher.inputType(customArg)
+      acc[customArg.arg.name] = this.publisher.inputType(customArg) as any //FIXME
       return acc
     }, {})
   }
