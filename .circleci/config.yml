@@ -11,11 +11,11 @@ jobs:
             - v1-dependencies-
       - run:
           name: install dependencies
-          command: yarn install
+          command: yarn install --frozen-lockfile
       - save_cache:
           paths:
             - .cache/yarn
           key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: test
-          command: yarn test
+          command: yarn -s test
