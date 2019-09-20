@@ -27,6 +27,15 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
+const stripInputSuffix = (
+  dmmf: DMMF.External.InputType,
+): DMMF.External.InputType => {
+  return {
+    ...dmmf,
+    name: dmmf.name.replace(/Input$/, ''),
+  }
+}
+
 export interface Options {
   types: any
   photon?: (ctx: any) => any
@@ -321,7 +330,7 @@ export class SchemaBuilder {
     if (graphQLTypeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => ({
         arg,
-        type: this.dmmf.getInputType(arg.inputType.type),
+        type: stripInputSuffix(this.dmmf.getInputType(arg.inputType.type)),
       }))
     } else {
       args = this.argsFromQueryOrModelField(
@@ -347,10 +356,11 @@ export class SchemaBuilder {
     let args: CustomInputArg[] = []
 
     if (opts.filtering) {
-      const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
+      const inputObjectTypeDefName = `${dmmfField.outputType.type}Where`
       const whereArg = dmmfField.args.find(
         arg =>
-          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
+          arg.inputType.type === inputObjectTypeDefName + 'Input' &&
+          arg.name === 'where',
       )
 
       if (!whereArg) {
@@ -371,9 +381,11 @@ export class SchemaBuilder {
     }
 
     if (opts.ordering) {
-      const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
+      const orderByTypeName = `${dmmfField.outputType.type}OrderBy`
       const orderByArg = dmmfField.args.find(
-        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
+        arg =>
+          arg.inputType.type === orderByTypeName + 'Input' &&
+          arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
@@ -421,14 +433,14 @@ export class SchemaBuilder {
   ): DMMF.External.InputType {
     // TODO Trying out this naming. Might be the wrong mental model.
     // Revisit this in the near future for reflection.
-    const photonObject = this.dmmf.getInputType(inputTypeName)
+    const photonObject = this.dmmf.getInputType(inputTypeName + 'Input')
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
     // version as-is.
     //
     if (fieldWhitelist === true) {
-      return photonObject
+      return stripInputSuffix(photonObject)
     }
 
     // CHECK
@@ -459,8 +471,8 @@ export class SchemaBuilder {
     )
 
     const uniqueName = photonObject.isWhereType
-      ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
-      : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
+      ? this.argsNamingStrategy.where(graphQLTypeName, fieldName)
+      : this.argsNamingStrategy.orderBy(graphQLTypeName, fieldName)
 
     return {
       ...photonObject,
