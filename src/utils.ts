@@ -1,6 +1,6 @@
 import { relative } from 'path'
 import * as DMMF from './dmmf'
-import { OperationName, IFieldNamingStrategy } from './naming-strategies'
+import { OperationName, FieldNamingStrategy } from './naming-strategies'
 
 // TODO `any` should be `unknown` but there is a bug (?)
 // preventing that from working, see:
@@ -9,11 +9,11 @@ import { OperationName, IFieldNamingStrategy } from './naming-strategies'
 /**
  * TODO
  */
-export const indexBy = <T extends Record<string, any>>(
-  indexer: ((value: T) => string) | keyof T,
-  xs: T[],
-): Index<T> => {
-  const seed: Index<T> = {}
+export const indexBy = <X extends Record<string, any>>(
+  indexer: ((x: X) => string) | keyof X,
+  xs: X[],
+): Index<X> => {
+  const seed: Index<X> = {}
   if (typeof indexer === 'function') {
     return xs.reduce((index, x) => {
       const address = indexer(x)
@@ -116,7 +116,7 @@ export function getCRUDFieldName(
   modelName: string,
   fieldName: string,
   mapping: DMMF.External.Mapping,
-  namingStrategy: IFieldNamingStrategy,
+  namingStrategy: FieldNamingStrategy,
 ) {
   const operationName = Object.keys(mapping).find(
     key => (mapping as any)[key] === fieldName,

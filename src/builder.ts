@@ -14,8 +14,8 @@ import {
 import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
-  IArgsNamingStrategy,
-  IFieldNamingStrategy,
+  ArgsNamingStrategy,
+  FieldNamingStrategy,
 } from './naming-strategies'
 import { dateTimeScalar, uuidScalar } from './scalars'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
@@ -105,8 +105,8 @@ interface CustomInputArg {
 export class Builder {
   protected readonly dmmf: DMMF.DMMF
   protected visitedInputTypesMap: Record<string, boolean>
-  protected argsNamingStrategy: IArgsNamingStrategy
-  protected fieldNamingStrategy: IFieldNamingStrategy
+  protected argsNamingStrategy: ArgsNamingStrategy
+  protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: any
 
   constructor(protected options: Options) {
@@ -219,7 +219,7 @@ export class Builder {
                 type: gqlType,
                 list: field.outputType.isList || undefined,
                 nullable: !field.outputType.isRequired,
-                args: this.computeArgsFromField(
+                args: this.argsFromField(
                   prismaModelName,
                   gqlTypeName,
                   operationName,
@@ -305,7 +305,7 @@ export class Builder {
     })
   }
 
-  protected computeArgsFromField(
+  protected argsFromField(
     prismaModelName: string,
     graphQLTypeName: string,
     operationName: keyof DMMF.External.Mapping | null,
@@ -320,7 +320,7 @@ export class Builder {
         type: this.dmmf.getInputType(arg.inputType.type),
       }))
     } else {
-      args = this.argsForQueryOrModelField(
+      args = this.argsFromQueryOrModelField(
         prismaModelName,
         graphQLTypeName,
         field,
@@ -331,7 +331,7 @@ export class Builder {
     return this.dmmfArgsToNexusArgs(args)
   }
 
-  protected argsForQueryOrModelField(
+  protected argsFromQueryOrModelField(
     prismaModelName: string,
     graphQLTypeName: string,
     dmmfField: DMMF.External.SchemaField,
@@ -467,7 +467,7 @@ export class Builder {
         )
       } else {
         if (!this.visitedInputTypesMap[customArg.type.name]) {
-          acc[customArg.arg.name] = this.createInputEnumType(customArg)
+          acc[customArg.arg.name] = this.createInputOrEnumType(customArg)
         } else {
           acc[customArg.arg.name] = Nexus.core.arg(
             nexusFieldOpts({
@@ -481,7 +481,7 @@ export class Builder {
     }, {})
   }
 
-  protected createInputEnumType(customArg: CustomInputArg) {
+  protected createInputOrEnumType(customArg: CustomInputArg) {
     if (typeof customArg.type !== 'string') {
       this.visitedInputTypesMap[customArg.type.name] = true
     }
@@ -510,7 +510,7 @@ export class Builder {
                 this.visitedInputTypesMap[field.inputType.type] === true
                   ? // Simply reference the field input type if it's already been visited, otherwise create it
                     field.inputType.type
-                  : this.createInputEnumType({
+                  : this.createInputOrEnumType({
                       arg: field,
                       type:
                         field.inputType.kind === 'enum'
@@ -535,9 +535,8 @@ export class Builder {
     const model = this.dmmf.getModelOrThrow(prismaModelName)
     const outputType = this.dmmf.getOutputType(model.name)
 
-    const result = outputType.fields.reduce<
-      Record<string, (opts?: FieldPublisherConfig) => any>
-    >((acc, graphqlField) => {
+    const seed: Record<string, (opts?: FieldPublisherConfig) => any> = {}
+    const result = outputType.fields.reduce((acc, graphqlField) => {
       acc[graphqlField.name] = opts => {
         if (!opts) {
           opts = {}
@@ -549,7 +548,7 @@ export class Builder {
         const type = opts.type ? opts.type : graphqlField.outputType.type
         const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
           ...nexusFieldOpts({ ...graphqlField.outputType, type }),
-          args: this.computeArgsFromField(
+          args: this.argsFromField(
             prismaModelName,
             graphQLTypeName,
             null,
@@ -577,7 +576,7 @@ export class Builder {
         return result
       }
       return acc
-    }, {})
+    }, seed)
 
     return result
   }

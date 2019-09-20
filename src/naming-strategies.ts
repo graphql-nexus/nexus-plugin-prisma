@@ -2,13 +2,13 @@ import pluralize from 'pluralize'
 import * as DMMF from './dmmf'
 import { upperFirst } from './utils'
 
-export interface IArgsNamingStrategy {
+export interface ArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string
   orderByInput: (typeName: string, fieldName: string) => string
   relationFilterInput: (typeName: string, fieldName: string) => string
 }
 
-export const defaultArgsNamingStrategy: IArgsNamingStrategy = {
+export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
   whereInput(typeName, fieldName) {
     return `${upperFirst(typeName)}${upperFirst(fieldName)}WhereInput`
   },
@@ -25,12 +25,12 @@ export type OperationName = Exclude<
   'model' | 'plural'
 >
 
-export type IFieldNamingStrategy = Record<
+export type FieldNamingStrategy = Record<
   OperationName,
   (fieldName: string, modelName: string) => string
 >
 
-export const defaultFieldNamingStrategy: IFieldNamingStrategy = {
+export const defaultFieldNamingStrategy: FieldNamingStrategy = {
   findOne: (_, modelName) => modelName.toLowerCase(),
   findMany: (_, modelName) => pluralize(modelName).toLowerCase(),
   create: fieldName => fieldName,
