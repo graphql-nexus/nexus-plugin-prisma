@@ -3709,9 +3709,9 @@ prisma-datamodel@^1.36.0-test.2:
     popsicle "10"
 
 prisma2@^2.0.0-alpha.185:
-  version "2.0.0-alpha.185"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.185.tgz#a996b23d4764db8dd37c068296d487eaf6e705cf"
-  integrity sha512-+M5+dNTXx+zaG+2seW1KWLZgEVNYSvNdNMMfyRAgu4BgN63H893JmtpiJuXzQARF/akUSnk55F/0U+ApnSiMIw==
+  version "2.0.0-preview-12"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-12.tgz#d5c1793ce19950580d21c4d1bf02583e06610ce4"
+  integrity sha512-IZ6oXNo+uBpN9AuT/eSrIWsanbEk+eYNdcJyeaOZsG1OmiC/iPsRZpJAH1e/29uPwFAi9CgD4YBuVq82X0KICg==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
