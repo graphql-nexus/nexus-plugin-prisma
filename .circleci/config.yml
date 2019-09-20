@@ -18,4 +18,4 @@ jobs:
           key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run:
           name: test
-          command: yarn test
+          command: yarn -s test
