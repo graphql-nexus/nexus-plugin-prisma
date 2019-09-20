@@ -35,6 +35,25 @@ input AuthorCreateWithoutPostsInput {
   updatedAt: DateTime
 }
 
+input AuthorFilter {
+  every: AuthorWhereInput
+  none: AuthorWhereInput
+  some: AuthorWhereInput
+}
+
+input AuthorWhereInput {
+  AND: [AuthorWhereInput!]
+  blog: BlogWhereInput
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: NullableStringFilter
+  NOT: [AuthorWhereInput!]
+  OR: [AuthorWhereInput!]
+  posts: PostFilter
+  rating: FloatFilter
+  updatedAt: DateTimeFilter
+}
+
 input AuthorWhereUniqueInput {
   id: Int
 }
@@ -44,7 +63,7 @@ type Blog {
   createdAt: DateTime!
   id: Int!
   name: String!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: BlogPostsOrderByInput, skip: Int, where: BlogPostsWhereInput): [CustomPost!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: BlogPostsWhereInput): [CustomPost!]
   updatedAt: DateTime!
   viewCount: Int!
 }
@@ -71,13 +90,21 @@ input BlogCreateWithoutAuthorsInput {
   viewCount: Int!
 }
 
-input BlogPostsOrderByInput {
-  id: OrderByArg
-  title: OrderByArg
-}
-
 input BlogPostsWhereInput {
   title: StringFilter
+}
+
+input BlogWhereInput {
+  AND: [BlogWhereInput!]
+  authors: AuthorFilter
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: StringFilter
+  NOT: [BlogWhereInput!]
+  OR: [BlogWhereInput!]
+  posts: PostFilter
+  updatedAt: DateTimeFilter
+  viewCount: IntFilter
 }
 
 input BlogWhereUniqueInput {
@@ -91,6 +118,17 @@ type CustomPost {
 }
 
 scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
+}
 
 input FloatFilter {
   equals: Float
@@ -152,54 +190,36 @@ input PostCreateWithoutBlogInput {
   title: String!
 }
 
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostOrderByInput {
+  id: OrderByArg
+  title: OrderByArg
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  author: AuthorWhereInput
+  blog: BlogWhereInput
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  title: StringFilter
+}
+
 input PostWhereUniqueInput {
   id: Int
 }
 
 type Query {
-  authors(after: String, before: String, first: Int, last: Int, skip: Int, where: QueryFindManyAuthorWhereInput): [Author!]
+  authors(after: String, before: String, first: Int, last: Int, skip: Int, where: AuthorWhereInput): [Author!]
   blog(where: BlogWhereUniqueInput!): Blog
   blogs: [Blog!]
-  posts(after: String, before: String, first: Int, last: Int, orderBy: QueryFindManyPostOrderByInput, skip: Int, where: QueryFindManyPostWhereInput): [CustomPost!]
-}
-
-input QueryFindManyAuthorFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: DateTime
-  notIn: [DateTime!]
-}
-
-input QueryFindManyAuthorWhereInput {
-  AND: [QueryFindManyAuthorWhereInput!]
-  blog: QueryFindManyAuthorWhereInput
-  createdAt: QueryFindManyAuthorFilter
-  id: IntFilter
-  name: NullableStringFilter
-  NOT: [QueryFindManyAuthorWhereInput!]
-  OR: [QueryFindManyAuthorWhereInput!]
-  posts: QueryFindManyAuthorFilter
-  rating: FloatFilter
-  updatedAt: QueryFindManyAuthorFilter
-}
-
-input QueryFindManyPostOrderByInput {
-  id: OrderByArg
-  title: OrderByArg
-}
-
-input QueryFindManyPostWhereInput {
-  AND: [QueryFindManyPostWhereInput!]
-  author: QueryFindManyPostWhereInput
-  blog: QueryFindManyPostWhereInput
-  id: IntFilter
-  NOT: [QueryFindManyPostWhereInput!]
-  OR: [QueryFindManyPostWhereInput!]
-  title: StringFilter
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [CustomPost!]
 }
 
 input StringFilter {
