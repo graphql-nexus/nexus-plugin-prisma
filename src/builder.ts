@@ -525,16 +525,4 @@ export class SchemaBuilder {
 
     return result
   }
-
-  protected renameInputObject(
-    graphQLTypeName: string,
-    fieldName: string,
-    inputType: DMMF.External.InputType,
-  ) {
-    if (inputType.isWhereType) {
-      return this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
-    }
-
-    return this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
-  }
 }
