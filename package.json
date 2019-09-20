@@ -21,7 +21,6 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/photon": "^0.2.6",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
