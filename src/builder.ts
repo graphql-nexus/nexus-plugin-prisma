@@ -483,7 +483,7 @@ export class SchemaBuilder {
         if (!opts) {
           opts = {}
         }
-        if (!opts.pagination) {
+        if (opts.pagination === undefined) {
           opts.pagination = true
         }
         const fieldName = opts.alias ? opts.alias : graphqlField.name
