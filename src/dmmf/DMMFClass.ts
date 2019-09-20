@@ -1,5 +1,5 @@
 import { ExternalDMMF as DMMF } from './types'
-import { keyBy } from '../utils'
+import { indexBy } from '../utils'
 
 export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel
@@ -11,28 +11,25 @@ export class DMMFClass implements DMMF.Document {
   public outputTypesIndex: Index<DMMF.OutputType> = {}
   public inputTypes: DMMF.InputType[]
   public inputTypesIndex: Index<DMMF.InputType>
-  public enumMap: Index<DMMF.Enum>
-  public modelMap: Index<DMMF.Model>
+  public enumsIndex: Index<DMMF.Enum>
+  public modelsIndex: Index<DMMF.Model>
 
   constructor({ datamodel, schema, mappings }: DMMF.Document) {
     this.datamodel = datamodel
     this.schema = schema
     this.mappings = mappings
 
-    this.enumMap = this.getEnumMap()
-    this.queryType = this.getQueryType()
-    this.mutationType = this.getMutationType()
-    this.modelMap = this.getModelMap()
+    this.queryType = schema.outputTypes.find(t => t.name === 'Query')!
+    this.mutationType = schema.outputTypes.find(t => t.name === 'Mutation')!
 
-    this.inputTypes = this.schema.inputTypes
-    this.inputTypesIndex = this.getInputTypeMap()
+    this.modelsIndex = indexBy('name', datamodel.models)
+    this.enumsIndex = indexBy('name', schema.enums)
 
-    this.outputTypes = this.schema.outputTypes
-    this.outputTypesIndex = this.getOutputTypeMap()
+    this.inputTypes = schema.inputTypes
+    this.inputTypesIndex = indexBy('name', schema.inputTypes)
 
-    // needed as references are not kept
-    this.queryType = this.outputTypesIndex.Query
-    this.mutationType = this.outputTypesIndex.Mutation
+    this.outputTypes = schema.outputTypes
+    this.outputTypesIndex = indexBy('name', schema.outputTypes)
   }
 
   getInputType(inputTypeName: string) {
@@ -56,7 +53,7 @@ export class DMMFClass implements DMMF.Document {
   }
 
   getEnumType(enumTypeName: string) {
-    const enumType = this.enumMap[enumTypeName]
+    const enumType = this.enumsIndex[enumTypeName]
 
     if (!enumType) {
       throw new Error('Could not find enum type name: ' + enumTypeName)
@@ -66,7 +63,7 @@ export class DMMFClass implements DMMF.Document {
   }
 
   getModelOrThrow(modelName: string) {
-    const model = this.modelMap[modelName]
+    const model = this.modelsIndex[modelName]
 
     if (!model) {
       throw new Error('Could not find model for model: ' + modelName)
@@ -76,7 +73,7 @@ export class DMMFClass implements DMMF.Document {
   }
 
   hasModel(modelName: string) {
-    const model = this.modelMap[modelName]
+    const model = this.modelsIndex[modelName]
 
     if (!model) {
       return false
@@ -93,24 +90,5 @@ export class DMMFClass implements DMMF.Document {
     }
 
     return mapping
-  }
-
-  protected getQueryType(): DMMF.OutputType {
-    return this.schema.outputTypes.find(t => t.name === 'Query')!
-  }
-  protected getMutationType(): DMMF.OutputType {
-    return this.schema.outputTypes.find(t => t.name === 'Mutation')!
-  }
-  protected getEnumMap(): Index<DMMF.Enum> {
-    return keyBy(this.schema.enums, e => e.name)
-  }
-  protected getModelMap(): Index<DMMF.Model> {
-    return keyBy(this.datamodel.models, m => m.name)
-  }
-  protected getOutputTypeMap(): Index<DMMF.OutputType> {
-    return keyBy(this.outputTypes, t => t.name)
-  }
-  protected getInputTypeMap(): Index<DMMF.InputType> {
-    return keyBy(this.schema.inputTypes, t => t.name)
   }
 }

@@ -2,14 +2,31 @@ import { relative } from 'path'
 import * as DMMF from './dmmf'
 import { OperationName, IFieldNamingStrategy } from './naming-strategies'
 
-export const keyBy: <T>(
-  collection: T[],
-  iteratee: (value: T) => string,
-) => Record<string, T> = (collection, iteratee) => {
-  return collection.reduce<any>((acc, curr) => {
-    acc[iteratee(curr)] = curr
-    return acc
-  }, {})
+// TODO `any` should be `unknown` but there is a bug (?)
+// preventing that from working, see:
+// https://github.com/microsoft/TypeScript/issues/33521
+
+/**
+ * TODO
+ */
+export const indexBy = <T extends Record<string, any>>(
+  indexer: ((value: T) => string) | keyof T,
+  xs: T[],
+): Index<T> => {
+  const seed: Index<T> = {}
+  if (typeof indexer === 'function') {
+    return xs.reduce((index, x) => {
+      const address = indexer(x)
+      index[address] = x
+      return index
+    }, seed)
+  } else {
+    return xs.reduce((index, x) => {
+      const address = x[indexer]
+      index[address] = x
+      return index
+    }, seed)
+  }
 }
 
 export function partition<T>(
