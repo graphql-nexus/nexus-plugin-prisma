@@ -12,9 +12,9 @@
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "dev": "tsc --watch",
-    "prepublish": "yarn build",
+    "prepublish": "yarn -s build",
     "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
-    "test": "yarn jest"
+    "test": "jest"
   },
   "dependencies": {
     "nexus": "^0.12.0-beta.8",
