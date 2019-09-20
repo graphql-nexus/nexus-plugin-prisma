@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn -s clean && tsc",
     "style": "prettier --write 'src/**/*'",
     "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index.ts",
     "generate": "prisma2 generate",
