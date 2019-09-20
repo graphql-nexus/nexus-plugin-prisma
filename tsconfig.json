@@ -8,7 +8,9 @@
     "rootDir": "src",
     "outDir": "dist",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "declarationMap": true,
+    "typeRoots": ["node_modules/@types", "types"]
   },
   "include": ["src"]
 }

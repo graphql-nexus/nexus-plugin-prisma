@@ -12,16 +12,15 @@
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "dev": "tsc --watch",
-    "prepublish": "yarn build",
+    "prepublish": "yarn -s build",
     "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
-    "test": "yarn jest"
+    "test": "jest"
   },
   "dependencies": {
-    "nexus": "^0.12.0-beta.8",
+    "nexus": "^0.12.0-beta.9",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/photon": "^0.2.6",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
@@ -31,7 +30,7 @@
     "fs-extra": "^8.1.0",
     "graphql": "^14.5.4",
     "jest": "^24.9.0",
-    "jest-watch-typeahead": "^0.3.1",
+    "jest-watch-typeahead": "^0.4.0",
     "prettier": "^1.17.1",
     "prisma2": "^2.0.0-alpha.185",
     "tmp": "^0.1.0",
