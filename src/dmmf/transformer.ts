@@ -1,6 +1,6 @@
 import { DMMF, ExternalDMMF } from './types'
 
-export function transformDMMF(document: DMMF.Document): ExternalDMMF.Document {
+export function transform(document: DMMF.Document): ExternalDMMF.Document {
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as ExternalDMMF.Mapping[],
@@ -40,7 +40,10 @@ function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
 }
 
 function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
-  let inputType = arg.inputType.find(a => a.kind === 'object')!
+  // FIXME: *Enum*Filter are currently empty
+  let inputType = arg.inputType.some(a => a.kind === 'enum')
+    ? arg.inputType[0]
+    : arg.inputType.find(a => a.kind === 'object')!
 
   if (!inputType) {
     inputType = arg.inputType[0]
