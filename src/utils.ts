@@ -7,6 +7,7 @@ import { OperationName, FieldNamingStrategy } from './naming-strategies'
 // TODO `any` should be `unknown` but there is a bug (?)
 // preventing that from working, see:
 // https://github.com/microsoft/TypeScript/issues/33521
+// https://stackoverflow.com/questions/58030413/calculate-union-type-of-key-names-in-object-whose-values-are-indexable
 
 /**
  * TODO

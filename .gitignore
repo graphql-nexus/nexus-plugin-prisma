@@ -1,5 +1,4 @@
 dist
-nexus_prisma_ncc_build
 node_modules
 example/db
 example/migrations
