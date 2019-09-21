@@ -5,12 +5,13 @@ export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel
   public schema: DMMF.Schema
   public mappings: DMMF.Mapping[]
-  public queryType: DMMF.OutputType
-  public mutationType: DMMF.OutputType
+  public queryType: OutputType
+  public mutationType: OutputType
   public outputTypes: DMMF.OutputType[]
   public outputTypesIndex: Index<DMMF.OutputType> = {}
   public inputTypes: DMMF.InputType[]
   public inputTypesIndex: Index<DMMF.InputType>
+  public mappingsIndex: Index<DMMF.Mapping>
   public enumsIndex: Index<DMMF.Enum>
   public modelsIndex: Index<DMMF.Model>
 
@@ -18,9 +19,6 @@ export class DMMFClass implements DMMF.Document {
     this.datamodel = datamodel
     this.schema = schema
     this.mappings = mappings
-
-    this.queryType = schema.outputTypes.find(t => t.name === 'Query')!
-    this.mutationType = schema.outputTypes.find(t => t.name === 'Mutation')!
 
     this.modelsIndex = indexBy('name', datamodel.models)
     this.enumsIndex = indexBy('name', schema.enums)
@@ -30,6 +28,10 @@ export class DMMFClass implements DMMF.Document {
 
     this.outputTypes = schema.outputTypes
     this.outputTypesIndex = indexBy('name', schema.outputTypes)
+    this.mappingsIndex = indexBy('model', mappings)
+
+    this.queryType = this.getOutputType('Query')
+    this.mutationType = this.getOutputType('Mutation')
   }
 
   getInputType(inputTypeName: string) {
@@ -49,7 +51,7 @@ export class DMMFClass implements DMMF.Document {
       throw new Error('Could not find output type name: ' + outputTypeName)
     }
 
-    return outputType
+    return new OutputType(outputType)
   }
 
   hasOutputType(outputTypeName: string) {
@@ -103,12 +105,36 @@ export class DMMFClass implements DMMF.Document {
   }
 
   getMapping(modelName: string) {
-    const mapping = this.mappings.find(m => m.model === modelName)
+    const mapping = this.mappingsIndex[modelName]
 
     if (!mapping) {
       throw new Error('Could not find mapping for model: ' + modelName)
     }
 
     return mapping
+  }
+}
+
+class OutputType {
+  public name: string
+  public fields: DMMF.SchemaField[]
+  public isEmbedded?: boolean
+
+  constructor(protected outputType: DMMF.OutputType) {
+    this.name = outputType.name
+    this.fields = outputType.fields
+    this.isEmbedded = outputType.isEmbedded
+  }
+
+  getField(fieldName: string) {
+    const field = this.outputType.fields.find(f => f.name === fieldName)
+
+    if (!field) {
+      throw new Error(
+        `Could not find field field '${fieldName}' on type ${this.outputType.name}`,
+      )
+    }
+
+    return field
   }
 }

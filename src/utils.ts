@@ -1,8 +1,6 @@
 import { isNamedType } from 'graphql'
 import { core } from 'nexus'
 import { relative } from 'path'
-import * as DMMF from './dmmf'
-import { OperationName, FieldNamingStrategy } from './naming-strategies'
 
 // TODO `any` should be `unknown` but there is a bug (?)
 // preventing that from working, see:
@@ -113,23 +111,6 @@ export function getImportPathRelativeToOutput(
   relativePath = relativePath.replace(/\\/g, '/')
 
   return relativePath
-}
-
-export function getCRUDFieldName(
-  modelName: string,
-  fieldName: string,
-  mapping: DMMF.External.Mapping,
-  namingStrategy: FieldNamingStrategy,
-) {
-  const operationName = Object.keys(mapping).find(
-    key => (mapping as any)[key] === fieldName,
-  ) as OperationName | undefined
-
-  if (!operationName || !namingStrategy[operationName]) {
-    throw new Error(`Could not find mapping for field ${fieldName}`)
-  }
-
-  return namingStrategy[operationName](fieldName, modelName)
 }
 
 /**

@@ -1,5 +1,4 @@
-import { getSupportedQueries, getSupportedMutations } from './supported-ops'
-import { flatMap, getCRUDFieldName } from './utils'
+import { getMappedFieldsFor } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -67,49 +66,16 @@ ${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
 }
 
 function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
-  const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
-    const queriesNames = getSupportedQueries(mapping)
-    return {
-      fields: dmmf.queryType.fields.filter(query =>
-        queriesNames.includes(query.name),
-      ),
-      mapping,
-    }
-  })
-  const queriesByType = flatMap(queryFieldsWithMapping, ({ fields, mapping }) =>
-    fields.map(field => ({
-      fieldName: getCRUDFieldName(
-        mapping.model,
-        field.name,
-        mapping,
-        defaultFieldNamingStrategy,
-      ),
-      returnType: field.outputType.type,
-    })),
+  const queriesByType = getMappedFieldsFor('Query', dmmf).map(mappedfield => ({
+    fieldName: mappedfield.field.name,
+    returnType: mappedfield.field.outputType.type,
+  }))
+  const mutationsByType = getMappedFieldsFor('Mutation', dmmf).map(
+    mappedField => ({
+      fieldName: mappedField.field.name,
+      returnType: mappedField.field.outputType.type,
+    }),
   )
-  const mutationsFieldsWithMapping = dmmf.mappings.map(mapping => {
-    const mutationsNames = getSupportedMutations(mapping)
-    return {
-      fields: dmmf.mutationType.fields.filter(mutation =>
-        mutationsNames.includes(mutation.name),
-      ),
-      mapping,
-    }
-  })
-  const mutationsByType = flatMap(
-    mutationsFieldsWithMapping,
-    ({ fields, mapping }) =>
-      fields.map(field => ({
-        fieldName: getCRUDFieldName(
-          mapping.model,
-          field.name,
-          mapping,
-          defaultFieldNamingStrategy,
-        ),
-        returnType: field.outputType.type,
-      })),
-  )
-
   const fieldsByType = dmmf.datamodel.models.reduce<
     Record<string, { fieldName: string; returnType: string }[]>
   >((acc, m) => {
@@ -149,19 +115,15 @@ ${renderNexusPrismaType(fields)}
 }
 
 function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
-  const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
-    const queriesNames = getSupportedQueries(mapping)
-    return {
-      fields: dmmf.queryType.fields
-        .filter(query => queriesNames.includes(query.name))
-        .filter(q => q.outputType.isList && q.outputType.kind === 'object'),
-      mapping,
-    }
-  })
-  const queriesFields = flatMap(queryFieldsWithMapping, ({ fields, mapping }) =>
-    fields.map(field => {
-      const whereArg = field.args.find(a => a.name === 'where')!
-      const orderByArg = field.args.find(a => a.name === 'orderBy')!
+  const queriesFields = getMappedFieldsFor('Query', dmmf)
+    .filter(
+      mappedField =>
+        mappedField.field.outputType.isList &&
+        mappedField.field.outputType.kind === 'object',
+    )
+    .map(mappedField => {
+      const whereArg = mappedField.field.args.find(a => a.name === 'where')!
+      const orderByArg = mappedField.field.args.find(a => a.name === 'orderBy')!
       const whereInput = dmmf.schema.inputTypes.find(
         i => i.name === whereArg.inputType.type,
       )!
@@ -170,20 +132,17 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
       )!
 
       return {
-        fieldName: getCRUDFieldName(
-          mapping.model,
-          field.name,
-          mapping,
-          defaultFieldNamingStrategy,
+        fieldName: defaultFieldNamingStrategy[mappedField.operation](
+          mappedField.field.name,
+          mappedField.model,
         ),
         filtering: whereInput,
         ordering: orderByInput,
       }
-    }),
-  )
+    })
 
   const fieldsByType = dmmf.datamodel.models
-    .map(m => dmmf.schema.outputTypes.find(o => o.name === m.name)!)
+    .map(m => dmmf.getOutputType(m.name))
     .reduce<
       Record<
         string,
