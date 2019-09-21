@@ -37,8 +37,9 @@ export function doGenerate(
 }
 
 export function render(dmmf: DMMF.DMMF, photonPath: string) {
+  // photonPath contains \\ in windows. We'll replace it with a / if it occurs.
   return `\
-import * as photon from '${photonPath}';
+import * as photon from '${photonPath.replace(/\\g/, '/')}';
 import { core } from 'nexus';
 // Types helpers
 ${renderStaticTypes()}
