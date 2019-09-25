@@ -12,7 +12,7 @@
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "dev": "tsc --watch",
-    "prepublish": "yarn -s build",
+    "prepublishOnly": "yarn -s build",
     "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
     "test": "jest"
   },
