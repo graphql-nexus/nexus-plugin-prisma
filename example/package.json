@@ -1,0 +1,33 @@
+{
+  "name": "example",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn -s clean && tsc",
+    "style": "prettier --write 'src/**/*'",
+    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index.ts",
+    "generate": "prisma2 generate",
+    "fake-data": "ts-node prisma/fake-data.ts"
+  },
+  "dependencies": {
+    "graphql": "^14.3.1",
+    "graphql-yoga": "^1.18.2",
+    "nexus": "^0.12.0-beta.8",
+    "nexus-prisma": "file:.."
+  },
+  "devDependencies": {
+    "@types/faker": "^4.1.5",
+    "faker": "^4.1.0",
+    "prettier": "^1.18.2",
+    "prisma2": "^2.0.0-alpha.185",
+    "ts-node": "^8.3.0",
+    "ts-node-dev": "^1.0.0-pre.41",
+    "typescript": "^3.5.3"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}

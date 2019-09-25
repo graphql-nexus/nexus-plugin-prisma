@@ -1,6 +1,8 @@
-.DS_Store
-node_modules
 dist
-package-lock.json
-*.log
-.idea
+node_modules
+example/db
+example/migrations
+example/generated
+.DS_Store
+yarn-error.log
+failed-*.md
