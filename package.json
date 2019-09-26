@@ -6,7 +6,8 @@
   "license": "MIT",
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "clean": "rm -rf dist",
