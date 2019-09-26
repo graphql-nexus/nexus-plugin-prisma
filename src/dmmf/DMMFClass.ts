@@ -1,5 +1,5 @@
 import { ExternalDMMF as DMMF } from './types'
-import { indexBy } from '../utils'
+import { indexBy, Index } from '../utils'
 
 export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel

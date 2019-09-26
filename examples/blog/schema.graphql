@@ -63,7 +63,7 @@ type Blog {
   createdAt: DateTime!
   id: Int!
   name: String!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: BlogPostsWhereInput): [CustomPost!]
+  posts(orderBy: PostOrderByInput, where: BlogPostsWhereInput): [CustomPost!]
   updatedAt: DateTime!
   viewCount: Int!
 }
