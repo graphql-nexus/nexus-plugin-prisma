@@ -10,8 +10,7 @@
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
-    "noErrorTruncation": true,
-    "typeRoots": ["node_modules/@types", "types"]
+    "noErrorTruncation": true
   },
   "include": ["src"]
 }
