@@ -69,9 +69,9 @@
   integrity sha512-FwI9gX75FgVBJ7ywgnq/P7tw+/o1GUbtP0KzbtusLigAOgIgNISRK0ZPl4qertvXSIE8YbsVJueQ90cDt9YYyw==
 
 "@types/node@*":
-  version "12.7.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.5.tgz#e19436e7f8e9b4601005d73673b6dc4784ffcc2f"
-  integrity sha512-9fq4jZVhPNW8r+UYKnxF1e2HkDWOWKM5bC2/7c9wPV835I0aOrVbS/Hw/pWPk2uKrNXQqg9Z959Kz+IYDd5p3w==
+  version "12.7.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.8.tgz#cb1bf6800238898bc2ff6ffa5702c3cadd350708"
+  integrity sha512-FMdVn84tJJdV+xe+53sYiZS4R5yn1mAIxfj+DVoNiQjTYz1+OYmjwEZr1ev9nU0axXwda0QDbYl06QHanRVH3A==
 
 "@types/range-parser@*":
   version "1.2.3"
@@ -681,9 +681,9 @@ graphql-yoga@^1.18.2:
     subscriptions-transport-ws "^0.9.8"
 
 graphql@*, "graphql@^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0", graphql@^14.3.1:
-  version "14.5.7"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.7.tgz#8646a3fcc07922319cc3967eba4a64b32929f77f"
-  integrity sha512-as410RMJSUFqF8RcH2QWxZ5ioqHzsH9VWnWbaU+UnDXJ/6azMDIYPrtXCBPXd8rlunEVb7W8z6fuUnNHMbFu9A==
+  version "14.5.8"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.8.tgz#504f3d3114cb9a0a3f359bbbcf38d9e5bf6a6b3c"
+  integrity sha512-MMwmi0zlVLQKLdGiMfWkgQD7dY/TUKt4L+zgJ/aR0Howebod3aNgP5JkgvAULiR2HPVZaP2VEElqtdidHweLkg==
   dependencies:
     iterall "^1.2.2"
 
@@ -922,9 +922,9 @@ negotiator@0.6.2:
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
 nexus-prisma@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.4.1.tgz#c0f178293fb7571b90434098ad6b4e8b20a59ffb"
-  integrity sha512-dDCu598GECrEh2SPrFAYKP5cXdHupMVKr9+ZZcp4XqjWyEgRaPg/HfYsZbidcEyJTatahGjC8E0NP/jOGTXunA==
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.4.2.tgz#b94e144b7395554eae1263157bc72f5062a62bfb"
+  integrity sha512-ssNBumwDlvV+cMDMCKWpyk50p/Sotf2ViBuodJHKMMwuda9e4HmDweRQC0/MV53VT56XocAgMtY3/NginkANvg==
   dependencies:
     fs-extra "^8.1.0"
     nexus "^0.12.0-beta.9"
