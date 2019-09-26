@@ -5,7 +5,6 @@
     "lib": ["esnext"],
     "rootDir": ".",
     "strict": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "dist"
