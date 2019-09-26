@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn -s clean && tsc",
+    "build": "yarn -s clean && yarn -s generate && tsc",
     "style": "prettier --write 'src/**/*'",
-    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/index.ts",
-    "generate": "prisma2 generate",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/index.ts",
+    "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
+    "generate:prisma": "prisma2 generate",
+    "generate:nexus": "ts-node --transpile-only src/schema",
     "fake-data": "ts-node prisma/fake-data.ts"
   },
   "dependencies": {
