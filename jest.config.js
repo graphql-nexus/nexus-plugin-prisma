@@ -9,8 +9,6 @@ module.exports = {
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
-  // FIXME https://github.com/kulshekhar/ts-jest/issues/1240
-  moduleFileExtensions: ['js', 'ts', 'd.ts'],
   globals: {
     'ts-jest': {
       diagnostics: {
