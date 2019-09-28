@@ -60,7 +60,7 @@ objectType({
         const result = doSomething(databaseInfo)
         return result
       }
-    });
+    })
   }
 })
 ```
