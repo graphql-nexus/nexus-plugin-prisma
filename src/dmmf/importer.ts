@@ -1,4 +1,4 @@
-import { transformDMMF } from './transformer'
+import { transform } from './transformer'
 import { DMMFClass } from './DMMFClass'
 
 export const get = (photonPackagePath: string): DMMFClass => {
@@ -10,6 +10,6 @@ export const get = (photonPackagePath: string): DMMFClass => {
       `Could not find photon package at ${photonPackagePath}. Check that you have configured your Photon generator block in schema.prisma correctly and run prisma generate.`,
     )
   }
-  const nexusPrismaDMMF = transformDMMF(Photon.dmmf)
+  const nexusPrismaDMMF = transform(Photon.dmmf)
   return new DMMFClass(nexusPrismaDMMF)
 }

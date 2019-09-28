@@ -3,19 +3,19 @@ import * as DMMF from './dmmf'
 import { upperFirst } from './utils'
 
 export interface ArgsNamingStrategy {
-  where: (typeName: string, fieldName: string) => string
-  orderBy: (typeName: string, fieldName: string) => string
-  relationFilter: (typeName: string, fieldName: string) => string
+  whereInput: (typeName: string, fieldName: string) => string
+  orderByInput: (typeName: string, fieldName: string) => string
+  relationFilterInput: (typeName: string, fieldName: string) => string
 }
 
 export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
-  where(typeName, fieldName) {
-    return `${upperFirst(typeName)}${upperFirst(fieldName)}Where`
+  whereInput(typeName, fieldName) {
+    return `${upperFirst(typeName)}${upperFirst(fieldName)}WhereInput`
   },
-  orderBy(typeName, fieldName) {
-    return `${upperFirst(typeName)}${upperFirst(fieldName)}OrderBy`
+  orderByInput(typeName, fieldName) {
+    return `${upperFirst(typeName)}${upperFirst(fieldName)}OrderByInput`
   },
-  relationFilter(typeName, fieldName) {
+  relationFilterInput(typeName, fieldName) {
     return `${upperFirst(typeName)}${upperFirst(fieldName)}Filter`
   },
 }

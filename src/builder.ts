@@ -1,24 +1,23 @@
-import * as path from 'path'
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
+import * as path from 'path'
 import * as DMMF from './dmmf'
-import * as Typegen from './typegen'
 import * as GraphQL from './graphql'
-import {
-  assertPhotonInContext,
-  flatMap,
-  getCRUDFieldName,
-  nexusOpts as nexusFieldOpts,
-  partition,
-} from './utils'
 import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   ArgsNamingStrategy,
   FieldNamingStrategy,
 } from './naming-strategies'
-import { dateTimeScalar, uuidScalar } from './scalars'
+import { Publisher } from './publisher'
 import { getSupportedMutations, getSupportedQueries } from './supported-ops'
+import * as Typegen from './typegen'
+import {
+  assertPhotonInContext,
+  getCRUDFieldName,
+  nexusFieldOpts,
+  unwrapTypes,
+} from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -28,16 +27,8 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
-const stripInputSuffix = (
-  dmmf: DMMF.External.InputType,
-): DMMF.External.InputType => {
-  return {
-    ...dmmf,
-    name: dmmf.name.replace(/Input$/, ''),
-  }
-}
-
 export interface Options {
+  types: any
   photon?: (ctx: any) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
@@ -46,6 +37,10 @@ export interface Options {
   outputs?: {
     typegen?: string
   }
+}
+
+export interface InternalOptions extends Options {
+  dmmf?: DMMF.DMMF // For testing
 }
 
 /**
@@ -81,8 +76,8 @@ export interface Options {
  * own typegen approach. This system will change once Nexus Plugins are
  * released.
  */
-export function build(options: Options = {}) {
-  const builder = new Builder(options)
+export function build(options: Options) {
+  const builder = new SchemaBuilder(options)
   return builder.build()
 }
 
@@ -97,7 +92,7 @@ const defaultOptions = {
     photon: '@generated/photon',
   },
   outputs: {
-    // This default is based on the privledge given to @types
+    // This default is based on the priviledge given to @types
     // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
     typegen: path.join(
       __dirname,
@@ -106,29 +101,30 @@ const defaultOptions = {
   },
 }
 
-interface CustomInputArg {
+export interface CustomInputArg {
   arg: DMMF.External.SchemaArg
-  type: DMMF.External.InputType | DMMF.External.Enum | 'scalar'
+  type: DMMF.External.InputType | DMMF.External.Enum | { name: string } // scalar
 }
 
-export class Builder {
+export class SchemaBuilder {
   protected readonly dmmf: DMMF.DMMF
-  protected visitedInputTypesMap: Record<string, boolean>
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: any
+  protected publisher: Publisher
 
-  constructor(protected options: Options) {
+  constructor(protected options: InternalOptions) {
     const config = {
       ...defaultOptions,
       ...options,
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.dmmf = DMMF.get(config.inputs.photon)
+    this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
+    this.publisher = new Publisher(this.dmmf, unwrapTypes(config.types))
+
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
-    this.visitedInputTypesMap = {}
     this.getPhoton = config.photon
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
@@ -139,7 +135,7 @@ export class Builder {
   }
 
   build() {
-    return [this.buildCRUD(), this.buildModel(), ...this.buildScalars()]
+    return [this.buildCRUD(), this.buildModel()]
   }
 
   /**
@@ -213,7 +209,6 @@ export class Builder {
               const gqlFieldName = resolvedConfig.alias
                 ? resolvedConfig.alias
                 : mappedFieldName
-              const gqlType = resolvedConfig.type!
               const operationName = Object.keys(mappedField.mapping).find(
                 key => (mappedField.mapping as any)[key] === field.name,
               ) as keyof DMMF.External.Mapping | undefined
@@ -225,7 +220,7 @@ export class Builder {
               }
 
               t.field(gqlFieldName, {
-                type: gqlType,
+                type: this.publisher.outputType(resolvedConfig.type!, field),
                 list: field.outputType.isList || undefined,
                 nullable: !field.outputType.isRequired,
                 args: this.argsFromField(
@@ -320,13 +315,13 @@ export class Builder {
     operationName: keyof DMMF.External.Mapping | null,
     field: DMMF.External.SchemaField,
     opts: FieldPublisherConfig,
-  ) {
+  ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[] = []
 
     if (graphQLTypeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => ({
         arg,
-        type: stripInputSuffix(this.dmmf.getInputType(arg.inputType.type)),
+        type: this.dmmf.getInputType(arg.inputType.type),
       }))
     } else {
       args = this.argsFromQueryOrModelField(
@@ -337,7 +332,10 @@ export class Builder {
       )
     }
 
-    return this.dmmfArgsToNexusArgs(args)
+    return args.reduce<Nexus.core.ArgsRecord>((acc, customArg) => {
+      acc[customArg.arg.name] = this.publisher.inputType(customArg) as any //FIXME
+      return acc
+    }, {})
   }
 
   protected argsFromQueryOrModelField(
@@ -349,11 +347,10 @@ export class Builder {
     let args: CustomInputArg[] = []
 
     if (opts.filtering) {
-      const inputObjectTypeDefName = `${dmmfField.outputType.type}Where`
+      const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
       const whereArg = dmmfField.args.find(
         arg =>
-          arg.inputType.type === inputObjectTypeDefName + 'Input' &&
-          arg.name === 'where',
+          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
       )
 
       if (!whereArg) {
@@ -374,11 +371,9 @@ export class Builder {
     }
 
     if (opts.ordering) {
-      const orderByTypeName = `${dmmfField.outputType.type}OrderBy`
+      const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
       const orderByArg = dmmfField.args.find(
-        arg =>
-          arg.inputType.type === orderByTypeName + 'Input' &&
-          arg.name === 'orderBy',
+        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
@@ -408,7 +403,10 @@ export class Builder {
             )
 
       args.push(
-        ...paginationsArgs.map(a => ({ arg: a, type: 'scalar' as 'scalar' })),
+        ...paginationsArgs.map(a => ({
+          arg: a,
+          type: { name: a.inputType.type },
+        })),
       )
     }
 
@@ -423,14 +421,14 @@ export class Builder {
   ): DMMF.External.InputType {
     // TODO Trying out this naming. Might be the wrong mental model.
     // Revisit this in the near future for reflection.
-    const photonObject = this.dmmf.getInputType(inputTypeName + 'Input')
+    const photonObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
     // version as-is.
     //
     if (fieldWhitelist === true) {
-      return stripInputSuffix(photonObject)
+      return photonObject
     }
 
     // CHECK
@@ -461,87 +459,13 @@ export class Builder {
     )
 
     const uniqueName = photonObject.isWhereType
-      ? this.argsNamingStrategy.where(graphQLTypeName, fieldName)
-      : this.argsNamingStrategy.orderBy(graphQLTypeName, fieldName)
+      ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
+      : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
 
     return {
       ...photonObject,
       name: uniqueName,
       fields: userExposedObjectFields,
-    }
-  }
-
-  protected dmmfArgsToNexusArgs(args: CustomInputArg[]) {
-    return args.reduce<Record<string, any>>((acc, customArg) => {
-      if (customArg.type === 'scalar') {
-        acc[customArg.arg.name] = Nexus.core.arg(
-          nexusFieldOpts(customArg.arg.inputType),
-        )
-      } else {
-        if (!this.visitedInputTypesMap[customArg.type.name]) {
-          acc[customArg.arg.name] = this.createInputOrEnumType(customArg)
-        } else {
-          acc[customArg.arg.name] = Nexus.core.arg(
-            nexusFieldOpts({
-              ...customArg.arg.inputType,
-              type: customArg.type.name.replace(/Input$/, ''),
-            }),
-          )
-        }
-      }
-      return acc
-    }, {})
-  }
-
-  protected createInputOrEnumType(customArg: CustomInputArg) {
-    if (typeof customArg.type !== 'string') {
-      this.visitedInputTypesMap[
-        customArg.type.name.replace(/Input$/, '')
-      ] = true
-    }
-
-    if (customArg.arg.inputType.kind === 'enum') {
-      const eType = customArg.type as DMMF.External.Enum
-
-      return Nexus.enumType({
-        name: eType.name,
-        members: eType.values,
-      })
-    } else {
-      const inputType = customArg.type as DMMF.External.InputType
-      return Nexus.inputObjectType({
-        name: inputType.name.replace(/Input$/, ''),
-        definition: t => {
-          const [scalarFields, objectFields] = partition(
-            inputType.fields,
-            f => f.inputType.kind === 'scalar',
-          )
-          const remappedObjectFields = objectFields.map(field => ({
-            ...field,
-            inputType: {
-              ...field.inputType,
-              type:
-                this.visitedInputTypesMap[
-                  field.inputType.type.replace(/Input$/, '')
-                ] === true
-                  ? // Simply reference the field input type if it's already been visited, otherwise create it
-                    field.inputType.type.replace(/Input$/, '')
-                  : this.createInputOrEnumType({
-                      arg: field,
-                      type:
-                        field.inputType.kind === 'enum'
-                          ? this.dmmf.getEnumType(field.inputType.type)
-                          : stripInputSuffix(
-                              this.dmmf.getInputType(field.inputType.type),
-                            ),
-                    }),
-            },
-          }))
-          ;[...scalarFields, ...remappedObjectFields].forEach(field => {
-            t.field(field.name, nexusFieldOpts(field.inputType))
-          })
-        },
-      })
     }
   }
 
@@ -559,13 +483,16 @@ export class Builder {
         if (!opts) {
           opts = {}
         }
-        if (!opts.pagination) {
+        if (opts.pagination === undefined) {
           opts.pagination = true
         }
         const fieldName = opts.alias ? opts.alias : graphqlField.name
         const type = opts.type ? opts.type : graphqlField.outputType.type
         const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
-          ...nexusFieldOpts({ ...graphqlField.outputType, type }),
+          ...nexusFieldOpts({
+            ...graphqlField.outputType,
+            type: this.publisher.outputType(type, graphqlField),
+          }),
           args: this.argsFromField(
             prismaModelName,
             graphQLTypeName,
@@ -597,46 +524,5 @@ export class Builder {
     }, seed)
 
     return result
-  }
-
-  protected renameInputObject(
-    graphQLTypeName: string,
-    fieldName: string,
-    inputType: DMMF.External.InputType,
-  ) {
-    if (inputType.isWhereType) {
-      return this.argsNamingStrategy.where(graphQLTypeName, fieldName)
-    }
-
-    return this.argsNamingStrategy.orderBy(graphQLTypeName, fieldName)
-  }
-
-  // FIXME strongly type this so that build() does not return any[]
-  //
-  protected buildScalars() {
-    const allScalarNames = flatMap(this.dmmf.schema.outputTypes, o => o.fields)
-      .filter(
-        f =>
-          f.outputType.kind === 'scalar' &&
-          !GraphQL.scalarsNameValues.includes(f.outputType.type as any),
-      )
-      .map(f => f.outputType.type)
-    const dedupScalarNames = [...new Set(allScalarNames)]
-    const scalars: any[] = []
-
-    // FIXME The type of .type above is nexus.core.AllOutputTypes
-    // but this does not account for custom scalars. Nexus
-    // should change its AllOutputTypes type, or export a new type,
-    // that integrates custom scalers. Conversely, nexus-prisma
-    // typegen should contribute (e.g. via interface merging) to it
-    // the scalars found in DMMF.
-    if (dedupScalarNames.includes('DateTime' as any)) {
-      scalars.push(dateTimeScalar)
-    }
-    if (dedupScalarNames.includes('UUID' as any)) {
-      scalars.push(uuidScalar)
-    }
-
-    return scalars
   }
 }

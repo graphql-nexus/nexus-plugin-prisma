@@ -1,5 +1,5 @@
 import { ExternalDMMF as DMMF } from './types'
-import { indexBy } from '../utils'
+import { indexBy, Index } from '../utils'
 
 export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel
@@ -52,6 +52,16 @@ export class DMMFClass implements DMMF.Document {
     return outputType
   }
 
+  hasOutputType(outputTypeName: string) {
+    const outputType = this.outputTypesIndex[outputTypeName]
+
+    if (!outputType) {
+      return false
+    }
+
+    return true
+  }
+
   getEnumType(enumTypeName: string) {
     const enumType = this.enumsIndex[enumTypeName]
 
@@ -60,6 +70,16 @@ export class DMMFClass implements DMMF.Document {
     }
 
     return enumType
+  }
+
+  hasEnumType(enumTypeName: string) {
+    const enumType = this.enumsIndex[enumTypeName]
+
+    if (!enumType) {
+      return false
+    }
+
+    return true
   }
 
   getModelOrThrow(modelName: string) {

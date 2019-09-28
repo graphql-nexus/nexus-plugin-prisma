@@ -1,175 +1,156 @@
 <p align="center"><img src="https://i.imgur.com/8qvElTM.png" width="300" /></p>
 <p><h1 align="center">nexus-prisma</h1></p>
-<p align="center">
-  <a href="#features">Features</a> • <a href="#motivation">Motivation</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma-v2">Docs</a> • <a href="#examples">Examples</a> • <a href="https://nexus.js.org/docs/database-access-with-prisma#getting-started-v2">Get started</a>
+  <a href="https://circleci.com/gh/prisma-labs/nexus-prisma"><img src="https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg"></img></a>
 </p>
 
-<p align="center">
-  <a href="https://circleci.com/gh/prisma/nexus-prisma"><img src="https://circleci.com/gh/prisma/prisma.svg?style=shield"></img></a>
-  <a href="https://spectrum.chat/prisma/graphql"><img src="https://withspectrum.github.io/badge/badge.svg"></img></a>
-</p>
-
-`nexus-prisma` offers a [code-first](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5) approach for building GraphQL servers with a database. It auto-generates CRUD operations/resolvers that can be exposed and customized in your own GraphQL schema.
-
-Thanks to its unique appoach for constructing GraphQL schemas and generating resolvers, `nexus-prisma` removes the need for a traditional ORM or query builder (such as TypeORM, Sequelize, knex.js....).
-
-## Features
-
-- **No boilerplate**: Auto-generated CRUD operations for Prisma models
-- **Full type-safety**: Coherent set of types for GraphQL schema and database
-- **Customize Prisma models**: Easily hide fields or add computed fields
-- **Best practices**: Generated GraphQL schema follows best practices (e.g. `input` types for mutations)
-- **Code-first**: Programmatically define your GraphQL schema in JavaScript/TypeScript
-- **Compatible with GraphQL ecosystem**: Works with (`graphql-yoga`, `apollo-server`, ...)
-- **Incrementally adoptable**: Gradually migrate your app to `nexus-prisma`
-
-## Motivation
-
-`nexus-prisma` provides CRUD building blocks based on the Prisma datamodel. When implementing your GraphQL server, you build upon these building blocks and expose/customize them to your own API needs.
-
-![](https://imgur.com/dbEMHd5.png)
-
-When using `nexus-prisma`, you're using a _code-first_ (instead of an _SDL-first_) approach for GraphQL server development. Read more about the benefits of code-first in this article series:
-
-1. [The Problems of "Schema-First" GraphQL Server Development](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3)
-2. [Introducing GraphQL Nexus: Code-First GraphQL Server Development](https://www.prisma.io/blog/introducing-graphql-nexus-code-first-graphql-server-development-ll6s1yy5cxl5/)
-3. [Using GraphQL Nexus with a Database](https://www.prisma.io/blog/using-graphql-nexus-with-a-database-pmyl3660ncst/)
-
-## Documentation
-
-You can find the docs [here](https://nexus.js.org/docs/database-access-with-prisma-v2). They also include a [**Getting started**](https://nexus.js.org/docs/database-access-with-prisma-v2#getting-started)-section.
+`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or knex. And when you do need to drop down into custom resolvers a [Photon](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
 
 ## Examples
 
-Here's a minimal example for using `nexus-prisma`:
+You can find runnable examples in the [examples folder](https://github.com/prisma-labs/nexus-prisma/tree/master/examples). The following are isolated snippets to give you a sense for the DSL.
 
-**Prisma schema**:
+### Exposed Prisma Model
 
-```groovy
-datasource db {
-  provider = "sqlite"
-  url      = "file:db/next.db"
-  default  = true
-}
-
-generator photon {
-  provider = "photonjs"
-}
-
-generator nexus_prisma {
-  provider = "nexus-prisma"
-}
-
-model Todo {
-  id		ID @id
-  title	String
-  done	Boolean @default(false)
-}
-```
-
-**GraphQL server code** (based on `graphql-yoga`):
+Exposing one of your Prisma models in your GraphQL API
 
 ```ts
-import { nexusPrismaPlugin } from '@generated/nexus-prisma';
-import { Photon } from '@generated/photon';
-import { objectType, makeSchema, idArg } from 'nexus';
-import { GraphQLServer } from 'graphql-yoga';
-
-// Expose some CRUD operations
-const Query = objectType({
-  name: 'Query',
+objectType({
+  name: 'Post',
   definition(t) {
-    t.crud.todo();
-    t.crud.todos();
-  }
-});
+    t.model.id()
+    t.model.title()
+    t.model.content()
+  },
+})
+```
 
-// Customize the "Mutation" building block
-const Mutation = objectType({
-  name: 'Mutation',
+### Simple Computed Fields
+
+You can add (computed) fields to a Prisma model using the standard GraphQL Nexus API.
+
+```ts
+objectType({
+  name: "Post",
   definition(t) {
-    // Expose only the `createTodo` mutation (`updateTodo` and `deleteTodo` not exposed)
-    t.crud.createTodo();
+    t.model.id()
+    t.model.title()
+    t.model.content()
+    t.string("uppercaseTitle", {
+      resolve({ title }, args, ctx) {
+        return title.toUpperCase(),
+      }
+    })
+  },
+})
+```
 
-    // Add a custom `markAsDone` mutation
-    t.field('markAsDone', {
-      type: 'Todo',
-      args: { id: idArg() },
-      nullable: true,
-      resolve: (_, { id }, ctx) => {
-        return ctx.photon.todos.updateTodo({
-          where: { id },
-          data: { done: true }
-        });
+### Complex Computed Fields
+
+If you need more complicated logic for your computed field (e.g. have access to some information from the database), you can use the `photon` instance that's attached to the context and implement your resolver based on that.
+
+```ts
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.content()
+    t.string('anotherComputedField', {
+      async resolve({ title }, args, ctx) {
+        const databaseInfo = await ctx.photon.someModel.someOperation(...)
+        const result = doSomething(databaseInfo)
+        return result
       }
     });
   }
-});
+})
+```
 
-const Todo = objectType({
-  name: 'Todo',
+### Renamed Prisma Model Fields
+
+```ts
+objectType({
+  name: 'Post',
   definition(t) {
-    t.model.id();
-    t.model.title();
-    t.model.done();
-  }
-});
-
-const photon = new Photon();
-
-const nexusPrisma = nexusPrismaPlugin({
-  photon: ctx => photon
-});
-
-const schema = makeSchema({
-  types: [Query, Mutation, nexusPrisma],
-  outputs: {
-    schema: './generated/schema.graphql',
-    typegen: './generated/nexus'
-  }
-});
-
-const server = new GraphQLServer({
-  schema,
-  context: { photon }
-});
-server.start(() => console.log('Server is running on http://localhost:4000'));
+    t.model.id()
+    t.model.content({ alias: 'body' })
+  },
+})
 ```
 
-**Generated GraphQL schema**:
+### Exposed Reads on Model
 
-```graphql
-# The fully exposed "Query" building block
-type Query {
-  todo(where: TodoWhereUniqueInput!): Todo
-  todos(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    skip: Int
-  ): [Todo!]!
-}
+By default we expose only pagination. Ordering and filtering must be explicitely enabled because of the performance overhead that they might cause.
 
-# The customized "Mutation" building block
-type Mutation {
-  createTodo(data: TodoCreateInput!): Todo!
-  markAsDone(id: ID): Todo
-}
-
-# The Prisma model
-type Todo {
-  done: Boolean!
-  id: ID!
-  title: String!
-}
-
-# More of the generated building blocks:
-# e.g. `TodoWhereUniqueInput`, `TodoCreateInput`, ...
+```ts
+queryType({
+  definition(t) {
+    t.crud.post()
+    t.crud.posts({ ordering: true, filtering: true })
+  },
+})
 ```
 
-- You can find some easy-to-run example projects based on `nexus-prisma` in the [`prisma-examples repository`](https://github.com/prisma/prisma-examples):
+### Exposed Writes on Model
 
-  \- [GraphQL](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql): Simple setup keeping the entire schema in a single file.
+```ts
+queryType({
+  definition(t) {
+    t.crud.createPost()
+    t.crud.updatePost()
+    t.crud.deletePost()
+  },
+})
+```
 
-  \- [GraphQL + Auth](https://github.com/prisma/prisma-examples/tree/master/typescript/graphql-auth): Advanced setup including authentication and authorization and a modularized schema.
+### Exposed Customized Reads on Model
+
+If you wish to only expose some filters or orders, you can specify so on the model.
+
+```ts
+queryType({
+  definition(t) {
+    t.model.posts({
+      filtering: { id: true, title: true },
+      ordering: { title: true },
+    })
+  },
+})
+```
+
+### Exposed Model Writes Along Side Photon-Resolved Fields
+
+```ts
+mutationType({
+  definition(t) {
+    t.crud.createUser()
+    t.crud.updateUser()
+    t.crud.deleteUser()
+    t.crud.deletePost()
+
+    t.field('createDraft', {
+      type: 'Post',
+      args: {
+        title: stringArg(),
+        content: stringArg({ nullable: true }),
+      },
+      resolve: (parent, { title, content }, ctx) => {
+        return ctx.photon.posts.createPost({ title, content })
+      },
+    })
+
+    t.field('publish', {
+      type: 'Post',
+      nullable: true,
+      args: {
+        id: idArg(),
+      },
+      resolve(parent, { id }, ctx) {
+        return ctx.photon.posts.updatePost({
+          where: { id },
+          data: { published: true },
+        })
+      },
+    })
+  },
+})
+```

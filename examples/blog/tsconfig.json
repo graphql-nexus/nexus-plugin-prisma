@@ -3,14 +3,11 @@
     "target": "es2016",
     "module": "commonjs",
     "lib": ["esnext"],
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true,
     "sourceMap": true,
-    "declarationMap": true,
-    "noErrorTruncation": true
+    "outDir": "dist"
   },
   "include": ["src"]
 }

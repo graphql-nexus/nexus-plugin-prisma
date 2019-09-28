@@ -25,7 +25,7 @@ export const Post = objectType({
   name: 'Post',
   definition(t) {
     t.model.id
-    // ASSERT FIXME pagination not disabled, see graphql output
+    // ASSERT pagination disabled
     t.model.authors({ pagination: false })
   },
 })

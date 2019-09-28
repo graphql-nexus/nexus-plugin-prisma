@@ -1,33 +1,35 @@
 {
   "name": "nexus-prisma",
-  "version": "0.0.1-beta.7",
+  "version": "0.4.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "dev": "tsc --watch",
-    "prepublish": "yarn -s build",
+    "prepublishOnly": "yarn -s build",
     "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
     "test": "jest"
   },
   "dependencies": {
+    "fs-extra": "^8.1.0",
     "nexus": "^0.12.0-beta.9",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
+    "@prisma/photon": "^0.2.68",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.2",
     "@types/pluralize": "^0.0.29",
     "@types/tmp": "^0.1.0",
-    "fs-extra": "^8.1.0",
     "graphql": "^14.5.4",
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
