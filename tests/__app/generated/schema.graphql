@@ -16,13 +16,13 @@ input BubbleMembersWhere {
   id: StringFilter
 }
 
-input BubbleWhere {
-  AND: [BubbleWhere!]
+input BubbleWhereInput {
+  AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
   id: UUIDFilter
   members: UserFilter
-  NOT: [BubbleWhere!]
-  OR: [BubbleWhere!]
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
 }
 
 scalar DateTime
@@ -70,9 +70,9 @@ type Post {
 }
 
 input PostFilter {
-  every: PostWhere
-  none: PostWhere
-  some: PostWhere
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
 }
 
 input PostOrderBy {
@@ -81,11 +81,20 @@ input PostOrderBy {
 }
 
 input PostWhere {
-  AND: [PostWhere!]
+  AND: [PostWhereInput!]
   authors: UserFilter
   id: IntFilter
-  NOT: [PostWhere!]
-  OR: [PostWhere!]
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  rating: FloatFilter
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  authors: UserFilter
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
   rating: FloatFilter
 }
 
@@ -115,19 +124,19 @@ type User {
 }
 
 input UserFilter {
-  every: UserWhere
-  none: UserWhere
-  some: UserWhere
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
 }
 
-input UserWhere {
-  AND: [UserWhere!]
-  bubble: BubbleWhere
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  bubble: BubbleWhereInput
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
-  NOT: [UserWhere!]
-  OR: [UserWhere!]
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
   posts: PostFilter
 }
 
