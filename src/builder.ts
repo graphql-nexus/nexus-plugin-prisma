@@ -134,12 +134,15 @@ export class SchemaBuilder {
     }
   }
 
+  /**
+   * The build entrypoint, bringing together sub-builders.
+   */
   build() {
     return [this.buildCRUD(), this.buildModel()]
   }
 
   /**
-   * Generate `t.crud` output property
+   * Build `t.crud` dynamic output property
    */
   protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
@@ -223,7 +226,7 @@ export class SchemaBuilder {
                 type: this.publisher.outputType(resolvedConfig.type!, field),
                 list: field.outputType.isList || undefined,
                 nullable: !field.outputType.isRequired,
-                args: this.argsFromField(
+                args: this.buildArgsFromField(
                   prismaModelName,
                   gqlTypeName,
                   operationName,
@@ -251,7 +254,7 @@ export class SchemaBuilder {
   }
 
   /**
-   * Generate `t.model` output method
+   * Build the `t.model` dynamic output property.
    */
   protected buildModel() {
     return Nexus.dynamicOutputProperty({
@@ -303,13 +306,13 @@ export class SchemaBuilder {
        */
       factory: ({ typeDef, typeName }) =>
         this.dmmf.hasModel(typeName)
-          ? this.buildSchemaForPrismaModel(typeName, typeName, typeDef)
+          ? this.buildModelDo(typeName, typeName, typeDef)
           : (modelName: string) =>
-              this.buildSchemaForPrismaModel(modelName, modelName, typeDef),
+              this.buildModelDo(modelName, modelName, typeDef),
     })
   }
 
-  protected argsFromField(
+  protected buildArgsFromField(
     prismaModelName: string,
     graphQLTypeName: string,
     operationName: keyof DMMF.External.Mapping | null,
@@ -413,14 +416,31 @@ export class SchemaBuilder {
     return args
   }
 
+  /**
+   * This handles "tailored field feature publishing".
+   *
+   * With tailord field feature publishing, users can specify that only
+   * some fields of the PSL model are exposed under the given field feature.
+   * For example, in the following...
+   *
+   *    t.model.friends({ filtering: { firstName: true, location: true } })
+
+   * ...the field feature is "filtering" and the user has tailored it so
+   * that only "firstName" and "location" of the field's type (e.g. "User")
+   * are exposed to filtering on this field. So the resulting GQL TypeDef
+   * would look something like:
+   *
+   *    ...
+   *   friends(where: { firstName: ..., location: ..., }): [User]
+   *   ...
+   *
+   */
   protected handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
   ): DMMF.External.InputType {
-    // TODO Trying out this naming. Might be the wrong mental model.
-    // Revisit this in the near future for reflection.
     const photonObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
@@ -431,28 +451,7 @@ export class SchemaBuilder {
       return photonObject
     }
 
-    // CHECK
-    // ... only some fields of the PSL model are exposed ...
-    // vs
-    // ... only some fields of the field's type are exposed ...
-    //
-    // With tailord field feature publishing, users can specify that only
-    // some fields of the PSL model are exposed under the given field feature.
-    // For example, in the following...
-    //
-    //    t.model.friends({ filtering: { firstName: true, location: true } })
-    //
-    // ...the field feature is "filtering" and the user has tailored it so
-    // that only "firstName" and "location" of the field's type (e.g. "User")
-    // are exposed to filtering on this field. So the resulting GQL TypeDef
-    // would look something like:
-    //
-    //    ...
-    //    friends(where: { firstName: ..., location: ..., }): [User]
-    //    ...
-    //
     // REFACTOR use an intersection function
-    //
     const whitelistedFieldNames = Object.keys(fieldWhitelist)
     const userExposedObjectFields = photonObject.fields.filter(field =>
       whitelistedFieldNames.includes(field.name),
@@ -469,7 +468,10 @@ export class SchemaBuilder {
     }
   }
 
-  protected buildSchemaForPrismaModel(
+  /**
+   * Build the properties on a .model for a given prisma model.
+   */
+  protected buildModelDo(
     prismaModelName: string,
     graphQLTypeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
@@ -493,7 +495,7 @@ export class SchemaBuilder {
             ...graphqlField.outputType,
             type: this.publisher.outputType(type, graphqlField),
           }),
-          args: this.argsFromField(
+          args: this.buildArgsFromField(
             prismaModelName,
             graphQLTypeName,
             null,
