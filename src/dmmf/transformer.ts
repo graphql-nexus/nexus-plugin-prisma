@@ -1,75 +1,52 @@
-import { DMMF, ExternalDMMF } from './types'
+import { InternalDMMF, ExternalDMMF } from './types'
 
-export function transform(document: DMMF.Document): ExternalDMMF.Document {
+export function transform(doc: InternalDMMF.Document): ExternalDMMF.Document {
   return {
-    datamodel: transformDatamodel(document.datamodel),
-    mappings: document.mappings as ExternalDMMF.Mapping[],
-    schema: transformSchema(document.schema),
-  }
-}
-
-function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
-  return {
-    enums: datamodel.enums,
-    models: datamodel.models.map(model => ({
-      ...model,
-      fields: model.fields.map(field => ({
-        ...field,
-        kind: field.kind === 'object' ? 'relation' : field.kind,
+    datamodel: doc.datamodel,
+    mappings: doc.mappings as ExternalDMMF.Mapping[],
+    schema: {
+      enums: doc.schema.enums,
+      inputTypes: doc.schema.inputTypes.map(inputType => ({
+        ...inputType,
+        fields: inputType.fields.map(convertArg),
       })),
-    })),
-  }
-}
-
-function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
-  return {
-    enums: schema.enums,
-    inputTypes: schema.inputTypes.map(transformInputType),
-    outputTypes: schema.outputTypes.map(o => ({
-      ...o,
-      fields: o.fields.map(f => ({
-        ...f,
-        args: f.args.map(transformArg),
-        outputType: {
-          ...f.outputType,
-          type: getReturnTypeName(f.outputType.type),
-        },
+      outputTypes: doc.schema.outputTypes.map(o => ({
+        ...o,
+        fields: o.fields.map(f => ({
+          ...f,
+          args: f.args.map(convertArg),
+        })),
       })),
-    })),
-  }
-}
-
-function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
-  // FIXME: *Enum*Filter are currently empty
-  let inputType = arg.inputType.some(a => a.kind === 'enum')
-    ? arg.inputType[0]
-    : arg.inputType.find(a => a.kind === 'object')!
-
-  if (!inputType) {
-    inputType = arg.inputType[0]
-  }
-
-  return {
-    name: arg.name,
-    inputType: {
-      ...inputType,
-      type: getReturnTypeName(inputType.type),
     },
-    isRelationFilter: undefined,
   }
 }
 
-function transformInputType(inputType: DMMF.InputType): ExternalDMMF.InputType {
+function convertArg(arg: InternalDMMF.SchemaArg): ExternalDMMF.SchemaArg {
   return {
-    ...inputType,
-    fields: inputType.fields.map(transformArg),
+    ...arg,
+    inputType: convertArgType(arg.inputType),
   }
 }
 
-function getReturnTypeName(type: any) {
-  if (typeof type === 'string') {
-    return type
-  }
+/**
+ * This function implements heuristics to convert an arg type from
+ * Photon to an arg type in GraphQL. A conversion is needed becuase
+ * GraphQL does not support union types on args, but Photon does.
+ */
+function convertArgType(
+  photonFieldParamType: InternalDMMF.SchemaArgInputType[],
+): InternalDMMF.SchemaArgInputType {
+  // FIXME: *Enum*Filter are currently empty
+  const enumMember = photonFieldParamType.find(fpt => fpt.kind === 'enum')
+  if (enumMember) return enumMember
 
-  return type.name
+  const objectMember = photonFieldParamType.find(fpt => fpt.kind === 'object')
+  if (objectMember) return objectMember
+
+  const someMember = photonFieldParamType[0]
+  if (someMember) return someMember
+
+  throw new Error(
+    'Invariant violation: Encountered Photon field arg union type with zero members.',
+  )
 }

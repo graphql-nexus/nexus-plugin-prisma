@@ -22,9 +22,8 @@ export declare namespace ExternalDMMF {
     fields: Field[]
   }
   type FieldKind = 'scalar' | 'object' | 'enum'
-  type DatamodelFieldKind = 'scalar' | 'relation' | 'enum'
   interface Field {
-    kind: DatamodelFieldKind
+    kind: FieldKind
     name: string
     isRequired: boolean
     isList: boolean
@@ -47,13 +46,12 @@ export declare namespace ExternalDMMF {
     isRequired: boolean
     isList: boolean
   }
-  type ArgType = string
   interface SchemaArg {
     name: string
     inputType: {
       isRequired: boolean
       isList: boolean
-      type: ArgType
+      type: string
       kind: FieldKind
     }
     isRelationFilter?: boolean
@@ -105,20 +103,20 @@ export declare namespace ExternalDMMF {
   }
 }
 
-export declare namespace DMMF {
+export declare namespace InternalDMMF {
   interface Document {
     datamodel: Datamodel
     schema: Schema
     mappings: Mapping[]
   }
-  interface Enum {
+  interface SchemaEnum {
     name: string
     values: string[]
     dbName?: string | null
   }
   interface Datamodel {
     models: Model[]
-    enums: Enum[]
+    enums: SchemaEnum[]
   }
   interface Model {
     name: string
@@ -127,9 +125,9 @@ export declare namespace DMMF {
     fields: Field[]
     [key: string]: any
   }
-  type FieldKind = 'scalar' | 'object' | 'enum'
+  type SchemaFieldKind = 'scalar' | 'object' | 'enum'
   interface Field {
-    kind: FieldKind
+    kind: SchemaFieldKind
     name: string
     isRequired: boolean
     isList: boolean
@@ -146,9 +144,9 @@ export declare namespace DMMF {
   interface Schema {
     rootQueryType?: string
     rootMutationType?: string
-    inputTypes: InputType[]
-    outputTypes: OutputType[]
-    enums: Enum[]
+    inputTypes: SchemaInputType[]
+    outputTypes: SchemaOutputType[]
+    enums: SchemaEnum[]
   }
   interface Query {
     name: string
@@ -160,19 +158,18 @@ export declare namespace DMMF {
     isRequired: boolean
     isList: boolean
   }
-  type ArgType = string | InputType | Enum
   interface SchemaArgInputType {
     isRequired: boolean
     isList: boolean
-    type: ArgType
-    kind: FieldKind
+    type: string
+    kind: SchemaFieldKind
   }
   interface SchemaArg {
     name: string
     inputType: SchemaArgInputType[]
     isRelationFilter?: boolean
   }
-  interface OutputType {
+  interface SchemaOutputType {
     name: string
     fields: SchemaField[]
     isEmbedded?: boolean
@@ -180,14 +177,14 @@ export declare namespace DMMF {
   interface SchemaField {
     name: string
     outputType: {
-      type: string | OutputType | Enum
+      type: string
       isList: boolean
       isRequired: boolean
-      kind: FieldKind
+      kind: SchemaFieldKind
     }
     args: SchemaArg[]
   }
-  interface InputType {
+  interface SchemaInputType {
     name: string
     isWhereType?: boolean
     isOrderType?: boolean
