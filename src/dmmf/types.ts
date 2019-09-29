@@ -104,6 +104,7 @@ export declare namespace ExternalDMMF {
     deleteMany = 'deleteMany',
   }
 }
+
 export declare namespace DMMF {
   interface Document {
     datamodel: Datamodel
@@ -215,10 +216,4 @@ export declare namespace DMMF {
     delete = 'delete',
     deleteMany = 'deleteMany',
   }
-}
-export interface BaseField {
-  name: string
-  type: string | DMMF.Enum | DMMF.OutputType | DMMF.SchemaArg
-  isList: boolean
-  isRequired: boolean
 }
