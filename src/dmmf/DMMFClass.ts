@@ -1,5 +1,10 @@
-import { ExternalDMMF as DMMF } from './transformer'
+import * as Photon from '@prisma/photon'
+import { ExternalDMMF as DMMF, transform } from './transformer'
 import { indexBy, Index } from '../utils'
+
+export function fromPhotonDMMF(photonDMMF: Photon.DMMF.Document): DMMFClass {
+  return new DMMFClass(transform(photonDMMF))
+}
 
 export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel

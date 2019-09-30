@@ -6,14 +6,11 @@ import { render as renderTypegen } from '../src/typegen'
 import { printSchema } from 'graphql'
 
 export async function generateSchemaAndTypes(datamodel: string, types: any) {
-  const dmmf = await getDMMF({ datamodel })
-  const transformedDmmf = DMMF.transform(dmmf)
-  const dmmfClass = new DMMF.DMMF(transformedDmmf)
+  const dmmf = DMMF.fromPhotonDMMF(await getDMMF({ datamodel }))
 
   const nexusPrisma = new SchemaBuilder({
-    photon: (ctx: any) => ctx.photon,
     types,
-    dmmf: dmmfClass,
+    dmmf,
   }).build()
 
   const schema = makeSchema({
@@ -21,7 +18,7 @@ export async function generateSchemaAndTypes(datamodel: string, types: any) {
     outputs: false,
   })
 
-  const typegen = renderTypegen(dmmfClass, '@generated/photon')
+  const typegen = renderTypegen(dmmf, '@generated/photon')
 
   return { schema: printSchema(schema), typegen }
 }
