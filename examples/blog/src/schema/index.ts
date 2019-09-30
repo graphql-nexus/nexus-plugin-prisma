@@ -8,11 +8,10 @@ import * as Post from './Post'
 import * as Author from './Author'
 
 const appTypes = [Query, Mutation, Blog, Post, Author]
-const nexusPrismaTypes = NexusPrisma.nexusPrismaPlugin({ types: appTypes })
-const allTypes = [appTypes, nexusPrismaTypes]
 
 export default Nexus.makeSchema({
-  types: allTypes,
+  types: appTypes,
+  plugins: [NexusPrisma.create()],
   outputs: {
     typegen: Path.join(
       __dirname,
