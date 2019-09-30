@@ -102,8 +102,8 @@ const defaultOptions = {
 }
 
 export interface CustomInputArg {
-  arg: DMMF.External.SchemaArg
-  type: DMMF.External.InputType | DMMF.External.Enum | { name: string } // scalar
+  arg: DMMF.Data.SchemaArg
+  type: DMMF.Data.InputType | DMMF.Data.Enum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
@@ -214,7 +214,7 @@ export class SchemaBuilder {
                 : mappedFieldName
               const operationName = Object.keys(mappedField.mapping).find(
                 key => (mappedField.mapping as any)[key] === field.name,
-              ) as keyof DMMF.External.Mapping | undefined
+              ) as keyof DMMF.Data.Mapping | undefined
 
               if (!operationName) {
                 throw new Error(
@@ -315,8 +315,8 @@ export class SchemaBuilder {
   protected buildArgsFromField(
     prismaModelName: string,
     graphQLTypeName: string,
-    operationName: keyof DMMF.External.Mapping | null,
-    field: DMMF.External.SchemaField,
+    operationName: keyof DMMF.Data.Mapping | null,
+    field: DMMF.Data.SchemaField,
     opts: FieldPublisherConfig,
   ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[] = []
@@ -344,7 +344,7 @@ export class SchemaBuilder {
   protected argsFromQueryOrModelField(
     prismaModelName: string,
     graphQLTypeName: string,
-    dmmfField: DMMF.External.SchemaField,
+    dmmfField: DMMF.Data.SchemaField,
     opts: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
@@ -440,7 +440,7 @@ export class SchemaBuilder {
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
-  ): DMMF.External.InputType {
+  ): DMMF.Data.InputType {
     const photonObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)

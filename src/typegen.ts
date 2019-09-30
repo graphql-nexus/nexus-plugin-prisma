@@ -189,8 +189,8 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
         string,
         {
           fieldName: string
-          filtering: DMMF.External.InputType
-          ordering: DMMF.External.InputType
+          filtering: DMMF.Data.InputType
+          ordering: DMMF.Data.InputType
         }[]
       >
     >((acc, type) => {
@@ -221,8 +221,8 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
   const renderNexusPrismaInput = (
     input: {
       fieldName: string
-      filtering: DMMF.External.InputType
-      ordering: DMMF.External.InputType
+      filtering: DMMF.Data.InputType
+      ordering: DMMF.Data.InputType
     }[],
   ): string => `\
 ${input

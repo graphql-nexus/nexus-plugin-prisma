@@ -20,10 +20,7 @@ export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
   },
 }
 
-export type OperationName = Exclude<
-  keyof DMMF.External.Mapping,
-  'model' | 'plural'
->
+export type OperationName = Exclude<keyof DMMF.Data.Mapping, 'model' | 'plural'>
 
 export type FieldNamingStrategy = Record<
   OperationName,

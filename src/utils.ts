@@ -118,7 +118,7 @@ export function getImportPathRelativeToOutput(
 export function getCRUDFieldName(
   modelName: string,
   fieldName: string,
-  mapping: DMMF.External.Mapping,
+  mapping: DMMF.Data.Mapping,
   namingStrategy: FieldNamingStrategy,
 ) {
   const operationName = Object.keys(mapping).find(

@@ -38,16 +38,13 @@ export class Publisher {
       return this.publishEnum(customArg.type.name)
     }
 
-    const inputType = customArg.type as DMMF.External.InputType
+    const inputType = customArg.type as DMMF.Data.InputType
 
     return this.publishInputObjectType(inputType)
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  public outputType(
-    outputTypeName: string,
-    field: DMMF.External.SchemaField,
-  ): any {
+  public outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
     // If type is already published, just reference it
     if (this.isPublished(outputTypeName)) {
       return outputTypeName
@@ -95,7 +92,7 @@ export class Publisher {
     })
   }
 
-  protected publishInputObjectType(inputType: DMMF.External.InputType) {
+  protected publishInputObjectType(inputType: DMMF.Data.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
@@ -126,7 +123,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DMMF.External.SchemaArg) {
+  protected getTypeFromArg(arg: DMMF.Data.SchemaArg) {
     const kindToType = {
       scalar: (typeName: string) => this.dmmf.getOutputType(typeName),
       enum: (typeName: string) => this.dmmf.getEnumType(typeName),
