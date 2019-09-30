@@ -70,7 +70,7 @@ function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
   const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
     const queriesNames = getSupportedQueries(mapping)
     return {
-      fields: dmmf.queryType.fields.filter(query =>
+      fields: dmmf.queryObject.fields.filter(query =>
         queriesNames.includes(query.name),
       ),
       mapping,
@@ -90,7 +90,7 @@ function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
   const mutationsFieldsWithMapping = dmmf.mappings.map(mapping => {
     const mutationsNames = getSupportedMutations(mapping)
     return {
-      fields: dmmf.mutationType.fields.filter(mutation =>
+      fields: dmmf.mutationObject.fields.filter(mutation =>
         mutationsNames.includes(mutation.name),
       ),
       mapping,
@@ -152,7 +152,7 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
   const queryFieldsWithMapping = dmmf.mappings.map(mapping => {
     const queriesNames = getSupportedQueries(mapping)
     return {
-      fields: dmmf.queryType.fields
+      fields: dmmf.queryObject.fields
         .filter(query => queriesNames.includes(query.name))
         .filter(q => q.outputType.isList && q.outputType.kind === 'object'),
       mapping,

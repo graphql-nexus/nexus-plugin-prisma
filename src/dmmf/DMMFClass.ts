@@ -1,39 +1,31 @@
-import * as Photon from '@prisma/photon'
-import { ExternalDMMF as DMMF, transform } from './transformer'
+import { ExternalDMMF as DMMF } from './transformer'
 import { indexBy, Index } from '../utils'
-
-export function fromPhotonDMMF(photonDMMF: Photon.DMMF.Document): DMMFClass {
-  return new DMMFClass(transform(photonDMMF))
-}
 
 export class DMMFClass implements DMMF.Document {
   public datamodel: DMMF.Datamodel
   public schema: DMMF.Schema
   public mappings: DMMF.Mapping[]
-  public queryType: DMMF.OutputType
-  public mutationType: DMMF.OutputType
-  public outputTypes: DMMF.OutputType[]
+  public queryObject: DMMF.OutputType
+  public mutationObject: DMMF.OutputType
   public outputTypesIndex: Index<DMMF.OutputType> = {}
-  public inputTypes: DMMF.InputType[]
   public inputTypesIndex: Index<DMMF.InputType>
   public enumsIndex: Index<DMMF.Enum>
   public modelsIndex: Index<DMMF.Model>
 
   constructor({ datamodel, schema, mappings }: DMMF.Document) {
+    // DMMF
     this.datamodel = datamodel
     this.schema = schema
     this.mappings = mappings
 
-    this.queryType = schema.outputTypes.find(t => t.name === 'Query')!
-    this.mutationType = schema.outputTypes.find(t => t.name === 'Mutation')!
+    // Entrypoints
+    this.queryObject = schema.outputTypes.find(t => t.name === 'Query')!
+    this.mutationObject = schema.outputTypes.find(t => t.name === 'Mutation')!
 
+    // Indices
     this.modelsIndex = indexBy('name', datamodel.models)
     this.enumsIndex = indexBy('name', schema.enums)
-
-    this.inputTypes = schema.inputTypes
     this.inputTypesIndex = indexBy('name', schema.inputTypes)
-
-    this.outputTypes = schema.outputTypes
     this.outputTypesIndex = indexBy('name', schema.outputTypes)
   }
 

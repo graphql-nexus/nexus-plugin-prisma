@@ -172,7 +172,7 @@ export class SchemaBuilder {
             ? this.dmmf.mappings.map(mapping => {
                 const queriesNames = getSupportedQueries(mapping)
                 return {
-                  fields: this.dmmf.queryType.fields.filter(query =>
+                  fields: this.dmmf.queryObject.fields.filter(query =>
                     queriesNames.includes(query.name),
                   ),
                   mapping,
@@ -182,7 +182,7 @@ export class SchemaBuilder {
             ? this.dmmf.mappings.map(mapping => {
                 const mutationsNames = getSupportedMutations(mapping)
                 return {
-                  fields: this.dmmf.mutationType.fields.filter(mutation =>
+                  fields: this.dmmf.mutationObject.fields.filter(mutation =>
                     mutationsNames.includes(mutation.name),
                   ),
                   mapping,
