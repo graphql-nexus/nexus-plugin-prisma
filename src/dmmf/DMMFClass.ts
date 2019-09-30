@@ -1,4 +1,4 @@
-import { ExternalDMMF as DMMF } from './types'
+import { ExternalDMMF as DMMF } from './transformer'
 import { indexBy, Index } from '../utils'
 
 export class DMMFClass implements DMMF.Document {
