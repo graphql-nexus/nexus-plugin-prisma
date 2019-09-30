@@ -125,9 +125,9 @@ export declare namespace InternalDMMF {
     fields: Field[]
     [key: string]: any
   }
-  type SchemaFieldKind = 'scalar' | 'object' | 'enum'
+  type FieldKind = 'scalar' | 'object' | 'enum'
   interface Field {
-    kind: SchemaFieldKind
+    kind: FieldKind
     name: string
     isRequired: boolean
     isList: boolean
@@ -144,8 +144,8 @@ export declare namespace InternalDMMF {
   interface Schema {
     rootQueryType?: string
     rootMutationType?: string
-    inputTypes: SchemaInputType[]
-    outputTypes: SchemaOutputType[]
+    inputTypes: InputType[]
+    outputTypes: OutputType[]
     enums: SchemaEnum[]
   }
   interface Query {
@@ -161,15 +161,15 @@ export declare namespace InternalDMMF {
   interface SchemaArgInputType {
     isRequired: boolean
     isList: boolean
-    type: string | SchemaInputType | SchemaEnum
-    kind: SchemaFieldKind
+    type: string | InputType | SchemaEnum
+    kind: FieldKind
   }
   interface SchemaArg {
     name: string
     inputType: SchemaArgInputType[]
     isRelationFilter?: boolean
   }
-  interface SchemaOutputType {
+  interface OutputType {
     name: string
     fields: SchemaField[]
     isEmbedded?: boolean
@@ -180,11 +180,11 @@ export declare namespace InternalDMMF {
       type: string
       isList: boolean
       isRequired: boolean
-      kind: SchemaFieldKind
+      kind: FieldKind
     }
     args: SchemaArg[]
   }
-  interface SchemaInputType {
+  interface InputType {
     name: string
     isWhereType?: boolean
     isOrderType?: boolean
