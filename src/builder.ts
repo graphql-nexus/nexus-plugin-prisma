@@ -28,7 +28,6 @@ interface FieldPublisherConfig {
 }
 
 export interface Options {
-  types: any
   photon?: (ctx: any) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
@@ -41,6 +40,7 @@ export interface Options {
 
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
+  types: any // FIXME `any`
 }
 
 /**
@@ -76,7 +76,7 @@ export interface InternalOptions extends Options {
  * own typegen approach. This system will change once Nexus Plugins are
  * released.
  */
-export function build(options: Options) {
+export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
   return builder.build()
 }
