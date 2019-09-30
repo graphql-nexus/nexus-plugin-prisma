@@ -24,14 +24,35 @@ export function transform(doc: InternalDMMF.Document): ExternalDMMF.Document {
 function convertArg(arg: InternalDMMF.SchemaArg): ExternalDMMF.SchemaArg {
   return {
     ...arg,
-    inputType: convertArgType(arg.inputType),
+    inputType: convertReturnTypeName(convertArgType(arg.inputType)),
   }
 }
 
 /**
- * This function implements heuristics to convert an arg type from
- * Photon to an arg type in GraphQL. A conversion is needed becuase
- * GraphQL does not support union types on args, but Photon does.
+ * Make the "return type" property type always be a string. In Photon
+ * it is allowed to be a nested structured object but we want only the
+ * reference-by-name form.
+ *
+ * TODO _why_ is the dmmf like this?
+ */
+function convertReturnTypeName(
+  fieldParamType: InternalDMMF.SchemaArgInputType,
+): ExternalDMMF.SchemaArg['inputType'] {
+  let convertedReturnTypeName: string =
+    typeof fieldParamType.type === 'string'
+      ? fieldParamType.type
+      : fieldParamType.type.name
+
+  return {
+    ...fieldParamType,
+    type: convertedReturnTypeName,
+  }
+}
+
+/**
+ * Heuristics to convert an arg type from Photon to an arg type
+ * in GraphQL. A conversion is needed becuase GraphQL does not
+ * support union types on args, but Photon does.
  */
 function convertArgType(
   photonFieldParamType: InternalDMMF.SchemaArgInputType[],

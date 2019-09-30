@@ -161,7 +161,7 @@ export declare namespace InternalDMMF {
   interface SchemaArgInputType {
     isRequired: boolean
     isList: boolean
-    type: string
+    type: string | SchemaInputType | SchemaEnum
     kind: SchemaFieldKind
   }
   interface SchemaArg {
