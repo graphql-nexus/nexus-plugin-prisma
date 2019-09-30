@@ -200,17 +200,17 @@ interface NexusPrismaInputs {
 
 interface NexusPrismaTypes {
   Query: {
-    users: 'User'
     user: 'User'
+    users: 'User'
 
   },
   Mutation: {
     createOneUser: 'User'
-    deleteOneUser: 'User'
     updateOneUser: 'User'
-    upsertOneUser: 'User'
     updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
 
   },
   User: {
@@ -452,17 +452,17 @@ interface NexusPrismaInputs {
 
 interface NexusPrismaTypes {
   Query: {
-    users: 'User'
     user: 'User'
+    users: 'User'
 
   },
   Mutation: {
     createOneUser: 'User'
-    deleteOneUser: 'User'
     updateOneUser: 'User'
-    upsertOneUser: 'User'
     updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
 
   },
   User: {
@@ -685,17 +685,17 @@ interface NexusPrismaInputs {
 
 interface NexusPrismaTypes {
   Query: {
-    users: 'User'
     user: 'User'
+    users: 'User'
 
   },
   Mutation: {
     createOneUser: 'User'
-    deleteOneUser: 'User'
     updateOneUser: 'User'
-    upsertOneUser: 'User'
     updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
 
   },
   User: {
