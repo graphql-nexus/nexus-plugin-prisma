@@ -8,10 +8,10 @@ export type NexusPrismaParams = Builder.Options
 export const create = (options: Builder.Options) => {
   return {
     // TODO type these `any`s
-    onBuild: function*(types: any, builder: any) {
-      Builder.build({ ...options, types }).forEach(
-        builder.addType.bind(builder),
-      )
+    onBeforeBuild: (types: any) => {
+      // mutate for performance
+      types.push(...Builder.build({ ...options, types }))
+      return types
     },
   }
 }

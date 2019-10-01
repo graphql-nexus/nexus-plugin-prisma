@@ -16,7 +16,6 @@ import {
   assertPhotonInContext,
   getCRUDFieldName,
   nexusFieldOpts,
-  unwrapTypes,
 } from './utils'
 
 interface FieldPublisherConfig {
@@ -121,7 +120,7 @@ export class SchemaBuilder {
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
     this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
-    this.publisher = new Publisher(this.dmmf, unwrapTypes(config.types))
+    this.publisher = new Publisher(this.dmmf, config.types)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
