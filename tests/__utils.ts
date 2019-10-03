@@ -4,7 +4,6 @@ import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
-import { NexusAcceptedTypeDef } from 'nexus/dist/core'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -14,10 +13,7 @@ export const createNexusPrismaInternal = (
   }),
 })
 
-export async function generateSchemaAndTypes(
-  datamodel: string,
-  types: NexusAcceptedTypeDef[],
-) {
+export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
