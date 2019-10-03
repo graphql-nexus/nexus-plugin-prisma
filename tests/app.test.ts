@@ -1,7 +1,7 @@
 import * as cp from 'child_process'
 import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
-import * as nexusPrisma from '../src'
+import * as NexusPrisma from '../src'
 import * as fs from 'fs-extra'
 import * as typeDefs from './__app/main'
 
@@ -48,16 +48,16 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
-  const nexusPrismaTypeDefs = nexusPrisma.nexusPrismaPlugin({
-    types: typeDefs,
+  const nexusPrisma = NexusPrisma.create({
     shouldGenerateArtifacts: true,
     outputs: {
       typegen: projectPath(`/generated/nexus-types-prisma.d.ts`),
     },
   })
-  
+
   await nexusBuilder.generateSchema({
-    types: [typeDefs, nexusPrismaTypeDefs],
+    types: [typeDefs],
+    plugins: [nexusPrisma],
     outputs: {
       typegen: projectPath(`/generated/nexus-types-core.d.ts`),
       schema: projectPath(`/generated/schema.graphql`),
