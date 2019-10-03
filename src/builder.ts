@@ -34,10 +34,10 @@ export interface Options {
   outputs?: {
     typegen?: string
   }
+  dmmf?: DMMF.DMMF // For testing
 }
 
 export interface InternalOptions extends Options {
-  dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.OnInstallBuilder
 }
 
@@ -86,7 +86,7 @@ export class SchemaBuilder {
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
     this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
-    this.publisher = new Publisher(this.dmmf, {}) // TODO
+    this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy

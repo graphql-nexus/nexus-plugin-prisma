@@ -1,13 +1,14 @@
 import * as Nexus from 'nexus'
 import * as DMMF from './dmmf'
-import { nexusFieldOpts, partition } from './utils'
+import { nexusFieldOpts, partition, Index } from './utils'
 import { CustomInputArg } from './builder'
 import { scalarsNameValues } from './graphql'
 
 export class Publisher {
+  typesPublished: Index<boolean> = {}
   constructor(
-    protected dmmf: DMMF.DMMF,
-    protected publishedTypesMap: Record<string, boolean>,
+    public dmmf: DMMF.DMMF,
+    public nexusBuilder: Nexus.OnInstallBuilder,
   ) {}
 
   public inputType(
@@ -136,10 +137,12 @@ export class Publisher {
   }
 
   protected isPublished(typeName: string) {
-    return this.publishedTypesMap[typeName]
+    // If the user's app has published a type of the same name treat it as an
+    // overide to us auto publishing.
+    return this.nexusBuilder.hasType(typeName) || this.typesPublished[typeName]
   }
 
   protected markTypeAsPublished(typeName: string) {
-    this.publishedTypesMap[typeName] = true
+    this.typesPublished[typeName] = true
   }
 }

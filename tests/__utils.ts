@@ -1,24 +1,24 @@
 import { getDMMF } from '@prisma/photon'
-import { makeSchema } from 'nexus'
-import { SchemaBuilder } from '../src/builder'
+import * as GQL from 'graphql'
+import * as Nexus from 'nexus'
+import * as NexusPrisma from '../src'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
-import { printSchema } from 'graphql'
 
 export async function generateSchemaAndTypes(datamodel: string, types: any) {
   const dmmf = DMMF.fromPhotonDMMF(await getDMMF({ datamodel }))
-
-  const nexusPrisma = new SchemaBuilder({
-    types,
+  const nexusPrisma = NexusPrisma.create({
     dmmf,
-  }).build()
-
-  const schema = makeSchema({
-    types: [types, nexusPrisma],
+    shouldGenerateArtifacts: false,
+  })
+  const schema = Nexus.makeSchema({
+    types,
+    plugins: [nexusPrisma],
     outputs: false,
   })
 
-  const typegen = renderTypegen(dmmf, '@generated/photon')
-
-  return { schema: printSchema(schema), typegen }
+  return {
+    schema: GQL.printSchema(schema),
+    typegen: renderTypegen(dmmf, '@generated/photon'),
+  }
 }
