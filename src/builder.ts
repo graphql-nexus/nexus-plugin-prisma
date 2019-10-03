@@ -41,39 +41,6 @@ export interface InternalOptions extends Options {
   nexusBuilder: Nexus.OnInstallBuilder
 }
 
-/**
- * Create nexus type definitions and resolvers particular to your prisma
- * schema that extend the Nexus DSL with e.g. t.model and t.crud. Example
- * effect in practice:
- *
- *    objectType({
- *      name: 'User',
- *      definition(t) {
- *        t.model.id()
- *        t.model.email()
- *      }
- *    })
- *
- *    queryType({
- *      definition (t) {
- *        t.crud.user()
- *        t.crud.users({ filtering: true, ordering: true })
- *      }
- *    })
- *
- * You must ensure the photon client has been generated prior as
- * it provides a data representation of the available models and CRUD
- * operations against them.
- *
- * Typically you will forward the type defs returned
- * here to Nexus' makeSchema function.
- *
- * Additionally, typegen will be run synchronously upon construction by default
- * if NODE_ENV is undefined or "development". Typegen can be explicitly enabled or
- * disabled via the shouldGenerateArtifacts option. This mirrors Nexus'
- * own typegen approach. This system will change once Nexus Plugins are
- * released.
- */
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
   return builder.build()
@@ -85,8 +52,8 @@ const defaultOptions = {
   ),
   photon: (ctx: any) => ctx.photon,
   inputs: {
-    // TODO Default should be updated once resolved:
-    // https://github.com/prisma/photonjs/issues/88
+    // NOTE: Once https://github.com/prisma/photonjs/issues/88 resolves
+    // we should revisit this default
     photon: '@generated/photon',
   },
   outputs: {
