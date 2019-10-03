@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "nexus": "^0.0.0-pr.236.236120d",
+    "nexus": "^0.0.0-pr.236.0c37c30",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
