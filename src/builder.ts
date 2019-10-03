@@ -120,7 +120,7 @@ export class SchemaBuilder {
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
     this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
-    this.publisher = new Publisher(this.dmmf, config.types)
+    this.publisher = new Publisher(this.dmmf, {}) // TODO
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
