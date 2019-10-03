@@ -14,7 +14,7 @@
     "build": "yarn -s clean && tsc",
     "dev": "tsc --watch",
     "prepublishOnly": "yarn -s build",
-    "style": "prettier --write src/**/*.ts test/**/*.ts example/**/*.ts",
+    "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
     "test": "jest"
   },
   "dependencies": {
