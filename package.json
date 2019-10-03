@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.5.0-next.1",
+  "version": "0.0.0-pr.434.3a6e0eb",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "nexus": "^0.0.0-pr.236.0c37c30",
+    "nexus": "pr236",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
