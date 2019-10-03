@@ -125,7 +125,9 @@ export class Publisher {
 
   protected getTypeFromArg(arg: DMMF.Data.SchemaArg) {
     const kindToType = {
-      scalar: (typeName: string) => this.dmmf.getOutputType(typeName),
+      scalar: (typeName: string) => ({
+        name: this.dmmf.getOutputType(typeName).name,
+      }),
       enum: (typeName: string) => this.dmmf.getEnumType(typeName),
       object: (typeName: string) => this.dmmf.getInputType(typeName),
     }

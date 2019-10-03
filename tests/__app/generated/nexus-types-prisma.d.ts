@@ -201,33 +201,33 @@ interface NexusPrismaInputs {
 
 interface NexusPrismaTypes {
   Query: {
-    bubbles: 'Bubble'
     bubble: 'Bubble'
-    users: 'User'
+    bubbles: 'Bubble'
     user: 'User'
-    posts: 'Post'
+    users: 'User'
     post: 'Post'
+    posts: 'Post'
 
   },
   Mutation: {
     createOneBubble: 'Bubble'
-    deleteOneBubble: 'Bubble'
     updateOneBubble: 'Bubble'
-    upsertOneBubble: 'Bubble'
     updateManyBubble: 'BatchPayload'
+    deleteOneBubble: 'Bubble'
     deleteManyBubble: 'BatchPayload'
+    upsertOneBubble: 'Bubble'
     createOneUser: 'User'
-    deleteOneUser: 'User'
     updateOneUser: 'User'
-    upsertOneUser: 'User'
     updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
     createOnePost: 'Post'
-    deleteOnePost: 'Post'
     updateOnePost: 'Post'
-    upsertOnePost: 'Post'
     updateManyPost: 'BatchPayload'
+    deleteOnePost: 'Post'
     deleteManyPost: 'BatchPayload'
+    upsertOnePost: 'Post'
 
   },
   Bubble: {

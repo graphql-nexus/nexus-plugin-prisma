@@ -176,15 +176,15 @@ export declare namespace ExternalDMMF {
   }
   interface Mapping {
     model: string
-    plural?: string
-    findOne?: string
-    findMany?: string
-    create?: string
-    update?: string
-    updateMany?: string
-    upsert?: string
-    delete?: string
-    deleteMany?: string
+    plural: string
+    findOne: string
+    findMany: string
+    create: string
+    update: string
+    updateMany: string
+    upsert: string
+    delete: string
+    deleteMany: string
   }
   enum ModelAction {
     findOne = 'findOne',

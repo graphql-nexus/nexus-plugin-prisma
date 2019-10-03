@@ -3,20 +3,16 @@ import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as DMMF from './dmmf'
 import * as GraphQL from './graphql'
+import { getCrudMappedFields } from './mapping'
 import {
+  ArgsNamingStrategy,
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
-  ArgsNamingStrategy,
   FieldNamingStrategy,
 } from './naming-strategies'
 import { Publisher } from './publisher'
-import { getSupportedMutations, getSupportedQueries } from './supported-ops'
 import * as Typegen from './typegen'
-import {
-  assertPhotonInContext,
-  getCRUDFieldName,
-  nexusFieldOpts,
-} from './utils'
+import { assertPhotonInContext } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -26,8 +22,11 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
 }
 
+type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
+type PublisherMethods = Record<string, FieldPublisher>
+
 export interface Options {
-  photon?: (ctx: any) => any
+  photon?: (ctx: Nexus.core.GetGen<'context'>) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
     photon?: string
@@ -149,8 +148,8 @@ export class SchemaBuilder {
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       // FIXME
       // Nexus should improve the type of typeName to be AllOutputTypes
-      factory: ({ typeDef: t, typeName: gqlTypeName }) => {
-        if (gqlTypeName === GraphQL.rootNames.Subscription) {
+      factory: ({ typeDef: t, typeName }) => {
+        if (typeName === GraphQL.rootNames.Subscription) {
           // TODO Lets put a GitHub issue link in this error message
           throw new Error(
             `t.crud is not yet supported on the 'Subscription' type.`,
@@ -158,93 +157,50 @@ export class SchemaBuilder {
         }
 
         if (
-          gqlTypeName !== GraphQL.rootNames.Query &&
-          gqlTypeName !== GraphQL.rootNames.Mutation
+          typeName !== GraphQL.rootNames.Query &&
+          typeName !== GraphQL.rootNames.Mutation
         ) {
           throw new Error(
-            `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${gqlTypeName}'. Please use 't.model' instead`,
+            `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-
-        const mappedFields =
-          gqlTypeName === 'Query'
-            ? this.dmmf.mappings.map(mapping => {
-                const queriesNames = getSupportedQueries(mapping)
-                return {
-                  fields: this.dmmf.queryObject.fields.filter(query =>
-                    queriesNames.includes(query.name),
-                  ),
-                  mapping,
-                }
-              })
-            : gqlTypeName === 'Mutation'
-            ? this.dmmf.mappings.map(mapping => {
-                const mutationsNames = getSupportedMutations(mapping)
-                return {
-                  fields: this.dmmf.mutationObject.fields.filter(mutation =>
-                    mutationsNames.includes(mutation.name),
-                  ),
-                  mapping,
-                }
-              })
-            : (undefined as never)
-
-        type FieldPublisher = (opts?: FieldPublisherConfig) => CRUDMethods // Fluent API
-        type CRUDMethods = Record<string, FieldPublisher>
-
-        return mappedFields.reduce<CRUDMethods>((crud, mappedField) => {
-          const prismaModelName = mappedField.mapping.model
-
-          mappedField.fields.forEach(field => {
-            const mappedFieldName = getCRUDFieldName(
-              prismaModelName,
-              field.name,
-              mappedField.mapping,
-              this.fieldNamingStrategy,
-            )
-            const fieldPublisher: FieldPublisher = givenConfig => {
-              const resolvedConfig: FieldPublisherConfig = {
-                pagination: true,
-                type: field.outputType.type,
-                ...givenConfig,
-              }
-              const gqlFieldName = resolvedConfig.alias
-                ? resolvedConfig.alias
-                : mappedFieldName
-              const operationName = Object.keys(mappedField.mapping).find(
-                key => (mappedField.mapping as any)[key] === field.name,
-              ) as keyof DMMF.Data.Mapping | undefined
-
-              if (!operationName) {
-                throw new Error(
-                  `Could not find operation name for field ${field.name}`,
-                )
-              }
-
-              t.field(gqlFieldName, {
-                type: this.publisher.outputType(resolvedConfig.type!, field),
-                list: field.outputType.isList || undefined,
-                nullable: !field.outputType.isRequired,
-                args: this.buildArgsFromField(
-                  prismaModelName,
-                  gqlTypeName,
-                  operationName,
-                  field,
-                  resolvedConfig,
-                ),
-                resolve: (_parent, args, ctx) => {
-                  const photon = this.getPhoton(ctx)
-                  assertPhotonInContext(photon)
-                  return photon[mappedField.mapping.plural!][operationName](
-                    args,
-                  )
-                },
-              })
-
-              return crud
+        return getCrudMappedFields(typeName, this.dmmf).reduce<
+          PublisherMethods
+        >((crud, mappedField) => {
+          const fieldPublisher: FieldPublisher = givenConfig => {
+            const resolvedConfig: FieldPublisherConfig = {
+              pagination: true,
+              type: mappedField.field.outputType.type,
+              ...givenConfig,
             }
-            crud[mappedFieldName] = fieldPublisher
-          })
+            const gqlFieldName = resolvedConfig.alias || mappedField.field.name
+
+            t.field(gqlFieldName, {
+              type: this.publisher.outputType(
+                resolvedConfig.type!,
+                mappedField.field,
+              ),
+              list: mappedField.field.outputType.isList || undefined,
+              nullable: !mappedField.field.outputType.isRequired,
+              args: this.buildArgsFromField(
+                typeName,
+                mappedField.operation,
+                mappedField.field,
+                resolvedConfig,
+              ),
+              resolve: (_parent, args, ctx) => {
+                const photon = this.getPhoton(ctx)
+                assertPhotonInContext(photon)
+                return photon[mappedField.photonAccessor][
+                  mappedField.operation
+                ](args)
+              },
+            })
+
+            return crud
+          }
+
+          crud[mappedField.field.name] = fieldPublisher
 
           return crud
         }, {})
@@ -305,50 +261,100 @@ export class SchemaBuilder {
        */
       factory: ({ typeDef, typeName }) =>
         this.dmmf.hasModel(typeName)
-          ? this.buildModelDo(typeName, typeName, typeDef)
-          : (modelName: string) =>
-              this.buildModelDo(modelName, modelName, typeDef),
+          ? this.internalBuildModel(typeName, typeDef)
+          : (modelName: string) => this.internalBuildModel(modelName, typeDef),
     })
   }
 
+  protected internalBuildModel(
+    typeName: string,
+    t: Nexus.core.OutputDefinitionBlock<any>,
+  ) {
+    const model = this.dmmf.getModelOrThrow(typeName)
+    const outputType = this.dmmf.getOutputType(model.name)
+
+    const publishers = outputType.fields.reduce<PublisherMethods>(
+      (acc, field) => {
+        const fieldPublisher: FieldPublisher = givenConfig => {
+          const resolvedConfig: FieldPublisherConfig = {
+            pagination: true,
+            type: field.outputType.type,
+            ...givenConfig,
+          }
+          const fieldName = resolvedConfig.alias || field.name
+          const type = resolvedConfig.type || field.outputType.type
+          const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
+            type: this.publisher.outputType(type, field),
+            list: field.outputType.isList || undefined,
+            nullable: !field.outputType.isRequired,
+            args: this.buildArgsFromField(
+              typeName,
+              null,
+              field,
+              resolvedConfig,
+            ),
+          }
+          // Rely on default resolvers for scalars and enums
+          if (field.outputType.kind === 'object') {
+            const mapping = this.dmmf.getMapping(typeName)
+
+            fieldOpts.resolve = (root, args, ctx) => {
+              const photon = this.getPhoton(ctx)
+
+              assertPhotonInContext(photon)
+
+              return photon[mapping.plural!]
+                ['findOne']({ where: { id: root.id } })
+                [field.name](args)
+            }
+          }
+
+          t.field(fieldName, fieldOpts)
+
+          return publishers
+        }
+
+        acc[field.name] = fieldPublisher
+        return acc
+      },
+      {},
+    )
+
+    return publishers
+  }
+
   protected buildArgsFromField(
-    prismaModelName: string,
-    graphQLTypeName: string,
+    typeName: string,
     operationName: keyof DMMF.Data.Mapping | null,
     field: DMMF.Data.SchemaField,
-    opts: FieldPublisherConfig,
+    resolvedConfig: FieldPublisherConfig,
   ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[] = []
 
-    if (graphQLTypeName === 'Mutation' || operationName === 'findOne') {
+    if (typeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => ({
         arg,
         type: this.dmmf.getInputType(arg.inputType.type),
       }))
     } else {
-      args = this.argsFromQueryOrModelField(
-        prismaModelName,
-        graphQLTypeName,
-        field,
-        opts,
-      )
+      args = this.argsFromQueryOrModelField(typeName, field, resolvedConfig)
     }
 
     return args.reduce<Nexus.core.ArgsRecord>((acc, customArg) => {
       acc[customArg.arg.name] = this.publisher.inputType(customArg) as any //FIXME
+
       return acc
     }, {})
   }
 
   protected argsFromQueryOrModelField(
-    prismaModelName: string,
-    graphQLTypeName: string,
+    typeName: string,
     dmmfField: DMMF.Data.SchemaField,
-    opts: FieldPublisherConfig,
+    resolvedConfig: FieldPublisherConfig,
   ) {
     let args: CustomInputArg[] = []
 
-    if (opts.filtering) {
+    if (resolvedConfig.filtering) {
       const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
       const whereArg = dmmfField.args.find(
         arg =>
@@ -357,22 +363,22 @@ export class SchemaBuilder {
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${prismaModelName}.${dmmfField.name}`,
+          `Could not find filtering argument for ${typeName}.${dmmfField.name}`,
         )
       }
 
       args.push({
         arg: whereArg,
         type: this.handleInputObjectCustomization(
-          opts.filtering,
+          resolvedConfig.filtering,
           inputObjectTypeDefName,
           dmmfField.name,
-          graphQLTypeName,
+          typeName,
         ),
       })
     }
 
-    if (opts.ordering) {
+    if (resolvedConfig.ordering) {
       const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
       const orderByArg = dmmfField.args.find(
         arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
@@ -380,28 +386,28 @@ export class SchemaBuilder {
 
       if (!orderByArg) {
         throw new Error(
-          `Could not find ordering argument for ${prismaModelName}.${dmmfField.name}`,
+          `Could not find ordering argument for ${typeName}.${dmmfField.name}`,
         )
       }
 
       args.push({
         arg: orderByArg,
         type: this.handleInputObjectCustomization(
-          opts.ordering,
+          resolvedConfig.ordering,
           orderByTypeName,
           dmmfField.name,
-          graphQLTypeName,
+          typeName,
         ),
       })
     }
 
-    if (opts.pagination) {
+    if (resolvedConfig.pagination) {
       const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
       const paginationsArgs =
-        opts.pagination === true
+        resolvedConfig.pagination === true
           ? dmmfField.args.filter(a => paginationKeys.includes(a.name))
           : dmmfField.args.filter(
-              arg => (opts.pagination as any)[arg.name] === true,
+              arg => (resolvedConfig.pagination as any)[arg.name] === true,
             )
 
       args.push(
@@ -465,65 +471,5 @@ export class SchemaBuilder {
       name: uniqueName,
       fields: userExposedObjectFields,
     }
-  }
-
-  /**
-   * Build the properties on a .model for a given prisma model.
-   */
-  protected buildModelDo(
-    prismaModelName: string,
-    graphQLTypeName: string,
-    t: Nexus.core.OutputDefinitionBlock<any>,
-  ) {
-    const model = this.dmmf.getModelOrThrow(prismaModelName)
-    const outputType = this.dmmf.getOutputType(model.name)
-
-    const seed: Record<string, (opts?: FieldPublisherConfig) => any> = {}
-    const result = outputType.fields.reduce((acc, graphqlField) => {
-      acc[graphqlField.name] = opts => {
-        if (!opts) {
-          opts = {}
-        }
-        if (opts.pagination === undefined) {
-          opts.pagination = true
-        }
-        const fieldName = opts.alias ? opts.alias : graphqlField.name
-        const type = opts.type ? opts.type : graphqlField.outputType.type
-        const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
-          ...nexusFieldOpts({
-            ...graphqlField.outputType,
-            type: this.publisher.outputType(type, graphqlField),
-          }),
-          args: this.buildArgsFromField(
-            prismaModelName,
-            graphQLTypeName,
-            null,
-            graphqlField,
-            opts,
-          ),
-        }
-        // Rely on default resolvers for scalars and enums
-        if (graphqlField.outputType.kind === 'object') {
-          const mapping = this.dmmf.getMapping(prismaModelName)
-
-          fieldOpts.resolve = (root, args, ctx) => {
-            const photon = this.getPhoton(ctx)
-
-            assertPhotonInContext(photon)
-
-            return photon[mapping.plural!]
-              ['findOne']({ where: { id: root.id } })
-              [graphqlField.name](args)
-          }
-        }
-
-        t.field(fieldName, fieldOpts)
-
-        return result
-      }
-      return acc
-    }, seed)
-
-    return result
   }
 }
