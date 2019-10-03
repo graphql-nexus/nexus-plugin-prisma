@@ -11,7 +11,7 @@ export class Publisher {
     public nexusBuilder: Nexus.OnInstallBuilder,
   ) {}
 
-  public inputType(
+  inputType(
     customArg: CustomInputArg,
   ):
     | string
@@ -45,7 +45,7 @@ export class Publisher {
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  public outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
+  outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
     // If type is already published, just reference it
     if (this.isPublished(outputTypeName)) {
       return outputTypeName
@@ -67,7 +67,7 @@ export class Publisher {
     return outputTypeName
   }
 
-  protected publishScalar(typeName: string) {
+  publishScalar(typeName: string) {
     if (scalarsNameValues.includes(typeName as any)) {
       return typeName
     }
@@ -82,7 +82,7 @@ export class Publisher {
     })
   }
 
-  protected publishEnum(typeName: string) {
+  publishEnum(typeName: string) {
     const eType = this.dmmf.getEnumType(typeName)
 
     this.markTypeAsPublished(typeName)
@@ -93,7 +93,7 @@ export class Publisher {
     })
   }
 
-  protected publishInputObjectType(inputType: DMMF.Data.InputType) {
+  publishInputObjectType(inputType: DMMF.Data.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
@@ -124,7 +124,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DMMF.Data.SchemaArg) {
+  getTypeFromArg(arg: DMMF.Data.SchemaArg) {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: this.dmmf.getOutputType(typeName).name,
@@ -136,13 +136,13 @@ export class Publisher {
     return kindToType[arg.inputType.kind](arg.inputType.type)
   }
 
-  protected isPublished(typeName: string) {
+  isPublished(typeName: string) {
     // If the user's app has published a type of the same name treat it as an
     // overide to us auto publishing.
     return this.nexusBuilder.hasType(typeName) || this.typesPublished[typeName]
   }
 
-  protected markTypeAsPublished(typeName: string) {
+  markTypeAsPublished(typeName: string) {
     this.typesPublished[typeName] = true
   }
 }

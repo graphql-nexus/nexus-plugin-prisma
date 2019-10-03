@@ -72,13 +72,13 @@ export interface CustomInputArg {
 }
 
 export class SchemaBuilder {
-  protected readonly dmmf: DMMF.DMMF
-  protected argsNamingStrategy: ArgsNamingStrategy
-  protected fieldNamingStrategy: FieldNamingStrategy
-  protected getPhoton: any
-  protected publisher: Publisher
+  readonly dmmf: DMMF.DMMF
+  argsNamingStrategy: ArgsNamingStrategy
+  fieldNamingStrategy: FieldNamingStrategy
+  getPhoton: any
+  publisher: Publisher
 
-  constructor(protected options: InternalOptions) {
+  constructor(public options: InternalOptions) {
     const config = {
       ...defaultOptions,
       ...options,
@@ -109,7 +109,7 @@ export class SchemaBuilder {
   /**
    * Build `t.crud` dynamic output property
    */
-  protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
+  buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
@@ -178,7 +178,7 @@ export class SchemaBuilder {
   /**
    * Build the `t.model` dynamic output property.
    */
-  protected buildModel() {
+  buildModel() {
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
@@ -233,7 +233,7 @@ export class SchemaBuilder {
     })
   }
 
-  protected internalBuildModel(
+  internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
   ) {
@@ -290,7 +290,7 @@ export class SchemaBuilder {
     return publishers
   }
 
-  protected buildArgsFromField(
+  buildArgsFromField(
     typeName: string,
     operationName: keyof DMMF.Data.Mapping | null,
     field: DMMF.Data.SchemaField,
@@ -314,7 +314,7 @@ export class SchemaBuilder {
     }, {})
   }
 
-  protected argsFromQueryOrModelField(
+  argsFromQueryOrModelField(
     typeName: string,
     dmmfField: DMMF.Data.SchemaField,
     resolvedConfig: FieldPublisherConfig,
@@ -410,7 +410,7 @@ export class SchemaBuilder {
    * ...
    * ```
    */
-  protected handleInputObjectCustomization(
+  handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
