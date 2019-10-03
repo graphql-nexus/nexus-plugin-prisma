@@ -1,13 +1,25 @@
-import { getDMMF } from '@prisma/photon'
+import * as Photon from '@prisma/photon'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
-import * as NexusPrisma from '../src'
+import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
+import { NexusAcceptedTypeDef } from 'nexus/dist/core'
 
-export async function generateSchemaAndTypes(datamodel: string, types: any) {
-  const dmmf = DMMF.fromPhotonDMMF(await getDMMF({ datamodel }))
-  const nexusPrisma = NexusPrisma.create({
+export const createNexusPrismaInternal = (
+  options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
+): Nexus.Plugin => ({
+  onInstall: nexusBuilder => ({
+    types: NexusPrismaBuilder.build({ ...options, nexusBuilder }),
+  }),
+})
+
+export async function generateSchemaAndTypes(
+  datamodel: string,
+  types: NexusAcceptedTypeDef[],
+) {
+  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const nexusPrisma = createNexusPrismaInternal({
     dmmf,
     shouldGenerateArtifacts: false,
   })

@@ -34,10 +34,10 @@ export interface Options {
   outputs?: {
     typegen?: string
   }
-  dmmf?: DMMF.DMMF // For testing
 }
 
 export interface InternalOptions extends Options {
+  dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.OnInstallBuilder
 }
 
@@ -391,21 +391,24 @@ export class SchemaBuilder {
   /**
    * This handles "tailored field feature publishing".
    *
-   * With tailord field feature publishing, users can specify that only
-   * some fields of the PSL model are exposed under the given field feature.
-   * For example, in the following...
+   * With tailord field feature publishing, users can specify that only some
+   * fields of the PSL model are exposed under the given field feature. For
+   * example, in the following...
    *
-   *    t.model.friends({ filtering: { firstName: true, location: true } })
-
-   * ...the field feature is "filtering" and the user has tailored it so
-   * that only "firstName" and "location" of the field's type (e.g. "User")
-   * are exposed to filtering on this field. So the resulting GQL TypeDef
-   * would look something like:
+   * ```ts
+   * t.model.friends({ filtering: { firstName: true, location: true } })
+   * ```
    *
-   *    ...
-   *   friends(where: { firstName: ..., location: ..., }): [User]
-   *   ...
+   * ...the field feature is "filtering" and the user has tailored it so that
+   * only "firstName" and "location" of the field's type (e.g. "User") are
+   * exposed to filtering on this field. So the resulting GQL TypeDef would look
+   * something like:
    *
+   * ```ts
+   * ...
+   * friends(where: { firstName: ..., location: ..., }): [User]
+   * ...
+   * ```
    */
   protected handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,

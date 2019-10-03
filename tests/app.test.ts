@@ -56,7 +56,7 @@ it('integrates together', async () => {
   })
 
   await nexusBuilder.generateSchema({
-    types: [typeDefs],
+    types: typeDefs,
     plugins: [nexusPrisma],
     outputs: {
       typegen: projectPath(`/generated/nexus-types-core.d.ts`),
