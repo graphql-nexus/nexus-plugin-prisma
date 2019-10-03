@@ -69,9 +69,9 @@
   integrity sha512-FwI9gX75FgVBJ7ywgnq/P7tw+/o1GUbtP0KzbtusLigAOgIgNISRK0ZPl4qertvXSIE8YbsVJueQ90cDt9YYyw==
 
 "@types/node@*":
-  version "12.7.8"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.8.tgz#cb1bf6800238898bc2ff6ffa5702c3cadd350708"
-  integrity sha512-FMdVn84tJJdV+xe+53sYiZS4R5yn1mAIxfj+DVoNiQjTYz1+OYmjwEZr1ev9nU0axXwda0QDbYl06QHanRVH3A==
+  version "12.7.9"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.9.tgz#da0210f91096aa67138cf5afd04c4d629f8a406a"
+  integrity sha512-P57oKTJ/vYivL2BCfxCC5tQjlS8qW31pbOL6qt99Yrjm95YdHgNZwjrTTjMBh+C2/y6PXIX4oz253+jUzxKKfQ==
 
 "@types/range-parser@*":
   version "1.2.3"
@@ -921,10 +921,10 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-prisma@pr434:
-  version "0.0.0-pr.434.1595f23"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.0-pr.434.1595f23.tgz#ba48859c4a9a64e74f2fcc2fc061a87dee16fe03"
-  integrity sha512-+O09PzCvPEqvhUfglAjPWNWGeB+RAYN41XLeP8+Yqtige5URgGhhQ38D1UQyHP72LHW/xygfrnR0eX3xrVFeXg==
+nexus-prisma@^0.0.0-pr.434.b880059:
+  version "0.0.0-pr.434.b880059"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.0-pr.434.b880059.tgz#304af3f5a56fea7657bac5b10f4a3612e254b824"
+  integrity sha512-34sTp1yvH4SKifRc0HTJjkEVUykVC20Dko9cQQ642Rnc2wIBzG9mhauOZX1EpkkQbJOAxt2jtSZFdgByf5cTmw==
   dependencies:
     fs-extra "^8.1.0"
     nexus pr236
@@ -1058,9 +1058,9 @@ prettier@^1.18.2:
   integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
 prisma2@^2.0.0-alpha.185:
-  version "2.0.0-preview-12"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-12.tgz#d5c1793ce19950580d21c4d1bf02583e06610ce4"
-  integrity sha512-IZ6oXNo+uBpN9AuT/eSrIWsanbEk+eYNdcJyeaOZsG1OmiC/iPsRZpJAH1e/29uPwFAi9CgD4YBuVq82X0KICg==
+  version "2.0.0-preview-13.2"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview-13.2.tgz#70ad3a55e258646417baf07308515f47dc22e2fa"
+  integrity sha512-9zODuCOoDhUHpFVWYgcKAWa7Blie4UIfkwH2gCTs/7IfWyca2zng+XyJuNcm5Yp5f1JyZ5EEvIe0ysZdZNcsBQ==
 
 proxy-addr@~2.0.5:
   version "2.0.5"

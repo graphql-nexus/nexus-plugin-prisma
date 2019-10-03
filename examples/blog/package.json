@@ -15,8 +15,8 @@
   "dependencies": {
     "graphql": "^14.3.1",
     "graphql-yoga": "^1.18.2",
-    "nexus-prisma": "pr434",
-    "nexus": "pr236"
+    "nexus": "pr236",
+    "nexus-prisma": "^0.0.0-pr.434.b880059"
   },
   "devDependencies": {
     "@types/faker": "^4.1.5",

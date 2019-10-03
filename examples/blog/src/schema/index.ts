@@ -11,7 +11,7 @@ const appTypes = [Query, Mutation, Blog, Post, Author]
 
 export default Nexus.makeSchema({
   types: appTypes,
-  plugins: [NexusPrisma.create({})],
+  plugins: [NexusPrisma.create()],
   outputs: {
     typegen: Path.join(
       __dirname,
