@@ -38,7 +38,8 @@ export interface Options {
 
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
-  types: any // FIXME `any`
+  // TODO need nexus plugin export
+  nexusBuilder: any
 }
 
 /**

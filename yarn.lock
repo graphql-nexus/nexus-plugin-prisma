@@ -3252,10 +3252,10 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-nexus@^0.12.0-beta.9:
-  version "0.12.0-beta.9"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.9.tgz#aa3330a60d152d0868f13a56292af38a34ccac70"
-  integrity sha512-e95NXcFzLArNPz3QYTzo2WjTyu27Gv7v2LJoiezZQknek7E+53kaJMKv3+0ceLV6C/aCcsUtMuRaKerOnNyMVw==
+nexus@^0.0.0-pr.236.236120d:
+  version "0.0.0-pr.236.236120d"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.0.0-pr.236.236120d.tgz#0af42fa03d1f34cd1f4afd8327c9d78e6ecc9598"
+  integrity sha512-N8nZvcizZ5znvuMNEtrvnIE91v7Wm42saeB7zLdh4vxIYGzhOoOZ/bqjdpPabat5+JMBGRcBfhJLQGKAaDDdpw==
   dependencies:
     tslib "^1.9.3"
 

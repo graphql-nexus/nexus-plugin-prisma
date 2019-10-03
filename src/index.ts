@@ -1,18 +1,19 @@
-// import { Plugin } from 'nexus'
+import { Plugin } from 'nexus'
 import * as Builder from './builder'
 
 // TODO this should be called NexusPrismaOptions
 export type NexusPrismaParams = Builder.Options
 
-// export const create = (): Plugin => {
-export const create = (options: Builder.Options) => {
-  return {
-    // TODO type these `any`s
-    onBeforeBuild: (types: any) => {
-      // mutate for performance
-      types.push(...Builder.build({ ...options, types }))
-      return types
-    },
+/**
+ * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
+ */
+export const create = (options: NexusPrismaParams): Plugin => {
+  return hooks => {
+    hooks.onInstall(nexusBuilder => {
+      return {
+        types: Builder.build({ ...options, nexusBuilder }),
+      }
+    })
   }
 }
 
