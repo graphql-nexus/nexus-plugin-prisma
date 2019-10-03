@@ -1,13 +1,10 @@
 import { Plugin } from 'nexus'
 import * as Builder from './builder'
 
-// TODO this should be called NexusPrismaOptions
-export type NexusPrismaParams = Builder.Options
-
 /**
  * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
  */
-export const create = (options: NexusPrismaParams): Plugin => {
+export const create = (options?: Builder.Options): Plugin => {
   return {
     onInstall: nexusBuilder => {
       return {
@@ -18,3 +15,5 @@ export const create = (options: NexusPrismaParams): Plugin => {
 }
 
 export const nexusPrismaPlugin = create
+
+export type Options = Builder.Options

@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.0.0-pr.434.3a6e0eb",
+  "version": "0.0.0-pr.434.1595f23",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",

@@ -921,19 +921,19 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-prisma@^0.4.1:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.4.2.tgz#b94e144b7395554eae1263157bc72f5062a62bfb"
-  integrity sha512-ssNBumwDlvV+cMDMCKWpyk50p/Sotf2ViBuodJHKMMwuda9e4HmDweRQC0/MV53VT56XocAgMtY3/NginkANvg==
+nexus-prisma@pr434:
+  version "0.0.0-pr.434.1595f23"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.0.0-pr.434.1595f23.tgz#ba48859c4a9a64e74f2fcc2fc061a87dee16fe03"
+  integrity sha512-+O09PzCvPEqvhUfglAjPWNWGeB+RAYN41XLeP8+Yqtige5URgGhhQ38D1UQyHP72LHW/xygfrnR0eX3xrVFeXg==
   dependencies:
     fs-extra "^8.1.0"
-    nexus "^0.12.0-beta.9"
+    nexus pr236
     pluralize "^8.0.0"
 
-nexus@^0.12.0-beta.8, nexus@^0.12.0-beta.9:
-  version "0.12.0-beta.9"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.9.tgz#aa3330a60d152d0868f13a56292af38a34ccac70"
-  integrity sha512-e95NXcFzLArNPz3QYTzo2WjTyu27Gv7v2LJoiezZQknek7E+53kaJMKv3+0ceLV6C/aCcsUtMuRaKerOnNyMVw==
+nexus@pr236:
+  version "0.0.0-pr.236.0c37c30"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.0.0-pr.236.0c37c30.tgz#ab98de74f5d5add131f862026f9b702e3de37823"
+  integrity sha512-dEsYxY0L0NyIYsvr1QVnBQPEd0amVvZ4CgjSaUj6PugX4NDxISBlrPn8vBU3WsWzHrA1ZiyRBLeGOhb2DlLPSA==
   dependencies:
     tslib "^1.9.3"
 
