@@ -164,47 +164,46 @@ export class SchemaBuilder {
             `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-        return getCrudMappedFields(typeName, this.dmmf).reduce<PublisherMethods>(
-          (crud, mappedField) => {
-            const fieldPublisher: FieldPublisher = givenConfig => {
-              const resolvedConfig: FieldPublisherConfig = {
-                pagination: true,
-                type: mappedField.field.outputType.type,
-                ...givenConfig,
-              }
-              const gqlFieldName = resolvedConfig.alias || mappedField.field.name
-
-              t.field(gqlFieldName, {
-                type: this.publisher.outputType(
-                  resolvedConfig.type!,
-                  mappedField.field,
-                ),
-                list: mappedField.field.outputType.isList || undefined,
-                nullable: !mappedField.field.outputType.isRequired,
-                args: this.buildArgsFromField(
-                  typeName,
-                  mappedField.operation,
-                  mappedField.field,
-                  resolvedConfig,
-                ),
-                resolve: (_parent, args, ctx) => {
-                  const photon = this.getPhoton(ctx)
-                  assertPhotonInContext(photon)
-                  return photon[mappedField.photonAccessor][
-                    mappedField.operation
-                  ](args)
-                },
-              })
-
-              return crud
+        return getCrudMappedFields(typeName, this.dmmf).reduce<
+          PublisherMethods
+        >((crud, mappedField) => {
+          const fieldPublisher: FieldPublisher = givenConfig => {
+            const resolvedConfig: FieldPublisherConfig = {
+              pagination: true,
+              type: mappedField.field.outputType.type,
+              ...givenConfig,
             }
+            const gqlFieldName = resolvedConfig.alias || mappedField.field.name
 
-            crud[mappedField.field.name] = fieldPublisher
+            t.field(gqlFieldName, {
+              type: this.publisher.outputType(
+                resolvedConfig.type!,
+                mappedField.field,
+              ),
+              list: mappedField.field.outputType.isList || undefined,
+              nullable: !mappedField.field.outputType.isRequired,
+              args: this.buildArgsFromField(
+                typeName,
+                mappedField.operation,
+                mappedField.field,
+                resolvedConfig,
+              ),
+              resolve: (_parent, args, ctx) => {
+                const photon = this.getPhoton(ctx)
+                assertPhotonInContext(photon)
+                return photon[mappedField.photonAccessor][
+                  mappedField.operation
+                ](args)
+              },
+            })
 
             return crud
-          },
-          {},
-        )
+          }
+
+          crud[mappedField.field.name] = fieldPublisher
+
+          return crud
+        }, {})
       },
     })
   }
@@ -263,8 +262,7 @@ export class SchemaBuilder {
       factory: ({ typeDef, typeName }) =>
         this.dmmf.hasModel(typeName)
           ? this.internalBuildModel(typeName, typeDef)
-          : (modelName: string) =>
-              this.internalBuildModel(modelName, typeDef),
+          : (modelName: string) => this.internalBuildModel(modelName, typeDef),
     })
   }
 
@@ -289,7 +287,12 @@ export class SchemaBuilder {
             type: this.publisher.outputType(type, field),
             list: field.outputType.isList || undefined,
             nullable: !field.outputType.isRequired,
-            args: this.buildArgsFromField(typeName, null, field, resolvedConfig),
+            args: this.buildArgsFromField(
+              typeName,
+              null,
+              field,
+              resolvedConfig,
+            ),
           }
           // Rely on default resolvers for scalars and enums
           if (field.outputType.kind === 'object') {
