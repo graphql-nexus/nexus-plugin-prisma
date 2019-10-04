@@ -3,14 +3,8 @@ datasource db {
   url      = "file:dev.db"
 }
 
-generator nexus_prisma {
-  provider = "nexus-prisma"
-  output   = "node_modules/@generated/nexus-prisma"
-}
-
 generator photon {
   provider = "photonjs"
-  output   = "node_modules/@generated/photon"
 }
 
 model Blog {
@@ -24,10 +18,13 @@ model Blog {
 }
 
 model Author {
-  id    Int     @id
-  name  String?
-  posts Post[]
-  blog  Blog
+  id        Int      @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  posts     Post[]
+  blog      Blog
+  rating    Float
 }
 
 model Post {
