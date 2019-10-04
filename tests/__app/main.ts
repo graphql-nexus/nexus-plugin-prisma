@@ -11,6 +11,7 @@ export const Query = queryType({
 export const Mutation = mutationType({
   definition: t => {
     t.crud.createOnePost()
+    t.crud.updateManyPost()
   },
 })
 
