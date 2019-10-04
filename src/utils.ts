@@ -1,8 +1,6 @@
 import { isNamedType } from 'graphql'
 import { core } from 'nexus'
 import { relative } from 'path'
-import * as DMMF from './dmmf'
-import { FieldNamingStrategy, OperationName } from './naming-strategies'
 
 // TODO `any` should be `unknown` but there is a bug (?)
 // preventing that from working, see:

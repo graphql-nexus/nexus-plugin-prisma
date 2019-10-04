@@ -1,10 +1,16 @@
-import { objectType, queryType } from 'nexus'
+import { objectType, queryType, mutationType } from 'nexus'
 
 export const Query = queryType({
   definition(t) {
     // ASSERT findOne & findMany
     t.crud.user()
     t.crud.users()
+  },
+})
+
+export const Mutation = mutationType({
+  definition: t => {
+    t.crud.createOnePost()
   },
 })
 

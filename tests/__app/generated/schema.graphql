@@ -8,6 +8,16 @@ type Bubble {
   members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]
 }
 
+input BubbleCreateOneWithoutBubbleInput {
+  connect: BubbleWhereUniqueInput
+  create: BubbleCreateWithoutMembersInput
+}
+
+input BubbleCreateWithoutMembersInput {
+  createdAt: DateTime
+  id: UUID
+}
+
 input BubbleMembersOrderByInput {
   firstName: OrderByArg
 }
@@ -23,6 +33,10 @@ input BubbleWhereInput {
   members: UserFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
+}
+
+input BubbleWhereUniqueInput {
+  id: UUID
 }
 
 scalar DateTime
@@ -60,6 +74,10 @@ input IntFilter {
   notIn: [Int!]
 }
 
+type Mutation {
+  createOnePost(data: PostCreateInput!): Post!
+}
+
 enum OrderByArg {
   asc
   desc
@@ -67,6 +85,11 @@ enum OrderByArg {
 
 type Post {
   authors: [User!]
+}
+
+input PostCreateInput {
+  authors: UserCreateManyWithoutAuthorsInput
+  rating: Float!
 }
 
 input PostFilter {
@@ -112,6 +135,18 @@ type User {
   firstName: String!
   id: ID!
   posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
+}
+
+input UserCreateManyWithoutAuthorsInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutPostsInput!]
+}
+
+input UserCreateWithoutPostsInput {
+  bubble: BubbleCreateOneWithoutBubbleInput
+  firstName: String!
+  id: ID
+  lastName: String!
 }
 
 input UserFilter {

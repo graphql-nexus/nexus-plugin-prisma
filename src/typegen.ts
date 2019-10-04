@@ -222,7 +222,7 @@ ${dmmf.datamodel.models
 
 function renderStaticTypes() {
   return `\
-  type ModelNameExistsInGraphQLType<
+  type IsModelNameExistsInGraphQLTypes<
   ReturnType extends any
 > = ReturnType extends core.GetGen<'objectNames'> ? true : false;
 
@@ -243,6 +243,9 @@ type RootObjectTypes = Pick<
   core.GetGen<'objectNames'>
 >;
 
+/**
+ * Determine if \`B\` is a subset (or equivalent to) of \`A\`.
+*/
 type IsSubset<A, B> = keyof A extends never
   ? false
   : B extends A
@@ -271,7 +274,7 @@ type SubsetTypes<ModelName extends any> = GetSubsetTypes<
   ? \`ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model('<ModelName>')\`
   : GetSubsetTypes<ModelName>;
 
-type DynamicRequiredType<ReturnType extends any> = ModelNameExistsInGraphQLType<
+type DynamicRequiredType<ReturnType extends any> = IsModelNameExistsInGraphQLTypes<
   ReturnType
 > extends true
   ? { type?: SubsetTypes<ReturnType> }
@@ -342,7 +345,7 @@ type NexusPrismaMethod<
   ReturnType extends any = NexusPrismaTypes[ModelName][MethodName]
 > = IsScalar extends true // If scalar
   ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName> // Return optional scalar opts
-  : ModelNameExistsInGraphQLType<ReturnType> extends true // If model name has a mapped graphql types
+  : IsModelNameExistsInGraphQLTypes<ReturnType> extends true // If model name has a mapped graphql types
   ? (
       opts?: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>
     ) => NexusPrismaFields<ModelName> // Then make opts optional
