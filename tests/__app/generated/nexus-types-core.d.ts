@@ -87,6 +87,10 @@ export interface NexusGenInputs {
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
+  PostUpdateManyMutationInput: { // input type
+    id?: number | null; // Int
+    rating?: number | null; // Float
+  }
   PostWhereInput: { // input type
     AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     authors?: NexusGenInputs['UserFilter'] | null; // UserFilter
@@ -156,6 +160,9 @@ export interface NexusGenEnums {
 }
 
 export interface NexusGenRootTypes {
+  BatchPayload: { // root type
+    count: number; // Int!
+  }
   Bubble: { // root type
     createdAt: any; // DateTime!
     id: any; // UUID!
@@ -189,6 +196,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   PostCreateInput: NexusGenInputs['PostCreateInput'];
   PostFilter: NexusGenInputs['PostFilter'];
   PostOrderByInput: NexusGenInputs['PostOrderByInput'];
+  PostUpdateManyMutationInput: NexusGenInputs['PostUpdateManyMutationInput'];
   PostWhereInput: NexusGenInputs['PostWhereInput'];
   StringFilter: NexusGenInputs['StringFilter'];
   UUIDFilter: NexusGenInputs['UUIDFilter'];
@@ -201,6 +209,9 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
+  BatchPayload: { // field return type
+    count: number; // Int!
+  }
   Bubble: { // field return type
     createdAt: any; // DateTime!
     id: any; // UUID!
@@ -208,6 +219,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createOnePost: NexusGenRootTypes['Post']; // Post!
+    updateManyPost: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Post: { // field return type
     authors: NexusGenRootTypes['User'][] | null; // [User!]
@@ -234,6 +246,10 @@ export interface NexusGenArgTypes {
   Mutation: {
     createOnePost: { // args
       data: NexusGenInputs['PostCreateInput']; // PostCreateInput!
+    }
+    updateManyPost: { // args
+      data: NexusGenInputs['PostUpdateManyMutationInput']; // PostUpdateManyMutationInput!
+      where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
   Query: {
@@ -266,9 +282,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Bubble" | "Mutation" | "Post" | "Query" | "User";
+export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Mutation" | "Post" | "Query" | "User";
 
-export type NexusGenInputNames = "BubbleCreateOneWithoutBubbleInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostWhereInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutAuthorsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "BubbleCreateOneWithoutBubbleInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutAuthorsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "OrderByArg";
 

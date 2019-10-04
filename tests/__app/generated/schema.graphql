@@ -2,6 +2,10 @@
 ### Do not make changes to this file directly
 
 
+type BatchPayload {
+  count: Int!
+}
+
 type Bubble {
   createdAt: DateTime!
   id: UUID!
@@ -76,6 +80,7 @@ input IntFilter {
 
 type Mutation {
   createOnePost(data: PostCreateInput!): Post!
+  updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
 }
 
 enum OrderByArg {
@@ -101,6 +106,11 @@ input PostFilter {
 input PostOrderByInput {
   id: OrderByArg
   rating: OrderByArg
+}
+
+input PostUpdateManyMutationInput {
+  id: Int
+  rating: Float
 }
 
 input PostWhereInput {

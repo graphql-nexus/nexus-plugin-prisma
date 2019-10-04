@@ -1,6 +1,6 @@
 import * as Nexus from 'nexus'
 import * as DMMF from './dmmf'
-import { nexusFieldOpts, partition } from './utils'
+import { dmmfFieldToNexusFieldConfig, partition } from './utils'
 import { CustomInputArg } from './builder'
 import { scalarsNameValues } from './graphql'
 
@@ -23,7 +23,7 @@ export class Publisher {
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
       return Nexus.arg(
-        nexusFieldOpts({
+        dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
           type: customArg.type.name,
         }),
@@ -52,7 +52,7 @@ export class Publisher {
 
     // If output object type, just reference the type
     if (field.outputType.kind === 'object') {
-      return outputTypeName
+      return this.publishObject(outputTypeName)
     }
 
     if (this.dmmf.hasEnumType(outputTypeName)) {
@@ -64,6 +64,19 @@ export class Publisher {
     }
 
     return outputTypeName
+  }
+
+  protected publishObject(name: string) {
+    this.markTypeAsPublished(name)
+    const dmmfObject = this.dmmf.getOutputType(name)
+    return Nexus.objectType({
+      name,
+      definition: t => {
+        for (const field of dmmfObject.fields) {
+          t.field(field.name, dmmfFieldToNexusFieldConfig(field.outputType))
+        }
+      },
+    })
   }
 
   protected publishScalar(typeName: string) {
@@ -82,13 +95,13 @@ export class Publisher {
   }
 
   protected publishEnum(typeName: string) {
-    const eType = this.dmmf.getEnumType(typeName)
+    const dmmfEnum = this.dmmf.getEnumType(typeName)
 
     this.markTypeAsPublished(typeName)
 
     return Nexus.enumType({
       name: typeName,
-      members: eType.values,
+      members: dmmfEnum.values,
     })
   }
 
@@ -117,7 +130,7 @@ export class Publisher {
           },
         }))
         ;[...scalarFields, ...remappedObjectFields].forEach(field => {
-          t.field(field.name, nexusFieldOpts(field.inputType))
+          t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
         })
       },
     })

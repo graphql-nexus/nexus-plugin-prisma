@@ -55,7 +55,7 @@ export function flatMap<T, U>(
   return Array.prototype.concat(...array.map(callbackfn))
 }
 
-export function nexusFieldOpts(param: {
+export function dmmfFieldToNexusFieldConfig(param: {
   type: string | object
   isList: boolean
   isRequired: boolean
