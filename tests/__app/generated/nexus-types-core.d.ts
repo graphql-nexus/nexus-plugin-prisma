@@ -77,6 +77,7 @@ export interface NexusGenInputs {
   PostCreateInput: { // input type
     authors?: NexusGenInputs['UserCreateManyWithoutAuthorsInput'] | null; // UserCreateManyWithoutAuthorsInput
     rating: number; // Float!
+    status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   PostFilter: { // input type
     every?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
@@ -86,10 +87,12 @@ export interface NexusGenInputs {
   PostOrderByInput: { // input type
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    status?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
   PostUpdateManyMutationInput: { // input type
     id?: number | null; // Int
     rating?: number | null; // Float
+    status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
   PostWhereInput: { // input type
     AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
@@ -98,6 +101,7 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
   StringFilter: { // input type
     contains?: string | null; // String
@@ -157,6 +161,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   OrderByArg: "asc" | "desc"
+  PostStatus: "DRAFT" | "PUBLISHED"
 }
 
 export interface NexusGenRootTypes {
@@ -168,7 +173,9 @@ export interface NexusGenRootTypes {
     id: any; // UUID!
   }
   Mutation: {};
-  Post: {};
+  Post: { // root type
+    status: NexusGenEnums['PostStatus']; // PostStatus!
+  }
   Query: {};
   User: { // root type
     firstName: string; // String!
@@ -206,6 +213,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
   OrderByArg: NexusGenEnums['OrderByArg'];
+  PostStatus: NexusGenEnums['PostStatus'];
 }
 
 export interface NexusGenFieldTypes {
@@ -223,6 +231,7 @@ export interface NexusGenFieldTypes {
   }
   Post: { // field return type
     authors: NexusGenRootTypes['User'][] | null; // [User!]
+    status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: { // field return type
     user: NexusGenRootTypes['User'] | null; // User
@@ -286,7 +295,7 @@ export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Mutation" | "Post
 
 export type NexusGenInputNames = "BubbleCreateOneWithoutBubbleInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutAuthorsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
-export type NexusGenEnumNames = "OrderByArg";
+export type NexusGenEnumNames = "OrderByArg" | "PostStatus";
 
 export type NexusGenInterfaceNames = never;
 

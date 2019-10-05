@@ -90,11 +90,13 @@ enum OrderByArg {
 
 type Post {
   authors: [User!]
+  status: PostStatus!
 }
 
 input PostCreateInput {
   authors: UserCreateManyWithoutAuthorsInput
   rating: Float!
+  status: PostStatus!
 }
 
 input PostFilter {
@@ -106,11 +108,18 @@ input PostFilter {
 input PostOrderByInput {
   id: OrderByArg
   rating: OrderByArg
+  status: OrderByArg
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
 }
 
 input PostUpdateManyMutationInput {
   id: Int
   rating: Float
+  status: PostStatus
 }
 
 input PostWhereInput {
@@ -120,6 +129,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   rating: FloatFilter
+  status: PostStatus
 }
 
 type Query {
