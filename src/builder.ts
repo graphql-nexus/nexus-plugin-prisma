@@ -79,23 +79,47 @@ export function build(options: Options) {
   return builder.build()
 }
 
+// The @types default is based on the priviledge given to such
+// packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
+let defaultTypegenPath: string
+if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
+  defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
+} else if (process.env.NEXUS_PRISMA_LINK) {
+  defaultTypegenPath = path.join(
+    process.cwd(),
+    'node_modules/@types/__nexus-typegen__nexus-prisma/index.d.ts',
+  )
+} else {
+  defaultTypegenPath = path.join(
+    __dirname,
+    '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
+  )
+}
+
+// Note Default should be updated once resolved:
+// https://github.com/prisma/photonjs/issues/88
+let defaultPhotonPath: string
+if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
+  defaultPhotonPath = process.env.NEXUS_PRISMA_PHOTON_PATH
+} else if (process.env.NEXUS_PRISMA_LINK) {
+  defaultPhotonPath = path.join(
+    process.cwd(),
+    '/node_modules/@generated/photon',
+  )
+} else {
+  defaultPhotonPath = '@generated/photon'
+}
+
 const defaultOptions = {
   shouldGenerateArtifacts: Boolean(
     !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
   ),
   photon: (ctx: any) => ctx.photon,
   inputs: {
-    // TODO Default should be updated once resolved:
-    // https://github.com/prisma/photonjs/issues/88
-    photon: '@generated/photon',
+    photon: defaultPhotonPath,
   },
   outputs: {
-    // This default is based on the priviledge given to @types
-    // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
-    typegen: path.join(
-      __dirname,
-      '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
-    ),
+    typegen: defaultTypegenPath,
   },
 }
 
