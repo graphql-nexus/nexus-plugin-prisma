@@ -7,7 +7,7 @@ export const Query = queryType({
       pagination: false,
     })
     t.crud.blog({ alias: 'blog' })
-    t.crud.authors({ filtering: true })
+    t.crud.users({ filtering: true })
     t.crud.posts({ type: 'CustomPost', ordering: true, filtering: true })
   },
 })
