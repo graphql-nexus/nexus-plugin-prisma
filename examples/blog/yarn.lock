@@ -921,10 +921,10 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-prisma@^0.4.1:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.4.2.tgz#b94e144b7395554eae1263157bc72f5062a62bfb"
-  integrity sha512-ssNBumwDlvV+cMDMCKWpyk50p/Sotf2ViBuodJHKMMwuda9e4HmDweRQC0/MV53VT56XocAgMtY3/NginkANvg==
+nexus-prisma@next:
+  version "0.5.0-next.2"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.5.0-next.2.tgz#cfce93a1aea66f0f7185d69aa16c0967c789f9a7"
+  integrity sha512-bzhSavpc2YKXeOfdHV8iScNqfnhA2II6ksYW1hx57089RDSgtfCQIet4SkxY6/z9H4J8CucwDBOmCazqXQuLUw==
   dependencies:
     fs-extra "^8.1.0"
     nexus "^0.12.0-beta.9"

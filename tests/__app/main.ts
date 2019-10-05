@@ -34,6 +34,8 @@ export const Post = objectType({
     t.model.id
     // ASSERT pagination disabled
     t.model.authors({ pagination: false })
+    // ASSERT enums on models
+    t.model.status()
   },
 })
 

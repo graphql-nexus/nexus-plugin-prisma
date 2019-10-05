@@ -103,26 +103,73 @@ type NexusPrismaRelationOpts<
       pagination?: boolean | Pagination;
     } & DynamicRequiredType<ReturnType>;
 
-type IsScalar<TypeName extends any> = TypeName extends core.GetGen<
-  'scalarNames'
->
+type IsScalar<TypeName extends any> = TypeName extends core.GetGen<'scalarNames'>
   ? true
   : false;
+
+type IsObject<Name extends any> = Name extends core.GetGen<'objectNames'>
+  ? true
+  : false
+
+type IsEnum<Name extends any> = Name extends core.GetGen<'enumNames'>
+  ? true
+  : false
+
+type IsInputObject<Name extends any> = Name extends core.GetGen<'inputNames'>
+  ? true
+  : false
+
+/**
+ * The kind that a GraphQL type may be.
+ */
+type Kind = 'Enum' | 'Object' | 'Scalar' | 'InputObject'
+
+/**
+ * Helper to safely reference a Kind type. For example instead of the following
+ * which would admit a typo:
+ *
+ * ```ts
+ * type Foo = Bar extends 'scalar' ? ...
+ * ```
+ *
+ * You can do this which guarantees a correct reference:
+ *
+ * ```ts
+ * type Foo = Bar extends AKind<'Scalar'> ? ...
+ * ```
+ *
+ */
+type AKind<T extends Kind> = T
+
+type GetKind<Name extends any> = IsEnum<Name> extends true
+  ? 'Enum'
+  : IsScalar<Name> extends true
+  ? 'Scalar'
+  : IsObject<Name> extends true
+  ? 'Object'
+  : IsInputObject<Name> extends true
+  ? 'InputObject'
+  // FIXME should be `never`, but GQL objects named differently
+  // than backing type fall into this branch
+  : 'Object'
 
 type NexusPrismaFields<ModelName extends keyof NexusPrismaTypes> = {
   [MethodName in keyof NexusPrismaTypes[ModelName]]: NexusPrismaMethod<
     ModelName,
     MethodName,
-    IsScalar<NexusPrismaTypes[ModelName][MethodName]> // Is the return type a scalar?
+    GetKind<NexusPrismaTypes[ModelName][MethodName]> // Is the return type a scalar?
   >;
 };
 
 type NexusPrismaMethod<
   ModelName extends keyof NexusPrismaTypes,
   MethodName extends keyof NexusPrismaTypes[ModelName],
-  IsScalar extends boolean,
+  ThisKind extends Kind,
   ReturnType extends any = NexusPrismaTypes[ModelName][MethodName]
-> = IsScalar extends true // If scalar
+> =
+  ThisKind extends AKind<'Enum'>
+  ? () => NexusPrismaFields<ModelName>
+  : ThisKind extends AKind<'Scalar'>
   ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName> // Return optional scalar opts
   : IsModelNameExistsInGraphQLTypes<ReturnType> extends true // If model name has a mapped graphql types
   ? (
@@ -176,8 +223,8 @@ interface NexusPrismaInputs {
   ordering: 'id' | 'firstName' | 'lastName'
 }
     posts: {
-  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'rating'
+  filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating' | 'status'
 }
 
   },
@@ -189,8 +236,8 @@ interface NexusPrismaInputs {
 
   },  User: {
     posts: {
-  filtering: 'id' | 'authors' | 'rating' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'rating'
+  filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'rating' | 'status'
 }
 
   },  Post: {
@@ -249,6 +296,7 @@ interface NexusPrismaTypes {
     id: 'Int'
     authors: 'User'
     rating: 'Float'
+    status: 'PostStatus'
 
 }
 }

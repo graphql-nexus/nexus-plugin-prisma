@@ -1,0 +1,23 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "stepType": "CreateField",
+      "model": "Post",
+      "name": "status",
+      "type": {
+        "Enum": "PostStatus"
+      },
+      "arity": "required",
+      "isUnique": false
+    },
+    {
+      "stepType": "CreateEnum",
+      "name": "PostStatus",
+      "values": [
+        "DRAFT",
+        "PUBLISHED"
+      ]
+    }
+  ]
+}

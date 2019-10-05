@@ -5,9 +5,9 @@ import * as Query from './Query'
 import * as Mutation from './Mutation'
 import * as Blog from './Blog'
 import * as Post from './Post'
-import * as Author from './Author'
+import * as User from './User'
 
-const appTypes = [Query, Mutation, Blog, Post, Author]
+const appTypes = [Query, Mutation, Blog, Post, User]
 const nexusPrismaTypes = NexusPrisma.nexusPrismaPlugin({ types: appTypes })
 const allTypes = [appTypes, nexusPrismaTypes]
 
