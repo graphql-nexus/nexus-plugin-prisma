@@ -18,12 +18,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@prisma/photon": "^0.2.94",
     "fs-extra": "^8.1.0",
     "nexus": "^0.12.0-beta.9",
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/photon": "^0.2.68",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
