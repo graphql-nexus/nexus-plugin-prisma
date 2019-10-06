@@ -22,7 +22,7 @@ input BlogCreateInput {
   name: String!
   posts: PostCreateManyWithoutPostsInput
   updatedAt: DateTime
-  viewCount: Int!
+  viewCount: Int
 }
 
 input BlogCreateOneWithoutBlogInput {
@@ -35,7 +35,7 @@ input BlogCreateWithoutAuthorsInput {
   name: String!
   posts: PostCreateManyWithoutPostsInput
   updatedAt: DateTime
-  viewCount: Int!
+  viewCount: Int
 }
 
 input BlogPostsWhereInput {
@@ -182,10 +182,10 @@ input PostWhereUniqueInput {
 }
 
 type Query {
-  blog(where: BlogWhereUniqueInput!): Blog
+  blog(id: Int!): Blog!
   blogs: [Blog!]
+  people(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]
   posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [CustomPost!]
-  users(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]
 }
 
 input StringFilter {

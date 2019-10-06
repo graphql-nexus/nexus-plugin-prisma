@@ -21,10 +21,15 @@ export default Nexus.makeSchema({
     schema: Path.join(__dirname, '../schema.graphql'),
   },
   typegenAutoConfig: {
+    contextType: 'Context.Context',
     sources: [
       {
         source: '@generated/photon',
         alias: 'photon',
+      },
+      {
+        source: require.resolve('../context'),
+        alias: 'Context',
       },
     ],
   },

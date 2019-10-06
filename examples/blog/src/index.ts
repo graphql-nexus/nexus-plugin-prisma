@@ -1,11 +1,10 @@
 import { GraphQLServer } from 'graphql-yoga'
-import { Photon } from '@generated/photon'
 import schema from './schema'
+import { createContext } from './context'
 
-const photon = new Photon()
 const server = new GraphQLServer({
   schema,
-  context: () => ({ photon }),
+  context: createContext(),
 })
 
 server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
