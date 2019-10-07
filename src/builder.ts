@@ -199,8 +199,8 @@ export class SchemaBuilder {
             }
             const gqlFieldName = resolvedConfig.alias || mappedField.field.name
 
-            // When dealing with strings we rely on the empty-list to represet
-            // null. When dealing with lists, photon will never return null.
+            // When dealing with lists-of-values we rely on the empty-list to represet
+            // the idea of null. When dealing with lists, photon will never return null.
             // And it will never return null list members.
             const listNullableSettings = mappedField.field.outputType.isList
               ? {
