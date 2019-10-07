@@ -199,13 +199,24 @@ export class SchemaBuilder {
             }
             const gqlFieldName = resolvedConfig.alias || mappedField.field.name
 
+            // When dealing with strings we rely on the empty-list to represet
+            // null. When dealing with lists, photon will never return null.
+            // And it will never return null list members.
+            const listNullableSettings = mappedField.field.outputType.isList
+              ? {
+                  list: [true],
+                  nullable: false,
+                }
+              : {
+                  nullable: !mappedField.field.outputType.isRequired,
+                }
+
             t.field(gqlFieldName, {
               type: this.publisher.outputType(
                 resolvedConfig.type!,
                 mappedField.field,
               ),
-              list: mappedField.field.outputType.isList || undefined,
-              nullable: !mappedField.field.outputType.isRequired,
+              ...listNullableSettings,
               args: this.buildArgsFromField(
                 typeName,
                 mappedField.operation,

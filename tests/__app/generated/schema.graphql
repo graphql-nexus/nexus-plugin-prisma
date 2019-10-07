@@ -134,7 +134,7 @@ input PostWhereInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
+  users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]!
 }
 
 input StringFilter {

@@ -235,7 +235,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     user: NexusGenRootTypes['User'] | null; // User
-    users: NexusGenRootTypes['User'][] | null; // [User!]
+    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
     firstName: string; // String!
