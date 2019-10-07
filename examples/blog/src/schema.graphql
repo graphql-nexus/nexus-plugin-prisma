@@ -184,6 +184,7 @@ input PostWhereUniqueInput {
 type Query {
   blog(id: Int!): Blog!
   blogs: [Blog!]
+  blogsLike(name: String, viewCount: Int): [Blog!]!
   people(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]
   posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [CustomPost!]
 }
