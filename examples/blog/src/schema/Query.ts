@@ -15,9 +15,7 @@ export const Query = queryType({
       resolve(root, args, ctx) {
         return ctx.photon.blogs.findOne({
           where: {
-            // FIXME arg required but typing suggests it is not
-            // This is a bug with nexus: https://github.com/prisma-labs/nexus/issues/249
-            id: (args as any).id,
+            id: args.id,
           },
         })
       },
