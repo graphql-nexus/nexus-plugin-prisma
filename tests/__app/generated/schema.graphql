@@ -9,7 +9,7 @@ type BatchPayload {
 type Bubble {
   createdAt: DateTime!
   id: UUID!
-  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]
+  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutBubbleInput {
@@ -89,7 +89,7 @@ enum OrderByArg {
 }
 
 type Post {
-  authors: [User!]
+  authors: [User!]!
   status: PostStatus!
 }
 
@@ -154,7 +154,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutAuthorsInput {

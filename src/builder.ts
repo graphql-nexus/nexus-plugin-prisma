@@ -326,8 +326,7 @@ export class SchemaBuilder {
           const type = resolvedConfig.type || field.outputType.type
           const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
             type: this.publisher.outputType(type, field),
-            list: field.outputType.isList || undefined,
-            nullable: !field.outputType.isRequired,
+            ...dmmfListFieldTypeToNexus(field.outputType),
             args: this.buildArgsFromField(
               typeName,
               null,
