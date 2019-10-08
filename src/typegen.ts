@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as DMMF from './dmmf'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
+import { hardWriteFileSync, hardWriteFile } from './utils'
 
 type Options = {
   photonPath: string
@@ -26,12 +27,9 @@ export function doGenerate(
   const dmmf = DMMF.get(options.photonPath)
   const tsDeclaration = render(dmmf, options.photonPath)
   if (sync) {
-    fs.mkdirpSync(path.dirname(options.typegenPath))
-    fs.writeFileSync(options.typegenPath, tsDeclaration)
+    hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {
-    return fs
-      .mkdirp(path.dirname(options.typegenPath))
-      .then(() => fs.writeFile(options.typegenPath, tsDeclaration))
+    return hardWriteFile(options.typegenPath, tsDeclaration)
   }
 }
 
