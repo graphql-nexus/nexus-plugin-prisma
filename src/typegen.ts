@@ -1,5 +1,3 @@
-import * as fs from 'fs-extra'
-import * as path from 'path'
 import * as DMMF from './dmmf'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
