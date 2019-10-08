@@ -87,12 +87,12 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
 } else if (process.env.NEXUS_PRISMA_LINK) {
   defaultTypegenPath = path.join(
     process.cwd(),
-    'node_modules/@types/__nexus-typegen__nexus-prisma/index.d.ts',
+    'node_modules/@types/nexus-prisma-typegen/index.d.ts',
   )
 } else {
   defaultTypegenPath = path.join(
     __dirname,
-    '../../@types/__nexus-typegen__nexus-prisma/index.d.ts',
+    '../../@types/nexus-prisma-typegen/index.d.ts',
   )
 }
 

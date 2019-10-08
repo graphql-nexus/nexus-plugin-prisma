@@ -1,8 +1,8 @@
 import * as Nexus from 'nexus'
-import * as DMMF from './dmmf'
-import { dmmfFieldToNexusFieldConfig, partition } from './utils'
 import { CustomInputArg } from './builder'
+import * as DMMF from './dmmf'
 import { scalarsNameValues } from './graphql'
+import { dmmfFieldToNexusFieldConfig, partition } from './utils'
 
 export class Publisher {
   constructor(
@@ -45,8 +45,16 @@ export class Publisher {
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
   public outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
-    // If type is already published, just reference it
-    if (this.isPublished(outputTypeName)) {
+    /**
+     * Rules:
+     * - If outputTypeName is already published
+     * - Or if outputTypeName matches a prisma model name
+     * - Then simply reference the type. Types that matches a prisma model name should be published manually by users.
+     */
+    if (
+      this.isPublished(outputTypeName) ||
+      this.dmmf.hasModel(outputTypeName)
+    ) {
       return outputTypeName
     }
 
@@ -67,8 +75,10 @@ export class Publisher {
   }
 
   protected publishObject(name: string) {
-    this.markTypeAsPublished(name)
     const dmmfObject = this.dmmf.getOutputType(name)
+
+    this.markTypeAsPublished(name)
+
     return Nexus.objectType({
       name,
       definition: t => {

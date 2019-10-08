@@ -1524,9 +1524,9 @@ hasha@^5.0.0:
     type-fest "^0.8.0"
 
 hosted-git-info@^2.1.4:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.4.tgz#44119abaf4bc64692a16ace34700fed9c03e2546"
-  integrity sha512-pzXIvANXEFrc5oFFXRMkbLPQ2rXRoDERwDLyrcUxGhaZhgP54BBSl9Oheh7Vv0T090cszWBxPjkQQ5Sq1PbBRQ==
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.5.tgz#759cfcf2c4d156ade59b0b2dfabddc42a6b9c70c"
+  integrity sha512-kssjab8CvdXfcXMXVcvsXum4Hwdq9XGtRD3TteMEvEbq0LXyiNQr6AprqKqfeaDXze7SxWvRxdpwE6ku7ikLkg==
 
 htmlparser2@^3.10.1:
   version "3.10.1"
@@ -2099,20 +2099,20 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-nexus-prisma@next:
-  version "0.5.0-next.4"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.5.0-next.4.tgz#d0a0dcda309383c298db7978d51dfaa492f5c8c9"
-  integrity sha512-Z/YIPmI+kSlXMipoGqE07ygsSPLUMvVvftCCGxGR9BBvlVwNePkCJOh2SMgSHLIEcgAjaMh4Hzz49MBts+b4ng==
+nexus-prisma@^0.5.0-next.5:
+  version "0.5.0-next.5"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.5.0-next.5.tgz#f2268453cbee008927d764266e98f430ef403062"
+  integrity sha512-4HkaiPviHBCSkU+hTGrgLNNez6inA3vPCngKhVWkSR/C4d4ufCGFZUcmwlhkDde7VjWBkcYLzxpYt+RzNTI49g==
   dependencies:
     "@prisma/photon" "^0.2.94"
     fs-extra "^8.1.0"
     nexus "^0.12.0-beta.9"
     pluralize "^8.0.0"
 
-nexus@^0.12.0-beta.8, nexus@^0.12.0-beta.9:
-  version "0.12.0-beta.9"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.9.tgz#aa3330a60d152d0868f13a56292af38a34ccac70"
-  integrity sha512-e95NXcFzLArNPz3QYTzo2WjTyu27Gv7v2LJoiezZQknek7E+53kaJMKv3+0ceLV6C/aCcsUtMuRaKerOnNyMVw==
+nexus@^0.12.0-beta.12, nexus@^0.12.0-beta.9:
+  version "0.12.0-beta.12"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.12.tgz#086f5ec0336fdca8e73630bc672323086fddadfb"
+  integrity sha512-bXe0UYhwwZjAxKRhbK8ZgyiCf3Lr3qUJIlJC6D8uZnSfmL3P4MOVS4FZj3hFx80VbA1MTJOHCRfEQxAj53othA==
   dependencies:
     tslib "^1.9.3"
 
