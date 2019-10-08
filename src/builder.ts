@@ -130,10 +130,16 @@ if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
   defaultPhotonPath = '@generated/photon'
 }
 
+// NOTE This will be repalced by Nexus plugins once typegen integration is available.
+const shouldGenerateArtifacts =
+  process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
+    ? true
+    : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
+    ? false
+    : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+
 const defaultOptions = {
-  shouldGenerateArtifacts: Boolean(
-    !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
-  ),
+  shouldGenerateArtifacts,
   photon: (ctx: any) => ctx.photon,
   inputs: {
     photon: defaultPhotonPath,
