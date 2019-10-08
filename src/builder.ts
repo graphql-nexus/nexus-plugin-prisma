@@ -26,9 +26,11 @@ type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluen
 type PublisherMethods = Record<string, FieldPublisher>
 
 /**
- * When dealing with lists-of-values we rely on the empty-list to represet the
- * idea of null. When dealing with lists, photon will never return null. And it
- * will never return null list members.
+ * When dealing with list types we rely on the list type zero value (empty-list)
+ * to represet the idea of null.
+ *
+ * For Photon's part, it will never return null for list type fields nor will it
+ * ever return null value list members.
  */
 const dmmfListFieldTypeToNexus = (
   fieldType: DMMF.Data.SchemaField['outputType'],
