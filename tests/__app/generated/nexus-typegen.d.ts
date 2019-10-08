@@ -223,24 +223,24 @@ export interface NexusGenFieldTypes {
   Bubble: { // field return type
     createdAt: any; // DateTime!
     id: any; // UUID!
-    members: NexusGenRootTypes['User'][] | null; // [User!]
+    members: NexusGenRootTypes['User'][]; // [User!]!
   }
   Mutation: { // field return type
     createOnePost: NexusGenRootTypes['Post']; // Post!
     updateManyPost: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Post: { // field return type
-    authors: NexusGenRootTypes['User'][] | null; // [User!]
+    authors: NexusGenRootTypes['User'][]; // [User!]!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: { // field return type
     user: NexusGenRootTypes['User'] | null; // User
-    users: NexusGenRootTypes['User'][] | null; // [User!]
+    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
     firstName: string; // String!
     id: string; // ID!
-    posts: NexusGenRootTypes['Post'][] | null; // [Post!]
+    posts: NexusGenRootTypes['Post'][]; // [Post!]!
   }
 }
 

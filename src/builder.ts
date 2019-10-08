@@ -25,6 +25,26 @@ interface FieldPublisherConfig {
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
 
+/**
+ * When dealing with list types we rely on the list type zero value (empty-list)
+ * to represet the idea of null.
+ *
+ * For Photon's part, it will never return null for list type fields nor will it
+ * ever return null value list members.
+ */
+const dmmfListFieldTypeToNexus = (
+  fieldType: DMMF.Data.SchemaField['outputType'],
+) => {
+  return fieldType.isList
+    ? {
+        list: [true],
+        nullable: false,
+      }
+    : {
+        nullable: !fieldType.isRequired,
+      }
+}
+
 export interface Options {
   types: any
   photon?: (ctx: Nexus.core.GetGen<'context'>) => any
@@ -204,8 +224,7 @@ export class SchemaBuilder {
                 resolvedConfig.type!,
                 mappedField.field,
               ),
-              list: mappedField.field.outputType.isList || undefined,
-              nullable: !mappedField.field.outputType.isRequired,
+              ...dmmfListFieldTypeToNexus(mappedField.field.outputType),
               args: this.buildArgsFromField(
                 typeName,
                 mappedField.operation,
@@ -309,8 +328,7 @@ export class SchemaBuilder {
           const type = resolvedConfig.type || field.outputType.type
           const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
             type: this.publisher.outputType(type, field),
-            list: field.outputType.isList || undefined,
-            nullable: !field.outputType.isRequired,
+            ...dmmfListFieldTypeToNexus(field.outputType),
             args: this.buildArgsFromField(
               typeName,
               null,
