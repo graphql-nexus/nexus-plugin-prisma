@@ -5,9 +5,29 @@
 
 [![CircleCI](https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg)](https://circleci.com/gh/prisma-labs/nexus-prisma)
 
-`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or knex. And when you do need to drop down into custom resolvers a [Photon](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
+`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [Photon](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
 
-## Examples
+**Table of Contents**
+
+<!-- toc -->
+
+- [Reference](#reference)
+- [Recipes](#recipes)
+  - [Exposed Prisma Model](#exposed-prisma-model)
+  - [Simple Computed Fields](#simple-computed-fields)
+  - [Complex Computed Fields](#complex-computed-fields)
+  - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
+  - [Exposed Reads on Model](#exposed-reads-on-model)
+  - [Exposed Writes on Model](#exposed-writes-on-model)
+  - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
+  - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
+- [Links](#links)
+
+<!-- tocstop -->
+
+## Reference
+
+## Recipes
 
 You can find runnable examples in the [examples folder](https://github.com/prisma-labs/nexus-prisma/tree/master/examples). The following are isolated snippets to give you a sense for the DSL.
 
@@ -156,3 +176,9 @@ mutationType({
   },
 })
 ```
+
+## Links
+
+- [Examples](/todo)
+- [Nexus](/todo)
+- [Prisma](/todo)
