@@ -21,9 +21,11 @@
     - [Filtering](#filtering)
 - [Reference](#reference)
   - [t.model](#tmodel)
-    - [Projecting](#projecting)
-    - [`alias` option](#alias-option)
-    - [`type` option](#type-option)
+    - [Field Projectors](#field-projectors)
+    - [`alias` Option](#alias-option)
+    - [`type` Option](#type-option)
+    - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
+  - [Configuration](#configuration)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
   - [Simple Computed Fields](#simple-computed-fields)
@@ -48,6 +50,8 @@ npm install nexus-prisma
 Given a prisma schema like:
 
 ```prisma
+// schema.prisma
+
 model User {
   id     String @id @default(cuid())
   handle String
@@ -63,7 +67,9 @@ model Post {
 You will be able to work with your models and expose operations against them like so:
 
 ```ts
-const Query = queryType({
+// src/types.ts
+
+export const Query = queryType({
   definition(t) {
     t.crud.user()
     t.crud.users({ ordering: true })
@@ -72,14 +78,14 @@ const Query = queryType({
   },
 })
 
-const Mutation = mutationType({
+export const Mutation = mutationType({
   definition(t) {
     t.crud.createUser()
     t.crud.createPost()
   },
 })
 
-const User = objectType({
+export const User = objectType({
   name: 'User',
   definition(t) {
     t.model.id()
@@ -88,7 +94,7 @@ const User = objectType({
   },
 })
 
-const Post = objectType({
+export const Post = objectType({
   name: 'Post',
   definition(t) {
     t.model.id()
@@ -97,10 +103,35 @@ const Post = objectType({
 })
 ```
 
-<br>
+Setup your schema config:
+
+```ts
+// src/schema.ts
+
+import { createNexusPlugin } from 'nexus-prisma'
+import { makeSchema } from 'nexus'
+import * as types from './types'
+
+export const schema = makeSchema({
+  types: [...types, createNexusPlugin({ types })],
+  outputs: true,
+})
+```
+
+Build it (JavaScript or TypeScript):
+
+```
+node src/schema
+```
+
+```
+ts-node --transpile-only  src/schema
+```
+
+Then see the resulting GraphQL Schema:
 
 <details>
-<summary>Resulting in a GraphQL Schema like this (toggle me)</summary>
+<summary>(toggle me)</summary>
 
 ```graphql
 input IntFilter {
@@ -254,6 +285,7 @@ input UserWhereUniqueInput {
 
 </details>
 
+<br>
 <br>
 
 You can find a runnable version of this and other examples [here](/TODO).
@@ -523,6 +555,10 @@ type User {
 #### `ordering` `pagination` `filtering` Options
 
 Only available for list type model fields. Please refer to TODO for details.
+
+### Configuration
+
+TODO
 
 ## Recipes
 
