@@ -2,122 +2,32 @@
 ### Do not make changes to this file directly
 
 
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
+type Article {
+  author(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
+  id: Int!
 }
 
-type Mutation {
-  createOnePost(data: PostCreateInput!): Post!
-  createOneUser(data: UserCreateInput!): User!
-}
+type Mutation
 
 enum OrderByArg {
   asc
   desc
 }
 
-type Post {
-  author(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
-  id: Int!
-}
-
-input PostCreateInput {
-  author: UserCreateManyWithoutAuthorInput
-}
-
-input PostCreateManyWithoutPostsInput {
-  connect: [PostWhereUniqueInput!]
-  create: [PostCreateWithoutAuthorInput!]
-}
-
-input PostCreateWithoutAuthorInput
-
-input PostFilter {
-  every: PostWhereInput
-  none: PostWhereInput
-  some: PostWhereInput
-}
-
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  author: UserFilter
-  id: IntFilter
-  NOT: [PostWhereInput!]
-  OR: [PostWhereInput!]
-}
-
-input PostWhereUniqueInput {
-  id: Int
-}
-
 type Query {
-  post(where: PostWhereUniqueInput!): Post
-  posts(after: String, before: String, first: Int, last: Int, skip: Int, where: PostWhereInput): [Post!]
   user(where: UserWhereUniqueInput!): User
   users(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int): [User!]
 }
 
-input StringFilter {
-  contains: String
-  endsWith: String
-  equals: String
-  gt: String
-  gte: String
-  in: [String!]
-  lt: String
-  lte: String
-  not: String
-  notIn: [String!]
-  startsWith: String
-}
-
 type User {
+  articles(after: String, before: String, first: Int, last: Int, skip: Int): [Article!]
   handle: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, skip: Int): [Post!]
-}
-
-input UserCreateInput {
-  handle: String!
-  id: ID
-  posts: PostCreateManyWithoutPostsInput
-}
-
-input UserCreateManyWithoutAuthorInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutPostsInput!]
-}
-
-input UserCreateWithoutPostsInput {
-  handle: String!
-  id: ID
-}
-
-input UserFilter {
-  every: UserWhereInput
-  none: UserWhereInput
-  some: UserWhereInput
 }
 
 input UserOrderByInput {
   handle: OrderByArg
   id: OrderByArg
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  handle: StringFilter
-  id: StringFilter
-  NOT: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  posts: PostFilter
 }
 
 input UserWhereUniqueInput {

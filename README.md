@@ -20,6 +20,10 @@
     - [Ordering](#ordering)
     - [Filtering](#filtering)
 - [Reference](#reference)
+  - [t.model](#tmodel)
+    - [Projecting](#projecting)
+    - [`alias` option](#alias-option)
+    - [`type` option](#type-option)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
   - [Simple Computed Fields](#simple-computed-fields)
@@ -424,6 +428,101 @@ query {
 ```
 
 ## Reference
+
+### t.model
+
+`t.model` is for projecting your models’ fields onto your `Object`s. It is only available inside `Object` definitions. `t.model` contains a set of so-called "Field Projectors" as properties. Field Projectors take options allowing you to configure the projection.
+
+#### Field Projectors
+
+`t.model` will have Field Projectors for the model whose name matches that of the `Object`. If the `Object` is given a name that does not match any of your models then `t.model` becomes a function allowing you to specify the mapping.
+
+```ts
+// Project User model fields `id` & `name` onto User Object
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.name()
+  },
+})
+```
+
+```graphql
+type User {
+  name: String
+}
+```
+
+```ts
+// Project User model fields `id` & `name` onto Person Object
+
+objectType({
+  name: 'Person',
+  definition(t) {
+    t.model('User').name()
+  },
+})
+```
+
+```graphql
+type Person {
+  name: String
+}
+```
+
+#### `alias` Option
+
+Use `alias` to change the name of the field projected onto the `Object`.
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.name({ alias: 'handle' })
+  },
+})
+```
+
+```graphql
+type User {
+  handle: String
+}
+```
+
+#### `type` Option
+
+Only available for relational model fields. Use `type` to change the name of the projected field type. This is useful when the model that the field relates to has been projected onto a differently named `Object`.
+
+```ts
+objectType({
+  name: 'Article',
+  definition(t) {
+    t.model('Post').title()
+  },
+})
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.posts({ alias: 'articles', type: 'Article' })
+  },
+})
+```
+
+```graphql
+type Article {
+  title: String
+}
+
+type User {
+  articles: [Article]
+}
+```
+
+#### `ordering` `pagination` `filtering` Options
+
+Only available for list type model fields. Please refer to TODO for details.
 
 ## Recipes
 

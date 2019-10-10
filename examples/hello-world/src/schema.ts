@@ -5,15 +5,15 @@ const Query = queryType({
   definition(t) {
     t.crud.user()
     t.crud.users({ ordering: true })
-    t.crud.post()
-    t.crud.posts({ filtering: true })
+    // t.crud.post()
+    // t.crud.posts({ filtering: true })
   },
 })
 
 const Mutation = mutationType({
   definition(t) {
-    t.crud.createOneUser()
-    t.crud.createOnePost()
+    // t.crud.createOneUser()
+    // t.crud.createOnePost()
   },
 })
 
@@ -22,15 +22,15 @@ const User = objectType({
   definition(t) {
     t.model.id()
     t.model.handle()
-    t.model.posts()
+    t.model.posts({ alias: 'articles', type: 'Article' })
   },
 })
 
 const Post = objectType({
-  name: 'Post',
+  name: 'Article',
   definition(t) {
-    t.model.id()
-    t.model.author()
+    t.model('Post').id()
+    t.model('Post').author()
   },
 })
 
