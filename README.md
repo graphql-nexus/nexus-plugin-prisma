@@ -47,10 +47,14 @@ npm install nexus-prisma
 
 ## Example
 
-Given a prisma schema like:
+Given a Prisma schema like:
 
 ```prisma
 // schema.prisma
+
+generator photonjs {
+  provider = "photonjs"
+}
 
 model User {
   id     String @id @default(cuid())
@@ -64,7 +68,7 @@ model Post {
 }
 ```
 
-You will be able to work with your models and expose operations against them like so:
+You will be able to project these models onto your GraphQL API and expose operations against them:
 
 ```ts
 // src/types.ts
@@ -103,7 +107,7 @@ export const Post = objectType({
 })
 ```
 
-Setup your schema config:
+Setup your schema:
 
 ```ts
 // src/schema.ts
@@ -118,17 +122,29 @@ export const schema = makeSchema({
 })
 ```
 
-Build it (JavaScript or TypeScript):
+Generate your Photon client:
 
 ```
-node src/schema
+prisma2 generate
 ```
 
+Run your app:
+
 ```
-ts-node --transpile-only  src/schema
+ts-node --transpile-only  src/main
 ```
 
-Then see the resulting GraphQL Schema:
+```ts
+// src/main.ts
+
+import { GraphQLServer } from 'graphql-yoga'
+import { createContext } from './context'
+import { schema } from './schema'
+
+new GraphQLServer({ schema }).start()
+```
+
+With the resulting GraphQL Schema:
 
 <details>
 <summary>(toggle me)</summary>
@@ -286,9 +302,8 @@ input UserWhereUniqueInput {
 </details>
 
 <br>
-<br>
 
-You can find a runnable version of this and other examples [here](/TODO).
+You can find a runnable version of this and other examples at [prisma-labs/nexus-examples](/TODO).
 
 ## Guide
 
