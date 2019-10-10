@@ -1,0 +1,27 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn -s clean && yarn -s generate && tsc",
+    "style": "prettier --write 'src/**/*'",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/main.ts",
+    "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
+    "generate:prisma": "prisma2 generate",
+    "generate:nexus": "ts-node --transpile-only src/schema"
+  },
+  "dependencies": {
+    "graphql-yoga": "^1.18.3",
+    "nexus": "^0.12.0-beta.13",
+    "nexus-prisma": "^0.5.0-next.5"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2",
+    "prisma2": "^2.0.0-alpha.233",
+    "ts-node": "^8.4.1",
+    "ts-node-dev": "^1.0.0-pre.43",
+    "typescript": "^3.6.4"
+  }
+}

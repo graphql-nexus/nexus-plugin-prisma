@@ -12,7 +12,8 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
+- [Installation](#installation)
+- [Example](#example)
 - [Reference](#reference)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
@@ -26,6 +27,231 @@
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Installation
+
+```
+npm install nexus-prisma
+```
+
+## Example
+
+Given a prisma schema like:
+
+```prisma
+generator photonjs {
+  provider = "photonjs"
+}
+
+model User {
+  id     String @id @default(cuid())
+  handle String
+  posts  Post[]
+}
+
+model Post {
+  id     Int    @id
+  author User[]
+}
+```
+
+You will be able to work with your models and expose operations against them like so:
+
+```ts
+const Query = queryType({
+  definition(t) {
+    t.crud.user()
+    t.crud.users({ ordering: true })
+    t.crud.post()
+    t.crud.posts({ filtering: true })
+  },
+})
+
+const Mutation = mutationType({
+  definition(t) {
+    t.crud.createUser()
+    t.crud.createPost()
+  },
+})
+
+const User = objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.handle()
+    t.model.posts()
+  },
+})
+
+const Post = objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.author()
+  },
+})
+```
+
+<br>
+
+<details>
+<summary>Resulting in a GraphQL Schema like this (toggle me)</summary>
+
+```graphql
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+type Mutation {
+  createOnePost(data: PostCreateInput!): Post!
+  createOneUser(data: UserCreateInput!): User!
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
+
+type Post {
+  author(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+  ): [User!]
+  id: Int!
+}
+
+input PostCreateInput {
+  author: UserCreateManyWithoutAuthorInput
+}
+
+input PostCreateManyWithoutPostsInput {
+  connect: [PostWhereUniqueInput!]
+  create: [PostCreateWithoutAuthorInput!]
+}
+
+input PostCreateWithoutAuthorInput
+
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  author: UserFilter
+  id: IntFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+}
+
+input PostWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  post(where: PostWhereUniqueInput!): Post
+  posts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+    where: PostWhereInput
+  ): [Post!]
+  user(where: UserWhereUniqueInput!): User
+  users(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: UserOrderByInput
+    skip: Int
+  ): [User!]
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  handle: String!
+  id: ID!
+  posts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+  ): [Post!]
+}
+
+input UserCreateInput {
+  handle: String!
+  id: ID
+  posts: PostCreateManyWithoutPostsInput
+}
+
+input UserCreateManyWithoutAuthorInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutPostsInput!]
+}
+
+input UserCreateWithoutPostsInput {
+  handle: String!
+  id: ID
+}
+
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+input UserOrderByInput {
+  handle: OrderByArg
+  id: OrderByArg
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  handle: StringFilter
+  id: StringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
+```
+
+</details>
+
+<br>
+
+You can find a runnable version of this and other examples [here](/TODO).
 
 ## Reference
 

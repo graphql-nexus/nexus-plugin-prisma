@@ -1,0 +1,14 @@
+generator photonjs {
+  provider = "photonjs"
+}
+
+model User {
+  id     String @id @default(cuid())
+  handle String
+  posts  Post[]
+}
+
+model Post {
+  id     Int    @id
+  author User[]
+}

@@ -2,11 +2,12 @@
   "name": "example",
   "private": true,
   "version": "0.0.0",
+  "main": "dist/main.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn -s clean && yarn -s generate && tsc",
     "style": "prettier --write 'src/**/*'",
-    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/index.ts",
+    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/main.ts",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
