@@ -2,34 +2,28 @@
 ### Do not make changes to this file directly
 
 
-type Article {
-  author(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
+type Mutation
+
+type Person {
+  email: String!
   id: Int!
 }
 
-type Mutation
-
-enum OrderByArg {
-  asc
-  desc
+type Post {
+  id: Int!
 }
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int): [User!]
 }
 
 type User {
-  articles(after: String, before: String, first: Int, last: Int, skip: Int): [Article!]
-  handle: String!
-  id: ID!
-}
-
-input UserOrderByInput {
-  handle: OrderByArg
-  id: OrderByArg
+  email: String!
+  id: Int!
+  post: Post
 }
 
 input UserWhereUniqueInput {
-  id: ID
+  email: String
+  id: Int
 }

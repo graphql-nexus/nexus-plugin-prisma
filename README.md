@@ -20,11 +20,25 @@
     - [Ordering](#ordering)
     - [Filtering](#filtering)
 - [Reference](#reference)
-  - [t.model](#tmodel)
+  - [`t.model`](#tmodel)
     - [Field Projectors](#field-projectors)
     - [`alias` Option](#alias-option)
     - [`type` Option](#type-option)
     - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
+  - [`t.crud`](#tcrud)
+    - [One Create Operation](#one-create-operation)
+    - [One Read Operation](#one-read-operation)
+    - [One Update Operation](#one-update-operation)
+    - [One Upsert Operation](#one-upsert-operation)
+    - [One Delete Operation](#one-delete-operation)
+    - [Many Create Operation](#many-create-operation)
+    - [Many Read Operation](#many-read-operation)
+    - [Many Update Operation](#many-update-operation)
+    - [Many Upsert Operation](#many-upsert-operation)
+    - [Many Delete Operation](#many-delete-operation)
+    - [`type` Option](#type-option-1)
+    - [`alias` Option](#alias-option-1)
+    - [`ordering` `pagination` `filtering` options](#ordering-pagination-filtering-options)
   - [Configuration](#configuration)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
@@ -144,7 +158,7 @@ import { schema } from './schema'
 new GraphQLServer({ schema }).start()
 ```
 
-With the resulting GraphQL Schema:
+And get the resulting GraphQL API:
 
 <details>
 <summary>(toggle me)</summary>
@@ -476,13 +490,13 @@ query {
 
 ## Reference
 
-### t.model
+### `t.model`
 
-`t.model` is for projecting your models’ fields onto your `Object`s. It is only available inside `Object` definitions. `t.model` contains a set of so-called "Field Projectors" as properties. Field Projectors take options allowing you to configure the projection.
+`t.model` is for projecting your models’ fields onto your `Object`s. It is only available inside `Object` definitions. `t.model` properties are called "Field Projectors" and there is one per field on your respective model. They accept configuration allowing you to control how the model's fields are seen through your GraphQL schema.
 
 #### Field Projectors
 
-`t.model` will have Field Projectors for the model whose name matches that of the `Object`. If the `Object` is given a name that does not match any of your models then `t.model` becomes a function allowing you to specify the mapping.
+`t.model` will have Field Projectors for the model whose name matches that of the `Object`. If the `Object` is of a name that does not match any of your models then `t.model` becomes a function allowing you to specify the mapping.
 
 ```ts
 // Project User model fields `id` & `name` onto User Object
@@ -570,6 +584,116 @@ type User {
 #### `ordering` `pagination` `filtering` Options
 
 Only available for list type model fields. Please refer to TODO for details.
+
+### `t.crud`
+
+`t.crud` is for exposing operations against your projected models. It is only available inside `Query` and `Mutation` definitions. `t.crud` properties are called "Operation Publishers". They accept configuration allowing you to control how the operation is seen through your GraphQL schema.
+
+`t.crud` reflects a subset of [Photon](https://photonjs.prisma.io)'s capabilities. For every one model in your Prisma schema there are ten corresponding Operation Publishers.
+
+```prisma
+model User {
+  id Int @id
+}
+```
+
+```ts
+queryType({
+  definition(t) {
+    t.crud.user()
+    t.crud.users()
+  },
+})
+```
+
+```ts
+mutationType({
+  definition(t) {
+    t.crud.createOneUser()
+    t.crud.udpateOneUser()
+    t.crud.upsertOneUser()
+    t.crud.deleteOneUser()
+
+    t.crud.createManyUser()
+    t.crud.updateManyUser()
+    t.crud.upsertManyUser()
+    t.crud.deleteManyUser()
+  },
+})
+```
+
+#### One Create Operation
+
+#### One Read Operation
+
+Allow clients to find a specific record. They may search by any model field marked with a `@unique` attribute.
+
+Per instance contributions to GraphQL Schema:
+
+- 1 `InputObject` `<ModelName>WhereUniqueInput` whose fields mirror the model's `@unique` fields.
+
+Example:
+
+```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+}
+```
+
+```ts
+queryType({
+  definition(t) {
+    t.user()
+  },
+})
+```
+
+```graphql
+type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type User {
+  id: Int!
+  email: String!
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: Int
+}
+```
+
+#### One Update Operation
+
+#### One Upsert Operation
+
+#### One Delete Operation
+
+#### Many Create Operation
+
+#### Many Read Operation
+
+#### Many Update Operation
+
+#### Many Upsert Operation
+
+#### Many Delete Operation
+
+#### `type` Option
+
+Refer to [`t.model` `type` option](/todo).
+
+#### `alias` Option
+
+Refer to [`t.model` `alias` option](/todo).
+
+#### `ordering` `pagination` `filtering` options
+
+Only available on `Query` crud for operations that return `List`s.
+
+Refer to [model options](/todo).
 
 ### Configuration
 

@@ -4,7 +4,7 @@ import { nexusPrismaPlugin } from 'nexus-prisma'
 const Query = queryType({
   definition(t) {
     t.crud.user()
-    t.crud.users({ ordering: true })
+    // t.crud.users({ ordering: true })
     // t.crud.post()
     // t.crud.posts({ filtering: true })
   },
@@ -18,19 +18,21 @@ const Mutation = mutationType({
 })
 
 const User = objectType({
-  name: 'User',
+  name: 'Person',
   definition(t) {
-    t.model.id()
-    t.model.handle()
-    t.model.posts({ alias: 'articles', type: 'Article' })
+    t.model('User').id()
+    t.model('User').email()
+    // t.model.handle()
+    // t.model.posts({ pagination: false })
   },
 })
 
 const Post = objectType({
-  name: 'Article',
+  name: 'Post',
   definition(t) {
-    t.model('Post').id()
-    t.model('Post').author()
+    t.model.id()
+    // t.model('Post').id()
+    // t.model('Post').author()
   },
 })
 
