@@ -491,7 +491,11 @@ model User {
 #### One-Create Operation
 
 ```
-t.crud.createOne<ModelName>({ type?: string, alias?: string })
+t.crud.createOne${MODEL_NAME}
+```
+
+```
+({ type?: string, alias?: string }) => CRUD
 ```
 
 Allow clients to create one record at at time of the respective Prisma model.
@@ -627,7 +631,7 @@ model Post {
 #### One-Read Operation
 
 ```
-t.crud.<ModelName>({ type?: string, alias?: string })
+t.crud.{{ModelName}}({ type?: string, alias?: string })
 ```
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
@@ -682,7 +686,7 @@ model User {
 #### One-Update Operation
 
 ```
-t.crud.updateOne<ModelName>({ type?: string, alias?: string })
+t.crud.updateOne{{ModelName}}({ type?: string, alias?: string })
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
@@ -865,7 +869,7 @@ model Post {
 #### One-Upsert Operation
 
 ```
-t.crud.upsertOne<ModelName>({ type?: string, alias?: string })
+t.crud.upsertOne{{ModelName}}({ type?: string, alias?: string })
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model.
@@ -882,7 +886,7 @@ TODO
 #### One-Delete Operation
 
 ```
-t.crud.deleteOne<ModelName>({ type?: string, alias?: string })
+t.crud.deleteOne{{ModelName}}({ type?: string, alias?: string })
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
