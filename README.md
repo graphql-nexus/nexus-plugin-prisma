@@ -493,6 +493,7 @@ model User {
 <!-- prettier-ignore -->
 ```ts
 (options: { type?: string; alias?: string }) => CRUD
+
 t.crud.createOne<ModelName>
 ```
 
