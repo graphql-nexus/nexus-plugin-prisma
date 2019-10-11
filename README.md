@@ -609,9 +609,8 @@ input __RM__WhereUniqueInput {
   __RMF_@unique: __S__
 }
 
-input __RM__CreateWithout__M__Input {
-  __RM__CreateInput - __RM_RF__: __M__
-}
+input __RM__CreateWithout__M__Input = __RM__CreateInput - __RM_RF__: __M__
+
 ```
 
 Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
