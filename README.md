@@ -728,12 +728,78 @@ t.crud.updateOne<ModelName>
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
-TODO
-
-- powerful update semantics on relations
-- many InputObjects created
 
 **GraphQL Schema Contributions**
+
+```gql
+#   M = model   S = scalar   F = field   R = relation
+
+mutation {
+  updateOne_M(data: M_UpdateInput!, where: M_WhereUniqueInput!): M
+}
+
+input M_WhereUniqueInput {
+  MF@unique: S
+}
+
+input M_UpdateInput {
+  MSF: S
+  MRF: RM_UpdateManyWithout_M_Input
+}
+
+input RM_UpdateManyWithout_M_Input {
+  connect: [RM_WhereUniqueInput!]
+  create: [RM_CreateWithout_M_Input!]
+  delete: [RM_WhereUniqueInput!]
+  deleteMany: [RM_ScalarWhereInput!]
+  disconnect: [RM_WhereUniqueInput!]
+  set: [RM_WhereUniqueInput!]
+  update: [RM_UpdateWithWhereUniqueWithout_M_Input!]
+  updateMany: [RM_UpdateManyWithWhereNestedInput!]
+  upsert: [RM_UpsertWithWhereUniqueWithout_M_Input!]
+}
+
+input RM_WhereUniqueInput # pattern like M_WhereUniqueInput
+
+input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
+
+input RM_ScalarWhereInput {
+  AND: [RM_ScalarWhereInput!]
+  NOT: [RM_ScalarWhereInput!]
+  OR: [RM_ScalarWhereInput!]
+  RMSF: S_Filter
+}
+
+input RM_UpdateWithWhereUniqueWithout_M_Input {
+  data: RM_UpdateWithout_M_DataInput!
+  where: RM_WhereUniqueInput!
+}
+input RM_UpdateWithout_M_DataInput {
+  RMSF: S
+}
+
+input RM_UpdateManyWithWhereNestedInput {
+  data: RM_UpdateManyDataInput!
+  where: RM_ScalarWhereInput!
+}
+
+input RM_UpsertWithWhereUniqueWithout_M_Input {
+  create: RM_CreateWithout_M_Input!
+  update: RM_UpdateWithout_M_DataInput!
+  where: RM_WhereUniqueInput!
+}
+
+input S_Filter {
+  equals: S
+  gt: S
+  gte: S
+  in: [S!]
+  lt: S
+  lte: S
+  not: S
+  notIn: [S!]
+}
+```
 
 **Example**
 
