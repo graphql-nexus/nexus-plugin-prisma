@@ -374,7 +374,7 @@ Use `alias` to change the name of the field projected onto the `Object`.
 type User {
   handle: String
 }
-``
+```
 ```ts
 objectType({
   name: 'User',
@@ -383,8 +383,6 @@ objectType({
   },
 })
 ````
-
-`
 
 ### Option `type`
 
