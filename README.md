@@ -452,6 +452,7 @@ mutationType({
 ```
 
 The following Operation Publisher docs follow this format:
+TODO revise this it is ugly
 
 ```
 <overview>
@@ -552,13 +553,13 @@ input UserCreateInput {
 ```
 
 ```ts
-const Mutation = mutationType({
+mutationType({
   definition(t) {
     t.crud.createOneUser()
   },
 })
 
-const User = objectType({
+objectType({
   name: 'User',
   definition(t) {
     t.model.id()
@@ -567,7 +568,7 @@ const User = objectType({
   },
 })
 
-const Post = objectType({
+objectType({
   name: 'Post',
   definition(t) {
     t.model.id()
@@ -648,56 +649,264 @@ model User {
 
 TODO
 
-```gql
+- powerful update semantics on relations
+- many InputObjects created
 
+```gql
+mutation simple {
+  updateOneUser(data: { email: "locke@prisma.io" }, where: { id: 1643 }) {
+    id
+    email
+  }
+}
 ```
 
 ```gql
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
 
+type Mutation {
+  updateOneUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+}
+
+type Post {
+  author: User!
+  id: Int!
+  title: String!
+}
+
+input PostCreateWithoutAuthorInput {
+  body: String!
+  title: String!
+}
+
+input PostScalarWhereInput {
+  AND: [PostScalarWhereInput!]
+  body: StringFilter
+  id: IntFilter
+  NOT: [PostScalarWhereInput!]
+  OR: [PostScalarWhereInput!]
+  title: StringFilter
+}
+
+input PostUpdateManyDataInput {
+  body: String
+  id: Int
+  title: String
+}
+
+input PostUpdateManyWithoutAuthorInput {
+  connect: [PostWhereUniqueInput!]
+  create: [PostCreateWithoutAuthorInput!]
+  delete: [PostWhereUniqueInput!]
+  deleteMany: [PostScalarWhereInput!]
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  update: [PostUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [PostUpdateManyWithWhereNestedInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input PostUpdateManyWithWhereNestedInput {
+  data: PostUpdateManyDataInput!
+  where: PostScalarWhereInput!
+}
+
+input PostUpdateWithoutAuthorDataInput {
+  body: String
+  id: Int
+  title: String
+}
+
+input PostUpdateWithWhereUniqueWithoutAuthorInput {
+  data: PostUpdateWithoutAuthorDataInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostUpsertWithWhereUniqueWithoutAuthorInput {
+  create: PostCreateWithoutAuthorInput!
+  update: PostUpdateWithoutAuthorDataInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostWhereUniqueInput {
+  id: Int
+  title: String
+}
+
+type Query {
+  ok: Boolean!
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  email: String!
+  id: Int!
+  posts: [Post!]!
+}
+
+input UserUpdateInput {
+  email: String
+  id: Int
+  posts: PostUpdateManyWithoutAuthorInput
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: Int
+}
 ```
 
 ```ts
+mutationType({
+  definition(t) {
+    t.crud.updateOneUser()
+  },
+})
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.posts()
+  },
+})
+
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.author()
+  },
+})
 ```
 
 ```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+  posts Post[]
+}
 
+model Post {
+  id     Int    @id
+  title  String @unique
+  body   String
+  author User
+}
 ```
 
 #### One-Upsert Operation
 
 TODO
 
-```gql
-
-```
-
-```gql
-
-```
-
-```ts
-```
-
-```prisma
-
-```
+- a combination of create and update
+- only difference from upsert is that there is a create arg like with the create one operation.
 
 #### One-Delete Operation
 
 TODO
 
-```gql
+- the simplest operation from graphql schema point of view
 
+```gql
+mutation simple {
+  deleteOneUser(where: { id: 1643 }) {
+    id
+    email
+    posts {
+      id
+      title
+    }
+  }
+}
 ```
 
 ```gql
+type Mutation {
+  deleteOneUser(where: UserWhereUniqueInput!): User
+}
 
+type Post {
+  author: User!
+  id: Int!
+  title: String!
+}
+
+type User {
+  email: String!
+  id: Int!
+  posts: [Post!]!
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: Int
+}
 ```
 
 ```ts
+mutationType({
+  definition(t) {
+    t.crud.deleteOneUser()
+  },
+})
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.posts({ pagination: false })
+  },
+})
+
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.author()
+  },
+})
 ```
 
 ```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+  posts Post[]
+}
+
+model Post {
+  id     Int    @id
+  title  String @unique
+  body   String
+  author User
+}
 
 ```
 
