@@ -983,12 +983,18 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 
 **GraphQL Schema Contributions**
 
-The `data` and `where` args match those of One-Update Operation while the `create` arg matches that of the One-Create Operation.
+The `data` and `where` args match those of [One-Update Operation](#one-update-operation) while the `create` arg matches that of `data` arg in [One-Create Operation](#one-create-operation). Unlike `updateOne`, `upsertOne` is able to guarantee a return value.
 
 ```gql
 #   M = model   S = scalar   F = field   R = relation
 
-todo
+mutation {
+  upsertOne_M(
+    create: M_CreateInput!      # like createOne(data ...)
+    data: M_UpdateInput!        # like updateOne(data ...)
+    where: M_WhereUniqueInput!  # like updateOne(where ...)
+  ): M!
+}
 ```
 
 ### One-Delete Operation
