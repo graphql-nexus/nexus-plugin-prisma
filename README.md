@@ -1005,7 +1005,7 @@ mutation {
 
 **Example**
 
-Refer to [one-update](#one-update-operation) and [one-create](#one-create-operation).
+Refer to [one-update](#operation-one-update) and [one-create](#operation-one-create).
 
 <br>
 
