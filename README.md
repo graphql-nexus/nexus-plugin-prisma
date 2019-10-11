@@ -574,6 +574,26 @@ input __RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input {
 }
 ```
 
+```gql
+input __M_NAME__CreateInput {
+  __M_SF__: SCALAR_TYPE # ! == not @default
+  __M_RF__: __RM_NAME__CreateManyWithout__M_NAME__ # ! == not @default
+}
+
+input __RM_NAME__CreateManyWithout__M_NAME__ {
+  connect: [__RM_NAME__WhereUniqueInput!]
+  create: [__RM_NAME__CreateWithout__M_NAME__Input!]
+}
+
+input __RM_NAME__WhereUniqueInput {
+  __RM_F_@unique: SCALAR_TYPE
+}
+
+input __RM_NAME__CreateWithout__M_NAME__Input {
+  __RM_NAME__CreatInput - __RM_RF__ -> __M__
+}
+```
+
 Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
 
 **Example**
