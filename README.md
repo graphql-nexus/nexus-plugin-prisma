@@ -979,11 +979,9 @@ model Post {
 t.crud.upsertOne<ModelName>
 ```
 
-Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model.
+Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#one-create-operation) and [one-update](#one-update-operation) allowing to re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert is able to guarantee a return value.
 
 **GraphQL Schema Contributions**
-
-The `data` and `where` args match those of [One-Update Operation](#one-update-operation) while the `create` arg matches that of `data` arg in [One-Create Operation](#one-create-operation). Unlike `updateOne`, `upsertOne` is able to guarantee a return value.
 
 ```gql
 #   M = model   S = scalar   F = field   R = relation
@@ -996,6 +994,10 @@ mutation {
   ): M!
 }
 ```
+
+**Example**
+
+Refer to [one-update](#one-update-operation) and [one-create](#one-create-operation).
 
 ### One-Delete Operation
 
