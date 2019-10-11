@@ -370,7 +370,7 @@ Use `alias` to change the name of the field projected onto the `Object`.
 
 **Example**
 
-````gql
+```gql
 type User {
   handle: String
 }
@@ -383,7 +383,7 @@ objectType({
     t.model.name({ alias: 'handle' })
   },
 })
-````
+```
 
 ### Option `type`
 
