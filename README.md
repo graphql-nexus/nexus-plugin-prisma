@@ -589,7 +589,7 @@ input UserCreateInput {
 }
 ```
 
-Nexus Type Defs
+Your Nexus Type Defs
 
 ```ts
 mutationType({
@@ -618,7 +618,7 @@ objectType({
 })
 ```
 
-Prisma Schema
+Your Prisma Schema
 
 ```prisma
 model User {
