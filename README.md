@@ -21,11 +21,13 @@
     - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
   - [`t.crud`](#tcrud)
     - [One-Create Operation](#one-create-operation)
+- [M = model S = scalar F = field R = relation`](#m--model-s--scalar-f--field-r--relation)
     - [One-Read Operation](#one-read-operation)
+- [M = model S = scalar F = field R = relation`](#m--model-s--scalar-f--field-r--relation-1)
     - [One-Update Operation](#one-update-operation)
     - [One-Upsert Operation](#one-upsert-operation)
     - [One-Delete Operation](#one-delete-operation)
-- [M = model S = scalar F = field R = relation`](#m--model-s--scalar-f--field-r--relation)
+- [M = model S = scalar F = field R = relation`](#m--model-s--scalar-f--field-r--relation-2)
     - [Many-Create Operation](#many-create-operation)
     - [Many-Read Operation](#many-read-operation)
     - [Many-Update Operation](#many-update-operation)
@@ -517,9 +519,9 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 **GraphQL Schema Contributions**
 
-`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
-
 ```gql
+#   M = model   S = scalar   F = field   R = relation`
+
 mutation {
   createOne_M(data: M_CreateInput): M!
 }
@@ -677,9 +679,9 @@ The ability for relation fields to be filtered ordered or paginted depends upon 
 
 **GraphQL Schema Contributions**
 
-`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
-
 ```gql
+#   M = model   S = scalar   F = field   R = relation`
+
 mutation {
   M(where: M_WhereUniqueInput): M!
 }
