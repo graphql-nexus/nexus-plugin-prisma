@@ -12,7 +12,7 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
-    "build:doc": "doctoc README.md",
+    "build:doc": "doctoc README.md && prettier --write README.md",
     "dev": "tsc --watch",
     "dev:test": "jest --watch",
     "prepublishOnly": "yarn -s build",
