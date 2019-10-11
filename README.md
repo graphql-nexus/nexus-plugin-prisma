@@ -25,6 +25,7 @@
     - [One-Update Operation](#one-update-operation)
     - [One-Upsert Operation](#one-upsert-operation)
     - [One-Delete Operation](#one-delete-operation)
+- [M = model S = scalar F = field R = relation`](#m--model-s--scalar-f--field-r--relation)
     - [Many-Create Operation](#many-create-operation)
     - [Many-Read Operation](#many-read-operation)
     - [Many-Update Operation](#many-update-operation)
@@ -949,9 +950,9 @@ Allow clients to delete one particular record at a time of the respective Prisma
 
 **GraphQL Schema Contributions**
 
-`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
-
 ```gql
+#   M = model   S = scalar   F = field   R = relation`
+
 mutation {
   deleteOne_M(where: M_WhereUniqueInput): M
 }
