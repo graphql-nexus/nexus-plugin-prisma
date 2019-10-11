@@ -35,30 +35,30 @@
     - [`ordering` `pagination` `filtering` options](#ordering-pagination-filtering-options)
   - [Configuration](#configuration)
 - [Guide](#guide)
-  - [Query](#query)
-    - [Pagination](#pagination)
-    - [Ordering](#ordering)
-    - [Filtering](#filtering)
+    - [Query](#query)
+      - [Pagination](#pagination)
+      - [Ordering](#ordering)
+      - [Filtering](#filtering)
 - [Recipes](#recipes)
-  - [Exposed Prisma Model](#exposed-prisma-model)
-  - [Simple Computed Fields](#simple-computed-fields)
-  - [Complex Computed Fields](#complex-computed-fields)
-  - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
-  - [Exposed Reads on Model](#exposed-reads-on-model)
-  - [Exposed Writes on Model](#exposed-writes-on-model)
-  - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
-  - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
-- [Links](#links)
+    - [Exposed Prisma Model](#exposed-prisma-model)
+    - [Simple Computed Fields](#simple-computed-fields)
+    - [Complex Computed Fields](#complex-computed-fields)
+    - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
+    - [Exposed Reads on Model](#exposed-reads-on-model)
+    - [Exposed Writes on Model](#exposed-writes-on-model)
+    - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
+    - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
+  - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Installation
+# Installation
 
 ```
 npm install nexus-prisma
 ```
 
-## Example
+# Example
 
 Given a [Prisma schema](https://github.com/prisma/prisma2/blob/master/docs/prisma-schema-file.md) like:
 
@@ -320,9 +320,9 @@ input UserWhereUniqueInput {
 
 You can find a runnable version of this and other examples at [prisma-labs/nexus-examples](/TODO).
 
-## API Reference
+# API Reference
 
-### `t.model`
+## `t.model`
 
 Only available within [`Nexus.objectType`](https://nexus.js.org/docs/api-objecttype) definitions.
 
@@ -364,7 +364,7 @@ model User {
 }
 ```
 
-#### `alias` Option
+### `alias` Option
 
 Use `alias` to change the name of the field projected onto the `Object`.
 
@@ -383,7 +383,7 @@ type User {
 }
 ```
 
-#### `type` Option
+### `type` Option
 
 This option is only available for relational fields.
 
@@ -428,11 +428,11 @@ modle Post {
 }
 ```
 
-#### `ordering` `pagination` `filtering` Options
+### `ordering` `pagination` `filtering` Options
 
 Only available for list type model fields. Please refer to TODO for details.
 
-### `t.crud`
+## `t.crud`
 
 Only available within `Query` and `Mutation` definitions.
 
@@ -488,7 +488,7 @@ model User {
 
 <br>
 
-#### One-Create Operation
+### One-Create Operation
 
 ```ts
 t.crud.createOne<ModelName>
@@ -629,7 +629,7 @@ model Post {
 }
 ```
 
-#### One-Read Operation
+### One-Read Operation
 
 ```ts
 t.crud.<ModelName>
@@ -689,7 +689,7 @@ model User {
 }
 ```
 
-#### One-Update Operation
+### One-Update Operation
 
 ```ts
 t.crud.updateOne<ModelName>
@@ -877,7 +877,7 @@ model Post {
 }
 ```
 
-#### One-Upsert Operation
+### One-Upsert Operation
 
 ```ts
 t.crud.upsertOne<ModelName>
@@ -899,7 +899,7 @@ TODO
 - a combination of create and update
 - only difference from upsert is that there is a create arg like with the create one operation.
 
-#### One-Delete Operation
+### One-Delete Operation
 
 ```ts
 t.crud.deleteOne<ModelName>
@@ -996,45 +996,45 @@ model Post {
 
 ```
 
-#### Many-Create Operation
+### Many-Create Operation
 
 TODO
 
-#### Many-Read Operation
+### Many-Read Operation
 
 TODO
 
-#### Many-Update Operation
+### Many-Update Operation
 
 TODO
 
-#### Many-Upsert Operation
+### Many-Upsert Operation
 
 TODO
 
-#### Many-Delete Operation
+### Many-Delete Operation
 
 TODO
 
-#### `type` Option
+### `type` Option
 
 Refer to [`t.model` `type` option](/todo).
 
-#### `alias` Option
+### `alias` Option
 
 Refer to [`t.model` `alias` option](/todo).
 
-#### `ordering` `pagination` `filtering` options
+### `ordering` `pagination` `filtering` options
 
 Only available on `Query` crud for operations that return `List`s.
 
 Refer to [model options](/todo).
 
-### Configuration
+## Configuration
 
 TODO
 
-## Guide
+# Guide
 
 ### Query
 
@@ -1203,7 +1203,7 @@ query {
 }
 ```
 
-## Recipes
+# Recipes
 
 ### Exposed Prisma Model
 
