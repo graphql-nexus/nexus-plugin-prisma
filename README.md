@@ -5,7 +5,7 @@
 
 [![CircleCI](https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg)](https://circleci.com/gh/prisma-labs/nexus-prisma)
 
-`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [Photon](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
+`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
 
 ### Contents <!-- omit in toc -->
 
@@ -14,9 +14,8 @@
 
 - [Installation](#installation)
 - [Example](#example)
-- [Reference](#reference)
+- [API Reference](#api-reference)
   - [`t.model`](#tmodel)
-    - [Field Projectors](#field-projectors)
     - [`alias` Option](#alias-option)
     - [`type` Option](#type-option)
     - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
@@ -61,7 +60,7 @@ npm install nexus-prisma
 
 ## Example
 
-Given a Prisma schema like:
+Given a [Prisma schema](https://github.com/prisma/prisma2/blob/master/docs/prisma-schema-file.md) like:
 
 ```prisma
 // schema.prisma
@@ -77,12 +76,12 @@ model User {
 }
 
 model Post {
-  id     Int    @id
+  id     String @id @default(cuid())
   author User[]
 }
 ```
 
-You will be able to project these models onto your GraphQL API and expose operations against them:
+You will be able to project these Prisma models onto your GraphQL API and expose operations against them:
 
 ```ts
 // src/types.ts
@@ -136,7 +135,7 @@ export const schema = makeSchema({
 })
 ```
 
-Generate your Photon client:
+Generate your Photon.js database client:
 
 ```
 prisma2 generate
@@ -159,6 +158,8 @@ new GraphQLServer({ schema }).start()
 ```
 
 And get the resulting GraphQL API:
+
+TODO need to regenerate this schema
 
 <details>
 <summary>(toggle me)</summary>
@@ -319,47 +320,47 @@ input UserWhereUniqueInput {
 
 You can find a runnable version of this and other examples at [prisma-labs/nexus-examples](/TODO).
 
-## Reference
+## API Reference
 
 ### `t.model`
 
-`t.model` is for projecting your models’ fields onto your `Object`s. It is only available inside `Object` definitions. `t.model` properties are called "Field Projectors" and there is one per field on your respective model. They accept configuration allowing you to control how the model's fields are seen through your GraphQL schema.
+Only available within [`Nexus.objectType`](https://nexus.js.org/docs/api-objecttype) definitions.
 
-#### Field Projectors
+`t.model` contains configurable _field projectors_ that you use for projecting fields of your [Prisma models](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#models) onto your [GraphQL Objects](https://graphql.github.io/graphql-spec/June2018/#sec-Objects).
 
-`t.model` will have Field Projectors for the model whose name matches that of the `Object`. If the `Object` is of a name that does not match any of your models then `t.model` becomes a function allowing you to specify the mapping.
+`t.model` will either have field projectors for the Prisma model whose name matches that of the GraphQL `Object`, or if the GraphQL `Object` is of a name that does not match any of your Prisma models then `t.model` becomes a function allowing you to specify the mapping, after which the Field Projectors become available.
 
-```ts
-// Project User model fields `id` & `name` onto User Object
-
-objectType({
-  name: 'User',
-  definition(t) {
-    t.model.name()
-  },
-})
-```
+**Example**
 
 ```gql
 type User {
-  name: String
+  id: ID!
+}
+
+type Person {
+  id: ID!
 }
 ```
 
 ```ts
-// Project User model fields `id` & `name` onto Person Object
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+  },
+})
 
 objectType({
   name: 'Person',
   definition(t) {
-    t.model('User').name()
+    t.model('User').id()
   },
 })
 ```
 
-```gql
-type Person {
-  name: String
+```prisma
+model User {
+  id String @id @default(cuid())
 }
 ```
 
@@ -384,13 +385,27 @@ type User {
 
 #### `type` Option
 
-Only available for relational model fields. Use `type` to change the name of the projected field type. This is useful when the model that the field relates to has been projected onto a differently named `Object`.
+This option is only available for relational fields.
+
+Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
+
+**Example**
+
+```gql
+type Article {
+  title: String!
+}
+
+type User {
+  articles: [Article]
+}
+```
 
 ```ts
 objectType({
   name: 'Article',
   definition(t) {
-    t.model('Post').title()
+    t.model('Post').id()
   },
 })
 
@@ -402,13 +417,14 @@ objectType({
 })
 ```
 
-```gql
-type Article {
-  title: String
+```prisma
+model User {
+  id    String @id @default(cuid())
+  posts Post[]
 }
 
-type User {
-  articles: [Article]
+modle Post {
+  id String @id @default(cuid())
 }
 ```
 
@@ -418,15 +434,11 @@ Only available for list type model fields. Please refer to TODO for details.
 
 ### `t.crud`
 
-`t.crud` is for exposing operations against your projected models. It is only available inside `Query` and `Mutation` definitions. `t.crud` properties are called "Operation Publishers". They accept configuration allowing you to control how the operation is seen through your GraphQL schema.
+Only available within `Query` and `Mutation` definitions.
 
-`t.crud` reflects a subset of [Photon](https://photonjs.prisma.io)'s capabilities. For every one model in your Prisma schema there are ten corresponding Operation Publishers.
+`t.crud` contains configurable _operation publishers_ that you use for exposing create, read, update, and delete mutations against your projected Prisma models.
 
-```prisma
-model User {
-  id Int @id
-}
-```
+There are 10 kinds of operations (reflecting a subset of [Photon.js](https://photonjs.prisma.io)'s capabilities). An _operation publisher_ is the combination of some operation kind and a particular Prisma model. Thus the number of operation publishers on `t.crud` is `Prisma model count × operation kind count`. So for example if you defined 20 Prisma models then you would see 200 operation publishers on `t.crud`.
 
 ```ts
 queryType({
@@ -451,26 +463,34 @@ mutationType({
 })
 ```
 
+```prisma
+model User {
+  id Int @id
+}
+```
+
 The following Operation Publisher docs follow this format:
 TODO revise this it is ugly
 
 ```
-<overview>
-<contributions to your GraphQL schema>
-<example>
-  <GraphQL client operations>
-  <GraphQL schema>
-  <Nexus/Nexus-Prisma type defs>
-  <Prisma schema model defs>
+> Overview
+
+> GraphQL schema contributions
+
+> Example
+  > GraphQL client operations
+  > GraphQL schema
+  > Nexus type definitions
+  > Prisma models
 ```
 
 #### One-Create Operation
 
-Allow clients to create records of the respective model.
+Allow clients to create one record at at time of the respective Prisma model.
 
-Relation fields may be connected with an existing record or a sub-create may be inlined. If the relation is a `List` then multiple connections or sub-creates are permitted.
+Relation fields may be connected with an existing record or a sub-create may be inlined (generally referred to as _nested mutations_). If the relation is a `List` then multiple connections or sub-creates are permitted.
 
-Each instance of this operation contributions to GraphQL Schema:
+**Contributions to the GraphQL schema:**
 
 - `×1` `InputObject` `<ModelName>CreateInput`
 - `×N` `InputObject` per relational field.
@@ -483,7 +503,7 @@ Each instance of this operation contributions to GraphQL Schema:
 
 - `×N (A)` `InputObject` `<ModelName>WhereUniqueInput` per relational field connect.
 
-Example:
+**Example**
 
 ```gql
 mutation simple {
@@ -596,15 +616,15 @@ model Post {
 
 #### One-Read Operation
 
-Allow clients to find a specific record of the respective model. They may search by any field in the model marked with `@unique` attribute.
+Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
-The ability for relation fields to be filtered sorted etc. depends on if such features have been enabled for those `Object`s [via `t.model`](/TODO).
+The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
 
-Each instance of this operation contributions to GraphQL Schema:
+**Contributions to the GraphQL schema:**
 
-- ×1 `InputObject` `<ModelName>WhereUniqueInput`. Its fields mirror the model's `@unique` fields.
+- ×1 `InputObject` `<ModelName>WhereUniqueInput`. Its fields mirror the Prisma model's `@unique` fields.
 
-Example:
+**Example**
 
 ```gql
 query simple {
@@ -651,6 +671,8 @@ TODO
 
 - powerful update semantics on relations
 - many InputObjects created
+
+**Example**
 
 ```gql
 mutation simple {
@@ -831,6 +853,8 @@ TODO
 TODO
 
 - the simplest operation from graphql schema point of view
+
+**Example**
 
 ```gql
 mutation simple {
