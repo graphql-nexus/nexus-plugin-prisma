@@ -472,7 +472,7 @@ model User {
 ```
 
 <br>
-Below, each operation publisher is documented using this format:
+<p>In the following operation kind documentation, each entry uses this format:</p>
 
 ```
 > Overview
