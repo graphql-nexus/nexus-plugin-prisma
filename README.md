@@ -440,6 +440,8 @@ Only available within `Query` and `Mutation` definitions.
 
 There are 10 kinds of operations (reflecting a subset of [Photon.js](https://photonjs.prisma.io)'s capabilities). An _operation publisher_ is the combination of some operation kind and a particular Prisma model. Thus the number of operation publishers on `t.crud` is `Prisma model count × operation kind count`. So for example if you defined 20 Prisma models then you would see 200 operation publishers on `t.crud`.
 
+**Example**
+
 ```ts
 queryType({
   definition(t) {
@@ -469,8 +471,8 @@ model User {
 }
 ```
 
-The following Operation Publisher docs follow this format:
-TODO revise this it is ugly
+<br>
+Below, each operation publisher is documented using this format:
 
 ```
 > Overview
@@ -484,7 +486,13 @@ TODO revise this it is ugly
   > Prisma models
 ```
 
+<br>
+
 #### One-Create Operation
+
+```
+t.crud.createOne<ModelName>({ type?: string, alias?: string })
+```
 
 Allow clients to create one record at at time of the respective Prisma model.
 
@@ -618,6 +626,10 @@ model Post {
 
 #### One-Read Operation
 
+```
+t.crud.<ModelName>({ type?: string, alias?: string })
+```
+
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
 The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
@@ -668,6 +680,10 @@ model User {
 ```
 
 #### One-Update Operation
+
+```
+t.crud.updateOne<ModelName>({ type?: string, alias?: string })
+```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
 TODO
@@ -848,6 +864,10 @@ model Post {
 
 #### One-Upsert Operation
 
+```
+t.crud.upsertOne<ModelName>({ type?: string, alias?: string })
+```
+
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model.
 
 **GraphQL Schema Contributions**
@@ -860,6 +880,10 @@ TODO
 - only difference from upsert is that there is a create arg like with the create one operation.
 
 #### One-Delete Operation
+
+```
+t.crud.deleteOne<ModelName>({ type?: string, alias?: string })
+```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
 
