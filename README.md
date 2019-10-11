@@ -554,7 +554,7 @@ input <RelationModelName>CreateWithout<ModelName>Input {
 }
 ```
 
-```
+```gql
 input __MODEL_NAME__CreateInput {
   __MODEL_SCALAR_FIELD__: SCALAR_TYPE # ! <> @default
   __MODEL_RELATION_FIELD__: __RELATION_MODEL_NAME__CreateManyWithout__MODEL_NAME__ # ! <> @default
