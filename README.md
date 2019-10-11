@@ -451,6 +451,18 @@ mutationType({
 })
 ```
 
+The following Operation Publisher docs follow this format:
+
+```
+<overview>
+<contributions to your GraphQL schema>
+<example>
+  <GraphQL client operations>
+  <GraphQL schema>
+  <Nexus/Nexus-Prisma type defs>
+  <Prisma schema model defs>
+```
+
 #### One-Create Operation
 
 Allow clients to create records of the respective model.
@@ -636,13 +648,58 @@ model User {
 
 TODO
 
+```gql
+
+```
+
+```gql
+
+```
+
+```ts
+```
+
+```prisma
+
+```
+
 #### One-Upsert Operation
 
 TODO
 
+```gql
+
+```
+
+```gql
+
+```
+
+```ts
+```
+
+```prisma
+
+```
+
 #### One-Delete Operation
 
 TODO
+
+```gql
+
+```
+
+```gql
+
+```
+
+```ts
+```
+
+```prisma
+
+```
 
 #### Many-Create Operation
 
