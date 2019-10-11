@@ -519,6 +519,10 @@ Inlined creates are very similar to top-level ones but have the important differ
 `M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
 
 ```gql
+mutation {
+  createOne_M(data: M_CreateInput): M!
+}
+
 input M_CreateInput {
   MSF: S                       # ! if not @default
   MRF: RM_CreateManyWithout_M  # ! if not @default
@@ -672,7 +676,17 @@ The ability for relation fields to be filtered ordered or paginted depends upon 
 
 **GraphQL Schema Contributions**
 
-- ×1 `InputObject` `<ModelName>WhereUniqueInput`. Its fields mirror the Prisma model's `@unique` fields.
+`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
+
+```gql
+mutation {
+  M(where: M_WhereUniqueInput): M!
+}
+
+input M_WhereUniqueInput {
+  MF@unique: S
+}
+```
 
 **Example**
 
@@ -914,12 +928,13 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 
 **GraphQL Schema Contributions**
 
-**Example**
+The `data` and `where` args match those of One-Update Operation while the `create` arg matches that of the One-Create Operation.
 
-TODO
+`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
 
-- a combination of create and update
-- only difference from upsert is that there is a create arg like with the create one operation.
+```gql
+todo
+```
 
 ### One-Delete Operation
 
@@ -932,9 +947,19 @@ t.crud.deleteOne<ModelName>
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
 
-Of all operation kinds this has the smallest footprint on your GraphQL schema.
-
 **GraphQL Schema Contributions**
+
+`M = model`&nbsp;&nbsp;&nbsp;`S = scalar`&nbsp;&nbsp;&nbsp;`F = field`&nbsp;&nbsp;&nbsp;`R = relation`
+
+```gql
+mutation {
+  deleteOne_M(where: M_WhereUniqueInput): M
+}
+
+input M_WhereUniqueInput {
+  MF@unique: S
+}
+```
 
 **Example**
 
@@ -1013,7 +1038,6 @@ model Post {
   body   String
   author User
 }
-
 ```
 
 ### Many-Create Operation
