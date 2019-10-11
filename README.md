@@ -650,6 +650,8 @@ model Post {
 }
 ```
 
+<br>
+
 ### One-Read Operation
 
 <!-- prettier-ignore -->
@@ -717,6 +719,8 @@ model User {
   email String @unique
 }
 ```
+
+<br>
 
 ### One-Update Operation
 
@@ -970,6 +974,8 @@ model Post {
 }
 ```
 
+<br>
+
 ### One-Upsert Operation
 
 <!-- prettier-ignore -->
@@ -998,6 +1004,8 @@ mutation {
 **Example**
 
 Refer to [one-update](#one-update-operation) and [one-create](#one-create-operation).
+
+<br>
 
 ### One-Delete Operation
 
