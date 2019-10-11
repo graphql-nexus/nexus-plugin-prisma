@@ -629,13 +629,11 @@ model Post {
 
 ### One-Read Operation
 
-```ts
-t.crud.<ModelName>
-```
-
 <!-- prettier-ignore -->
 ```ts
 (options: { type?: string, alias?: string }) => CRUD
+
+t.crud.<ModelName>
 ```
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
@@ -689,13 +687,11 @@ model User {
 
 ### One-Update Operation
 
-```ts
-t.crud.updateOne<ModelName>
-```
-
 <!-- prettier-ignore -->
 ```ts
 (options: { type?: string, alias?: string }) => CRUD
+
+t.crud.updateOne<ModelName>
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
@@ -877,13 +873,11 @@ model Post {
 
 ### One-Upsert Operation
 
-```ts
-t.crud.upsertOne<ModelName>
-```
-
 <!-- prettier-ignore -->
 ```ts
 (options: { type?: string, alias?: string }) => CRUD
+
+t.crud.upsertOne<ModelName>
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model.
@@ -899,13 +893,11 @@ TODO
 
 ### One-Delete Operation
 
-```ts
-t.crud.deleteOne<ModelName>
-```
-
 <!-- prettier-ignore -->
 ```ts
 (options: { type?: string, alias?: string }) => CRUD
+
+t.crud.deleteOne<ModelName>
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
