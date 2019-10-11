@@ -490,8 +490,8 @@ model User {
 
 #### One-Create Operation
 
-```ts
-t.crud.createOne<MODEL_NAME>
+```
+t.crud.createOne<ModelName>
 ```
 
 <!-- prettier-ignore -->
