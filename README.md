@@ -35,30 +35,19 @@
     - [`ordering` `pagination` `filtering` options](#ordering-pagination-filtering-options)
   - [Configuration](#configuration)
 - [Guide](#guide)
-    - [Query](#query)
-      - [Pagination](#pagination)
-      - [Ordering](#ordering)
-- [<User field name>: OrderByDir](#user-field-name-orderbydir)
-      - [Filtering](#filtering)
-- [assume user has these Scalar fields, to illustrate example](#assume-user-has-these-scalar-fields-to-illustrate-example)
-- [<User field name>: <Scalar name>Filter](#user-field-name-scalar-namefilter)
-- [...](#)
-- [assume user has these Object (aka. relation) fields, to illustrate example](#assume-user-has-these-object-aka-relation-fields-to-illustrate-example)
-- [<User field name>: <Object name>Filter](#user-field-name-object-namefilter)
-- [...](#-1)
-- [Defined once for each Scalar filter](#defined-once-for-each-scalar-filter)
-- [Foo is a Scalar name](#foo-is-a-scalar-name)
-- [Defined once for each Object filter](#defined-once-for-each-object-filter)
-- [Foo is an Object name](#foo-is-an-object-name)
+  - [Query](#query)
+    - [Pagination](#pagination)
+    - [Ordering](#ordering)
+    - [Filtering](#filtering)
 - [Recipes](#recipes)
-    - [Exposed Prisma Model](#exposed-prisma-model)
-    - [Simple Computed Fields](#simple-computed-fields)
-    - [Complex Computed Fields](#complex-computed-fields)
-    - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
-    - [Exposed Reads on Model](#exposed-reads-on-model)
-    - [Exposed Writes on Model](#exposed-writes-on-model)
-    - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
-    - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
+  - [Exposed Prisma Model](#exposed-prisma-model)
+  - [Simple Computed Fields](#simple-computed-fields)
+  - [Complex Computed Fields](#complex-computed-fields)
+  - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
+  - [Exposed Reads on Model](#exposed-reads-on-model)
+  - [Exposed Writes on Model](#exposed-writes-on-model)
+  - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
+  - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
   - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -517,7 +506,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 **GraphQL Schema Contributions**
 
 ```gql
->#   M = model   S = scalar   F = field   R = relation
+#   M = model   S = scalar   F = field   R = relation
 
 mutation {
   createOne_M(data: M_CreateInput): M!
@@ -677,7 +666,7 @@ The ability for relation fields to be filtered ordered or paginted depends upon 
 **GraphQL Schema Contributions**
 
 ```gql
->#   M = model   S = scalar   F = field   R = relation
+#   M = model   S = scalar   F = field   R = relation
 
 mutation {
   M(where: M_WhereUniqueInput): M!
@@ -931,7 +920,7 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 The `data` and `where` args match those of One-Update Operation while the `create` arg matches that of the One-Create Operation.
 
 ```gql
->#   M = model   S = scalar   F = field   R = relation
+#   M = model   S = scalar   F = field   R = relation
 
 todo
 ```
@@ -950,7 +939,7 @@ Allow clients to delete one particular record at a time of the respective Prisma
 **GraphQL Schema Contributions**
 
 ```gql
-?#   M = model   S = scalar   F = field   R = relation
+#   M = model   S = scalar   F = field   R = relation
 
 mutation {
   deleteOne_M(where: M_WhereUniqueInput): M
