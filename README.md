@@ -479,13 +479,13 @@ mutation simple {
   }
 }
 
-mutation connect {
+mutation connectRelation {
   createOneUser(data: { email: "newton@prisma.io", posts: { connect: [43] } }) {
     id
   }
 }
 
-mutation inlineCreate {
+mutation createRelation {
   createOneUser(
     data: {
       email: "newton@prisma.io"
@@ -585,7 +585,7 @@ model Post {
 
 Allow clients to find a specific record of the respective model. They may search by any field in the model marked with `@unique` attribute.
 
-The ability for relation fields to be filtered sorted etc. depends on if such features have been enabled at the `Object` level [via `t.model`](/TODO).
+The ability for relation fields to be filtered sorted etc. depends on if such features have been enabled for those `Object`s [via `t.model`](/TODO).
 
 Each instance of this operation contributions to GraphQL Schema:
 
@@ -593,19 +593,12 @@ Each instance of this operation contributions to GraphQL Schema:
 
 Example:
 
-```prisma
-model User {
-  id    Int    @id @unique
-  email String @unique
+```gql
+query simple {
+  user(where: { email: "newton@prisma.io" }) {
+    id
+  }
 }
-```
-
-```ts
-queryType({
-  definition(t) {
-    t.user()
-  },
-})
 ```
 
 ```graphql
@@ -624,21 +617,52 @@ input UserWhereUniqueInput {
 }
 ```
 
+```ts
+queryType({
+  definition(t) {
+    t.user()
+  },
+})
+```
+
+```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+}
+```
+
 #### One-Update Operation
+
+TODO
 
 #### One-Upsert Operation
 
+TODO
+
 #### One-Delete Operation
+
+TODO
 
 #### Many-Create Operation
 
+TODO
+
 #### Many-Read Operation
+
+TODO
 
 #### Many-Update Operation
 
+TODO
+
 #### Many-Upsert Operation
 
+TODO
+
 #### Many-Delete Operation
+
+TODO
 
 #### `type` Option
 
