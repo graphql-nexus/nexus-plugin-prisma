@@ -576,8 +576,8 @@ input __RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input {
 
 ```gql
 input __M_NAME__CreateInput {
-  __M_SF__: SCALAR_TYPE # ! == not @default
-  __M_RF__: __RM_NAME__CreateManyWithout__M_NAME__ # ! == not @default
+  __M_SF__: SCALAR_TYPE # ! if not @default
+  __M_RF__: __RM_NAME__CreateManyWithout__M_NAME__ # ! if not @default
 }
 
 input __RM_NAME__CreateManyWithout__M_NAME__ {
@@ -591,6 +591,26 @@ input __RM_NAME__WhereUniqueInput {
 
 input __RM_NAME__CreateWithout__M_NAME__Input {
   __RM_NAME__CreatInput - __RM_RF__ -> __M__
+}
+```
+
+```gql
+input __M__CreateInput {
+  __MSF__: __S__                         # ! if not @default
+  __MRF__: __RM__CreateManyWithout__M__  # ! if not @default
+}
+
+input __RM__CreateManyWithout__M__ {
+  connect: [__RM__WhereUniqueInput!]
+  create: [__RM__CreateWithout__M__Input!]
+}
+
+input __RM__WhereUniqueInput {
+  __RMF_@unique: __S__
+}
+
+input __RM__CreateWithout__M__Input {
+  __RM__CreateInput - __RM_RF__: __M__
 }
 ```
 
