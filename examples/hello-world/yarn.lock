@@ -2130,17 +2130,17 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-nexus-prisma@^0.5.0-next.5:
-  version "0.5.0-next.5"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.5.0-next.5.tgz#f2268453cbee008927d764266e98f430ef403062"
-  integrity sha512-4HkaiPviHBCSkU+hTGrgLNNez6inA3vPCngKhVWkSR/C4d4ufCGFZUcmwlhkDde7VjWBkcYLzxpYt+RzNTI49g==
+nexus-prisma@^0.5.0-next.6:
+  version "0.5.0-next.6"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.5.0-next.6.tgz#db0517d2addfb528e6b0491a41b33cfc5bc119e1"
+  integrity sha512-AnLNfnlHOxivI0tHn4SJXTXQ2BVa7kCETAwxqiL8LgIaEXFvGweFMlJecxd7a6o33qvfRiOskLMrq2BjHfRu/g==
   dependencies:
     "@prisma/photon" "^0.2.94"
     fs-extra "^8.1.0"
-    nexus "^0.12.0-beta.9"
+    nexus "^0.12.0-beta.12"
     pluralize "^8.0.0"
 
-nexus@^0.12.0-beta.13, nexus@^0.12.0-beta.9:
+nexus@^0.12.0-beta.12, nexus@^0.12.0-beta.13:
   version "0.12.0-beta.13"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.13.tgz#2c21a5d4c2d57e337ee399d3585664752d7d155c"
   integrity sha512-oC6gKBtKXnzoq61x+IQk0iUSSH9ykpq3FfP8b893UfNNPEKbhIBRCSVBbSoeytgDGSQSbJi2RF31g2cF2I2p+Q==
