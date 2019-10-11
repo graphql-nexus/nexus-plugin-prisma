@@ -375,6 +375,7 @@ type User {
   handle: String
 }
 ```
+
 ```ts
 objectType({
   name: 'User',
