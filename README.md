@@ -514,86 +514,6 @@ Relation fields may be connected with an existing record or a sub-create may be 
 
 **GraphQL Schema Contributions**
 
-```
-input <ModelName>CreateInput {
-  <scalar field>: <scalar type> [!]
-  <relation field>: <RelationModelName>CreateManyWithout<ModelName>Input [!]
-}
-
-input <RelationModelName>CreateManyWithout<ModelName> {
-  connect: [<RelationModelName>WhereUniqueInput!]
-  create: [<RelationModelName>CreateWithout<ModelName>Input!]
-}
-
-input <RelationModelName>WhereUniqueInput {
-  <RelationModel @unique field>: <scalar type>
-}
-
-input <RelationModelName>CreateWithout<ModelName>Input {
-  <RelationModelName>CreateInput - <ModelName> relation field
-}
-```
-
-```gql
-input <ModelName>CreateInput {
-  <scalar field>: <scalar type> [!]
-  <relation field>: <RelationModelName>CreateManyWithout<ModelName>Input [!]
-}
-
-input <RelationModelName>CreateManyWithout<ModelName> {
-  connect: [<RelationModelName>WhereUniqueInput!]
-  create: [<RelationModelName>CreateWithout<ModelName>Input!]
-}
-
-input <RelationModelName>WhereUniqueInput {
-  <RelationModel @unique field>: <scalar type>
-}
-
-input <RelationModelName>CreateWithout<ModelName>Input {
-  <RelationModelName>CreateInput - <ModelName> relation field
-}
-```
-
-```gql
-input __MODEL_NAME__CreateInput {
-  __MODEL_SCALAR_FIELD__: SCALAR_TYPE # ! <> @default
-  __MODEL_RELATION_FIELD__: __RELATION_MODEL_NAME__CreateManyWithout__MODEL_NAME__ # ! <> @default
-}
-
-input __RELATION_MODEL_NAME__CreateManyWithout__MODEL_NAME__ {
-  connect: [__RELATION_MODEL_NAME__WhereUniqueInput!]
-  create: [__RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input!]
-}
-
-input __RELATION_MODEL_NAME__WhereUniqueInput {
-  __RELATION_MODEL_@unique_FIELD__: SCALAR_TYPE
-}
-
-input __RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input {
-  __RELATION_MODEL_NAME__CreatInput - __MODEL__RELATION_FIELD
-}
-```
-
-```gql
-input __M_NAME__CreateInput {
-  __M_SF__: SCALAR_TYPE # ! if not @default
-  __M_RF__: __RM_NAME__CreateManyWithout__M_NAME__ # ! if not @default
-}
-
-input __RM_NAME__CreateManyWithout__M_NAME__ {
-  connect: [__RM_NAME__WhereUniqueInput!]
-  create: [__RM_NAME__CreateWithout__M_NAME__Input!]
-}
-
-input __RM_NAME__WhereUniqueInput {
-  __RM_F_@unique: SCALAR_TYPE
-}
-
-input __RM_NAME__CreateWithout__M_NAME__Input {
-  __RM_NAME__CreatInput - __RM_RF__ -> __M__
-}
-```
-
 ```gql
 input __M__CreateInput {
   __MSF__: __S__                         # ! if not @default
@@ -606,11 +526,10 @@ input __RM__CreateManyWithout__M__ {
 }
 
 input __RM__WhereUniqueInput {
-  __RMF_@unique: __S__
+  __RMF@unique: __S__
 }
 
 input __RM__CreateWithout__M__Input = __RM__CreateInput - __RM_RF__: __M__
-
 ```
 
 Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
