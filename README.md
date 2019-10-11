@@ -516,6 +516,8 @@ Relation fields may be connected with an existing record or a sub-create may be 
 
 **Example**
 
+Client
+
 ```gql
 mutation simple {
   createOneUser(data: { email: "newton@prisma.io" }) {
@@ -545,6 +547,8 @@ mutation createRelation {
   }
 }
 ```
+
+GraphQL Schema (generated)
 
 ```gql
 type Mutation {
@@ -585,6 +589,8 @@ input UserCreateInput {
 }
 ```
 
+Nexus Type Defs
+
 ```ts
 mutationType({
   definition(t) {
@@ -611,6 +617,8 @@ objectType({
   },
 })
 ```
+
+Prisma Schema
 
 ```prisma
 model User {
