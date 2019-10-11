@@ -518,7 +518,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 ```gql
 input M_CreateInput {
-  MSF: S                         # ! if not @default
+  MSF: S                       # ! if not @default
   MRF: RM_CreateManyWithout_M  # ! if not @default
 }
 
