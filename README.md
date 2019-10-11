@@ -512,6 +512,8 @@ Allow clients to create one record at at time of the respective Prisma model.
 
 Relation fields may be connected with an existing record or a sub-create may be inlined (generally referred to as _nested mutations_). If the relation is a `List` then multiple connections or sub-creates are permitted.
 
+Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
+
 **GraphQL Schema Contributions**
 
 ```gql
@@ -531,8 +533,6 @@ input __RM__WhereUniqueInput {
 
 input __RM__CreateWithout__M__Input = __RM__CreateInput - __RM_RF__: __M__
 ```
-
-Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
 
 **Example**
 
