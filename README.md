@@ -163,7 +163,7 @@ And get the resulting GraphQL API:
 <details>
 <summary>(toggle me)</summary>
 
-```graphql
+```gql
 input IntFilter {
   equals: Int
   gt: Int
@@ -340,7 +340,7 @@ objectType({
 })
 ```
 
-```graphql
+```gql
 type User {
   name: String
 }
@@ -357,7 +357,7 @@ objectType({
 })
 ```
 
-```graphql
+```gql
 type Person {
   name: String
 }
@@ -376,7 +376,7 @@ objectType({
 })
 ```
 
-```graphql
+```gql
 type User {
   handle: String
 }
@@ -402,7 +402,7 @@ objectType({
 })
 ```
 
-```graphql
+```gql
 type Article {
   title: String
 }
@@ -485,7 +485,7 @@ Each instance of this operation contributions to GraphQL Schema:
 
 Example:
 
-```graphql
+```gql
 mutation simple {
   createOneUser(data: { email: "newton@prisma.io" }) {
     id
@@ -513,7 +513,7 @@ mutation createRelation {
 }
 ```
 
-```graphql
+```gql
 type Mutation {
   createOneUser(data: UserCreateInput!): User!
 }
@@ -614,7 +614,7 @@ query simple {
 }
 ```
 
-```graphql
+```gql
 type Query {
   user(where: UserWhereUniqueInput!): User
 }
@@ -981,7 +981,7 @@ The ways that these options affect your GraphQL schema are explained below.
 
 - 5 field args
 
-  ```graphql
+  ```gql
   after: String
   before: String
   first: Int
@@ -991,7 +991,7 @@ The ways that these options affect your GraphQL schema are explained below.
 
 Example query:
 
-```graphql
+```gql
 query {
   users(skip: 50, first: 50) {
     id
@@ -1010,7 +1010,7 @@ query {
 
 Note it is currently not possible to orderBy relations.
 
-```graphql
+```gql
 orderBy: UserOrderBy # <field type>OrderBy
 
 input UserOrderBy {
@@ -1024,7 +1024,7 @@ enum OrderByDir { asc desc }
 
 Example query:
 
-```graphql
+```gql
 query {
   users(orderBy: { b: asc }) {
     id
@@ -1043,7 +1043,7 @@ query {
 
 The possibility for `InputObject per Object` comes from the relation filter aspect wherein: relation fields → filters → relation fields relational fields → filter → ... . There is the possibility for cycles in this graph too.
 
-```graphql
+```gql
 where: UserWhere # <field type>Where
 
 type UserWhere {
@@ -1086,7 +1086,7 @@ input FooFilter {
 
 Example query:
 
-```graphql
+```gql
 query {
   users(where: {
     AND: [
