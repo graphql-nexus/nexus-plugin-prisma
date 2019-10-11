@@ -490,12 +490,13 @@ model User {
 
 #### One-Create Operation
 
-```
-t.crud.createOne${MODEL_NAME}
+```ts
+t.crud.createOne<MODEL_NAME>
 ```
 
-```
-({ type?: string, alias?: string }) => CRUD
+<!-- prettier-ignore -->
+```ts
+({ type?: string; alias?: string }) => CRUD
 ```
 
 Allow clients to create one record at at time of the respective Prisma model.
