@@ -490,7 +490,7 @@ Allow clients to create one record at at time of the respective Prisma model.
 
 Relation fields may be connected with an existing record or a sub-create may be inlined (generally referred to as _nested mutations_). If the relation is a `List` then multiple connections or sub-creates are permitted.
 
-**Contributions to the GraphQL schema:**
+**GraphQL Schema Contributions**
 
 - `×1` `InputObject` `<ModelName>CreateInput`
 - `×N` `InputObject` per relational field.
@@ -513,7 +513,9 @@ mutation simple {
 }
 
 mutation connectRelation {
-  createOneUser(data: { email: "newton@prisma.io", posts: { connect: [43] } }) {
+  createOneUser(
+    data: { email: "newton@prisma.io", posts: { connect: [1643] } }
+  ) {
     id
   }
 }
@@ -620,7 +622,7 @@ Allow clients to find one particular record of the respective Prisma model. They
 
 The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
 
-**Contributions to the GraphQL schema:**
+**GraphQL Schema Contributions**
 
 - ×1 `InputObject` `<ModelName>WhereUniqueInput`. Its fields mirror the Prisma model's `@unique` fields.
 
@@ -667,10 +669,13 @@ model User {
 
 #### One-Update Operation
 
+Allow clients to update one particular record at a time of the respective Prisma model.
 TODO
 
 - powerful update semantics on relations
 - many InputObjects created
+
+**GraphQL Schema Contributions**
 
 **Example**
 
@@ -843,6 +848,12 @@ model Post {
 
 #### One-Upsert Operation
 
+Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model.
+
+**GraphQL Schema Contributions**
+
+**Example**
+
 TODO
 
 - a combination of create and update
@@ -850,9 +861,11 @@ TODO
 
 #### One-Delete Operation
 
-TODO
+Allow clients to delete one particular record at a time of the respective Prisma model.
 
-- the simplest operation from graphql schema point of view
+Of all operation kinds this has the smallest footprint on your GraphQL schema.
+
+**GraphQL Schema Contributions**
 
 **Example**
 
