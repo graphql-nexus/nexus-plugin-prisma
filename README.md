@@ -474,27 +474,24 @@ Example:
 
 ```graphql
 mutation simple {
-  createOneUser(data: { email: newton@prisma.io }) {
+  createOneUser(data: { email: "newton@prisma.io" }) {
     id
   }
 }
 
 mutation connect {
-  createOneUser(data: { email: newton@prisma.io, posts: { connect: [43] } }) {
+  createOneUser(data: { email: "newton@prisma.io", posts: { connect: [43] } }) {
     id
   }
 }
 
 mutation inlineCreate {
-  createOneUser(data: {
-    email: newton@prisma.io,
-    posts: {
-      create: [{
-        title: "On How The Prism Came To Be"
-        body: "..."
-      }]
+  createOneUser(
+    data: {
+      email: "newton@prisma.io"
+      posts: { create: [{ title: "On How The Prism Came To Be", body: "..." }] }
     }
-  }) {
+  ) {
     id
     posts {
       title
