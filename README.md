@@ -516,7 +516,7 @@ Relation fields may be connected with an existing record or a sub-create may be 
 
 **Example**
 
-Client
+Client Mutations
 
 ```gql
 mutation simple {
