@@ -534,24 +534,6 @@ input RM__WhereUniqueInput {
 input RM__CreateWithout__M__Input = RM__CreateInput - RMRF: M
 ```
 
-```gql
-input __M__CreateInput {
-  __MSF__: __S__                         # ! if not @default
-  __MRF__: __RM__CreateManyWithout__M__  # ! if not @default
-}
-
-input __RM__CreateManyWithout__M__ {
-  connect: [__RM__WhereUniqueInput!]
-  create: [__RM__CreateWithout__M__Input!]
-}
-
-input __RM__WhereUniqueInput {
-  __RMF@unique: __S__
-}
-
-input __RM__CreateWithout__M__Input = __RM__CreateInput - __RM_RF__: __M__
-```
-
 **Example**
 
 Client Mutations
