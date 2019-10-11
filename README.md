@@ -26,16 +26,16 @@
     - [`type` Option](#type-option)
     - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
   - [`t.crud`](#tcrud)
-    - [One Create Operation](#one-create-operation)
-    - [One Read Operation](#one-read-operation)
-    - [One Update Operation](#one-update-operation)
-    - [One Upsert Operation](#one-upsert-operation)
-    - [One Delete Operation](#one-delete-operation)
-    - [Many Create Operation](#many-create-operation)
-    - [Many Read Operation](#many-read-operation)
-    - [Many Update Operation](#many-update-operation)
-    - [Many Upsert Operation](#many-upsert-operation)
-    - [Many Delete Operation](#many-delete-operation)
+    - [One-Create Operation](#one-create-operation)
+    - [One-Read Operation](#one-read-operation)
+    - [One-Update Operation](#one-update-operation)
+    - [One-Upsert Operation](#one-upsert-operation)
+    - [One-Delete Operation](#one-delete-operation)
+    - [Many-Create Operation](#many-create-operation)
+    - [Many-Read Operation](#many-read-operation)
+    - [Many-Update Operation](#many-update-operation)
+    - [Many-Upsert Operation](#many-upsert-operation)
+    - [Many-Delete Operation](#many-delete-operation)
     - [`type` Option](#type-option-1)
     - [`alias` Option](#alias-option-1)
     - [`ordering` `pagination` `filtering` options](#ordering-pagination-filtering-options)
@@ -604,9 +604,7 @@ queryType({
     t.crud.users()
   },
 })
-```
 
-```ts
 mutationType({
   definition(t) {
     t.crud.createOneUser()
@@ -622,15 +620,148 @@ mutationType({
 })
 ```
 
-#### One Create Operation
+#### One-Create Operation
 
-#### One Read Operation
+Allow clients to create records of the respective model.
 
-Allow clients to find a specific record. They may search by any model field marked with a `@unique` attribute.
+Relation fields may be connected with an existing record or a sub-create may be inlined. If the relation is a `List` then multiple connections or sub-creates are permitted.
 
-Per instance contributions to GraphQL Schema:
+Each instance of this operation contributions to GraphQL Schema:
 
-- 1 `InputObject` `<ModelName>WhereUniqueInput` whose fields mirror the model's `@unique` fields.
+- `×1` `InputObject` `<ModelName>CreateInput`
+- `×N` `InputObject` per relational field.
+
+  This is a container for the sub-create and connect (below). Cannot be amortized becuase sub-create cannot.
+
+- `×N` `InputObject` per relational field create.
+
+  Cannot be amoritized because of specialized shape excluding field where supplying relation of type of parent `Object` being created would normally be. Instead this relation being created will be intuitively connected to the `Object` being directly created.
+
+- `×N (A)` `InputObject` `<ModelName>WhereUniqueInput` per relational field connect.
+
+Example:
+
+```graphql
+mutation simple {
+  createOneUser(data: { email: newton@prisma.io }) {
+    id
+  }
+}
+
+mutation connect {
+  createOneUser(data: { email: newton@prisma.io, posts: { connect: [43] } }) {
+    id
+  }
+}
+
+mutation inlineCreate {
+  createOneUser(data: {
+    email: newton@prisma.io,
+    posts: {
+      create: [{
+        title: "On How The Prism Came To Be"
+        body: "..."
+      }]
+    }
+  }) {
+    id
+    posts {
+      title
+    }
+  }
+}
+```
+
+```graphql
+type Mutation {
+  createOneUser(data: UserCreateInput!): User!
+}
+
+type Post {
+  author: User!
+  id: Int!
+  title: String!
+  body: String!
+}
+
+input PostCreateManyWithoutPostsInput {
+  connect: [PostWhereUniqueInput!]
+  create: [PostCreateWithoutAuthorInput!]
+}
+
+input PostCreateWithoutAuthorInput {
+  title: String!
+  body: String!
+}
+
+input PostWhereUniqueInput {
+  id: Int
+  title: String
+}
+
+type User {
+  email: String!
+  id: Int!
+  posts: [Post!]!
+}
+
+input UserCreateInput {
+  email: String!
+  posts: PostCreateManyWithoutPostsInput
+}
+```
+
+```ts
+const Mutation = mutationType({
+  definition(t) {
+    t.crud.createOneUser()
+  },
+})
+
+const User = objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.posts()
+  },
+})
+
+const Post = objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.body()
+    t.model.author()
+  },
+})
+```
+
+```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+  posts Post[]
+}
+
+model Post {
+  id     Int    @id
+  title  String @unique
+  body   String
+  author User
+}
+```
+
+#### One-Read Operation
+
+Allow clients to find a specific record of the respective model. They may search by any field in the model marked with `@unique` attribute.
+
+The ability for relation fields to be filtered sorted etc. depends on if such features have been enabled at the `Object` level [via `t.model`](/TODO).
+
+Each instance of this operation contributions to GraphQL Schema:
+
+- ×1 `InputObject` `<ModelName>WhereUniqueInput`. Its fields mirror the model's `@unique` fields.
 
 Example:
 
@@ -660,26 +791,26 @@ type User {
 }
 
 input UserWhereUniqueInput {
-  email: String
   id: Int
+  email: String
 }
 ```
 
-#### One Update Operation
+#### One-Update Operation
 
-#### One Upsert Operation
+#### One-Upsert Operation
 
-#### One Delete Operation
+#### One-Delete Operation
 
-#### Many Create Operation
+#### Many-Create Operation
 
-#### Many Read Operation
+#### Many-Read Operation
 
-#### Many Update Operation
+#### Many-Update Operation
 
-#### Many Upsert Operation
+#### Many-Upsert Operation
 
-#### Many Delete Operation
+#### Many-Delete Operation
 
 #### `type` Option
 
