@@ -516,7 +516,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 **GraphQL Schema Contributions**
 
-`M = model` `S = scalar` `F = field` `R = relation`
+`M` model `S` scalar `F` field `R` relation
 
 ```gql
 input M_CreateInput {
