@@ -531,7 +531,7 @@ input RM__WhereUniqueInput {
   RMF@unique: S
 }
 
-input RM__CreateWithout__M__Input = RM__CreateInput - RM_RF: M
+input RM__CreateWithout__M__Input = RM__CreateInput - RMRF: M
 ```
 
 ```gql
