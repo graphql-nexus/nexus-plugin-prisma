@@ -517,21 +517,21 @@ Inlined creates are very similar to top-level ones but have the important differ
 **GraphQL Schema Contributions**
 
 ```gql
-input M__CreateInput {
+input M_CreateInput {
   MSF: S                         # ! if not @default
-  MRF: RM__CreateManyWithout__M  # ! if not @default
+  MRF: RM_CreateManyWithout_M  # ! if not @default
 }
 
-input RM__CreateManyWithout__M {
-  connect: [RM__WhereUniqueInput!]
-  create: [RM__CreateWithout__M__Input!]
+input RM_CreateManyWithout_M {
+  connect: [RM_WhereUniqueInput!]
+  create: [RM_CreateWithout_M_Input!]
 }
 
-input RM__WhereUniqueInput {
+input RM_WhereUniqueInput {
   RMF@unique: S
 }
 
-input RM__CreateWithout__M__Input = RM__CreateInput - RMRF: M
+input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
 ```
 
 **Example**
