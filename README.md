@@ -16,23 +16,23 @@
 - [Example](#example)
 - [API Reference](#api-reference)
   - [`t.model`](#tmodel)
-    - [`alias` Option](#alias-option)
-    - [`type` Option](#type-option)
-    - [`ordering` `pagination` `filtering` Options](#ordering-pagination-filtering-options)
+    - [Option `alias`](#option-alias)
+    - [Option `type`](#option-type)
+    - [Option `ordering` `pagination` `filtering`](#option-ordering-pagination-filtering)
   - [`t.crud`](#tcrud)
-    - [One-Create Operation](#one-create-operation)
-    - [One-Read Operation](#one-read-operation)
-    - [One-Update Operation](#one-update-operation)
-    - [One-Upsert Operation](#one-upsert-operation)
-    - [One-Delete Operation](#one-delete-operation)
-    - [Many-Create Operation](#many-create-operation)
-    - [Many-Read Operation](#many-read-operation)
-    - [Many-Update Operation](#many-update-operation)
-    - [Many-Upsert Operation](#many-upsert-operation)
-    - [Many-Delete Operation](#many-delete-operation)
-    - [`type` Option](#type-option-1)
-    - [`alias` Option](#alias-option-1)
-    - [`ordering` `pagination` `filtering` options](#ordering-pagination-filtering-options)
+    - [Operation One-Create](#operation-one-create)
+    - [Operation One-Read](#operation-one-read)
+    - [Operation One-Update](#operation-one-update)
+    - [Operation One-Upsert](#operation-one-upsert)
+    - [Operation One-Delete](#operation-one-delete)
+    - [Operation Many-Create](#operation-many-create)
+    - [Operation Many-Read](#operation-many-read)
+    - [Operation Many-Update](#operation-many-update)
+    - [Operation Many-Upsert](#operation-many-upsert)
+    - [Operation Many-Delete](#operation-many-delete)
+    - [Option `type`](#option-type-1)
+    - [Option `alias`](#option-alias-1)
+    - [Option `ordering` `pagination` `filtering`](#option-ordering-pagination-filtering-1)
   - [Configuration](#configuration)
 - [Guide](#guide)
   - [Query](#query)
@@ -364,10 +364,17 @@ model User {
 }
 ```
 
-### `alias` Option
+### Option `alias`
 
 Use `alias` to change the name of the field projected onto the `Object`.
 
+**Example**
+
+````gql
+type User {
+  handle: String
+}
+``
 ```ts
 objectType({
   name: 'User',
@@ -375,15 +382,11 @@ objectType({
     t.model.name({ alias: 'handle' })
   },
 })
-```
+````
 
-```gql
-type User {
-  handle: String
-}
-```
+`
 
-### `type` Option
+### Option `type`
 
 This option is only available for relational fields.
 
@@ -428,7 +431,7 @@ modle Post {
 }
 ```
 
-### `ordering` `pagination` `filtering` Options
+### Option `ordering` `pagination` `filtering`
 
 Only available for list type model fields. Please refer to TODO for details.
 
@@ -488,7 +491,7 @@ model User {
 
 <br>
 
-### One-Create Operation
+### Operation One-Create
 
 <!-- prettier-ignore -->
 ```ts
@@ -652,7 +655,7 @@ model Post {
 
 <br>
 
-### One-Read Operation
+### Operation One-Read
 
 <!-- prettier-ignore -->
 ```ts
@@ -722,7 +725,7 @@ model User {
 
 <br>
 
-### One-Update Operation
+### Operation One-Update
 
 <!-- prettier-ignore -->
 ```ts
@@ -976,7 +979,7 @@ model Post {
 
 <br>
 
-### One-Upsert Operation
+### Operation One-Upsert
 
 <!-- prettier-ignore -->
 ```ts
@@ -985,7 +988,7 @@ model Post {
 t.crud.upsertOne<ModelName>
 ```
 
-Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#one-create-operation) and [one-update](#one-update-operation) allowing to re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert is able to guarantee a return value.
+Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#operation-one-create) and [one-update](#operation-one-update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert guarantees a return value.
 
 **GraphQL Schema Contributions**
 
@@ -1007,7 +1010,7 @@ Refer to [one-update](#one-update-operation) and [one-create](#one-create-operat
 
 <br>
 
-### One-Delete Operation
+### Operation One-Delete
 
 <!-- prettier-ignore -->
 ```ts
@@ -1111,35 +1114,35 @@ model Post {
 }
 ```
 
-### Many-Create Operation
+### Operation Many-Create
 
 TODO
 
-### Many-Read Operation
+### Operation Many-Read
 
 TODO
 
-### Many-Update Operation
+### Operation Many-Update
 
 TODO
 
-### Many-Upsert Operation
+### Operation Many-Upsert
 
 TODO
 
-### Many-Delete Operation
+### Operation Many-Delete
 
 TODO
 
-### `type` Option
+### Option `type`
 
 Refer to [`t.model` `type` option](/todo).
 
-### `alias` Option
+### Option `alias`
 
 Refer to [`t.model` `alias` option](/todo).
 
-### `ordering` `pagination` `filtering` options
+### Option `ordering` `pagination` `filtering`
 
 Only available on `Query` crud for operations that return `List`s.
 
