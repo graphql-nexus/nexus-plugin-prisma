@@ -496,7 +496,7 @@ t.crud.createOne<ModelName>
 
 <!-- prettier-ignore -->
 ```ts
-(opts: { type?: string; alias?: string }) => CRUD
+(options: { type?: string; alias?: string }) => CRUD
 ```
 
 Allow clients to create one record at at time of the respective Prisma model.
