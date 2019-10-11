@@ -38,7 +38,18 @@
     - [Query](#query)
       - [Pagination](#pagination)
       - [Ordering](#ordering)
+- [<User field name>: OrderByDir](#user-field-name-orderbydir)
       - [Filtering](#filtering)
+- [assume user has these Scalar fields, to illustrate example](#assume-user-has-these-scalar-fields-to-illustrate-example)
+- [<User field name>: <Scalar name>Filter](#user-field-name-scalar-namefilter)
+- [...](#)
+- [assume user has these Object (aka. relation) fields, to illustrate example](#assume-user-has-these-object-aka-relation-fields-to-illustrate-example)
+- [<User field name>: <Object name>Filter](#user-field-name-object-namefilter)
+- [...](#-1)
+- [Defined once for each Scalar filter](#defined-once-for-each-scalar-filter)
+- [Foo is a Scalar name](#foo-is-a-scalar-name)
+- [Defined once for each Object filter](#defined-once-for-each-object-filter)
+- [Foo is an Object name](#foo-is-an-object-name)
 - [Recipes](#recipes)
     - [Exposed Prisma Model](#exposed-prisma-model)
     - [Simple Computed Fields](#simple-computed-fields)
@@ -503,16 +514,67 @@ Relation fields may be connected with an existing record or a sub-create may be 
 
 **GraphQL Schema Contributions**
 
-- `×1` `InputObject` `<ModelName>CreateInput`
-- `×N` `InputObject` per relational field.
+```
+input <ModelName>CreateInput {
+  <scalar field>: <scalar type> [!]
+  <relation field>: <RelationModelName>CreateManyWithout<ModelName>Input [!]
+}
 
-  This is a container for the sub-create and connect (below). Cannot be amortized becuase sub-create cannot.
+input <RelationModelName>CreateManyWithout<ModelName> {
+  connect: [<RelationModelName>WhereUniqueInput!]
+  create: [<RelationModelName>CreateWithout<ModelName>Input!]
+}
 
-- `×N` `InputObject` per relational field create.
+input <RelationModelName>WhereUniqueInput {
+  <RelationModel @unique field>: <scalar type>
+}
 
-  Cannot be amoritized because of specialized shape excluding field where supplying relation of type of parent `Object` being created would normally be. Instead this relation being created will be intuitively connected to the `Object` being directly created.
+input <RelationModelName>CreateWithout<ModelName>Input {
+  <RelationModelName>CreateInput - <ModelName> relation field
+}
+```
 
-- `×N (A)` `InputObject` `<ModelName>WhereUniqueInput` per relational field connect.
+```gql
+input <ModelName>CreateInput {
+  <scalar field>: <scalar type> [!]
+  <relation field>: <RelationModelName>CreateManyWithout<ModelName>Input [!]
+}
+
+input <RelationModelName>CreateManyWithout<ModelName> {
+  connect: [<RelationModelName>WhereUniqueInput!]
+  create: [<RelationModelName>CreateWithout<ModelName>Input!]
+}
+
+input <RelationModelName>WhereUniqueInput {
+  <RelationModel @unique field>: <scalar type>
+}
+
+input <RelationModelName>CreateWithout<ModelName>Input {
+  <RelationModelName>CreateInput - <ModelName> relation field
+}
+```
+
+```
+input __MODEL_NAME__CreateInput {
+  __MODEL_SCALAR_FIELD__: SCALAR_TYPE # ! <> @default
+  __MODEL_RELATION_FIELD__: __RELATION_MODEL_NAME__CreateManyWithout__MODEL_NAME__ # ! <> @default
+}
+
+input __RELATION_MODEL_NAME__CreateManyWithout__MODEL_NAME__ {
+  connect: [__RELATION_MODEL_NAME__WhereUniqueInput!]
+  create: [__RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input!]
+}
+
+input __RELATION_MODEL_NAME__WhereUniqueInput {
+  __RELATION_MODEL_@unique_FIELD__: SCALAR_TYPE
+}
+
+input __RELATION_MODEL_NAME__CreateWithout__MODEL_NAME__Input {
+  __RELATION_MODEL_NAME__CreatInput - __MODEL__RELATION_FIELD
+}
+```
+
+Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
 
 **Example**
 
