@@ -493,7 +493,7 @@ model User {
 ### Create
 
 ```ts
-t.crud.createOne_M
+t.crud.createOne<M>
 ```
 
 Allow clients to create one record at at time of the respective Prisma model.
@@ -656,7 +656,7 @@ model Post {
 ### Read
 
 ```ts
-t.crud.M
+t.crud.<M>
 ```
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
@@ -725,7 +725,7 @@ model User {
 ### Update
 
 ```ts
-t.crud.updateOne_M
+t.crud.updateOne<M>
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
@@ -980,7 +980,7 @@ model Post {
 ### Upsert
 
 ```ts
-t.crud.upsertOne_M
+t.crud.upsertOne<M>
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [create](#create) and [update](#update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of update, and `create` to that of `data` arg in create. Unlike update, upsert guarantees a return value.
@@ -1010,7 +1010,7 @@ Refer to [update](#update) and [create](#create).
 ### Delete
 
 ```ts
-t.crud.deleteOne_M
+t.crud.deleteOne<M>
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
@@ -1115,7 +1115,7 @@ model Post {
 ### Batch Read
 
 ```ts
-t.crud.M_s
+t.crud.<M Pluralized>
 ```
 
 Allow clients to fetch multiple records at once of the respective Prisma model.
@@ -1180,7 +1180,7 @@ model Post {
 ### Batch Update
 
 ```ts
-t.crud.updateMany_M
+t.crud.updateMany<M>
 ```
 
 TODO
@@ -1194,7 +1194,7 @@ TODO
 ### Batch Delete
 
 ```ts
-t.crud.deleteMany_M
+t.crud.deleteMany<M>
 ```
 
 TODO
@@ -1485,7 +1485,7 @@ M = model   F = field   S = scalar   E = enum   R = relation  V = value
 
 ```gql
 query {
-  M_s(where: M_WhereInput, ...)
+  Ms(where: M_WhereInput, ...)
 }
 
 mutation {
