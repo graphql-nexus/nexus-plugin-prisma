@@ -1227,7 +1227,7 @@ TODO
 t.crud.deleteMany<M>
 ```
 
-TODO
+Allow clients to delete multiple records of a given model at once. Clients get back a `BatchPayload` object letting them know the number of affected records. Clients cannot cannot select fields from the records.
 
 **Underlying Photon Function**
 
