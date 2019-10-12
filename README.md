@@ -442,7 +442,7 @@ model User {
 
 <br>
 
-### Operation Create
+### Create
 
 ```ts
 t.crud.createOne_M
@@ -605,7 +605,7 @@ model Post {
 
 <br>
 
-### Operation Read
+### Read
 
 ```ts
 t.crud.M
@@ -674,7 +674,7 @@ model User {
 
 <br>
 
-### Operation Update
+### Update
 
 ```ts
 t.crud.updateOne_M
@@ -929,13 +929,13 @@ model Post {
 
 <br>
 
-### Operation Upsert
+### Upsert
 
 ```ts
 t.crud.upsertOne_M
 ```
 
-Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#operation-one-create) and [one-update](#operation-one-update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert guarantees a return value.
+Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [create](#create) and [update](#update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of update, and `create` to that of `data` arg in create. Unlike update, upsert guarantees a return value.
 
 **Options**
 
@@ -955,11 +955,11 @@ mutation {
 
 **Example**
 
-Refer to [one-update](#operation-one-update) and [one-create](#operation-one-create).
+Refer to [update](#update) and [create](#create).
 
 <br>
 
-### Operation Delete
+### Delete
 
 ```ts
 t.crud.deleteOne_M
@@ -1064,7 +1064,7 @@ model Post {
 
 <br>
 
-### Operation Batch Read
+### Batch Read
 
 ```ts
 t.crud._M_s
@@ -1129,7 +1129,7 @@ model Post {
 
 <br>
 
-### Operation Batch Update
+### Batch Update
 
 ```ts
 t.crud.updateMany_M
@@ -1143,7 +1143,7 @@ TODO
 
 <br>
 
-### Operation Batch Delete
+### Batch Delete
 
 ```ts
 t.crud.deleteMany_M
