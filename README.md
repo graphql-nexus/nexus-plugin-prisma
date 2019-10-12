@@ -506,7 +506,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -667,7 +667,7 @@ The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -734,7 +734,7 @@ Allow clients to update one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -989,7 +989,7 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -1019,7 +1019,7 @@ Allow clients to delete one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -1124,7 +1124,7 @@ Allow clients to fetch multiple records at once of the respective Prisma model.
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 type Query {
@@ -1297,7 +1297,7 @@ Allow clients to order the records in a list field. Records can be ordered by th
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 # t.crud.<BatchRead>
