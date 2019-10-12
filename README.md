@@ -39,11 +39,6 @@
     - [Batch Filtering](#batch-filtering)
     - [Batch Operations](#batch-operations)
   - [Configuration](#configuration)
-- [Guide](#guide)
-  - [Query](#query)
-    - [Pagination](#pagination)
-    - [Ordering](#ordering)
-    - [Filtering](#filtering)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
   - [Simple Computed Fields](#simple-computed-fields)
@@ -747,7 +742,7 @@ mutation {
 }
 
 input M_WhereUniqueInput {
-  MF@unique: S
+  MF: S # if @unique
 }
 
 input M_UpdateInput {
@@ -769,7 +764,7 @@ input RM_UpdateManyWithout_M_Input {
 
 input RM_WhereUniqueInput # pattern like M_WhereUniqueInput
 
-input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
+input RM_CreateWithout_M_Input # RM_CreateInput - RMRF: M
 
 input RM_ScalarWhereInput {
   AND: [RM_ScalarWhereInput!]
