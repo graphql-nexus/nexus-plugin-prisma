@@ -502,6 +502,10 @@ Relation fields may be connected with an existing record or a sub-create may be 
 
 Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
 
+**Underlying Photon Function**
+
+[`create`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#create)
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -663,6 +667,10 @@ Allow clients to find one particular record of the respective Prisma model. They
 
 The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or [paginted](#pagination) depends upon if those features have been enabled for those `Object`s via [`t.model`](#list-field).
 
+**Underlying Photon Function**
+
+[`findOne`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#findone)
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -729,6 +737,10 @@ t.crud.updateOne<M>
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
+
+**Underlying Photon Function**
+
+[`update`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#update)
 
 **Options**
 
@@ -985,6 +997,10 @@ t.crud.upsertOne<M>
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [create](#create) and [update](#update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of update, and `create` to that of `data` arg in create. Unlike update, upsert guarantees a return value.
 
+**Underlying Photon Function**
+
+[`upsert`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#upsert)
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -1013,7 +1029,13 @@ Refer to [update](#update) and [create](#create).
 t.crud.deleteOne<M>
 ```
 
+photon.
+
 Allow clients to delete one particular record at a time of the respective Prisma model.
+
+**Underlying Photon Function**
+
+[`delete`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#delete)
 
 **Options**
 
@@ -1120,6 +1142,10 @@ t.crud.<M Pluralized>
 
 Allow clients to fetch multiple records at once of the respective Prisma model.
 
+**Underlying Photon Function**
+
+[`findMany`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#findMany)
+
 **Options**
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
@@ -1185,6 +1211,10 @@ t.crud.updateMany<M>
 
 TODO
 
+**Underlying Photon Function**
+
+[`updateMany`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#updateMany)
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -1198,6 +1228,10 @@ t.crud.deleteMany<M>
 ```
 
 TODO
+
+**Underlying Photon Function**
+
+[`deleteMany`](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#deleteMany)
 
 **Options**
 
