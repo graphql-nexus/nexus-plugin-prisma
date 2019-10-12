@@ -762,8 +762,9 @@ input RM_UpdateManyWithout_M_Input {
   upsert: [RM_UpsertWithWhereUniqueWithout_M_Input!]
 }
 
-# RM_CreateInput - RMRF: M
-input RM_CreateWithout_M_Input
+input RM_WhereUniqueInput {} # pattern like M_WhereUniqueInput
+
+input RM_CreateWithout_M_Input {} # RM_CreateInput - RMRF: M
 
 input RM_ScalarWhereInput {
   AND: [RM_ScalarWhereInput!]
@@ -771,8 +772,6 @@ input RM_ScalarWhereInput {
   OR: [RM_ScalarWhereInput!]
   RMSF: S_Filter # StringFilter | IntFilter | ... TODO
 }
-
-input RM_WhereUniqueInput {} # pattern like M_WhereUniqueInput
 
 input RM_UpdateWithWhereUniqueWithout_M_Input {
   data: RM_UpdateWithout_M_DataInput!
