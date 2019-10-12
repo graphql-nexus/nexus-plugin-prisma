@@ -16,8 +16,9 @@
 - [Example](#example)
 - [API Reference](#api-reference)
   - [`t.model`](#tmodel)
-    - [Scalar](#scalar)
-    - [Relation](#relation)
+    - [Scalar & Enum Field](#scalar--enum-field)
+    - [Relation Field](#relation-field)
+    - [List Field](#list-field)
   - [`t.crud`](#tcrud)
     - [Create](#create)
     - [Read](#read)
@@ -370,15 +371,82 @@ model User {
 
 <br>
 
-### Scalar
+### Scalar & Enum Field
+
+Custom scalars and Enums will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
+
+**GraphQL Contributions**
+
+```gql
+type M {
+  MSF: S # ! <-- if not ?
+}
+
+# if custom scalar encountered
+scalar S
+
+# if enum encountered
+enum E {
+  EV
+}
+```
 
 **Options**
 
 [`type`](#type) [`alias`](#alias)
 
+**Example**
+
+```gql
+type Post {
+  id: Int!
+  scheduledPublish: DateTime
+  status: PostStatus!
+}
+
+scalar DateTime
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+```
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.
+  },
+})
+```
+
+```prisma
+
+model User {
+  id               String     @id @default(cuid())
+  scheduledPublish DateTime?
+  status           PostStatus @default(DRAFT)
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+```
+
 <br>
 
-### Relation
+### Relation Field
+
+Works like scalar projecting except that the relation is not auto-projected.
+
+<br>
+
+### List Field
+
+Works according to the projecting rules of its member type but also supports options for list handling.
 
 **Options**
 
@@ -466,8 +534,8 @@ mutation {
 }
 
 input M_CreateInput {
-  MSF: S                       # ! if not @default
-  MRF: RM_CreateManyWithout_M  # ! if not @default
+  MSF: S                       # ! if not ? or @default
+  MRF: RM_CreateManyWithout_M  # ! if not ? or @default
 }
 
 input RM_CreateManyWithout_M {
