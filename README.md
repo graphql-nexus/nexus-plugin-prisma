@@ -382,10 +382,10 @@ type M {
   MSF: S # ! <-- if not ?
 }
 
-# if custom scalar encountered
+# if custom scalar(s) encountered
 scalar S
 
-# if enum encountered
+# if enum(s) encountered
 enum E {
   EV
 }
@@ -491,21 +491,6 @@ mutationType({
 model User {
   id Int @id
 }
-```
-
-<br>
-<p>In the following operation kind documentation, each entry uses this format:</p>
-
-```
-> Overview
-
-> GraphQL schema contributions
-
-> Example
-  > GraphQL client operations
-  > GraphQL schema
-  > Nexus type definitions
-  > Prisma models
 ```
 
 <br>
