@@ -392,7 +392,7 @@ Only available within `Query` and `Mutation` definitions.
 
 `t.crud` contains configurable _operation publishers_ that you use for exposing create, read, update, and delete mutations against your projected Prisma models.
 
-There are 10 kinds of operations (reflecting a subset of [Photon.js](https://photonjs.prisma.io)'s capabilities). An _operation publisher_ is the combination of some operation kind and a particular Prisma model. Thus the number of operation publishers on `t.crud` is `Prisma model count × operation kind count`. So for example if you defined 20 Prisma models then you would see 200 operation publishers on `t.crud`.
+There are 8 kinds of operations (reflecting a subset of [Photon.js](https://photonjs.prisma.io)'s capabilities). An _operation publisher_ is the combination of some operation kind and a particular Prisma model. Thus the number of operation publishers on `t.crud` is `Prisma model count × operation kind count`. So for example if you defined 20 Prisma models then you would see 160 operation publishers on `t.crud`.
 
 **Example**
 
@@ -614,6 +614,7 @@ t.crud.M
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
 The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -680,6 +681,7 @@ t.crud.updateOne_M
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -934,6 +936,7 @@ t.crud.upsertOne_M
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#operation-one-create) and [one-update](#operation-one-update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert guarantees a return value.
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
@@ -963,6 +966,7 @@ t.crud.deleteOne_M
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
+
 **Options**
 
 [`type`](#type) [`alias`](#alias)
