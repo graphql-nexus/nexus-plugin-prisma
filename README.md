@@ -364,75 +364,17 @@ model User {
 }
 ```
 
-### Option `alias`
+### Scalar
 
-Use `alias` to change the name of the field projected onto the `Object`.
+**Options**
 
-**Example**
+[`type`](#type) [`alias`](#alias)
 
-```gql
-type User {
-  handle: String
-}
-```
+### Relation
 
-```ts
-objectType({
-  name: 'User',
-  definition(t) {
-    t.model.name({ alias: 'handle' })
-  },
-})
-```
+**Options**
 
-### Option `type`
-
-This option is only available for relational fields.
-
-Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
-
-**Example**
-
-```gql
-type Article {
-  title: String!
-}
-
-type User {
-  articles: [Article]
-}
-```
-
-```ts
-objectType({
-  name: 'Article',
-  definition(t) {
-    t.model('Post').id()
-  },
-})
-
-objectType({
-  name: 'User',
-  definition(t) {
-    t.model.posts({ alias: 'articles', type: 'Article' })
-  },
-})
-```
-
-```prisma
-model User {
-  id    String @id @default(cuid())
-  posts Post[]
-}
-
-modle Post {
-  id String @id @default(cuid())
-}
-```
-
-### Option `ordering` `pagination` `filtering`
-
-Only available for list type model fields. Please refer to TODO for details.
+[`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
 ## `t.crud`
 
@@ -492,10 +434,7 @@ model User {
 
 ### Operation One-Create
 
-<!-- prettier-ignore -->
 ```ts
-(options: { type?: string; alias?: string }) => CRUD
-
 t.crud.createOne<ModelName>
 ```
 
@@ -504,6 +443,10 @@ Allow clients to create one record at at time of the respective Prisma model.
 Relation fields may be connected with an existing record or a sub-create may be inlined (generally referred to as _nested mutations_). If the relation is a `List` then multiple connections or sub-creates are permitted.
 
 Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
+
+**Options**
+
+[`type`](#type) [`alias`](#alias)
 
 **GraphQL Schema Contributions**
 
@@ -666,6 +609,9 @@ t.crud.<ModelName>
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
 The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
+**Options**
+
+[`type`](#type) [`alias`](#alias)
 
 **GraphQL Schema Contributions**
 
@@ -734,6 +680,9 @@ t.crud.updateOne<ModelName>
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
+**Options**
+
+[`type`](#type) [`alias`](#alias)
 
 **GraphQL Schema Contributions**
 
@@ -773,7 +722,7 @@ input RM_ScalarWhereInput {
   AND: [RM_ScalarWhereInput!]
   NOT: [RM_ScalarWhereInput!]
   OR: [RM_ScalarWhereInput!]
-  RMSF: S_Filter
+  RMSF: S_Filter # StringFilter | IntFilter | ... TODO
 }
 
 input RM_UpdateWithWhereUniqueWithout_M_Input {
@@ -795,7 +744,9 @@ input RM_UpsertWithWhereUniqueWithout_M_Input {
   where: RM_WhereUniqueInput!
 }
 
-input S_Filter {
+TODO StringFilter ...
+
+input IntFilter {
   equals: S
   gt: S
   gte: S
@@ -988,6 +939,9 @@ t.crud.upsertOne<ModelName>
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#operation-one-create) and [one-update](#operation-one-update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert guarantees a return value.
+**Options**
+
+[`type`](#type) [`alias`](#alias)
 
 **GraphQL Schema Contributions**
 
@@ -1019,6 +973,9 @@ t.crud.deleteOne<ModelName>
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
+**Options**
+
+[`type`](#type) [`alias`](#alias)
 
 **GraphQL Schema Contributions**
 
@@ -1084,7 +1041,7 @@ objectType({
   definition(t) {
     t.model.id()
     t.model.email()
-    t.model.posts({ pagination: false })
+    t.model.posts()
   },
 })
 
@@ -1113,39 +1070,242 @@ model Post {
 }
 ```
 
-### Operation Many-Create
+### Operation Batch-Read
+
+```ts
+t.crud.<ModelName>s
+```
+
+Allow clients to fetch multiple records at once of the respective Prisma model.
+
+**Options**
+
+[`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
+
+**GraphQL Schema Contributions**
+
+```gql
+type Query {
+  M_s: [M!]!
+}
+```
+
+**Example**
+
+```gql
+type Query {
+  users: [User!]!
+}
+
+type Post {
+  author: User!
+  id: Int!
+  title: String!
+}
+
+type User {
+  email: String!
+  id: ID!
+  posts: [Post!]!
+}
+```
+
+```ts
+queryType({
+  definition(t) {
+    t.users()
+  },
+})
+```
+
+```prisma
+model User {
+  id    Int    @id @unique
+  email String @unique
+  posts Post[]
+}
+
+model Post {
+  id     Int    @id
+  title  String @unique
+  body   String
+  author User
+}
+```
+
+### Operation Batch-Update
 
 TODO
 
-### Operation Many-Read
+**Options**
+
+[`type`](#type) [`alias`](#alias)
+
+### Operation Batch-Delete
 
 TODO
 
-### Operation Many-Update
+**Options**
 
-TODO
+[`type`](#type) [`alias`](#alias)
 
-### Operation Many-Upsert
+## Options
 
-TODO
+### `alias`
 
-### Operation Many-Delete
+Use `alias` to change the name of the field projected onto the `Object`.
 
-TODO
+**Example**
 
-### Option `type`
+```gql
+type User {
+  handle: String
+}
+```
 
-Refer to [`t.model` `type` option](/todo).
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.name({ alias: 'handle' })
+  },
+})
+```
 
-### Option `alias`
+### `type`
 
-Refer to [`t.model` `alias` option](/todo).
+This option is only available for relational fields.
 
-### Option `ordering` `pagination` `filtering`
+Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
+
+**Example**
+
+```gql
+type Article {
+  title: String!
+}
+
+type User {
+  articles: [Article]
+}
+```
+
+```ts
+objectType({
+  name: 'Article',
+  definition(t) {
+    t.model('Post').id()
+  },
+})
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.posts({ alias: 'articles', type: 'Article' })
+  },
+})
+```
+
+```prisma
+model User {
+  id    String @id @default(cuid())
+  posts Post[]
+}
+
+modle Post {
+  id String @id @default(cuid())
+}
+```
+
+### `ordering`
 
 Only available on `Query` crud for operations that return `List`s.
 
-Refer to [model options](/todo).
+### `pagination`
+
+### `filtering`
+
+Only available for list type model fields. Please refer to TODO for details.
+
+## GraphQL Schema Contributions
+
+### Lookup
+
+### Batch Filtering
+
+Applicable Operations
+
+...todo
+
+**Entrypoints**
+
+```gql
+query {
+  M_s(where: M_WhereInput, ...)
+}
+
+mutation {
+  updateMany_M(where: M_WhereInput, ...)
+  deleteMany_M(where: M_WhereInput, ...)
+}
+```
+
+**Types**
+
+```gql
+input M_WhereInput {
+  AND: [M_WhereInput!]
+  NOT: [M_WhereInput!]
+  OR: [M_WhereInput!]
+  MSF: S_Filter
+  MRF: RM_Filter
+}
+
+input RM_Filter {
+  every: RM_WhereInput # recurse pattern -> M_WhereInput
+  none: RM_WhereInput # recurse pattern -> M_WhereInput
+  some: RM_WhereInput # recurse pattern -> M_WhereInput
+}
+
+input M_Filter {
+  every: M_WhereInput
+  none: M_WhereInput
+  some: M_WhereInput
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+```
+
+### Batch Operations
+
+```gql
+type BatchPayload {
+  count: Int!
+}
+```
 
 ## Configuration
 
