@@ -19,3 +19,4 @@ jobs:
       - run:
           name: test
           command: yarn -s test
+nexus prisma
