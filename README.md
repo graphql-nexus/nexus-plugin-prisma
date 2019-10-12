@@ -1298,13 +1298,58 @@ modle Post {
 
 todo
 
+It is currently not possible to orderBy relations.
+
 **Applies To**
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
 
+**GraphQL Schema Contributions**
+
+```gql
+# t.crud.<BatchRead>
+M(orderBy: M_OrderByInput)
+
+# t.model.<List*>
+type M {
+  F(orderBy: M_OrderByInput)
+}
+
+input M_OrderByInput {
+  MSF: OrderByArg
+  # It is not possible to order by relations
+}
+
+enum OrderByArg { asc desc }
+```
+
 **Example**
 
 todo
+
+```gql
+query {
+  users(orderBy: { name: asc }) {
+    id
+    name
+  }
+}
+```
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.friends({ ordering: true })
+  },
+})
+
+queryType({
+  definition(t) {
+    t.crud.users({ ordering: true })
+  },
+})
+```
 
 <br>
 
@@ -1316,9 +1361,54 @@ todo
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
 
+**GraphQL Schema Contribuations**
+
+```gql
+# t.crud.<BatchRead>
+M(after: String, before: String, first: Int, last: Int, skip: Int)
+
+# t.model.<List*>
+type M {
+  F(after: String, before: String, first: Int, last: Int, skip: Int)
+}
+```
+
 **Example**
 
 todo
+
+```gql
+query batchRead {
+  users(skip: 50, first: 50) {
+    id
+    name
+  }
+}
+
+query batchReadRelation {
+  user(where: { id: 1643 }) {
+    posts(last: 10) {
+      title
+      body
+    }
+  }
+}
+```
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.friends({ pagination: true })
+  },
+})
+
+queryType({
+  definition(t) {
+    t.crud.users({ pagination: true })
+  },
+})
+```
 
 <br>
 
@@ -1337,6 +1427,52 @@ Refer to [Batch Filtering](#batch-filtering)
 **Example**
 
 todo
+
+```gql
+query {
+  users(where: {
+    AND: [
+      NOT: [
+        { a: { gt: 5 } }
+      ],
+      posts: {
+        every: {
+          publishedOn: {
+            gte: "2015-01-01T00:00:00"
+          }
+        },
+        none: {
+          comments: {
+            none: {
+              user: {
+                status: BANNED
+              }
+            }
+          }
+        }
+      }
+    ]
+  }) {
+    id
+    name
+  }
+}
+```
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.friends({ filtering: true })
+  },
+})
+
+queryType({
+  definition(t) {
+    t.crud.users({ filtering: true })
+  },
+})
+```
 
 <br>
 
@@ -1423,175 +1559,6 @@ type BatchPayload {
 ## Configuration
 
 TODO
-
-# Guide
-
-### Query
-
-When exposing read operations against a list of model (on `Query`) or publishing relational fields of a model (on an `Object`) you have several options to customize the generated GraphQL schema: `pagination`, `ordering`, `filtering`. For example:
-
-```ts
-// a User model's relational field published on a User Object
-objectType({
-  name: 'User',
-  definition(t) {
-    t.model.friends({ pagination: true, ordering: true, filtering: true })
-  },
-})
-```
-
-```ts
-// a read operation to get multiple users exposed on Query
-queryType({
-  definition(t) {
-    t.crud.users({ pagination: true, ordering: true, filtering: true })
-  },
-})
-```
-
-The ways that these options affect your GraphQL schema are explained below.
-
-#### Pagination
-
-`pagination` introduces:
-
-- 5 field args
-
-  ```gql
-  after: String
-  before: String
-  first: Int
-  last: Int
-  skip: Int
-  ```
-
-Example query:
-
-```gql
-query {
-  users(skip: 50, first: 50) {
-    id
-    name
-  }
-}
-```
-
-#### Ordering
-
-`ordering` introduces:
-
-- 1 field arg
-- 1 global `Enum`
-- 1 `InputObject` specialized to an Object
-
-Note it is currently not possible to orderBy relations.
-
-```gql
-orderBy: UserOrderBy # <field type>OrderBy
-
-input UserOrderBy {
-  # <User field name>: OrderByDir
-  a: OrderByDir
-  b: OrderByDir
-}
-
-enum OrderByDir { asc desc }
-```
-
-Example query:
-
-```gql
-query {
-  users(orderBy: { b: asc }) {
-    id
-    name
-  }
-}
-```
-
-#### Filtering
-
-`filtering` is the most complex of the three. It introduces:
-
-- 1 field arg
-- up to 1:1 InputObject per Scalar
-- up to 1:1 InputObject per Object
-
-The possibility for `InputObject per Object` comes from the relation filter aspect wherein: relation fields → filters → relation fields relational fields → filter → ... . There is the possibility for cycles in this graph too.
-
-```gql
-where: UserWhere # <field type>Where
-
-type UserWhere {
-  AND: [UserWhere!]!
-  OR: [UserWhere!]!
-  NOT: [UserWhere!]!
-  # assume user has these Scalar fields, to illustrate example
-  # <User field name>: <Scalar name>Filter
-  a: FloatFilter
-  b: StringFilter
-  c: BooleanFilter
-  #  ...
-  # assume user has these Object (aka. relation) fields, to illustrate example
-  # <User field name>: <Object name>Filter
-  posts: PostFilter
-  # ...
-}
-
-# Defined once for each Scalar filter
-# Foo is a Scalar name
-input FooFilter {
-  equals: Foo
-  gt: Foo
-  gte: Foo
-  in: [Foo!]
-  lt: Foo
-  lte: Foo
-  not: Foo
-  notIn: [Foo!]
-}
-
-# Defined once for each Object filter
-# Foo is an Object name
-input FooFilter {
-  every: FooWhere
-  some: FooWhere
-  none: FooWhere
-}
-```
-
-Example query:
-
-```gql
-query {
-  users(where: {
-    AND: [
-      NOT: [
-        { a: { gt: 5 } }
-      ],
-      posts: {
-        every: {
-          publishedOn: {
-            gte: "2015-01-01T00:00:00"
-          }
-        },
-        none: {
-          comments: {
-            none: {
-              user: {
-                status: BANNED
-              }
-            }
-          }
-        }
-      }
-    ]
-  }) {
-    id
-    name
-  }
-}
-```
 
 # Recipes
 
