@@ -506,7 +506,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 mutation {
@@ -667,7 +667,7 @@ The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 mutation {
@@ -734,7 +734,7 @@ Allow clients to update one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 mutation {
@@ -989,7 +989,7 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 mutation {
@@ -1019,7 +1019,7 @@ Allow clients to delete one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 mutation {
@@ -1124,7 +1124,7 @@ Allow clients to fetch multiple records at once of the respective Prisma model.
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 type Query {
@@ -1291,15 +1291,13 @@ modle Post {
 
 ### `ordering`
 
-todo
-
-It is currently not possible to orderBy relations.
+Allow clients to order the records in a list field. Records can be ordered by their scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
 
 **Applies To**
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
 
-**GraphQL Schema Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions)
 
 ```gql
 # t.crud.<BatchRead>
@@ -1551,9 +1549,13 @@ type BatchPayload {
 }
 ```
 
+<br>
+
 ## Configuration
 
 TODO
+
+<br>
 
 # Recipes
 
