@@ -368,17 +368,23 @@ model User {
 }
 ```
 
+<br>
+
 ### Scalar
 
 **Options**
 
 [`type`](#type) [`alias`](#alias)
 
+<br>
+
 ### Relation
 
 **Options**
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
+
+<br>
 
 ## `t.crud`
 
@@ -436,10 +442,10 @@ model User {
 
 <br>
 
-### Operation One-Create
+### Operation Create
 
 ```ts
-t.crud.createOne<ModelName>
+t.crud.createOne_M
 ```
 
 Allow clients to create one record at at time of the respective Prisma model.
@@ -455,8 +461,6 @@ Inlined creates are very similar to top-level ones but have the important differ
 **GraphQL Schema Contributions**
 
 ```gql
-#   M = model   S = scalar   F = field   R = relation
-
 mutation {
   createOne_M(data: M_CreateInput): M!
 }
@@ -601,13 +605,10 @@ model Post {
 
 <br>
 
-### Operation One-Read
+### Operation Read
 
-<!-- prettier-ignore -->
 ```ts
-(options: { type?: string, alias?: string }) => CRUD
-
-t.crud.<ModelName>
+t.crud.M
 ```
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
@@ -620,8 +621,6 @@ The ability for relation fields to be filtered ordered or paginted depends upon 
 **GraphQL Schema Contributions**
 
 ```gql
-#   M = model   S = scalar   F = field   R = relation
-
 mutation {
   M(where: M_WhereUniqueInput): M!
 }
@@ -674,13 +673,10 @@ model User {
 
 <br>
 
-### Operation One-Update
+### Operation Update
 
-<!-- prettier-ignore -->
 ```ts
-(options: { type?: string, alias?: string }) => CRUD
-
-t.crud.updateOne<ModelName>
+t.crud.updateOne_M
 ```
 
 Allow clients to update one particular record at a time of the respective Prisma model.
@@ -691,8 +687,6 @@ Allow clients to update one particular record at a time of the respective Prisma
 **GraphQL Schema Contributions**
 
 ```gql
-#   M = model   S = scalar   F = field   R = relation
-
 mutation {
   updateOne_M(data: M_UpdateInput!, where: M_WhereUniqueInput!): M
 }
@@ -933,13 +927,10 @@ model Post {
 
 <br>
 
-### Operation One-Upsert
+### Operation Upsert
 
-<!-- prettier-ignore -->
 ```ts
-(options: { type?: string, alias?: string }) => CRUD
-
-t.crud.upsertOne<ModelName>
+t.crud.upsertOne_M
 ```
 
 Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [one-create](#operation-one-create) and [one-update](#operation-one-update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of one-update, and `create` to that of `data` arg in one-create. Unlike one-update, one-upsert guarantees a return value.
@@ -950,8 +941,6 @@ Allow clients to update-or-create (aka. insert) one particular record at a time 
 **GraphQL Schema Contributions**
 
 ```gql
-#   M = model   S = scalar   F = field   R = relation
-
 mutation {
   upsertOne_M(
     create: M_CreateInput!      # like createOne(data ...)
@@ -967,13 +956,10 @@ Refer to [one-update](#operation-one-update) and [one-create](#operation-one-cre
 
 <br>
 
-### Operation One-Delete
+### Operation Delete
 
-<!-- prettier-ignore -->
 ```ts
-(options: { type?: string, alias?: string }) => CRUD
-
-t.crud.deleteOne<ModelName>
+t.crud.deleteOne_M
 ```
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
@@ -984,8 +970,6 @@ Allow clients to delete one particular record at a time of the respective Prisma
 **GraphQL Schema Contributions**
 
 ```gql
-#   M = model   S = scalar   F = field   R = relation
-
 mutation {
   deleteOne_M(where: M_WhereUniqueInput): M
 }
@@ -1074,10 +1058,12 @@ model Post {
 }
 ```
 
-### Operation Batch-Read
+<br>
+
+### Operation Batch Read
 
 ```ts
-t.crud.<ModelName>s
+t.crud._M_s
 ```
 
 Allow clients to fetch multiple records at once of the respective Prisma model.
@@ -1137,7 +1123,13 @@ model Post {
 }
 ```
 
-### Operation Batch-Update
+<br>
+
+### Operation Batch Update
+
+```ts
+t.crud.updateMany_M
+```
 
 TODO
 
@@ -1145,13 +1137,21 @@ TODO
 
 [`type`](#type) [`alias`](#alias)
 
-### Operation Batch-Delete
+<br>
+
+### Operation Batch Delete
+
+```ts
+t.crud.deleteMany_M
+```
 
 TODO
 
 **Options**
 
 [`type`](#type) [`alias`](#alias)
+
+<br>
 
 ## Options
 
@@ -1232,6 +1232,10 @@ Only available on `Query` crud for operations that return `List`s.
 Only available for list type model fields. Please refer to TODO for details.
 
 ## GraphQL Schema Contributions
+
+```
+M = model   S = scalar   F = field   R = relation
+```
 
 ### Lookup
 
