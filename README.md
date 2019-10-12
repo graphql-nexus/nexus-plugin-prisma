@@ -492,7 +492,7 @@ model User {
 
 ### Create
 
-```ts
+```
 t.crud.createOne<M>
 ```
 
@@ -655,7 +655,7 @@ model Post {
 
 ### Read
 
-```ts
+```
 t.crud.<M>
 ```
 
@@ -724,7 +724,7 @@ model User {
 
 ### Update
 
-```ts
+```
 t.crud.updateOne<M>
 ```
 
@@ -979,7 +979,7 @@ model Post {
 
 ### Upsert
 
-```ts
+```
 t.crud.upsertOne<M>
 ```
 
@@ -1009,7 +1009,7 @@ Refer to [update](#update) and [create](#create).
 
 ### Delete
 
-```ts
+```
 t.crud.deleteOne<M>
 ```
 
@@ -1114,7 +1114,7 @@ model Post {
 
 ### Batch Read
 
-```ts
+```
 t.crud.<M Pluralized>
 ```
 
@@ -1179,7 +1179,7 @@ model Post {
 
 ### Batch Update
 
-```ts
+```
 t.crud.updateMany<M>
 ```
 
@@ -1193,7 +1193,7 @@ TODO
 
 ### Batch Delete
 
-```ts
+```
 t.crud.deleteMany<M>
 ```
 
