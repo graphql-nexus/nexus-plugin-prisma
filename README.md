@@ -743,58 +743,58 @@ Allow clients to update one particular record at a time of the respective Prisma
 
 ```gql
 mutation {
-  updateOne_M(data: M_UpdateInput!, where: M_WhereUniqueInput!): M
+  updateOne<M>(data: <M>UpdateInput!, where: <M>WhereUniqueInput!): <M>
 }
 
-input M_WhereUniqueInput {
-  MF@unique: S
+input TEST<M>WhereUniqueInput {
+  <MF@unique>: <S>
 }
 
-input M_UpdateInput {
-  MSF: S
-  MRF: RM_UpdateManyWithout_M_Input
+input <M>UpdateInput {
+  <MSF>: <S>
+  <MRF>: <RM>UpdateManyWithout<M>Input
 }
 
-input RM_UpdateManyWithout_M_Input {
-  connect: [RM_WhereUniqueInput!]
-  create: [RM_CreateWithout_M_Input!]
-  delete: [RM_WhereUniqueInput!]
-  deleteMany: [RM_ScalarWhereInput!]
-  disconnect: [RM_WhereUniqueInput!]
-  set: [RM_WhereUniqueInput!]
-  update: [RM_UpdateWithWhereUniqueWithout_M_Input!]
-  updateMany: [RM_UpdateManyWithWhereNestedInput!]
-  upsert: [RM_UpsertWithWhereUniqueWithout_M_Input!]
+input <RM>UpdateManyWithout<M>Input {
+  connect: [<RM>WhereUniqueInput!]
+  create: [<RM>CreateWithout<M>Input!]
+  delete: [<RM>WhereUniqueInput!]
+  deleteMany: [<RM>ScalarWhereInput!]
+  disconnect: [<RM>WhereUniqueInput!]
+  set: [<RM>WhereUniqueInput!]
+  update: [<RM>UpdateWithWhereUniqueWithout<M>Input!]
+  updateMany: [<RM>UpdateManyWithWhereNestedInput!]
+  upsert: [<RM>UpsertWithWhereUniqueWithout<M>Input!]
 }
 
-input RM_WhereUniqueInput # pattern like M_WhereUniqueInput
+input <RM>WhereUniqueInput # pattern like <M>WhereUniqueInput
 
-input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
+input <RM>CreateWithout<M>Input = <RM>CreateInput - <RMRF>: <M>
 
-input RM_ScalarWhereInput {
-  AND: [RM_ScalarWhereInput!]
-  NOT: [RM_ScalarWhereInput!]
-  OR: [RM_ScalarWhereInput!]
-  RMSF: S_Filter # StringFilter | IntFilter | ... TODO
+input <RM>ScalarWhereInput {
+  AND: [<RM>ScalarWhereInput!]
+  NOT: [<RM>ScalarWhereInput!]
+  OR: [<RM>ScalarWhereInput!]
+  <RMSF>: <S>Filter # StringFilter | IntFilter | ... TODO
 }
 
-input RM_UpdateWithWhereUniqueWithout_M_Input {
-  data: RM_UpdateWithout_M_DataInput!
-  where: RM_WhereUniqueInput!
+input <RM>UpdateWithWhereUniqueWithout<M>Input {
+  data: <RM>UpdateWithout<M>DataInput!
+  where: <RM>WhereUniqueInput!
 }
-input RM_UpdateWithout_M_DataInput {
-  RMSF: S
-}
-
-input RM_UpdateManyWithWhereNestedInput {
-  data: RM_UpdateManyDataInput!
-  where: RM_ScalarWhereInput!
+input <RM>UpdateWithout<M>DataInput {
+  <RMSF>: <S>
 }
 
-input RM_UpsertWithWhereUniqueWithout_M_Input {
-  create: RM_CreateWithout_M_Input!
-  update: RM_UpdateWithout_M_DataInput!
-  where: RM_WhereUniqueInput!
+input <RM>UpdateManyWithWhereNestedInput {
+  data: <RM>UpdateManyDataInput!
+  where: <RM>ScalarWhereInput!
+}
+
+input <RM>UpsertWithWhereUniqueWithout<M>Input {
+  create: <RM>CreateWithout<M>Input!
+  update: <RM>UpdateWithout<M>DataInput!
+  where: <RM>WhereUniqueInput!
 }
 
 TODO StringFilter ...
