@@ -519,8 +519,8 @@ mutation {
 }
 
 input M_CreateInput {
-  MSF: S                       # ! if not ? or @default
-  MRF: RM_CreateManyWithout_M  # ! if not ? or @default
+  MSF: S                       # ! <-- if not ? or @default
+  MRF: RM_CreateManyWithout_M  # ! <-- if not ? or @default
 }
 
 input RM_CreateManyWithout_M {
@@ -666,7 +666,7 @@ t.crud.M
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
-The ability for relation fields to be filtered ordered or paginted depends upon if those features have been enabled for those `Object`s [via `t.model`](/TODO).
+The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or [paginted](#pagination) depends upon if those features have been enabled for those `Object`s via [`t.model`](#list-field).
 
 **Options**
 
@@ -1120,7 +1120,7 @@ model Post {
 ### Batch Read
 
 ```ts
-t.crud._M_s
+t.crud.M_s
 ```
 
 Allow clients to fetch multiple records at once of the respective Prisma model.
@@ -1216,28 +1216,42 @@ TODO
 
 Use `alias` to change the name of the field projected onto the `Object`.
 
+**Applies To**
+
+`t.model.<*>` `t.crud.<*>`
+
 **Example**
 
 ```gql
-type User {
-  handle: String
+type Post {
+  content: String!
 }
 ```
 
 ```ts
 objectType({
-  name: 'User',
+  name: 'Post',
   definition(t) {
-    t.model.name({ alias: 'handle' })
+    t.model.body({ alias: 'content' })
   },
 })
 ```
 
+```prisma
+model Post  {
+  body String
+}
+```
+
+<br>
+
 ### `type`
 
-This option is only available for relational fields.
-
 Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
+
+**Applies To**
+
+`t.crud.<*>` [`t.model.<Relation>`](#relation-field) [`t.model.<ListRelation>`](#list-field)
 
 **Example**
 
@@ -1278,29 +1292,63 @@ modle Post {
 }
 ```
 
+<br>
+
 ### `ordering`
 
-Only available on `Query` crud for operations that return `List`s.
+todo
+
+**Applies To**
+
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+
+**Example**
+
+todo
+
+<br>
 
 ### `pagination`
 
+todo
+
+**Applies To**
+
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+
+**Example**
+
+todo
+
+<br>
+
 ### `filtering`
 
-Only available for list type model fields. Please refer to TODO for details.
+todo
+
+**Applies To**
+
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+
+**GraphQL Contributions**
+
+Refer to [Batch Filtering](#batch-filtering)
+
+**Example**
+
+todo
+
+<br>
 
 ## GraphQL Schema Contributions
 
 ```
-M = model   S = scalar   F = field   R = relation
+M = model   F = field   S = scalar   E = enum   R = relation  V = value
 ```
 
 ### Lookup
 
 ### Batch Filtering
-
-Applicable Operations
-
-...todo
 
 **Entrypoints**
 
