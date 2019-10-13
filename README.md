@@ -569,8 +569,6 @@ input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
 
 **Example**
 
-Client Mutations
-
 ```gql
 mutation simple {
   createOneUser(data: { email: "newton@prisma.io" }) {
@@ -600,8 +598,6 @@ mutation createRelation {
   }
 }
 ```
-
-GraphQL Schema (generated)
 
 ```gql
 type Mutation {
@@ -642,8 +638,6 @@ input UserCreateInput {
 }
 ```
 
-Your Nexus Type Defs
-
 ```ts
 mutationType({
   definition(t) {
@@ -670,8 +664,6 @@ objectType({
   },
 })
 ```
-
-Your Prisma Schema
 
 ```prisma
 model User {
