@@ -16,9 +16,12 @@
 - [Example](#example)
 - [API Reference](#api-reference)
   - [`t.model`](#tmodel)
-    - [Scalar & Enum Field](#scalar--enum-field)
-    - [Relation Field](#relation-field)
-    - [List Field](#list-field)
+    - [Enum](#enum)
+    - [Scalar](#scalar)
+    - [Relation](#relation)
+    - [List Enum](#list-enum)
+    - [List Scalar](#list-scalar)
+    - [List Relation](#list-relation)
   - [`t.crud`](#tcrud)
     - [Create](#create)
     - [Read](#read)
@@ -366,9 +369,27 @@ model User {
 
 <br>
 
-### Scalar & Enum Field
+### Enum
 
-Custom scalars and Enums will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
+Custom scalars and Enums will be automatically published when encountered.
+
+```gql
+type M {
+  MEF: E # ! <-- if not ?
+}
+
+enum E {
+  EV
+}
+```
+
+**Options**
+
+N/A
+
+### Scalar
+
+Custom scalars will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
 
 **GraphQL Contributions**
 
@@ -379,16 +400,11 @@ type M {
 
 # if custom scalar(s) encountered
 scalar S
-
-# if enum(s) encountered
-enum E {
-  EV
-}
 ```
 
 **Options**
 
-[`type`](#type) [`alias`](#alias)
+[`alias`](#alias)
 
 **Example**
 
@@ -433,15 +449,31 @@ enum PostStatus {
 
 <br>
 
-### Relation Field
+### Relation
 
 Works like scalar projecting except that the relation is not auto-projected.
 
+**Options**
+
+[`type`](#type) [`alias`](#alias)
+
 <br>
 
-### List Field
+### List Enum
 
-Works according to the projecting rules of its member type but also supports options for list handling.
+Works according to the projecting rules of [enums](#enum). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/466)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/468)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/467)) enum lists.
+
+<br>
+
+### List Scalar
+
+Works according to the projecting rules of [scalars](#scalar). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/470)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/471)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/469)) scalar lists.
+
+<br>
+
+### List Relation
+
+Works according to the projecting rules of [relations](#relation) but also supports options for list handling.
 
 **Options**
 
@@ -500,7 +532,7 @@ Allow clients to create one record at at time of the respective Prisma model.
 
 Relation fields may be connected with an existing record or a sub-create may be inlined (generally referred to as _nested mutations_). If the relation is a `List` then multiple connections or sub-creates are permitted.
 
-Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces the record being created to relate to the record being created at the top-level.
+Inlined creates are very similar to top-level ones but have the important difference that the sub-create has excluded the field where supplying its relation to the type of parent `Object` being created would _normally be_. This is because a sub-create forces its record to relate to the parent one.
 
 **Underlying Photon Function**
 
@@ -1209,7 +1241,7 @@ model Post {
 t.crud.updateMany<M>
 ```
 
-TODO
+Allow clients to update multiple records of the respective Prisma model at once. Clients get back a `BatchPayload` object letting them know the number of affected records, but not access to the fields of affected records.
 
 **Underlying Photon Function**
 
@@ -1227,7 +1259,7 @@ TODO
 t.crud.deleteMany<M>
 ```
 
-Allow clients to delete multiple records of a given model at once. Clients get back a `BatchPayload` object letting them know the number of affected records. Clients cannot cannot select fields from the records.
+Allow clients to delete multiple records of the respective Prisma model at once. Clients get back a `BatchPayload` object letting them know the number of affected records, but not access to the fields of affected records.
 
 **Underlying Photon Function**
 
@@ -1243,7 +1275,7 @@ Allow clients to delete multiple records of a given model at once. Clients get b
 
 ### `alias`
 
-Use `alias` to change the name of the field projected onto the `Object`.
+Use `alias` to change the name of the field projected onto the GraphQL `Object`.
 
 **Applies To**
 
@@ -1325,11 +1357,19 @@ modle Post {
 
 ### `ordering`
 
-Allow clients to order the records in a list field. Records can be ordered by their scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
+```ts
+type Ordering = true | false | Whitelist
+```
+
+Allow clients to order the records in a list field. Records can be ordered by their projected scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
+
+- `false` (default) Disable ordering
+- `true` Enable ordering and project all scalar fields
+- `Whitelist` (`Record<string, true>`) Enable ordering and project Prisma model fields appearing in the given whitelist.
 
 **Applies To**
 
-[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
 
 **GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
@@ -1339,7 +1379,7 @@ M(orderBy: M_OrderByInput)
 
 # t.model.<List*>
 type M {
-  F(orderBy: M_OrderByInput)
+  MF(orderBy: M_OrderByInput)
 }
 
 input M_OrderByInput {
@@ -1352,30 +1392,100 @@ enum OrderByArg { asc desc }
 
 **Example**
 
-todo
-
 ```gql
-query {
+query entrypointOrdering {
   users(orderBy: { name: asc }) {
     id
     name
   }
 }
+
+query relationOrdering {
+  user(where: { id: 1643 }) {
+    posts(orderBy: { title: dsc }) {
+      title
+      body
+    }
+  }
+}
+```
+
+```gql
+type Query {
+  user(where: UserWhereUniqueInput!): User
+  users(orderBy: UserOrderByInput): [User!]!
+}
+
+type Post {
+  body: String!
+  id: Int!
+  title: String!
+}
+
+type User {
+  id: Int!
+  name: String!
+  posts(orderBy: UserPostsOrderByInput): [Post!]!
+}
+
+input UserOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+}
+
+input UserPostsOrderByInput {
+  title: OrderByArg
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+
+enum OrderByArg {
+  asc
+  desc
+}
 ```
 
 ```ts
 objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.body()
+  },
+})
+
+objectType({
   name: 'User',
   definition(t) {
-    t.model.friends({ ordering: true })
+    t.model.id()
+    t.model.name()
+    t.model.posts({ ordering: { title: true } })
   },
 })
 
 queryType({
   definition(t) {
+    t.crud.user()
     t.crud.users({ ordering: true })
   },
 })
+```
+
+```prisma
+model User {
+  id    Int @id
+  name  String
+  posts Post[]
+}
+
+model Post {
+  id    Int @id
+  title String
+  body  String
+}
 ```
 
 <br>
@@ -1386,7 +1496,7 @@ todo
 
 **Applies To**
 
-[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
 
 **GraphQL Schema Contribuations**
 
@@ -1445,7 +1555,7 @@ todo
 
 **Applies To**
 
-[`t.crud.<BatchRead>`](#batch-read) [`t.model.<List*>`](list-field)
+[`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
 
 **GraphQL Contributions**
 
