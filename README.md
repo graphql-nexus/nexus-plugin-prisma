@@ -384,7 +384,7 @@ _Member Customization_
 
 You can customize the projected enum members by defining the enum yourself in Nexus. `nexus-prisma` will treat the name collision as an intent to override and so disable auto-projection.
 
-_Optionless_
+_Option Notes_
 
 Currently they cannot be [aliased](#alias) ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)). They also cannot be [type mapped](#type) since enum types cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473)).
 
@@ -462,9 +462,29 @@ enum Role {
 
 ### Scalar
 
-Custom scalars will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
+_Scalar Mapping_
 
-TODO show scalar mapping between Prisma and GraphQL
+[Prisma scalars](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#scalar-types) map to [GraphQL scalars](https://graphql.org/learn/schema/#scalar-types) as follows:
+
+```
+Prisma       GraphQL
+------       -------
+Boolean   <>  Boolean
+String    <>  String
+Int       <>  Int
+Float     <>  Float
+cuid()    <>  ID
+DateTime  <>  DateTime (custom scalar)
+uuid()    <>  UUID (custom scalar)
+```
+
+_Auto-Projection_
+
+When a Prisma scalar is encountered that does not map to the standard GraphQL scalar types, it will be automatically projected (custom scalar added to the GraphQL schema). Examples include `DateTime` and `UUID`.
+
+_Option Notes_
+
+It is not possible to use [`type`](#type) because there is currently no way for a Prisma scalar to map to a differntly named GraphQL scalar.
 
 **GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
@@ -485,16 +505,13 @@ scalar S # if not matching a standard GQL scalar
 ```gql
 type Post {
   id: Int!
+  email: String!
   scheduledPublish: DateTime
-  status: PostStatus!
+  rating: Float!
+  active: Boolean!
 }
 
 scalar DateTime
-
-enum PostStatus {
-  DRAFT
-  PUBLISHED
-}
 ```
 
 ```ts
@@ -502,7 +519,10 @@ objectType({
   name: 'User',
   definition(t) {
     t.model.id()
-    t.
+    t.model.email()
+    t.model.scheduledPublish()
+    t.model.rating()
+    t.model.active()
   },
 })
 ```
@@ -511,13 +531,10 @@ objectType({
 
 model User {
   id               String     @id @default(cuid())
+  email            String
   scheduledPublish DateTime?
-  status           PostStatus @default(DRAFT)
-}
-
-enum PostStatus {
-  DRAFT
-  PUBLISHED
+  rating           Float
+  active           Boolean
 }
 ```
 
