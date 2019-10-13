@@ -16,7 +16,7 @@
 - [Example](#example)
 - [API Reference](#api-reference)
   - [`t.model`](#tmodel)
-    - [Type Mapping](#type-mapping)
+    - [Model-Object Mapping](#model-object-mapping)
     - [Enum](#enum)
     - [Scalar](#scalar)
     - [Relation](#relation)
@@ -334,7 +334,7 @@ Only available within [`Nexus.objectType`](https://nexus.js.org/docs/api-objectt
 
 <br>
 
-### Type Mapping
+### Model-Object Mapping
 
 `t.model` will either have field projectors for the Prisma model whose name matches that of the GraphQL `Object`, or if the GraphQL `Object` is of a name that does not match any of your Prisma models then `t.model` becomes a function allowing you to specify the mapping, after which the field projectors become available.
 
