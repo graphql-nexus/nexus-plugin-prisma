@@ -5,7 +5,7 @@
 
 [![CircleCI](https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg)](https://circleci.com/gh/prisma-labs/nexus-prisma)
 
-`nexus-prisma` is a plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to expose Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
+`nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
 
 ### Contents <!-- omit in toc -->
 
@@ -16,6 +16,7 @@
 - [Example](#example)
 - [API Reference](#api-reference)
   - [`t.model`](#tmodel)
+    - [Type Mapping](#type-mapping)
     - [Enum](#enum)
     - [Scalar](#scalar)
     - [Relation](#relation)
@@ -329,9 +330,13 @@ You can find a runnable version of this and other examples at [prisma-labs/nexus
 
 Only available within [`Nexus.objectType`](https://nexus.js.org/docs/api-objecttype) definitions.
 
-`t.model` contains configurable _field projectors_ that you use for projecting fields of your [Prisma models](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#models) onto your [GraphQL Objects](https://graphql.github.io/graphql-spec/June2018/#sec-Objects).
+`t.model` contains configurable _field projectors_ that you use for projecting fields of your [Prisma models](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#models) onto your [GraphQL Objects](https://graphql.github.io/graphql-spec/June2018/#sec-Objects). The precise behaviour of field projectors vary by the Prisma type being projected. Refer to the respective sub-sections for details.
 
-`t.model` will either have field projectors for the Prisma model whose name matches that of the GraphQL `Object`, or if the GraphQL `Object` is of a name that does not match any of your Prisma models then `t.model` becomes a function allowing you to specify the mapping, after which the Field Projectors become available.
+<br>
+
+### Type Mapping
+
+`t.model` will either have field projectors for the Prisma model whose name matches that of the GraphQL `Object`, or if the GraphQL `Object` is of a name that does not match any of your Prisma models then `t.model` becomes a function allowing you to specify the mapping, after which the field projectors become available.
 
 **Example**
 
@@ -371,7 +376,23 @@ model User {
 
 ### Enum
 
-Enums will be automatically published when encountered. They cannot be aliased ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)) or type mapped (because enum naming cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473))).
+_Auto-Projection_
+
+When a Prisma enum field is projected, the coressponding enum type will be automatically projected too (added to the GraphQL schema).
+
+_Member Customization_
+
+You can customize the projected enum members by defining the enum yourself in Nexus. `nexus-prisma` will treat the name collision as an intent to override and so disable auto-projection.
+
+_Optionless_
+
+Currently they cannot be [aliased](#alias) ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)). They also cannot be [type mapped](#type) since enum types cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473)).
+
+**Options**
+
+N/A
+
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -383,9 +404,59 @@ enum E {
 }
 ```
 
-**Options**
+**Example**
 
-N/A
+```gql
+enum Mood {
+  HAPPY
+  SAD
+  CONFUSED
+}
+
+enum Role {
+  AUTHOR
+  EDITOR
+}
+
+type User {
+  role: Role
+  mood: Mood
+}
+```
+
+```ts
+enumType({
+  name: 'Role',
+  members: ['MEMBER', 'EDITOR'],
+})
+
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.role()
+    t.model.mood()
+  },
+})
+```
+
+```prisma
+model User {
+  role Role
+  mood Mood
+}
+
+enum Mood {
+  HAPPY
+  SAD
+  COMFUSED
+}
+
+enum Role {
+  MEMBER
+  EDITOR
+  ADMIN
+}
+```
 
 <br>
 
@@ -395,7 +466,7 @@ Custom scalars will be automatically published when encountered. Prisma `@defaul
 
 TODO show scalar mapping between Prisma and GraphQL
 
-**GraphQL Contributions**
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
