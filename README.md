@@ -371,7 +371,7 @@ model User {
 
 ### Enum
 
-Custom scalars and Enums will be automatically published when encountered.
+Enums will be automatically published when encountered. They cannot be aliased ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)) or type mapped (because enum naming cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473))).
 
 ```gql
 type M {
@@ -391,6 +391,8 @@ N/A
 
 Custom scalars will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
 
+TODO show scalar mapping between Prisma and GraphQL
+
 **GraphQL Contributions**
 
 ```gql
@@ -398,8 +400,7 @@ type M {
   MSF: S # ! <-- if not ?
 }
 
-# if custom scalar(s) encountered
-scalar S
+scalar S # if not matching a standard GQL scalar
 ```
 
 **Options**
@@ -1279,7 +1280,7 @@ Use `alias` to change the name of the field projected onto the GraphQL `Object`.
 
 **Applies To**
 
-`t.model.<*>` `t.crud.<*>`
+`t.crud.<*>` `t.model.<* - enum | list enum>`
 
 **Example**
 
