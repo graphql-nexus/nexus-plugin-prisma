@@ -387,6 +387,8 @@ enum E {
 
 N/A
 
+<br>
+
 ### Scalar
 
 Custom scalars will be automatically published when encountered. Prisma `@default(cuid())` attribute will be mapped to the GraphQL ID type.
