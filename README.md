@@ -1710,13 +1710,13 @@ Ms(
   # The last object for the list (typically ID or other unique value)
   before: String
 
-  # How many elements, forwards from head
+  # How many elements, forwards from `after` otherwise head
   first: Int
 
-  # How many elements, backwards from tail
+  # How many elements, backwards from `before` otherwise tail
   last: Int
 
-  # Skip how many elements from result set, starting from head
+  # The offset, if `first` used then forwards from `after` (otherwise head), if `last` used then backwrads from `before` (otherwie tail)
   skip: Int
 )
 
