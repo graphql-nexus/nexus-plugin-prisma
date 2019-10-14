@@ -1693,6 +1693,8 @@ undefined | true | false
 
 **About**
 
+Powered by [Photon pagination](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#findmany).
+
 - `undefined` (default) Like `true`
 - `true` Enable pagination
 - `false` Disable paginaton
@@ -1701,11 +1703,26 @@ undefined | true | false
 
 ```gql
 # t.crud.<BatchRead>
-M(after: String, before: String, first: Int, last: Int, skip: Int)
+Ms(
+  "The starting object for the list (typically ID or other unique value)."
+  after: String
+
+  "The last object for the list (typically ID or other unique value)"
+  before: String
+
+  "How many elements, forwards from head"
+  first: Int
+
+  "How many elements, backwards from tail"
+  last: Int
+
+  "Skip how many elements from result set, starting from head"
+  skip: Int
+)
 
 # t.model.<ListRelation>
 type M {
-  F(after: String, before: String, first: Int, last: Int, skip: Int)
+  RF(after: String, before: String, first: Int, last: Int, skip: Int)
 }
 ```
 
@@ -1754,11 +1771,15 @@ queryType({
 true | false | Whitelist
 ```
 
-todo
+Powered by [Photon filtering](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#filtering).
 
 **Applies To**
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
+
+**About**
+
+https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#filtering
 
 **GraphQL Contributions**
 
