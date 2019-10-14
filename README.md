@@ -40,9 +40,7 @@
     - [`filtering`](#filtering)
   - [GraphQL Schema Contributions](#graphql-schema-contributions)
     - [How to Read](#how-to-read)
-    - [Lookup](#lookup)
-    - [Batch Filtering](#batch-filtering)
-    - [Batch Operations](#batch-operations)
+    - [Filtering](#filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
   - [Configuration](#configuration)
@@ -395,7 +393,7 @@ Currently Prisma enums cannot be [aliased](#alias) ([issue](https://github.com/p
 
 n/a
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -490,7 +488,7 @@ _Option Notes_
 
 It is not possible to use [`type`](#type) because there is currently no way for a Prisma scalar to map to a differntly named GraphQL scalar.
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -552,7 +550,7 @@ Projecting relational fields only affects the current GraphQL object being defin
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -594,7 +592,7 @@ model Post {
 
 Like [enums](#enum). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/466)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/468)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/467)) enum lists.
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -613,7 +611,7 @@ enum E {
 
 Like [scalars](#scalar). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/470)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/471)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/469)) scalar lists.
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -631,7 +629,7 @@ Like [relations](#relation) but also supports batch related options.
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type M {
@@ -702,7 +700,7 @@ Inlined creates are very similar to top-level ones but have the important differ
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -859,7 +857,7 @@ The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -930,7 +928,7 @@ Allow clients to update one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -1189,7 +1187,7 @@ Allow clients to update or create (aka. insert) one particular record at a time 
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -1223,7 +1221,7 @@ Allow clients to delete one particular record at a time of the respective Prisma
 
 [`type`](#type) [`alias`](#alias)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 mutation {
@@ -1332,7 +1330,7 @@ Allow clients to fetch multiple records at once of the respective Prisma model.
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 type Query {
@@ -1401,6 +1399,20 @@ Allow clients to update multiple records of the respective Prisma model at once.
 
 [`type`](#type) [`alias`](#alias)
 
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
+
+```gql
+mutation {
+  updateMany_M(where: M_WhereInput): BatchPayload!
+}
+
+type BatchPayload {
+  count: Int!
+}
+```
+
+`M_WhereInput` is a [filtering contribution](#batch-filtering).
+
 **Example**
 
 TODO
@@ -1424,6 +1436,20 @@ Allow clients to delete multiple records of the respective Prisma model at once.
 **Options**
 
 [`type`](#type) [`alias`](#alias)
+
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
+
+```gql
+mutation {
+  deleteMany_M(where: M_WhereInput): BatchPayload!
+}
+
+type BatchPayload {
+  count: Int!
+}
+```
+
+`M_WhereInput` is a [filtering contribution](#batch-filtering).
 
 **Example**
 
@@ -1450,7 +1476,7 @@ undefined | String
 - `undefined` (default) By default Prisma model fields project onto GraphQL object fields of the same name.
 - `string` Change which GraphQL object field the Prisma model field projects onto.
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 n/a
 
@@ -1495,7 +1521,7 @@ undefined | String
 
 - `string` Point Prisma field to the given GraphQL object. This option can become necessary when you've have done [model-object mapping](#model-object-mapping) and other Prisma models in your schema have relations to the name-mapped Prisma model. We are interested in devloping further the model-object mapping API so that it automates this better ([issue](https://github.com/prisma-labs/nexus-prisma/issues/461)).
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 n/a
 
@@ -1559,7 +1585,7 @@ Allow clients to order the records in a list field. Records can be ordered by th
 - `true` Enable ordering by all scalar fields
 - `Whitelist` (`Record<string, true>`) Enable ordering by just scalar fields appearing in the given whitelist.
 
-**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
 ```gql
 # t.crud.<BatchRead>
@@ -1693,8 +1719,6 @@ undefined | true | false
 
 **About**
 
-Powered by [Photon pagination](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#findmany).
-
 - `undefined` (default) Like `true`
 - `true` Enable pagination
 - `false` Disable paginaton
@@ -1770,10 +1794,8 @@ queryType({
 ### `filtering`
 
 ```
-true | false | Whitelist
+undefined | true | false | Whitelist
 ```
-
-Powered by [Photon filtering](https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#filtering).
 
 **Applies To**
 
@@ -1781,33 +1803,32 @@ Powered by [Photon filtering](https://github.com/prisma/prisma2/blob/master/docs
 
 **About**
 
-https://github.com/prisma/prisma2/blob/master/docs/photon/api.md#filtering
+- `undefined` (default) Like `false`
+- `true` Enable filtering for all scalar fields
+- `false` Disable filtering
+- `Whitelist` (`Record<string, true>`) Enable ordering by just the scalar fields appearing in the given whitelist.
 
-**GraphQL Contributions**
+**GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
-Refer to [Batch Filtering](#batch-filtering)
+[Batch Filtering](#batch-filtering)
 
 **Example**
 
-todo
-
 ```gql
-query {
+query batchReadFilter {
   users(where: {
-    AND: [
-      NOT: [
-        { a: { gt: 5 } }
-      ],
+    OR: [
+      { age: { gt: 30 } },
       posts: {
         every: {
-          publishedOn: {
-            gte: "2015-01-01T00:00:00"
+          rating: {
+            lte: "0.5"
           }
         },
         none: {
           comments: {
             none: {
-              user: {
+              author: {
                 status: BANNED
               }
             }
@@ -1820,21 +1841,200 @@ query {
     name
   }
 }
+
+query batchReadRelationFilter {
+  users {
+    posts(where: { rating: { gte: 0.9 }}) {
+      comments {
+        content
+      }
+    }
+  }
+}
+```
+
+```gql
+type Comment {
+  author: User!
+  post: Post!
+}
+
+input CommentFilter {
+  every: CommentWhereInput
+  none: CommentWhereInput
+  some: CommentWhereInput
+}
+
+input CommentWhereInput {
+  AND: [CommentWhereInput!]
+  author: UserWhereInput
+  content: StringFilter
+  id: StringFilter
+  NOT: [CommentWhereInput!]
+  OR: [CommentWhereInput!]
+  post: PostWhereInput
+}
+
+input FloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: Float
+  notIn: [Float!]
+}
+
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
+type Post {
+  author: User!
+  comments(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+  ): [Comment!]!
+  rating: Float!
+}
+
+input PostFilter {
+  every: PostWhereInput
+  none: PostWhereInput
+  some: PostWhereInput
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  author: UserWhereInput
+  comments: CommentFilter
+  id: StringFilter
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  rating: FloatFilter
+}
+
+type Query {
+  user(where: UserWhereUniqueInput!): User
+  users(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+    where: UserWhereInput
+  ): [User!]!
+}
+
+input StringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
+type User {
+  age: Int!
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+input UserWhereInput {
+  age: IntFilter
+  AND: [UserWhereInput!]
+  comments: CommentFilter
+  id: StringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
+  status: UserStatus
+}
+
+input UserWhereUniqueInput {
+  id: ID
+}
 ```
 
 ```ts
 objectType({
   name: 'User',
   definition(t) {
-    t.model.friends({ filtering: true })
+    t.model.age()
+  },
+})
+
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.author()
+    t.model.rating()
+    t.model.comments()
+  },
+})
+
+objectType({
+  name: 'Comment',
+  definition(t) {
+    t.model.author()
+    t.model.post()
   },
 })
 
 queryType({
   definition(t) {
     t.crud.users({ filtering: true })
+    t.crud.user()
   },
 })
+```
+
+```prisma
+model User {
+  id     String     @id @unique @default(cuid())
+  posts  Post[]
+  age    Int
+  status UserStatus
+}
+
+model Post {
+  id       String    @id @unique @default(cuid())
+  author   User
+  comments Comment[]
+  rating   Float
+}
+
+model Comment {
+  id      String @id @unique @default(cuid())
+  author  User
+  post    Post
+  content String
+}
+
+enum UserStatus {
+  BANNED
+  ACTIVE
+}
 ```
 
 <br>
@@ -1847,22 +2047,24 @@ queryType({
 M = model   F = field   L = list   S = scalar   E = enum   R = relation  V = value
 ```
 
-todo
+### Filtering
 
-### Lookup
-
-### Batch Filtering
-
-**Entrypoints**
+**Scenarios**
 
 ```gql
 query {
+  # When filtering option is enabled
   Ms(where: M_WhereInput, ...)
 }
 
+type M {
+  # When filtering option is enabled
+  MRF: RM(where: RM_WhereInput)
+}
+
 mutation {
-  updateMany_M(where: M_WhereInput, ...)
-  deleteMany_M(where: M_WhereInput, ...)
+  updateMany_M(where: M_WhereInput)
+  deleteMany_M(where: M_WhereInput)
 }
 ```
 
@@ -1912,14 +2114,6 @@ input StringFilter {
   not: String
   notIn: [String!]
   startsWith: String
-}
-```
-
-### Batch Operations
-
-```gql
-type BatchPayload {
-  count: Int!
 }
 ```
 
