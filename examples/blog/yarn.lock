@@ -2425,7 +2425,7 @@ prisma-datamodel@^1.36.0-test.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-alpha.236:
+prisma2@^2.0.0-preview014:
   version "2.0.0-preview014"
   resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview014.tgz#4ab92914112bb77e4a07c7c44d33e23dac98a8af"
   integrity sha512-3VTaU83AgTz8/wq3Z+98CyhCW2cVfJEWARom6WpaCmHICv80bnVcjoEFsCly7jU8iHJU+EU8ryY8iver/msFCg==
