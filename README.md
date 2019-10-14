@@ -393,7 +393,7 @@ Currently Prisma enums cannot be [aliased](#alias) ([issue](https://github.com/p
 
 **Options**
 
-N/A
+n/a
 
 **GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
@@ -1438,14 +1438,21 @@ Like [`t.crud.<delete>`](#delete).
 ### `alias`
 
 ```
-String
+undefined | String
 ```
-
-Use `alias` to change the name of the field projected onto the GraphQL `Object`.
 
 **Applies To**
 
 `t.crud.<*>` `t.model.<* - enum, list enum>`
+
+**About**
+
+- `undefined` (default) By default Prisma model fields project onto GraphQL object fields of the same name.
+- `string` Change which GraphQL object field the Prisma model field projects onto.
+
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+n/a
 
 **Example**
 
@@ -1475,14 +1482,22 @@ model Post  {
 ### `type`
 
 ```
-String
+undefined | String
 ```
-
-Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
 
 **Applies To**
 
 `t.crud.<*>` [`t.model.<Relation>`](#relation-field) [`t.model.<ListRelation>`](#list-field)
+
+**About**
+
+- `undefined` (default) Point Prisma field to a GraphQL object whose name matches that of the Prisma field model type.
+
+- `string` Point Prisma field to the given GraphQL object. This option can become necessary when you've have done [model-object mapping](#model-object-mapping) and other Prisma models in your schema have relations to the name-mapped Prisma model. We are interested in devloping further the model-object mapping API so that it automates this better ([issue](https://github.com/prisma-labs/nexus-prisma/issues/461)).
+
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+n/a
 
 **Example**
 
@@ -1528,18 +1543,21 @@ modle Post {
 ### `ordering`
 
 ```
-true | false | Whitelist
+undefined | true | false | Whitelist
 ```
-
-Allow clients to order the records in a list field. Records can be ordered by their projected scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
-
-- `false` (default) Disable ordering
-- `true` Enable ordering and project all scalar fields
-- `Whitelist` (`Record<string, true>`) Enable ordering and project Prisma model fields appearing in the given whitelist.
 
 **Applies To**
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
+
+**About**
+
+Allow clients to order the records in a list field. Records can be ordered by their projected scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
+
+- `undefined` (default) Like `false`
+- `false` Disable ordering
+- `true` Enable ordering by all scalar fields
+- `Whitelist` (`Record<string, true>`) Enable ordering by just scalar fields appearing in the given whitelist.
 
 **GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
 
@@ -1547,7 +1565,7 @@ Allow clients to order the records in a list field. Records can be ordered by th
 # t.crud.<BatchRead>
 M(orderBy: M_OrderByInput)
 
-# t.model.<List*>
+# t.model.<ListRelation>
 type M {
   MF(orderBy: M_OrderByInput)
 }
@@ -1557,7 +1575,10 @@ input M_OrderByInput {
   # It is not possible to order by relations
 }
 
-enum OrderByArg { asc desc }
+enum OrderByArg {
+  asc
+  desc
+}
 ```
 
 **Example**
@@ -1663,14 +1684,18 @@ model Post {
 ### `pagination`
 
 ```
-true | false
+undefined | true | false
 ```
-
-todo. Default to `true`.
 
 **Applies To**
 
 [`t.crud.<BatchRead>`](#batch-read) [`t.model.<ListRelation>`](#list-relation)
+
+**About**
+
+- `undefined` (default) Like `true`
+- `true` Enable pagination
+- `false` Disable paginaton
 
 **GraphQL Schema Contribuations**
 
@@ -1678,7 +1703,7 @@ todo. Default to `true`.
 # t.crud.<BatchRead>
 M(after: String, before: String, first: Int, last: Int, skip: Int)
 
-# t.model.<List*>
+# t.model.<ListRelation>
 type M {
   F(after: String, before: String, first: Int, last: Int, skip: Int)
 }
