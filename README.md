@@ -5,7 +5,7 @@
 
 [![CircleCI](https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg)](https://circleci.com/gh/prisma-labs/nexus-prisma)
 
-`nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
+`nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and operations against them in your GraphQL API. The resolvers for these operations (pagination, filtering, ordering, and more), are dynamically created for yo u removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. And when you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
 
 ### Contents <!-- omit in toc -->
 
@@ -14,7 +14,7 @@
 
 - [Installation](#installation)
 - [Example](#example)
-- [API Reference](#api-reference)
+- [Reference](#reference)
   - [`t.model`](#tmodel)
     - [Model-Object Mapping](#model-object-mapping)
     - [Enum](#enum)
@@ -39,9 +39,12 @@
     - [`pagination`](#pagination)
     - [`filtering`](#filtering)
   - [GraphQL Schema Contributions](#graphql-schema-contributions)
+    - [How to Read](#how-to-read)
     - [Lookup](#lookup)
     - [Batch Filtering](#batch-filtering)
     - [Batch Operations](#batch-operations)
+  - [System Behaviours](#system-behaviours)
+    - [Null-Free Lists](#null-free-lists)
   - [Configuration](#configuration)
 - [Recipes](#recipes)
   - [Exposed Prisma Model](#exposed-prisma-model)
@@ -324,7 +327,7 @@ input UserWhereUniqueInput {
 
 You can find a runnable version of this and other examples at [prisma-labs/nexus-examples](/TODO).
 
-# API Reference
+# Reference
 
 ## `t.model`
 
@@ -386,7 +389,7 @@ You can customize the projected enum members by defining the enum yourself in Ne
 
 _Option Notes_
 
-Currently they cannot be [aliased](#alias) ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)). They also cannot be [type mapped](#type) since enum types cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473)).
+Currently Prisma enums cannot be [aliased](#alias) ([issue](https://github.com/prisma-labs/nexus-prisma/issues/474)). They also cannot be [type mapped](#type) since enum types cannot be mapped yet ([issue](https://github.com/prisma-labs/nexus-prisma/issues/473)).
 
 **Options**
 
@@ -396,9 +399,10 @@ N/A
 
 ```gql
 type M {
-  MEF: E # ! <-- if not ?
+  MEF: E # ! <-- if not ? or @default
 }
 
+# if not defined by user
 enum E {
   EV
 }
@@ -464,7 +468,7 @@ enum Role {
 
 _Scalar Mapping_
 
-[Prisma scalars](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#scalar-types) map to [GraphQL scalars](https://graphql.org/learn/schema/#scalar-types) as follows:
+[Prisma scalars](https://github.com/prisma/prisma2/blob/master/docs/data-modeling.md#scalar-types) are mapped to [GraphQL scalars](https://graphql.org/learn/schema/#scalar-types) as follows:
 
 ```
 Prisma       GraphQL
@@ -490,7 +494,7 @@ It is not possible to use [`type`](#type) because there is currently no way for 
 
 ```gql
 type M {
-  MSF: S # ! <-- if not ?
+  MSF: S # ! <-- if not ? or @default
 }
 
 scalar S # if not matching a standard GQL scalar
@@ -542,39 +546,104 @@ model User {
 
 ### Relation
 
-Works like scalar projecting except that the relation is not auto-projected.
+Projecting relational fields only affects the current GraphQL object being defined. That is, the model that the field relates to is not auto-projected. This is a design choice intended to keep the `nexus-prisma` system predictable for you. If you forget to project a relation you will receive feedback at build/boot time letting you know.
 
 **Options**
 
 [`type`](#type) [`alias`](#alias)
 
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+```gql
+type M {
+  MRF: RM # ! <-- if not ?
+}
+```
+
+**Example**
+
+```gql
+type User {
+  latestPost: Post
+}
+```
+
+```ts
+objectType({
+  name: 'User',
+  definition(t) {
+    t.model.latestPost()
+  },
+})
+```
+
+```prisma
+model User {
+  latestPost Post?
+}
+
+model Post {
+  title String
+  body String
+}
+```
+
 <br>
 
 ### List Enum
 
-Works according to the projecting rules of [enums](#enum). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/466)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/468)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/467)) enum lists.
+Like [enums](#enum). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/466)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/468)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/467)) enum lists.
+
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+```gql
+type M {
+  MLEF: [E!]!
+}
+
+# if not defined by user
+enum E {
+  EV
+}
+```
 
 <br>
 
 ### List Scalar
 
-Works according to the projecting rules of [scalars](#scalar). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/470)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/471)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/469)) scalar lists.
+Like [scalars](#scalar). It is not possible to order ([issue](https://github.com/prisma-labs/nexus-prisma/issues/470)) paginate ([issue](https://github.com/prisma-labs/nexus-prisma/issues/471)) or filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/469)) scalar lists.
+
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+```gql
+type M {
+  MLSF: [S!]!
+}
+```
 
 <br>
 
 ### List Relation
 
-Works according to the projecting rules of [relations](#relation) but also supports options for list handling.
+Like [relations](#relation) but also supports batch related options.
 
 **Options**
 
 [`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
 
+**GraphQL Schema Contributions** [`?`](graphql-schema-contributions 'How to read this')
+
+```gql
+type M {
+  MLRF: [RM!]!
+}
+```
+
 <br>
 
 ## `t.crud`
 
-Only available within `Query` and `Mutation` definitions.
+Only available within GraphQL `Query` and `Mutation` definitions.
 
 `t.crud` contains configurable _operation publishers_ that you use for exposing create, read, update, and delete mutations against your projected Prisma models.
 
@@ -607,7 +676,7 @@ mutationType({
 
 ```prisma
 model User {
-  id Int @id
+  ...
 }
 ```
 
@@ -780,7 +849,7 @@ t.crud.<M>
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
-The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or [paginted](#pagination) depends upon if those features have been enabled for those `Object`s via [`t.model`](#list-field).
+The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or [paginted](#pagination) depends upon if those features have been enabled for those GraphQL objects via [`t.model.<ListRelation>`](#list-relation).
 
 **Underlying Photon Function**
 
@@ -798,7 +867,7 @@ mutation {
 }
 
 input M_WhereUniqueInput {
-  MF@unique: S
+  MF: S # if @unique
 }
 ```
 
@@ -1110,7 +1179,7 @@ model Post {
 t.crud.upsertOne<M>
 ```
 
-Allow clients to update-or-create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [create](#create) and [update](#update) so you can re-use your knowledge about those. The generated GraphQL mutation matches `data` and `where` args to those of update, and `create` to that of `data` arg in create. Unlike update, upsert guarantees a return value.
+Allow clients to update or create (aka. insert) one particular record at a time of the respective Prisma model. This operation is a combination of [create](#create) and [update](#update). The generated GraphQL mutation matches `data` and `where` args to those of update, and `create` to that of `data` arg in create. Unlike update, upsert guarantees a return value.
 
 **Underlying Photon Function**
 
@@ -1143,8 +1212,6 @@ Refer to [update](#update) and [create](#create).
 ```
 t.crud.deleteOne<M>
 ```
-
-photon.
 
 Allow clients to delete one particular record at a time of the respective Prisma model.
 
@@ -1334,6 +1401,12 @@ Allow clients to update multiple records of the respective Prisma model at once.
 
 [`type`](#type) [`alias`](#alias)
 
+**Example**
+
+TODO
+
+Like [`t.crud.<update>`](#update).
+
 <br>
 
 ### Batch Delete
@@ -1352,17 +1425,27 @@ Allow clients to delete multiple records of the respective Prisma model at once.
 
 [`type`](#type) [`alias`](#alias)
 
+**Example**
+
+TODO
+
+Like [`t.crud.<delete>`](#delete).
+
 <br>
 
 ## Options
 
 ### `alias`
 
+```
+String
+```
+
 Use `alias` to change the name of the field projected onto the GraphQL `Object`.
 
 **Applies To**
 
-`t.crud.<*>` `t.model.<* - enum | list enum>`
+`t.crud.<*>` `t.model.<* - enum, list enum>`
 
 **Example**
 
@@ -1390,6 +1473,10 @@ model Post  {
 <br>
 
 ### `type`
+
+```
+String
+```
 
 Use `type` to change the projected GraphQL field type which by default is the related Prisma model name. This is necessary when the related Prisma model has itself been projected onto a differently named GraphQL `Object`.
 
@@ -1440,8 +1527,8 @@ modle Post {
 
 ### `ordering`
 
-```ts
-type Ordering = true | false | Whitelist
+```
+true | false | Whitelist
 ```
 
 Allow clients to order the records in a list field. Records can be ordered by their projected scalar fields in ascending or descending order. Ordering by fields on relations is not currently possible ([issue](https://github.com/prisma/photonjs/issues/249)).
@@ -1575,7 +1662,11 @@ model Post {
 
 ### `pagination`
 
-todo
+```
+true | false
+```
+
+todo. Default to `true`.
 
 **Applies To**
 
@@ -1633,6 +1724,10 @@ queryType({
 <br>
 
 ### `filtering`
+
+```
+true | false | Whitelist
+```
 
 todo
 
@@ -1698,9 +1793,13 @@ queryType({
 
 ## GraphQL Schema Contributions
 
+### How to Read
+
 ```
-M = model   F = field   S = scalar   E = enum   R = relation  V = value
+M = model   F = field   L = list   S = scalar   E = enum   R = relation  V = value
 ```
+
+todo
 
 ### Lookup
 
@@ -1777,6 +1876,44 @@ type BatchPayload {
 ```
 
 <br>
+
+## System Behaviours
+
+### Null-Free Lists
+
+Projection for Prisma list types always project as a fully non-nullable GraphQL type. This is because Prisma list fields (and list member type) can themselves never be null, and because Prisma does not support `@default` on list types.
+
+For consistentcy we also apply the same pattern for `t.crid.<BatchRead>`.
+
+```gql
+type Query {
+  users: [User!]!
+}
+
+type User {
+  posts: [Post!]!
+}
+```
+
+```ts
+queryType({
+  definition(t) {
+    t.crud.users()
+  },
+})
+objectType({
+  name: 'User',
+  definition(t) {
+    t.crud.posts()
+  },
+})
+```
+
+```Prisma
+model User {
+  posts Post[]
+}
+```
 
 ## Configuration
 
