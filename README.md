@@ -1704,10 +1704,10 @@ Powered by [Photon pagination](https://github.com/prisma/prisma2/blob/master/doc
 ```gql
 # t.crud.<BatchRead>
 Ms(
-  "The starting object for the list (typically ID or other unique value)."
+  """The starting object for the list (typically ID or other unique value)."""
   after: String
 
-  "The last object for the list (typically ID or other unique value)"
+  """The last object for the list (typically ID or other unique value)"""
   before: String
 
   "How many elements, forwards from head"
