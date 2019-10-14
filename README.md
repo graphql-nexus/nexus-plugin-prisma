@@ -1403,7 +1403,7 @@ Allow clients to update multiple records of the respective Prisma model at once.
 
 ```gql
 mutation {
-  updateMany_M(where: M_WhereInput): BatchPayload!
+  updateMany_M(where: M_WhereInput, data:  M_UpdateManyMutationInput): BatchPayload!
 }
 
 type BatchPayload {
@@ -1411,7 +1411,7 @@ type BatchPayload {
 }
 ```
 
-`M_WhereInput` is a [filtering contribution](#batch-filtering).
+`M_WhereInput` is a [filtering contribution](#filtering-1).
 
 **Example**
 
@@ -1449,13 +1449,19 @@ type BatchPayload {
 }
 ```
 
-`M_WhereInput` is a [filtering contribution](#batch-filtering).
+`M_WhereInput` is a [filtering contribution](#filtering-1).
 
 **Example**
 
-TODO
+See [`filtering option example`](#filtering). The only difference is the semantics of this mutation (deletes something) and the batch payload type:
 
-Like [`t.crud.<delete>`](#delete).
+```gql
+mutation {
+  deleteManyUser(where: {...}) {
+    count
+  }
+}
+```
 
 <br>
 
@@ -1810,7 +1816,7 @@ undefined | true | false | Whitelist
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
-[Batch Filtering](#batch-filtering)
+See [filtering contributions](#filtering-1)
 
 **Example**
 
@@ -2063,8 +2069,8 @@ type M {
 }
 
 mutation {
-  updateMany_M(where: M_WhereInput)
-  deleteMany_M(where: M_WhereInput)
+  updateMany_M(where: M_WhereInput, data: M_updateManyMutationInput) BatchPayload!
+  deleteMany_M(where: M_WhereInput): BatchPayload!
 }
 ```
 
