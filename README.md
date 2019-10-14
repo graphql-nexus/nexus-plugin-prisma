@@ -1716,7 +1716,9 @@ Ms(
   # How many elements, backwards from `before` otherwise tail
   last: Int
 
-  # The offset, if `first` used then forwards from `after` (otherwise head), if `last` used then backwrads from `before` (otherwie tail)
+  # The offset
+  # If `first` used, then forwards from `after` (otherwise head)
+  # If `last` used, then backwrads from `before` (otherwie tail)
   skip: Int
 )
 
