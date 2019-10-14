@@ -184,6 +184,37 @@ export function unwrapTypes(types: any): Record<string, boolean> {
   return output
 }
 
+export function proxifier<T extends Record<string, any>>(
+  target: T,
+  typeName: string,
+): T {
+  return new Proxy(target, {
+    get(target, key) {
+      if (key in target) {
+        return target[key as string]
+      }
+
+      const accessor =
+        typeName === 'Query' || typeName === 'Mutation' ? 'crud' : 'model'
+
+      console.warn(`\
+Error: Field '${typeName}'.${String(key)} does not exist.
+
+objectType({
+  name: '${typeName}',
+  definition(t) {
+    ...
+    t.${accessor}.${String(key)}(...) <-- '${String(
+        key,
+      )}' is not a valid field name.'
+  }
+})`)
+
+      return () => {}
+    },
+  })
+}
+
 /**
  * Index types are just an alias for Records
  * whose keys are of type `string`. The name

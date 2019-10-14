@@ -12,7 +12,7 @@ import {
 } from './naming-strategies'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, unwrapTypes } from './utils'
+import { assertPhotonInContext, proxifier, unwrapTypes } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -214,7 +214,7 @@ export class SchemaBuilder {
             `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-        return getCrudMappedFields(typeName, this.dmmf).reduce<
+        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce<
           PublisherMethods
         >((crud, mappedField) => {
           const fieldPublisher: FieldPublisher = givenConfig => {
@@ -253,6 +253,10 @@ export class SchemaBuilder {
 
           return crud
         }, {})
+
+        return process.env.NODE_ENV === 'production'
+          ? publishers
+          : proxifier(publishers, typeName)
       },
     })
   }
@@ -368,7 +372,9 @@ export class SchemaBuilder {
       {},
     )
 
-    return publishers
+    return process.env.NODE_ENV === 'production'
+      ? publishers
+      : proxifier(publishers, typeName)
   }
 
   protected buildArgsFromField(
