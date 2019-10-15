@@ -398,7 +398,7 @@ model User {
 
 _Auto-Projection_
 
-When a Prisma enum field is projected, the coressponding enum type will be automatically projected too (added to the GraphQL schema).
+When a Prisma enum field is projected, the corresponding enum type will be automatically projected too (added to the GraphQL schema).
 
 _Member Customization_
 
