@@ -47,6 +47,7 @@ const dmmfListFieldTypeToNexus = (
 
 export interface Options {
   types: any
+  // TODO return type should be Photon
   photon?: (ctx: Nexus.core.GetGen<'context'>) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
