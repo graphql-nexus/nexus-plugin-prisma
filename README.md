@@ -867,7 +867,7 @@ t.crud.<M>
 
 Allow clients to find one particular record of the respective Prisma model. They may search by any Prisma model field that has been marked with `@unique` attribute.
 
-The ability for list fields to be [filtered](#filtering) [ordered](#ordering) or [paginted](#pagination) depends upon if those features have been enabled for those GraphQL objects via [`t.model.<ListRelation>`](#list-relation).
+The ability for list fields to be [filtered](#filtering), [ordered](#ordering), or [paginated](#pagination) depends upon if those features have been enabled for those GraphQL objects via [`t.model.<ListRelation>`](#list-relation).
 
 **Underlying Photon Function**
 
