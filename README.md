@@ -43,16 +43,19 @@
     - [Batch Filtering](#batch-filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
-  - [Configuration](#configuration)
+  - [Workflow](#workflow)
+    - [Configuration](#configuration)
+    - [Usage](#usage)
+    - [Project Setup](#project-setup)
 - [Recipes](#recipes)
-  - [Exposed Prisma Model](#exposed-prisma-model)
+  - [Projecting Prisma Model Fields](#projecting-prisma-model-fields)
   - [Simple Computed Fields](#simple-computed-fields)
   - [Complex Computed Fields](#complex-computed-fields)
-  - [Renamed Prisma Model Fields](#renamed-prisma-model-fields)
-  - [Exposed Reads on Model](#exposed-reads-on-model)
-  - [Exposed Writes on Model](#exposed-writes-on-model)
-  - [Exposed Customized Reads on Model](#exposed-customized-reads-on-model)
-  - [Exposed Model Writes Along Side Photon-Resolved Fields](#exposed-model-writes-along-side-photon-resolved-fields)
+  - [Project a Prisma Model Field to a Differently Named GraphQL Object Field](#project-a-prisma-model-field-to-a-differently-named-graphql-object-field)
+  - [Publish Full-Featured Reads on a Model](#publish-full-featured-reads-on-a-model)
+  - [Publish Writes on a Model](#publish-writes-on-a-model)
+  - [Publish Customized Reads on a Model](#publish-customized-reads-on-a-model)
+  - [Publish Model Writes Along Side Photon-Resolved Fields](#publish-model-writes-along-side-photon-resolved-fields)
   - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -2201,13 +2204,12 @@ model User {
 
 ## Workflow
 
-### Configuration 
+### Configuration
 
 In most cases you should not need to configure anything. If you do, and you don't feel like it is an edge-case, we'd like to [know about it](https://github.com/prisma-labs/nexus-prisma/issues/new). Our goal is that for vast majority of cases nexus-prisma be zero-config.
 
 ```ts
 type Options = {
-
   /**
    * The same types you pass into `Nexus.makeSchema`. This configuration will
    * completely go away once Nexus has typeDef plugin support.
@@ -2259,9 +2261,9 @@ type Options = {
 **Example**
 
 ```ts
-import { nexusPrismaPlugin } from "nexus-prisma"
-import * as types from "./types"
-import { makeSchema } from "nexus"
+import { nexusPrismaPlugin } from 'nexus-prisma'
+import * as types from './types'
+import { makeSchema } from 'nexus'
 
 const prismaTypes = nexusPrismaPlugin({ types })
 const schema = makeScheam({ types: [types, prismaTypes] })
@@ -2273,16 +2275,16 @@ These are tips to help you with a successful project workflow
 
 1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to geneate typegen. This will come in handy in certain deployment contexts.
 1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve that feature with pakage facades. For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
-    ```json
-    "generate:prisma": "prisma2 generate",
-    "generate:nexus": "ts-node --transpile-only path/to/schema/module",
-    "generate": "npm -s run generate:prisma && npm -s run generate:nexus"
-    "postinstall" "npm -s run generate"
-    ```
+   ```json
+   "generate:prisma": "prisma2 generate",
+   "generate:nexus": "ts-node --transpile-only path/to/schema/module",
+   "generate": "npm -s run generate:prisma && npm -s run generate:nexus"
+   "postinstall" "npm -s run generate"
+   ```
 1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app. In turn to ensure artifact generation runs we declare the environment variable as such. Artifact generation togglgin based on `NODE_ENV` value is often sufficient but not always. For example in a deployment pipeline `NODE_ENV` may be set to "production" (it is with Heroku).
-    ```json
-    "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
-    ```
+   ```json
+   "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
+   ```
 
 <br>
 
