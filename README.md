@@ -2199,15 +2199,76 @@ model User {
 }
 ```
 
-## Configuration
-
-TODO
-
-<br>
-
 ## Workflow
 
-TODO
+### Configuration 
+
+In most cases you should not need to configure anything. If you do, and you don't feel like it is an edge-case, we'd like to [know about it](https://github.com/prisma-labs/nexus-prisma/issues/new). Our goal is that for vast majority of cases nexus-prisma be zero-config.
+
+```ts
+type Options = {
+
+  /**
+   * The same types you pass into `Nexus.makeSchema`. This configuration will
+   * completely go away once Nexus has typeDef plugin support.
+   */
+  types: any
+
+  /**
+   * nexus-prisma will call this to get a reference to an instance of Photon.
+   * The function is passed the context object. Typically a Photon instance will
+   * be available on the context to support your custom resolvers. Therefore the
+   * default getter returns `ctx.photon`.
+   */
+  photon?: (ctx: Nexus.core.GetGen<'context'>) => Photon
+
+  /**
+   * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
+   * and permits the same environment variables. This configuration will completely
+   * go away once Nexus has typeGen plugin support.
+   */
+  shouldGenerateArtifacts?: boolean
+
+  inputs?: {
+    /**
+     * Where can nexus-prisma find the Photon.js package? By default looks in
+     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * gets your Prisma schema AST and Photon.js crud info from the generated
+     * Photon.js package.
+     */
+    photon?: string
+  }
+  outputs?: {
+    /**
+     * Where should nexus-prisma put its typegen on disk? By default matches the
+     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
+     * This configuration will completely go away once Nexus has typeGen plugin
+     * support.
+     */
+    typegen?: string
+  }
+}
+```
+
+### Usage
+
+1. import the `nexusPrismaPlugin` function
+1. Pass it your app types and additional config if needed (shouldn't be)
+1. Pass the returned `prismaTypes` to Nexus.makeSchema along with app types
+
+**Example**
+
+```ts
+import { nexusPrismaPlugin } from "nexus-prisma"
+import * as types from "./types"
+import { makeSchema } from "nexus"
+
+
+const prismaTypes = nexusPrismaPlugin({ types })
+const schema = makeScheam({ types: [types, prismaTypes] })
+```
+
+### Project Setup
 
 <br>
 
