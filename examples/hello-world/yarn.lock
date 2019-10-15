@@ -2446,10 +2446,10 @@ prisma-datamodel@1.36.0-test.2, prisma-datamodel@^1.36.0-test.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-alpha.233:
-  version "2.0.0-alpha.233"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.233.tgz#9a65001b604a2c19d7782ec9889463aeb9340b0c"
-  integrity sha512-hxYT66dpUx1Rir4k9KJBY0jhMeFZ6G2ipwA537wy7MO9DMhHBnPj0Q40+cHQte7koc74vz1hpZSaXFJjUF2u6Q==
+prisma2@^2.0.0-alpha.243:
+  version "2.0.0-alpha.243"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.243.tgz#dc39aa371cfbd4ab5abb0c058cc028bb7a45e332"
+  integrity sha512-oZE0AcuPMe7izo+UMKVI46giMJjVRxq5ftkYhB9UAYSq63Hqd50hn2ZXdAguLY8LbJO1oa2Cd28YlfguhM6dog==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
