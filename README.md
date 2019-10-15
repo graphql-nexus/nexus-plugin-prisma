@@ -505,7 +505,7 @@ When a Prisma scalar is encountered that does not map to the standard GraphQL sc
 
 _Option Notes_
 
-It is not possible to use [`type`](#type) because there is currently no way for a Prisma scalar to map to a differntly named GraphQL scalar.
+It is not possible to use [`type`](#type) because there is currently no way for a Prisma scalar to map to a differently named GraphQL scalar.
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
