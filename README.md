@@ -75,21 +75,24 @@ generator photonjs {
 }
 
 model User {
-  id     String @id @default(cuid())
-  handle String
-  posts  Post[]
+  id        String   @id @unique @default(cuid())
+  email     String   @unique
+  birthDate DateTime
 }
 
 model Post {
-  id     String @id @default(cuid())
+  id     String @id @unique @default(cuid())
   author User[]
 }
+
 ```
 
 You will be able to project these Prisma models onto your GraphQL API and expose operations against them:
 
 ```ts
 // src/types.ts
+
+import { queryType, mutationType, objectType } from 'nexus'
 
 export const Query = queryType({
   definition(t) {
@@ -102,8 +105,10 @@ export const Query = queryType({
 
 export const Mutation = mutationType({
   definition(t) {
-    t.crud.createUser()
-    t.crud.createPost()
+    t.crud.createOneUser()
+    t.crud.createOnePost()
+    t.crud.deleteOneUser()
+    t.crud.deleteOnePost()
   },
 })
 
@@ -111,7 +116,8 @@ export const User = objectType({
   name: 'User',
   definition(t) {
     t.model.id()
-    t.model.handle()
+    t.model.email()
+    t.model.birthDate()
     t.model.posts()
   },
 })
@@ -130,13 +136,12 @@ Setup your schema:
 ```ts
 // src/schema.ts
 
-import { createNexusPlugin } from 'nexus-prisma'
 import { makeSchema } from 'nexus'
+import { nexusPrismaPlugin } from 'nexus-prisma'
 import * as types from './types'
 
 export const schema = makeSchema({
-  types: [...types, createNexusPlugin({ types })],
-  outputs: true,
+  types: [types, nexusPrismaPlugin({ types })],
 })
 ```
 
@@ -164,26 +169,28 @@ new GraphQLServer({ schema }).start()
 
 And get the resulting GraphQL API:
 
-TODO need to regenerate this schema
-
 <details>
-<summary>(toggle me)</summary>
+<summary>toggle me</summary>
 
 ```gql
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
+scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: DateTime
+  notIn: [DateTime!]
 }
 
 type Mutation {
   createOnePost(data: PostCreateInput!): Post!
   createOneUser(data: UserCreateInput!): User!
+  deleteOnePost(where: PostWhereUniqueInput!): Post
+  deleteOneUser(where: UserWhereUniqueInput!): User
 }
 
 enum OrderByArg {
@@ -192,18 +199,13 @@ enum OrderByArg {
 }
 
 type Post {
-  author(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    skip: Int
-  ): [User!]
-  id: Int!
+  author(after: String, before: String, first: Int, last: Int, skip: Int): [User!]!
+  id: ID!
 }
 
 input PostCreateInput {
   author: UserCreateManyWithoutAuthorInput
+  id: ID
 }
 
 input PostCreateManyWithoutPostsInput {
@@ -211,7 +213,9 @@ input PostCreateManyWithoutPostsInput {
   create: [PostCreateWithoutAuthorInput!]
 }
 
-input PostCreateWithoutAuthorInput
+input PostCreateWithoutAuthorInput {
+  id: ID
+}
 
 input PostFilter {
   every: PostWhereInput
@@ -222,34 +226,20 @@ input PostFilter {
 input PostWhereInput {
   AND: [PostWhereInput!]
   author: UserFilter
-  id: IntFilter
+  id: StringFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
 }
 
 input PostWhereUniqueInput {
-  id: Int
+  id: ID
 }
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    skip: Int
-    where: PostWhereInput
-  ): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, skip: Int, where: PostWhereInput): [Post!]!
   user(where: UserWhereUniqueInput!): User
-  users(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    orderBy: UserOrderByInput
-    skip: Int
-  ): [User!]
+  users(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int): [User!]!
 }
 
 input StringFilter {
@@ -267,19 +257,15 @@ input StringFilter {
 }
 
 type User {
-  handle: String!
+  birthDate: DateTime!
+  email: String!
   id: ID!
-  posts(
-    after: String
-    before: String
-    first: Int
-    last: Int
-    skip: Int
-  ): [Post!]
+  posts(after: String, before: String, first: Int, last: Int, skip: Int): [Post!]!
 }
 
 input UserCreateInput {
-  handle: String!
+  birthDate: DateTime!
+  email: String!
   id: ID
   posts: PostCreateManyWithoutPostsInput
 }
@@ -290,7 +276,8 @@ input UserCreateManyWithoutAuthorInput {
 }
 
 input UserCreateWithoutPostsInput {
-  handle: String!
+  birthDate: DateTime!
+  email: String!
   id: ID
 }
 
@@ -301,13 +288,15 @@ input UserFilter {
 }
 
 input UserOrderByInput {
-  handle: OrderByArg
+  birthDate: OrderByArg
+  email: OrderByArg
   id: OrderByArg
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  handle: StringFilter
+  birthDate: DateTimeFilter
+  email: StringFilter
   id: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
@@ -315,6 +304,7 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
+  email: String
   id: ID
 }
 ```

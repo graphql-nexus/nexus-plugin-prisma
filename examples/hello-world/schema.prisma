@@ -3,13 +3,13 @@ generator photonjs {
 }
 
 model User {
-  id    Int    @id @unique
-  email String @unique
-  // handle String
-  // posts  Post[]
+  id        String   @id @unique @default(cuid())
+  email     String   @unique
+  birthDate DateTime
+  posts     Post[]
 }
 
 model Post {
-  id     Int    @id
+  id     String @id @unique @default(cuid())
   author User[]
 }
