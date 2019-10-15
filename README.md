@@ -40,7 +40,7 @@
     - [`filtering`](#filtering)
   - [GraphQL Schema Contributions](#graphql-schema-contributions)
     - [How to Read](#how-to-read)
-    - [Filtering](#filtering)
+    - [Batch Filtering](#batch-filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
   - [Configuration](#configuration)
@@ -964,7 +964,7 @@ input RM_ScalarWhereInput {
   AND: [RM_ScalarWhereInput!]
   NOT: [RM_ScalarWhereInput!]
   OR: [RM_ScalarWhereInput!]
-  RMSF: S_Filter # StringFilter | IntFilter | ... TODO
+  RMSF: S_Filter
 }
 
 input RM_UpdateWithWhereUniqueWithout_M_Input {
@@ -985,20 +985,9 @@ input RM_UpsertWithWhereUniqueWithout_M_Input {
   update: RM_UpdateWithout_M_DataInput!
   where: RM_WhereUniqueInput!
 }
-
-# TODO StringFilter ...
-
-input IntFilter {
-  equals: S
-  gt: S
-  gte: S
-  in: [S!]
-  lt: S
-  lte: S
-  not: S
-  notIn: [S!]
-}
 ```
+
+For `S_Filter` see [batch filtering](#batch-filtering) contributions.
 
 **Example**
 
@@ -1389,7 +1378,7 @@ model Post {
 t.crud.updateMany<M>
 ```
 
-Allow clients to update multiple records of the respective Prisma model at once. Clients get back a `BatchPayload` object letting them know the number of affected records, but not access to the fields of affected records.
+Allow clients to update multiple records of the respective Prisma model at once. Unlike [`update`](#update) nested relation-updating is not supported here. Clients get back a `BatchPayload` object letting them know the number of affected records, but not access to the fields of affected records.
 
 **Underlying Photon Function**
 
@@ -1406,18 +1395,29 @@ mutation {
   updateMany_M(where: M_WhereInput, data:  M_UpdateManyMutationInput): BatchPayload!
 }
 
+
+
+input M_UpdateManyMutationInput {
+  MSF: S
+  MEF: E
+}
+
 type BatchPayload {
   count: Int!
 }
 ```
 
-`M_WhereInput` is a [filtering contribution](#filtering-1).
+For `M_WhereInput` see [batch filtering contributions](#batch-filtering).
 
 **Example**
 
-TODO
+```gql
+mutation updateManyUser(where: {...}, data: { status: ACTIVE }) {
+  count
+}
+```
 
-Like [`t.crud.<update>`](#update).
+See [`filtering option`](#filtering) example. Differences are: operation semantics (update things); return type; `data` arg.
 
 <br>
 
@@ -1449,11 +1449,9 @@ type BatchPayload {
 }
 ```
 
-`M_WhereInput` is a [filtering contribution](#filtering-1).
+For `M_WhereInput` see [filtering contribution](#batch-filtering).
 
 **Example**
-
-See [`filtering option example`](#filtering). The only difference is the semantics of this mutation (deletes something) and the batch payload type:
 
 ```gql
 mutation {
@@ -1462,6 +1460,8 @@ mutation {
   }
 }
 ```
+
+See [`filtering option`](#filtering) example. Differences are: operation semantics (delete things); return type.
 
 <br>
 
@@ -1575,7 +1575,7 @@ modle Post {
 ### `ordering`
 
 ```
-undefined | true | false | Whitelist
+undefined | true | false | ModelWhitelist
 ```
 
 **Applies To**
@@ -1589,7 +1589,7 @@ Allow clients to order the records in a list field. Records can be ordered by th
 - `undefined` (default) Like `false`
 - `false` Disable ordering
 - `true` Enable ordering by all scalar fields
-- `Whitelist` (`Record<string, true>`) Enable ordering by just scalar fields appearing in the given whitelist.
+- `ModelWhitelist` (`Record<string, true>`) Enable ordering by just Model scalar fields appearing in the given whitelist.
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
@@ -1800,7 +1800,7 @@ queryType({
 ### `filtering`
 
 ```
-undefined | true | false | Whitelist
+undefined | true | false | ModelWhitelist
 ```
 
 **Applies To**
@@ -1812,11 +1812,11 @@ undefined | true | false | Whitelist
 - `undefined` (default) Like `false`
 - `true` Enable filtering for all scalar fields
 - `false` Disable filtering
-- `Whitelist` (`Record<string, true>`) Enable ordering by just the scalar fields appearing in the given whitelist.
+- `ModelWhitelist` (`Record<string, true>`) Enable ordering by just Model scalar fields appearing in the given whitelist.
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
-See [filtering contributions](#filtering-1)
+See [batch filtering contributions](#batch-filtering)
 
 **Example**
 
@@ -2053,28 +2053,28 @@ enum UserStatus {
 M = model   F = field   L = list   S = scalar   E = enum   R = relation  V = value
 ```
 
-### Filtering
+### Batch Filtering
 
-**Scenarios**
+**Sources**
 
 ```gql
 query {
   # When filtering option is enabled
-  Ms(where: M_WhereInput, ...)
+  Ms(where: M_WhereInput, ...): [M!]!
+}
+
+mutation {
+  updateMany_M(where: M_WhereInput, ...) BatchPayload!
+  deleteMany_M(where: M_WhereInput): BatchPayload!
 }
 
 type M {
   # When filtering option is enabled
-  MRF: RM(where: RM_WhereInput)
-}
-
-mutation {
-  updateMany_M(where: M_WhereInput, data: M_updateManyMutationInput) BatchPayload!
-  deleteMany_M(where: M_WhereInput): BatchPayload!
+  MRF: RM(where: RM_WhereInput): [RM!]!
 }
 ```
 
-**Types**
+**Where**
 
 ```gql
 input M_WhereInput {
@@ -2086,27 +2086,34 @@ input M_WhereInput {
 }
 
 input RM_Filter {
-  every: RM_WhereInput # recurse pattern -> M_WhereInput
-  none: RM_WhereInput # recurse pattern -> M_WhereInput
-  some: RM_WhereInput # recurse pattern -> M_WhereInput
+  every: RM_WhereInput # recurse -> M_WhereInput
+  none: RM_WhereInput # recurse -> M_WhereInput
+  some: RM_WhereInput # recurse -> M_WhereInput
 }
+```
 
-input M_Filter {
-  every: M_WhereInput
-  none: M_WhereInput
-  some: M_WhereInput
+**Scalar Filters**
+
+```
+input BooleanFilter {
+  equals: Boolean
+  not: Boolean
 }
 
 input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
+  equals: S
+  gt: S
+  gte: S
+  in: [S!]
+  lt: S
+  lte: S
+  not: S
+  notIn: [S!]
 }
+
+input FloatFilter {} # like IntFilter
+
+input DateTimeFilter {} # like IntFilter
 
 input StringFilter {
   contains: String
@@ -2121,7 +2128,11 @@ input StringFilter {
   notIn: [String!]
   startsWith: String
 }
+
+input UUIDFilter {} # like StringFilter
 ```
+
+`ID` scalars use `StringFilter`. If you are curious why we don't use a `NumericFilter` to be polymorphic over `Int` and `Float` scalars see this [issue](https://github.com/prisma-labs/nexus-prisma/issues/482). Creating a tailored `DateTime` filter is being tracked in this [issue](https://github.com/prisma-labs/nexus-prisma/issues/484).
 
 <br>
 
