@@ -948,7 +948,7 @@ input RM_UpdateManyWithout_M_Input {
   connect: [RM_WhereUniqueInput!]
   create: [RM_CreateWithout_M_Input!]
   delete: [RM_WhereUniqueInput!]
-  deleteMany: [RM_ScalarWhereInput!]
+  deleteMany: [RM_ScalarWhereInput!] # see batch filtering reference
   disconnect: [RM_WhereUniqueInput!]
   set: [RM_WhereUniqueInput!]
   update: [RM_UpdateWithWhereUniqueWithout_M_Input!]
@@ -960,13 +960,6 @@ input RM_WhereUniqueInput {} # pattern like M_WhereUniqueInput
 
 input RM_CreateWithout_M_Input {} # RM_CreateInput - RMRF: M
 
-input RM_ScalarWhereInput {
-  AND: [RM_ScalarWhereInput!]
-  NOT: [RM_ScalarWhereInput!]
-  OR: [RM_ScalarWhereInput!]
-  RMSF: S_Filter
-}
-
 input RM_UpdateWithWhereUniqueWithout_M_Input {
   data: RM_UpdateWithout_M_DataInput!
   where: RM_WhereUniqueInput!
@@ -977,7 +970,7 @@ input RM_UpdateWithout_M_DataInput {
 
 input RM_UpdateManyWithWhereNestedInput {
   data: RM_UpdateManyDataInput!
-  where: RM_ScalarWhereInput!
+  where: RM_ScalarWhereInput! # see batch filering reference
 }
 
 input RM_UpsertWithWhereUniqueWithout_M_Input {
@@ -987,7 +980,7 @@ input RM_UpsertWithWhereUniqueWithout_M_Input {
 }
 ```
 
-For `S_Filter` see [batch filtering](#batch-filtering) contributions.
+For `S_ScalarWhereInput` see [batch filtering](#batch-filtering) contributions.
 
 **Example**
 
@@ -2090,6 +2083,15 @@ input RM_Filter {
   none: RM_WhereInput # recurse -> M_WhereInput
   some: RM_WhereInput # recurse -> M_WhereInput
 }
+
+# This type shows up in the context of InputObject types related to t.crud.update<M>.
+
+RM_ScalarWhereInput {
+  AND: [RM_ScalarWhereInput!]
+  NOT: [RM_ScalarWhereInput!]
+  OR: [RM_ScalarWhereInput!]
+  RMSF: S_Filter
+}
 ```
 
 **Scalar Filters**
@@ -2132,7 +2134,7 @@ input StringFilter {
 input UUIDFilter {} # like StringFilter
 ```
 
-`ID` scalars use `StringFilter`. If you are curious why we don't use a `NumericFilter` to be polymorphic over `Int` and `Float` scalars see this [issue](https://github.com/prisma-labs/nexus-prisma/issues/482). Creating a tailored `DateTime` filter is being tracked in this [issue](https://github.com/prisma-labs/nexus-prisma/issues/484).
+`ID` scalars use `StringFilter` ([issue](https://github.com/prisma-labs/nexus-prisma/issues/485)). We are considering a tailored `DateTime` filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/484)).
 
 <br>
 
