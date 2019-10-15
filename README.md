@@ -1775,8 +1775,6 @@ type M {
 
 **Example**
 
-todo
-
 ```gql
 query batchRead {
   users(skip: 50, first: 50) {
@@ -1795,11 +1793,15 @@ query batchReadRelation {
 }
 ```
 
+```gql
+...
+```
+
 ```ts
 objectType({
   name: 'User',
   definition(t) {
-    t.model.friends({ pagination: true })
+    t.model.posts({ pagination: true })
   },
 })
 
@@ -1808,6 +1810,19 @@ queryType({
     t.crud.users({ pagination: true })
   },
 })
+```
+
+```prisma
+model User {
+  id    Int @id
+  posts Post[]
+  // ...
+}
+
+model Post {
+  id    Int @id
+  // ...
+}
 ```
 
 <br>
@@ -2065,7 +2080,7 @@ enum UserStatus {
 ### How to Read
 
 ```
-M = model   F = field   L = list   S = scalar   E = enum   R = relation  V = value
+M = model   F = field   L = list   S = scalar   R = relation   E = enum   V = value
 ```
 
 ### Batch Filtering
@@ -2122,6 +2137,8 @@ input RM_ScalarWhereInput {
 
 **Scalar Filters**
 
+`ID` scalars use `StringFilter` ([issue](https://github.com/prisma-labs/nexus-prisma/issues/485)). We are considering a tailored `DateTime` filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/484)).
+
 ```gql
 input BooleanFilter {
   equals: Boolean
@@ -2159,8 +2176,6 @@ input StringFilter {
 
 input UUIDFilter {} # like StringFilter
 ```
-
-`ID` scalars use `StringFilter` ([issue](https://github.com/prisma-labs/nexus-prisma/issues/485)). We are considering a tailored `DateTime` filter ([issue](https://github.com/prisma-labs/nexus-prisma/issues/484)).
 
 <br>
 
