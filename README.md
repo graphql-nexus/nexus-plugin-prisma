@@ -2122,7 +2122,7 @@ input RM_ScalarWhereInput {
 
 **Scalar Filters**
 
-```
+```gql
 input BooleanFilter {
   equals: Boolean
   not: Boolean
