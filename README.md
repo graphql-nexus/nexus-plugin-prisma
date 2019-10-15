@@ -1540,7 +1540,7 @@ undefined | String
 
 - `undefined` (default) Point Prisma field to a GraphQL object whose name matches that of the Prisma field model type.
 
-- `string` Point Prisma field to the given GraphQL object. This option can become necessary when you've have done [model-object mapping](#model-object-mapping) and other Prisma models in your schema have relations to the name-mapped Prisma model. We are interested in devloping further the model-object mapping API so that it automates this better ([issue](https://github.com/prisma-labs/nexus-prisma/issues/461)).
+- `string` Point Prisma field to the given GraphQL object. This option can become necessary when you've have done [model-object mapping](#model-object-mapping) and other Prisma models in your schema have relations to the name-mapped Prisma model. We are interested in developing further the model-object mapping API to automate this better ([issue](https://github.com/prisma-labs/nexus-prisma/issues/461)).
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
