@@ -199,7 +199,13 @@ enum OrderByArg {
 }
 
 type Post {
-  author(after: String, before: String, first: Int, last: Int, skip: Int): [User!]!
+  author(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+  ): [User!]!
   id: ID!
 }
 
@@ -237,9 +243,23 @@ input PostWhereUniqueInput {
 
 type Query {
   post(where: PostWhereUniqueInput!): Post
-  posts(after: String, before: String, first: Int, last: Int, skip: Int, where: PostWhereInput): [Post!]!
+  posts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+    where: PostWhereInput
+  ): [Post!]!
   user(where: UserWhereUniqueInput!): User
-  users(after: String, before: String, first: Int, last: Int, orderBy: UserOrderByInput, skip: Int): [User!]!
+  users(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    orderBy: UserOrderByInput
+    skip: Int
+  ): [User!]!
 }
 
 input StringFilter {
@@ -260,7 +280,13 @@ type User {
   birthDate: DateTime!
   email: String!
   id: ID!
-  posts(after: String, before: String, first: Int, last: Int, skip: Int): [Post!]!
+  posts(
+    after: String
+    before: String
+    first: Int
+    last: Int
+    skip: Int
+  ): [Post!]!
 }
 
 input UserCreateInput {
@@ -2179,9 +2205,15 @@ TODO
 
 <br>
 
+## Workflow
+
+TODO
+
+<br>
+
 # Recipes
 
-### Exposed Prisma Model
+### Projecting Prisma Model Fields
 
 Exposing one of your Prisma models in your GraphQL API
 
@@ -2198,7 +2230,7 @@ objectType({
 
 ### Simple Computed Fields
 
-You can add (computed) fields to a Prisma model using the standard GraphQL Nexus API.
+You can add computed fields to a GraphQL object using the standard GraphQL Nexus API.
 
 ```ts
 objectType({
@@ -2227,7 +2259,7 @@ objectType({
     t.model.id()
     t.model.content()
     t.string('anotherComputedField', {
-      async resolve({ title }, args, ctx) {
+      async resolve(_parent, _args, ctx) {
         const databaseInfo = await ctx.photon.someModel.someOperation(...)
         const result = doSomething(databaseInfo)
         return result
@@ -2237,7 +2269,7 @@ objectType({
 })
 ```
 
-### Renamed Prisma Model Fields
+### Project a Prisma Model Field to a Differently Named GraphQL Object Field
 
 ```ts
 objectType({
@@ -2249,9 +2281,7 @@ objectType({
 })
 ```
 
-### Exposed Reads on Model
-
-By default we expose only pagination. Ordering and filtering must be explicitely enabled because of the performance overhead that they might cause.
+### Publish Full-Featured Reads on a Model
 
 ```ts
 queryType({
@@ -2262,26 +2292,27 @@ queryType({
 })
 ```
 
-### Exposed Writes on Model
+### Publish Writes on a Model
 
 ```ts
 queryType({
   definition(t) {
     t.crud.createPost()
     t.crud.updatePost()
+    t.crud.updateManyPost()
+    t.crud.upsertPost()
     t.crud.deletePost()
+    t.crud.deleteManyPost()
   },
 })
 ```
 
-### Exposed Customized Reads on Model
-
-If you wish to only expose some filters or orders, you can specify so on the model.
+### Publish Customized Reads on a Model
 
 ```ts
 queryType({
   definition(t) {
-    t.model.posts({
+    t.crud.posts({
       filtering: { id: true, title: true },
       ordering: { title: true },
     })
@@ -2289,7 +2320,7 @@ queryType({
 })
 ```
 
-### Exposed Model Writes Along Side Photon-Resolved Fields
+### Publish Model Writes Along Side Photon-Resolved Fields
 
 ```ts
 mutationType({
@@ -2329,6 +2360,6 @@ mutationType({
 
 ## Links
 
-- [Examples](/todo)
-- [Nexus](/todo)
-- [Prisma](/todo)
+- [Examples](https://github.com/prisma-labs/nexus-examples)
+- [Nexus](https://nexus.js.org)
+- [Prisma](https://prisma.io)
