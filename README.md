@@ -495,7 +495,8 @@ type M {
   MSF: S # ! <-- if not ? or @default
 }
 
-scalar S # if not matching a standard GQL scalar
+# if not matching a standard GQL scalar
+scalar S
 ```
 
 **Options**
@@ -956,7 +957,7 @@ input RM_UpdateManyWithout_M_Input {
   upsert: [RM_UpsertWithWhereUniqueWithout_M_Input!]
 }
 
-input RM_WhereUniqueInput {} # pattern like M_WhereUniqueInput
+input RM_WhereUniqueInput {} # recurse pattern like M_WhereUniqueInput
 
 input RM_CreateWithout_M_Input {} # RM_CreateInput - RMRF: M
 
@@ -1181,6 +1182,9 @@ mutation {
 }
 ```
 
+For `M_UpdateInput` and `M_WhereUniqueInput` see [update](#update) contributions.  
+For `M_CreateInput` see [create](#create) contributions.
+
 **Example**
 
 Refer to [update](#update) and [create](#create).
@@ -1388,11 +1392,10 @@ mutation {
   updateMany_M(where: M_WhereInput, data:  M_UpdateManyMutationInput): BatchPayload!
 }
 
-
-
 input M_UpdateManyMutationInput {
   MSF: S
   MEF: E
+  # not possible to batch update relations
 }
 
 type BatchPayload {
@@ -2024,7 +2027,7 @@ model Post {
 }
 
 model Comment {
-  id      String @id @unique @default(cuid())
+  id      String     @id @unique @default(cuid())
   author  User
   post    Post
   content String
@@ -2065,6 +2068,10 @@ type M {
   # When filtering option is enabled
   MRF: RM(where: RM_WhereInput): [RM!]!
 }
+
+# Nested InputObjects from t.crud.update<M>
+
+# Nested InputObjects from t.crud.upsert<M>
 ```
 
 **Where**
@@ -2084,9 +2091,9 @@ input RM_Filter {
   some: RM_WhereInput # recurse -> M_WhereInput
 }
 
-# This type shows up in the context of InputObject types related to t.crud.update<M>.
+# This type shows up in the context of t.crud.update<M> and t.crud.upsert<M>
 
-RM_ScalarWhereInput {
+input RM_ScalarWhereInput {
   AND: [RM_ScalarWhereInput!]
   NOT: [RM_ScalarWhereInput!]
   OR: [RM_ScalarWhereInput!]
