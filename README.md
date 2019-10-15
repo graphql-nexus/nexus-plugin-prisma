@@ -2292,7 +2292,7 @@ These are tips to help you with a successful project workflow
 
 1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to geneate typegen. This will come in handy in certain deployment contexts.
 
-1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve that feature with pakage facades. For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
+1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve this with [pakage facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
 
    ```json
    "generate:prisma": "prisma2 generate",
@@ -2301,7 +2301,7 @@ These are tips to help you with a successful project workflow
    "postinstall" "npm -s run generate"
    ```
 
-1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app. In turn to ensure artifact generation runs we declare the environment variable as such. Artifact generation togglgin based on `NODE_ENV` value is often sufficient but not always. For example in a deployment pipeline `NODE_ENV` may be set to "production" (it is with Heroku).
+1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app. In turn to ensure artifact generation runs we declare the environment variable as such. Artifact generation toggling based on `NODE_ENV` value is often sufficient but not always. For example in a deployment pipeline `NODE_ENV` may be set to "production" (it is with Heroku).
 
    ```json
    "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
