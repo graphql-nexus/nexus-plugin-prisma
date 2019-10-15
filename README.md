@@ -1432,7 +1432,7 @@ mutation updateManyUser(where: {...}, data: { status: ACTIVE }) {
 }
 ```
 
-See [`filtering option`](#filtering) example. Differences are: operation semantics (update things); return type; `data` arg.
+See [filtering option](#filtering) example. Differences are: operation semantics (update things); return type; `data` arg.
 
 <br>
 
@@ -1476,7 +1476,7 @@ mutation {
 }
 ```
 
-See [`filtering option`](#filtering) example. Differences are: operation semantics (delete things); return type.
+See [filtering option](#filtering) example. Differences are: operation semantics (delete things); return type.
 
 <br>
 
@@ -2185,7 +2185,7 @@ input UUIDFilter {} # like StringFilter
 
 Projection for Prisma list types always project as a fully non-nullable GraphQL type. This is because Prisma list fields (and list member type) can themselves never be null, and because Prisma does not support `@default` on list types.
 
-For consistentcy we also apply the same pattern for `t.crid.<BatchRead>`.
+For consistentcy we also apply the same pattern for `t.crud.<BatchRead>`.
 
 ```gql
 type Query {
