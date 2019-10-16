@@ -3,7 +3,6 @@ import { core } from 'nexus'
 import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import { thisExpression } from '@babel/types'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -68,20 +67,6 @@ export const indexBy = <X extends Record<string, any>>(
       return index
     }, seed)
   }
-}
-
-export function partition<T>(
-  arr: T[],
-  iteratee: (val: T) => boolean,
-): [T[], T[]] {
-  const partitioned: [T[], T[]] = [[], []]
-
-  for (const val of arr) {
-    const partitionIndex: 0 | 1 = iteratee(val) ? 0 : 1
-    partitioned[partitionIndex].push(val)
-  }
-
-  return partitioned
 }
 
 export const upperFirst = (s: string): string => {
