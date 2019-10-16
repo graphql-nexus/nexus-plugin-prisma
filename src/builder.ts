@@ -38,7 +38,7 @@ export interface Options {
 
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
-  nexusBuilder: Nexus.OnInstallBuilder
+  nexusBuilder: Nexus.PluginBuilderLens
 }
 
 export function build(options: InternalOptions) {

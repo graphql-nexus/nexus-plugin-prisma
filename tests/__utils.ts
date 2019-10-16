@@ -7,11 +7,13 @@ import { render as renderTypegen } from '../src/typegen'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
-): Nexus.Plugin => ({
-  onInstall: nexusBuilder => ({
-    types: NexusPrismaBuilder.build({ ...options, nexusBuilder }),
-  }),
-})
+) =>
+  Nexus.createPlugin({
+    name: 'nexus-prisma-internal',
+    onInstall: nexusBuilder => ({
+      types: NexusPrismaBuilder.build({ ...options, nexusBuilder }),
+    }),
+  })
 
 export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))

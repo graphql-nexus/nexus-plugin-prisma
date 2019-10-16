@@ -8,7 +8,7 @@ export class Publisher {
   typesPublished: Index<boolean> = {}
   constructor(
     public dmmf: DMMF.DMMF,
-    public nexusBuilder: Nexus.OnInstallBuilder,
+    public nexusBuilder: Nexus.PluginBuilderLens,
   ) {}
 
   inputType(
