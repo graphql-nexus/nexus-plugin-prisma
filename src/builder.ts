@@ -1,18 +1,18 @@
-import * as Nexus from "nexus"
-import { DynamicOutputPropertyDef } from "nexus/dist/dynamicProperty"
-import * as path from "path"
-import * as DMMF from "./dmmf"
-import * as GraphQL from "./graphql"
-import { getCrudMappedFields } from "./mapping"
+import * as Nexus from 'nexus'
+import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
+import * as path from 'path'
+import * as DMMF from './dmmf'
+import * as GraphQL from './graphql'
+import { getCrudMappedFields } from './mapping'
 import {
   ArgsNamingStrategy,
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
-} from "./naming-strategies"
-import { Publisher } from "./publisher"
-import * as Typegen from "./typegen"
-import { assertPhotonInContext } from "./utils"
+} from './naming-strategies'
+import { Publisher } from './publisher'
+import * as Typegen from './typegen'
+import { assertPhotonInContext } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -33,7 +33,7 @@ type PublisherMethods = Record<string, FieldPublisher>
  * ever return null value list members.
  */
 const dmmfListFieldTypeToNexus = (
-  fieldType: DMMF.Data.SchemaField["outputType"],
+  fieldType: DMMF.Data.SchemaField['outputType'],
 ) => {
   return fieldType.isList
     ? {
@@ -46,9 +46,8 @@ const dmmfListFieldTypeToNexus = (
 }
 
 export interface Options {
-  types: any
   // TODO return type should be Photon
-  photon?: (ctx: Nexus.core.GetGen<"context">) => any
+  photon?: (ctx: Nexus.core.GetGen<'context'>) => any
   shouldGenerateArtifacts?: boolean
   inputs?: {
     photon?: string
@@ -76,12 +75,12 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
 } else if (process.env.NEXUS_PRISMA_LINK) {
   defaultTypegenPath = path.join(
     process.cwd(),
-    "node_modules/@types/nexus-prisma-typegen/index.d.ts",
+    'node_modules/@types/nexus-prisma-typegen/index.d.ts',
   )
 } else {
   defaultTypegenPath = path.join(
     __dirname,
-    "../../@types/nexus-prisma-typegen/index.d.ts",
+    '../../@types/nexus-prisma-typegen/index.d.ts',
   )
 }
 
@@ -93,19 +92,19 @@ if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
 } else if (process.env.NEXUS_PRISMA_LINK) {
   defaultPhotonPath = path.join(
     process.cwd(),
-    "/node_modules/@generated/photon",
+    '/node_modules/@generated/photon',
   )
 } else {
-  defaultPhotonPath = "@generated/photon"
+  defaultPhotonPath = '@generated/photon'
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
 const shouldGenerateArtifacts =
-  process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === "true"
+  process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
     ? true
-    : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === "false"
+    : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
     ? false
-    : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === "development")
+    : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
 
 const defaultOptions = {
   shouldGenerateArtifacts,
@@ -161,9 +160,9 @@ export class SchemaBuilder {
   /**
    * Build `t.crud` dynamic output property
    */
-  buildCRUD(): DynamicOutputPropertyDef<"crud"> {
+  buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
-      name: "crud",
+      name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       // FIXME
       // Nexus should improve the type of typeName to be AllOutputTypes
@@ -231,7 +230,7 @@ export class SchemaBuilder {
    */
   buildModel() {
     return Nexus.dynamicOutputProperty({
-      name: "model",
+      name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
       /**
        * This factory implements what .model will actually be.
@@ -312,7 +311,7 @@ export class SchemaBuilder {
             ),
           }
           // Rely on default resolvers for scalars and enums
-          if (field.outputType.kind === "object") {
+          if (field.outputType.kind === 'object') {
             const mapping = this.dmmf.getMapping(typeName)
 
             fieldOpts.resolve = (root, args, ctx) => {
@@ -321,7 +320,7 @@ export class SchemaBuilder {
               assertPhotonInContext(photon)
 
               return photon[mapping.plural!]
-                ["findOne"]({ where: { id: root.id } })
+                ['findOne']({ where: { id: root.id } })
                 [field.name](args)
             }
           }
@@ -348,7 +347,7 @@ export class SchemaBuilder {
   ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[] = []
 
-    if (typeName === "Mutation" || operationName === "findOne") {
+    if (typeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => ({
         arg,
         type: this.dmmf.getInputType(arg.inputType.type),
@@ -375,7 +374,7 @@ export class SchemaBuilder {
       const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
       const whereArg = dmmfField.args.find(
         arg =>
-          arg.inputType.type === inputObjectTypeDefName && arg.name === "where",
+          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
       )
 
       if (!whereArg) {
@@ -398,7 +397,7 @@ export class SchemaBuilder {
     if (resolvedConfig.ordering) {
       const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
       const orderByArg = dmmfField.args.find(
-        arg => arg.inputType.type === orderByTypeName && arg.name === "orderBy",
+        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
@@ -419,7 +418,7 @@ export class SchemaBuilder {
     }
 
     if (resolvedConfig.pagination) {
-      const paginationKeys = ["first", "last", "before", "after", "skip"]
+      const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
       const paginationsArgs =
         resolvedConfig.pagination === true
           ? dmmfField.args.filter(a => paginationKeys.includes(a.name))

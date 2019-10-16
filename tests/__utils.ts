@@ -19,7 +19,6 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
-    types,
   })
   const schema = Nexus.makeSchema({
     types,
@@ -40,7 +39,6 @@ export async function generateSchemaAndTypesWithoutThrowing(
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
     nexusBuilder: { hasType: () => false },
-    types,
     dmmf,
   }).build()
   const schemaAndMissingTypes = Nexus.core.makeSchemaInternal({
