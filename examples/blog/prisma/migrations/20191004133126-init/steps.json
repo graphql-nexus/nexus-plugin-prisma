@@ -1,5 +1,5 @@
 {
-  "version": "0.2.7",
+  "version": "0.3.14-fixed",
   "steps": [
     {
       "stepType": "CreateModel",
@@ -124,6 +124,33 @@
     {
       "stepType": "CreateField",
       "model": "Author",
+      "name": "createdAt",
+      "type": {
+        "Base": "DateTime"
+      },
+      "arity": "required",
+      "isUnique": false,
+      "default": {
+        "Expression": [
+          "now",
+          "DateTime",
+          []
+        ]
+      }
+    },
+    {
+      "stepType": "CreateField",
+      "model": "Author",
+      "name": "updatedAt",
+      "type": {
+        "Base": "DateTime"
+      },
+      "arity": "required",
+      "isUnique": false
+    },
+    {
+      "stepType": "CreateField",
+      "model": "Author",
       "name": "name",
       "type": {
         "Base": "String"
@@ -159,6 +186,16 @@
           "name": "AuthorToBlog",
           "on_delete": "None"
         }
+      },
+      "arity": "required",
+      "isUnique": false
+    },
+    {
+      "stepType": "CreateField",
+      "model": "Author",
+      "name": "rating",
+      "type": {
+        "Base": "Float"
       },
       "arity": "required",
       "isUnique": false

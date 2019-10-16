@@ -2,64 +2,12 @@
 ### Do not make changes to this file directly
 
 
-type Author {
-  blog: Blog!
-  id: Int!
-  name: String
-  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
-}
-
-input AuthorCreateManyWithoutAuthorsInput {
-  connect: [AuthorWhereUniqueInput!]
-  create: [AuthorCreateWithoutBlogInput!]
-}
-
-input AuthorCreateOneWithoutAuthorInput {
-  connect: AuthorWhereUniqueInput
-  create: AuthorCreateWithoutPostsInput
-}
-
-input AuthorCreateWithoutBlogInput {
-  createdAt: DateTime
-  name: String
-  posts: PostCreateManyWithoutPostsInput
-  rating: Float!
-  updatedAt: DateTime
-}
-
-input AuthorCreateWithoutPostsInput {
-  blog: BlogCreateOneWithoutBlogInput!
-  createdAt: DateTime
-  name: String
-  rating: Float!
-  updatedAt: DateTime
-}
-
-input AuthorFilter {
-  every: AuthorWhereInput
-  none: AuthorWhereInput
-  some: AuthorWhereInput
-}
-
-input AuthorWhereInput {
-  AND: [AuthorWhereInput!]
-  blog: BlogWhereInput
-  createdAt: DateTimeFilter
-  id: IntFilter
-  name: NullableStringFilter
-  NOT: [AuthorWhereInput!]
-  OR: [AuthorWhereInput!]
-  posts: PostFilter
-  rating: FloatFilter
-  updatedAt: DateTimeFilter
-}
-
-input AuthorWhereUniqueInput {
-  id: Int
+type BatchPayload {
+  count: Int!
 }
 
 type Blog {
-  authors(after: String, before: String, first: Int, last: Int, skip: Int): [Author!]
+  authors(after: String, before: String, first: Int, last: Int, skip: Int): [User!]
   createdAt: DateTime!
   id: Int!
   name: String!
@@ -69,12 +17,12 @@ type Blog {
 }
 
 input BlogCreateInput {
-  authors: AuthorCreateManyWithoutAuthorsInput
+  authors: UserCreateManyWithoutAuthorsInput
   createdAt: DateTime
   name: String!
   posts: PostCreateManyWithoutPostsInput
   updatedAt: DateTime
-  viewCount: Int!
+  viewCount: Int
 }
 
 input BlogCreateOneWithoutBlogInput {
@@ -87,16 +35,24 @@ input BlogCreateWithoutAuthorsInput {
   name: String!
   posts: PostCreateManyWithoutPostsInput
   updatedAt: DateTime
-  viewCount: Int!
+  viewCount: Int
 }
 
 input BlogPostsWhereInput {
   title: StringFilter
 }
 
+input BlogUpdateManyMutationInput {
+  createdAt: DateTime
+  id: Int
+  name: String
+  updatedAt: DateTime
+  viewCount: Int
+}
+
 input BlogWhereInput {
   AND: [BlogWhereInput!]
-  authors: AuthorFilter
+  authors: UserFilter
   createdAt: DateTimeFilter
   id: IntFilter
   name: StringFilter
@@ -113,6 +69,7 @@ input BlogWhereUniqueInput {
 
 type CustomPost {
   id: Int!
+  status: PostStatus!
   tags: [String!]!
   title: String!
 }
@@ -154,6 +111,7 @@ input IntFilter {
 
 type Mutation {
   createOneBlog(data: BlogCreateInput!): Blog!
+  updateManyBlog(data: BlogUpdateManyMutationInput!, where: BlogWhereInput): BatchPayload!
 }
 
 input NullableStringFilter {
@@ -185,9 +143,10 @@ input PostCreatetagsInput {
 }
 
 input PostCreateWithoutBlogInput {
-  author: AuthorCreateOneWithoutAuthorInput
+  status: PostStatus!
   tags: PostCreatetagsInput
   title: String!
+  user: UserCreateOneWithoutUserInput
 }
 
 input PostFilter {
@@ -198,17 +157,24 @@ input PostFilter {
 
 input PostOrderByInput {
   id: OrderByArg
+  status: OrderByArg
   title: OrderByArg
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
 }
 
 input PostWhereInput {
   AND: [PostWhereInput!]
-  author: AuthorWhereInput
   blog: BlogWhereInput
   id: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
+  status: PostStatus
   title: StringFilter
+  user: UserWhereInput
 }
 
 input PostWhereUniqueInput {
@@ -216,9 +182,10 @@ input PostWhereUniqueInput {
 }
 
 type Query {
-  authors(after: String, before: String, first: Int, last: Int, skip: Int, where: AuthorWhereInput): [Author!]
-  blog(where: BlogWhereUniqueInput!): Blog
+  blog(id: Int!): Blog!
   blogs: [Blog!]
+  blogsLike(name: String, viewCount: Int): [Blog!]!
+  people(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]
   posts(after: String, before: String, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [CustomPost!]
 }
 
@@ -234,4 +201,69 @@ input StringFilter {
   not: String
   notIn: [String!]
   startsWith: String
+}
+
+type User {
+  blog: Blog!
+  id: Int!
+  name: String
+  posts(after: String, before: String, first: Int, last: Int, skip: Int): [CustomPost!]
+  role: UserRole!
+}
+
+input UserCreateManyWithoutAuthorsInput {
+  connect: [UserWhereUniqueInput!]
+  create: [UserCreateWithoutBlogInput!]
+}
+
+input UserCreateOneWithoutUserInput {
+  connect: UserWhereUniqueInput
+  create: UserCreateWithoutPostsInput
+}
+
+input UserCreateWithoutBlogInput {
+  createdAt: DateTime
+  name: String
+  posts: PostCreateManyWithoutPostsInput
+  rating: Float!
+  role: UserRole!
+  updatedAt: DateTime
+}
+
+input UserCreateWithoutPostsInput {
+  blog: BlogCreateOneWithoutBlogInput!
+  createdAt: DateTime
+  name: String
+  rating: Float!
+  role: UserRole!
+  updatedAt: DateTime
+}
+
+input UserFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
+}
+
+enum UserRole {
+  ADMIN
+  AUTHOR
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  blog: BlogWhereInput
+  createdAt: DateTimeFilter
+  id: IntFilter
+  name: NullableStringFilter
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  posts: PostFilter
+  rating: FloatFilter
+  role: UserRole
+  updatedAt: DateTimeFilter
+}
+
+input UserWhereUniqueInput {
+  id: Int
 }

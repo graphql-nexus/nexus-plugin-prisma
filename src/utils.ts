@@ -1,8 +1,45 @@
 import { isNamedType } from 'graphql'
 import { core } from 'nexus'
 import { relative } from 'path'
-import * as DMMF from './dmmf'
-import { FieldNamingStrategy, OperationName } from './naming-strategies'
+import * as fs from 'fs-extra'
+import * as path from 'path'
+
+/**
+ * Write file contents but first delete the file off disk if present. This is a
+ * useful function when the effect of file delete is needed to trigger some file
+ * watch/refresh mechanism, such as is the case with VSCode TS declaration files
+ * inside `@types/` packages.
+ *
+ * For more details that motivated this utility refer to the originating issue
+ * https://github.com/prisma-labs/nexus-prisma/issues/453.
+ */
+export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
+  fs
+    .unlink(filePath)
+    .catch(error => {
+      return error.code === 'ENOENT' ? Promise.resolve() : Promise.reject(error)
+    })
+    .then(() => fs.mkdirp(path.dirname(filePath)))
+    .then(() => fs.writeFile(filePath, data))
+
+/**
+ * Write file contents but first delete the file off disk if present. This is a
+ * useful function when the effect of file delete is needed to trigger some file
+ * watch/refresh mechanism, such as is the case with VSCode TS declaration files
+ * inside `@types/` packages.
+ *
+ * For more details that motivated this utility refer to the originating issue
+ * https://github.com/prisma-labs/nexus-prisma/issues/453.
+ */
+export const hardWriteFileSync = (filePath: string, data: string): void => {
+  fs.mkdirpSync(path.dirname(filePath))
+  try {
+    fs.unlinkSync(filePath)
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
+  }
+  fs.writeFileSync(filePath, data)
+}
 
 // TODO `any` should be `unknown` but there is a bug (?)
 // preventing that from working, see:
@@ -32,20 +69,6 @@ export const indexBy = <X extends Record<string, any>>(
   }
 }
 
-export function partition<T>(
-  arr: T[],
-  iteratee: (val: T) => boolean,
-): [T[], T[]] {
-  const partitioned: [T[], T[]] = [[], []]
-
-  for (const val of arr) {
-    const partitionIndex: 0 | 1 = iteratee(val) ? 0 : 1
-    partitioned[partitionIndex].push(val)
-  }
-
-  return partitioned
-}
-
 export const upperFirst = (s: string): string => {
   return s.replace(/^\w/, c => c.toUpperCase())
 }
@@ -57,7 +80,7 @@ export function flatMap<T, U>(
   return Array.prototype.concat(...array.map(callbackfn))
 }
 
-export function nexusFieldOpts(param: {
+export function dmmfFieldToNexusFieldConfig(param: {
   type: string | object
   isList: boolean
   isRequired: boolean

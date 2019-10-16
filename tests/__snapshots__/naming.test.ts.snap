@@ -1,223 +1,84 @@
-import * as DMMF from './dmmf'
-import { getCrudMappedFields } from './mapping'
-import { defaultFieldNamingStrategy } from './naming-strategies'
-import { hardWriteFileSync, hardWriteFile } from './utils'
+// Jest Snapshot v1, https://goo.gl/fbAQLP
 
-type Options = {
-  photonPath: string
-  typegenPath: string
+exports[`generates publishers pluralized & camel-cased: schema 1`] = `
+"type BatchPayload {
+  count: Int!
 }
 
-export function generateSync(options: Options): void {
-  doGenerate(true, options)
+input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
 }
 
-export function generate(options: Options): Promise<void> {
-  return doGenerate(false, options)
+type ModelName {
+  id: Int!
 }
 
-export function doGenerate(sync: true, options: Options): void
-export function doGenerate(sync: false, options: Options): Promise<void>
-export function doGenerate(
-  sync: boolean,
-  options: Options,
-): void | Promise<void> {
-  const dmmf = DMMF.get(options.photonPath)
-  const tsDeclaration = render(dmmf, options.photonPath)
-  if (sync) {
-    hardWriteFileSync(options.typegenPath, tsDeclaration)
-  } else {
-    return hardWriteFile(options.typegenPath, tsDeclaration)
-  }
+input ModelNameCreateInput {
+  name: String!
 }
 
-export function render(dmmf: DMMF.DMMF, photonPath: string) {
-  return `\
-import * as photon from '${photonPath}';
+input ModelNameUpdateInput {
+  id: Int
+  name: String
+}
+
+input ModelNameUpdateManyMutationInput {
+  id: Int
+  name: String
+}
+
+input ModelNameWhereInput {
+  id: IntFilter
+  name: StringFilter
+  AND: [ModelNameWhereInput!]
+  OR: [ModelNameWhereInput!]
+  NOT: [ModelNameWhereInput!]
+}
+
+input ModelNameWhereUniqueInput {
+  id: Int
+}
+
+type Mutation {
+  createOneModelName(data: ModelNameCreateInput!): ModelName!
+  deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
+  updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
+  upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
+  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
+}
+
+type Query {
+  modelName(where: ModelNameWhereUniqueInput!): ModelName
+  modelNames(skip: Int, after: String, before: String, first: Int, last: Int): [ModelName!]!
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+"
+`;
+
+exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
+"import * as photon from '@generated/photon';
 import { core } from 'nexus';
 // Types helpers
-${renderStaticTypes()}
-
-// Generated
-${renderModelTypes(dmmf)}
-${renderNexusPrismaInputs(dmmf)}
-${renderNexusPrismaTypes(dmmf)}
-${renderNexusPrismaMethods(dmmf)}
-
-declare global {
-  type NexusPrisma<
-    TypeName extends string,
-    ModelOrCrud extends 'model' | 'crud'
-  > = GetNexusPrisma<TypeName, ModelOrCrud>;
-}
-  `
-}
-
-function renderModelTypes(dmmf: DMMF.DMMF) {
-  return `\
-interface ModelTypes {
-${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
-}
-  `
-}
-
-function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
-  const queriesByType = getCrudMappedFields('Query', dmmf).map(mappedfield => ({
-    fieldName: mappedfield.field.name,
-    returnType: mappedfield.field.outputType.type,
-  }))
-  const mutationsByType = getCrudMappedFields('Mutation', dmmf).map(
-    mappedField => ({
-      fieldName: mappedField.field.name,
-      returnType: mappedField.field.outputType.type,
-    }),
-  )
-  const fieldsByType = dmmf.datamodel.models.reduce<
-    Record<string, { fieldName: string; returnType: string }[]>
-  >((acc, m) => {
-    acc[m.name] = m.fields.map(f => ({
-      fieldName: f.name,
-      returnType: f.type,
-    }))
-
-    return acc
-  }, {})
-
-  // TODO: Add JS Docs
-  const renderNexusPrismaType = (
-    input: {
-      fieldName: string
-      returnType: string
-    }[],
-  ): string => `\
-${input.map(f => `    ${f.fieldName}: '${f.returnType}'`).join('\n')}
-`
-
-  return `\
-interface NexusPrismaTypes {
-  Query: {
-${renderNexusPrismaType(queriesByType)}
-  },
-  Mutation: {
-${renderNexusPrismaType(mutationsByType)}
-  },
-${Object.entries(fieldsByType).map(
-  ([modelName, fields]) => `  ${modelName}: {
-${renderNexusPrismaType(fields)}
-}`,
-)}
-}
-`
-}
-
-function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
-  const queriesFields = getCrudMappedFields('Query', dmmf)
-    .filter(
-      mappedField =>
-        mappedField.field.outputType.isList &&
-        mappedField.field.outputType.kind === 'object',
-    )
-    .map(mappedField => {
-      const whereArg = mappedField.field.args.find(a => a.name === 'where')!
-      const orderByArg = mappedField.field.args.find(a => a.name === 'orderBy')!
-      const whereInput = dmmf.schema.inputTypes.find(
-        i => i.name === whereArg.inputType.type,
-      )!
-      const orderByInput = dmmf.schema.inputTypes.find(
-        i => i.name === orderByArg.inputType.type,
-      )!
-
-      return {
-        fieldName: defaultFieldNamingStrategy[mappedField.operation](
-          mappedField.field.name,
-          mappedField.model,
-        ),
-        filtering: whereInput,
-        ordering: orderByInput,
-      }
-    })
-
-  const fieldsByType = dmmf.datamodel.models
-    .map(m => dmmf.getOutputType(m.name))
-    .reduce<
-      Record<
-        string,
-        {
-          fieldName: string
-          filtering: DMMF.Data.InputType
-          ordering: DMMF.Data.InputType
-        }[]
-      >
-    >((acc, type) => {
-      acc[type.name] = type.fields
-        .filter(f => f.outputType.isList && f.outputType.kind === 'object')
-        .map(f => {
-          const whereArg = f.args.find(a => a.name === 'where')!
-
-          const orderByArg = f.args.find(a => a.name === 'orderBy')!
-          const whereInput = dmmf.schema.inputTypes.find(
-            i => i.name === whereArg.inputType.type,
-          )!
-          const orderByInput = dmmf.schema.inputTypes.find(
-            i => i.name === orderByArg.inputType.type,
-          )!
-
-          return {
-            fieldName: f.name,
-            filtering: whereInput,
-            ordering: orderByInput,
-          }
-        })
-
-      return acc
-    }, {})
-
-  // TODO: Add JS Docs
-  const renderNexusPrismaInput = (
-    input: {
-      fieldName: string
-      filtering: DMMF.Data.InputType
-      ordering: DMMF.Data.InputType
-    }[],
-  ): string => `\
-${input
-  .map(
-    f => `    ${f.fieldName}: {
-  filtering: ${f.filtering.fields.map(f => `'${f.name}'`).join(' | ')}
-  ordering: ${f.ordering.fields.map(f => `'${f.name}'`).join(' | ')}
-}`,
-  )
-  .join('\n')}
-`
-
-  return `\
-interface NexusPrismaInputs {
-  Query: {
-${renderNexusPrismaInput(queriesFields)}
-  },
-  ${Object.entries(fieldsByType).map(
-    ([modelName, fields]) => `  ${modelName}: {
-${renderNexusPrismaInput(fields)}
-  }`,
-  )}
-}
-`
-}
-
-function renderNexusPrismaMethods(dmmf: DMMF.DMMF) {
-  return `\
-interface NexusPrismaMethods {
-${dmmf.datamodel.models
-  .map(m => `  ${m.name}: NexusPrismaFields<'${m.name}'>`)
-  .join('\n')}
-  Query: NexusPrismaFields<'Query'>
-  Mutation: NexusPrismaFields<'Mutation'>
-}
-  `
-}
-
-function renderStaticTypes() {
-  return `\
   type IsModelNameExistsInGraphQLTypes<
   ReturnType extends any
 > = ReturnType extends core.GetGen<'objectNames'> ? true : false;
@@ -420,5 +281,61 @@ type GetNexusPrisma<
     ? GetNexusPrismaMethod<TypeName>
     : never
   : never;
-  `
+  
+
+// Generated
+interface ModelTypes {
+  ModelName: photon.ModelName
 }
+  
+interface NexusPrismaInputs {
+  Query: {
+    modelNames: {
+  filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'name'
+}
+
+  },
+    ModelName: {
+
+
+  }
+}
+
+interface NexusPrismaTypes {
+  Query: {
+    modelName: 'ModelName'
+    modelNames: 'ModelName'
+
+  },
+  Mutation: {
+    createOneModelName: 'ModelName'
+    updateOneModelName: 'ModelName'
+    updateManyModelName: 'BatchPayload'
+    deleteOneModelName: 'ModelName'
+    deleteManyModelName: 'BatchPayload'
+    upsertOneModelName: 'ModelName'
+
+  },
+  ModelName: {
+    id: 'Int'
+    name: 'String'
+
+}
+}
+
+interface NexusPrismaMethods {
+  ModelName: NexusPrismaFields<'ModelName'>
+  Query: NexusPrismaFields<'Query'>
+  Mutation: NexusPrismaFields<'Mutation'>
+}
+  
+
+declare global {
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

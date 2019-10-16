@@ -12,7 +12,7 @@ model Blog {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  viewCount Int      @default(0)
+  viewCount Int
   posts     Post[]
   authors   User[]
 }

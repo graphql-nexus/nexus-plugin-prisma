@@ -19,16 +19,42 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
-    shouldGenerateArtifacts: false,
+    types,
   })
   const schema = Nexus.makeSchema({
     types,
     plugins: [nexusPrisma],
-    outputs: false,
+    shouldGenerateArtifacts: false,
   })
 
   return {
     schema: GQL.printSchema(schema),
     typegen: renderTypegen(dmmf, '@generated/photon'),
+  }
+}
+
+export async function generateSchemaAndTypesWithoutThrowing(
+  datamodel: string,
+  types: any,
+) {
+  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
+    nexusBuilder: { hasType: () => false },
+    types,
+    dmmf,
+  }).build()
+  const schemaAndMissingTypes = Nexus.core.makeSchemaInternal({
+    types: [types, nexusPrisma],
+    outputs: {
+      schema: false,
+      typegen: false,
+    },
+  })
+  const typegen = renderTypegen(dmmf, '@generated/photon')
+
+  return {
+    schema: GQL.printSchema(schemaAndMissingTypes.schema),
+    missingTypes: schemaAndMissingTypes.missingTypes,
+    typegen,
   }
 }

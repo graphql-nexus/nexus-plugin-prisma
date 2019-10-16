@@ -6,5 +6,6 @@ export const Post = objectType({
     t.model('Post').id()
     t.model('Post').title()
     t.model('Post').tags()
+    t.model('Post').status()
   },
 })

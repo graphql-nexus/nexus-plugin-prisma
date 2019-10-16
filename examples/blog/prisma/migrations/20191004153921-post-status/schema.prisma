@@ -12,12 +12,12 @@ model Blog {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  viewCount Int      @default(0)
+  viewCount Int
   posts     Post[]
-  authors   User[]
+  authors   Author[]
 }
 
-model User {
+model Author {
   id        Int      @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -25,12 +25,6 @@ model User {
   posts     Post[]
   blog      Blog
   rating    Float
-  role      UserRole
-}
-
-enum UserRole {
-  ADMIN
-  AUTHOR
 }
 
 model Post {

@@ -1,8 +1,8 @@
-import * as Nexus from 'nexus'
-import * as DMMF from './dmmf'
-import { nexusFieldOpts, partition, Index } from './utils'
-import { CustomInputArg } from './builder'
-import { scalarsNameValues } from './graphql'
+import * as Nexus from "nexus"
+import { CustomInputArg } from "./builder"
+import * as DMMF from "./dmmf"
+import { scalarsNameValues } from "./graphql"
+import { dmmfFieldToNexusFieldConfig, Index } from "./utils"
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
@@ -24,18 +24,18 @@ export class Publisher {
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
       return Nexus.arg(
-        nexusFieldOpts({
+        dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
           type: customArg.type.name,
         }),
       )
     }
 
-    if (customArg.arg.inputType.kind === 'scalar') {
+    if (customArg.arg.inputType.kind === "scalar") {
       return this.publishScalar(customArg.type.name)
     }
 
-    if (customArg.arg.inputType.kind === 'enum') {
+    if (customArg.arg.inputType.kind === "enum") {
       return this.publishEnum(customArg.type.name)
     }
 
@@ -45,29 +45,52 @@ export class Publisher {
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
-    // If type is already published, just reference it
-    if (this.isPublished(outputTypeName)) {
+  public outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
+    /**
+     * Rules:
+     * - If outputTypeName is already published
+     * - Or if outputTypeName matches a prisma model name
+     * - Then simply reference the type. Types that matches a prisma model name should be published manually by users.
+     */
+    if (
+      this.isPublished(outputTypeName) ||
+      this.dmmf.hasModel(outputTypeName)
+    ) {
       return outputTypeName
     }
 
     // If output object type, just reference the type
-    if (field.outputType.kind === 'object') {
-      return outputTypeName
+    if (field.outputType.kind === "object") {
+      return this.publishObject(outputTypeName)
     }
 
     if (this.dmmf.hasEnumType(outputTypeName)) {
       return this.publishEnum(outputTypeName)
     }
 
-    if (field.outputType.kind === 'scalar') {
+    if (field.outputType.kind === "scalar") {
       return this.publishScalar(outputTypeName)
     }
 
     return outputTypeName
   }
 
-  publishScalar(typeName: string) {
+  protected publishObject(name: string) {
+    const dmmfObject = this.dmmf.getOutputType(name)
+
+    this.markTypeAsPublished(name)
+
+    return Nexus.objectType({
+      name,
+      definition: t => {
+        for (const field of dmmfObject.fields) {
+          t.field(field.name, dmmfFieldToNexusFieldConfig(field.outputType))
+        }
+      },
+    })
+  }
+
+  protected publishScalar(typeName: string) {
     if (scalarsNameValues.includes(typeName as any)) {
       return typeName
     }
@@ -82,14 +105,14 @@ export class Publisher {
     })
   }
 
-  publishEnum(typeName: string) {
-    const eType = this.dmmf.getEnumType(typeName)
+  protected publishEnum(typeName: string) {
+    const dmmfEnum = this.dmmf.getEnumType(typeName)
 
     this.markTypeAsPublished(typeName)
 
     return Nexus.enumType({
       name: typeName,
-      members: eType.values,
+      members: dmmfEnum.values,
     })
   }
 
@@ -99,35 +122,31 @@ export class Publisher {
     return Nexus.inputObjectType({
       name: inputType.name,
       definition: t => {
-        const [scalarFields, objectFields] = partition(
-          inputType.fields,
-          f => f.inputType.kind === 'scalar',
-        )
-
-        const remappedObjectFields = objectFields.map(field => ({
-          ...field,
-          inputType: {
-            ...field.inputType,
-            type: this.isPublished(field.inputType.type)
-              ? // Simply reference the field input type if it's already been visited, otherwise create it
-                field.inputType.type
-              : this.inputType({
-                  arg: field,
-                  type: this.getTypeFromArg(field),
-                }),
-          },
-        }))
-        ;[...scalarFields, ...remappedObjectFields].forEach(field => {
-          t.field(field.name, nexusFieldOpts(field.inputType))
-        })
+        inputType.fields
+          .map(field => ({
+            ...field,
+            inputType: {
+              ...field.inputType,
+              type: this.isPublished(field.inputType.type)
+                ? // Simply reference the field input type if it's already been visited, otherwise create it
+                  field.inputType.type
+                : this.inputType({
+                    arg: field,
+                    type: this.getTypeFromArg(field),
+                  }),
+            },
+          }))
+          .forEach(field => {
+            t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
+          })
       },
     })
   }
 
-  getTypeFromArg(arg: DMMF.Data.SchemaArg) {
+  protected getTypeFromArg(arg: DMMF.Data.SchemaArg): CustomInputArg["type"] {
     const kindToType = {
       scalar: (typeName: string) => ({
-        name: this.dmmf.getOutputType(typeName).name,
+        name: typeName,
       }),
       enum: (typeName: string) => this.dmmf.getEnumType(typeName),
       object: (typeName: string) => this.dmmf.getInputType(typeName),

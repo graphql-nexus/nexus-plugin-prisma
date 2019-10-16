@@ -128,7 +128,7 @@ export class OutputType {
 
     if (!field) {
       throw new Error(
-        `Could not find field field '${fieldName}' on type ${this.outputType.name}`,
+        `Could not find field '${this.outputType.name}.${fieldName}' on type ${this.outputType.name}`,
       )
     }
 

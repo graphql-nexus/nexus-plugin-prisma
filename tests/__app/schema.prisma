@@ -18,8 +18,14 @@ model User {
 }
 
 model Post {
-  id      Int    @id
+  id      Int        @id
   authors User[]
   rating  Float
+  status  PostStatus
   // likers  User[] @relation(references: likers)
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
 }

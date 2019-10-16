@@ -51,7 +51,7 @@ it('integrates together', async () => {
   const nexusPrisma = NexusPrisma.create({
     shouldGenerateArtifacts: true,
     outputs: {
-      typegen: projectPath(`/generated/nexus-types-prisma.d.ts`),
+      typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
     },
   })
 
@@ -60,7 +60,7 @@ it('integrates together', async () => {
     plugins: [nexusPrisma],
     shouldGenerateArtifacts: true,
     outputs: {
-      typegen: projectPath(`/generated/nexus-types-core.d.ts`),
+      typegen: projectPath(`/generated/nexus-typegen.d.ts`),
       schema: projectPath(`/generated/schema.graphql`),
     },
   })
@@ -71,10 +71,10 @@ it('integrates together', async () => {
   //
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
   const nexusPrismaTypeGen = await projectReadFile(
-    '/generated/nexus-types-prisma.d.ts',
+    '/generated/nexus-prisma-typegen.d.ts',
   )
   const nexusCoreTypegen = await projectReadFile(
-    '/generated/nexus-types-core.d.ts',
+    '/generated/nexus-typegen.d.ts',
   )
   const photonTSD = await projectReadFile(
     '../../node_modules/@generated/photon/index.d.ts',
