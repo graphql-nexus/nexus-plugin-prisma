@@ -1,6 +1,5 @@
 import { createPlugin } from 'nexus'
 import { build as buildNexusPrismaTypes, Options } from './builder'
-import { PluginDef } from 'nexus/dist/plugins'
 
 /**
  * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
@@ -36,7 +35,7 @@ import { PluginDef } from 'nexus/dist/plugins'
  * approach. This system will change once the Nexus plugin system has first
  * class support for typegen.
  */
-export const create = (options?: Options) => {
+export function nexusPrismaPlugin(options?: Options) {
   return createPlugin({
     name: 'nexus-prisma',
     onInstall: nexusBuilder => {
@@ -47,5 +46,4 @@ export const create = (options?: Options) => {
   })
 }
 
-export const nexusPrismaPlugin = create
 export type Options = Options

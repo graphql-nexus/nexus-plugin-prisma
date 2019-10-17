@@ -47,12 +47,35 @@ const dmmfListFieldTypeToNexus = (
 
 export interface Options {
   // TODO return type should be Photon
+  /**
+   * nexus-prisma will call this to get a reference to an instance of Photon.
+   * The function is passed the context object. Typically a Photon instance will
+   * be available on the context to support your custom resolvers. Therefore the
+   * default getter returns `ctx.photon`.
+   */
   photon?: (ctx: Nexus.core.GetGen<'context'>) => any
+  /**
+   * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
+   * and permits the same environment variables. This configuration will completely
+   * go away once Nexus has typeGen plugin support.
+   */
   shouldGenerateArtifacts?: boolean
   inputs?: {
+    /**
+     * Where can nexus-prisma find the Photon.js package? By default looks in
+     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * gets your Prisma schema AST and Photon.js crud info from the generated
+     * Photon.js package.
+     */
     photon?: string
   }
   outputs?: {
+    /**
+     * Where should nexus-prisma put its typegen on disk? By default matches the
+     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
+     * This configuration will completely go away once Nexus has typeGen plugin
+     * support.
+     */
     typegen?: string
   }
 }
