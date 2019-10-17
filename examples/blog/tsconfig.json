@@ -5,9 +5,7 @@
     "lib": ["esnext"],
     "rootDir": "src",
     "strict": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
     "outDir": "dist"
   },
-  "exclude": ["prisma"]
+  "exclude": ["prisma/**/*"]
 }
