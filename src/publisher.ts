@@ -1,8 +1,8 @@
-import * as Nexus from "nexus"
-import { CustomInputArg } from "./builder"
-import * as DMMF from "./dmmf"
-import { scalarsNameValues } from "./graphql"
-import { dmmfFieldToNexusFieldConfig, Index } from "./utils"
+import * as Nexus from 'nexus'
+import { CustomInputArg } from './builder'
+import * as DMMF from './dmmf'
+import { scalarsNameValues } from './graphql'
+import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
@@ -31,11 +31,11 @@ export class Publisher {
       )
     }
 
-    if (customArg.arg.inputType.kind === "scalar") {
+    if (customArg.arg.inputType.kind === 'scalar') {
       return this.publishScalar(customArg.type.name)
     }
 
-    if (customArg.arg.inputType.kind === "enum") {
+    if (customArg.arg.inputType.kind === 'enum') {
       return this.publishEnum(customArg.type.name)
     }
 
@@ -60,7 +60,7 @@ export class Publisher {
     }
 
     // If output object type, just reference the type
-    if (field.outputType.kind === "object") {
+    if (field.outputType.kind === 'object') {
       return this.publishObject(outputTypeName)
     }
 
@@ -68,7 +68,7 @@ export class Publisher {
       return this.publishEnum(outputTypeName)
     }
 
-    if (field.outputType.kind === "scalar") {
+    if (field.outputType.kind === 'scalar') {
       return this.publishScalar(outputTypeName)
     }
 
@@ -143,7 +143,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DMMF.Data.SchemaArg): CustomInputArg["type"] {
+  protected getTypeFromArg(arg: DMMF.Data.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: typeName,
