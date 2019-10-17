@@ -11,7 +11,8 @@
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
-    "data:inject": "ts-node prisma/fake-data.ts"
+    "data:inject": "ts-node prisma/fake-data.ts",
+    "postinstall": "yarn -s generate"
   },
   "dependencies": {
     "graphql": "^14.3.1",
