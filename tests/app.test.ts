@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
 import * as NexusPrisma from '../src'
 import * as fs from 'fs-extra'
-import * as typeDefs from './__app/main'
+import * as types from './__app/main'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
@@ -26,10 +26,10 @@ it('integrates together', async () => {
   //   - The test will produce something identical to what was there before
   //   - If it does not, the snapshots will fail + git diff (redundant, though)
   //
-  // await Promise.all([
-  //   fs.emptyDir(projectPath('/generated')),
-  //   fs.emptyDir(projectPath('../../node_modules/@generated')),
-  // ])
+  await Promise.all([
+    fs.emptyDir(projectPath('/generated')),
+    fs.emptyDir(projectPath('../../node_modules/@generated')),
+  ])
 
   // Run Prisma generation:
   // - Photon JS Client
@@ -48,7 +48,7 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
-  const nexusPrisma = NexusPrisma.create({
+  const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
     shouldGenerateArtifacts: true,
     outputs: {
       typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
@@ -56,7 +56,7 @@ it('integrates together', async () => {
   })
 
   await nexusBuilder.generateSchema({
-    types: typeDefs,
+    types,
     plugins: [nexusPrisma],
     shouldGenerateArtifacts: true,
     outputs: {

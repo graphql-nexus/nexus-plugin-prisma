@@ -1,4 +1,4 @@
-import * as photon from '@generated/photon';
+import * as photon from '/Users/jasonkuhrt/projects/prisma/nexus-prisma/node_modules/@generated/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<

@@ -540,7 +540,7 @@ export interface NexusGenTypes {
 `;
 
 exports[`integrates together: nexus prisma typegen 1`] = `
-"import * as photon from '@generated/photon';
+"import * as photon from '/Users/jasonkuhrt/projects/prisma/nexus-prisma/node_modules/@generated/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
