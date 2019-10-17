@@ -139,37 +139,6 @@ export function getImportPathRelativeToOutput(
 }
 
 /**
- * Unwrap nexus user-defined types and convert them to a map<TypeName, boolean>
- */
-export function unwrapTypes(types: any): Record<string, boolean> {
-  let output: Record<string, boolean> = {}
-
-  if (!types) {
-    return {}
-  }
-
-  if (core.isNexusNamedTypeDef(types) || isNamedType(types)) {
-    output[types.name] = true
-  } else if (Array.isArray(types)) {
-    types.forEach(typeDef => {
-      output = {
-        ...output,
-        ...unwrapTypes(typeDef),
-      }
-    })
-  } else if (core.isObject(types)) {
-    Object.keys(types).forEach(key => {
-      output = {
-        ...output,
-        ...unwrapTypes(types[key]),
-      }
-    })
-  }
-
-  return output
-}
-
-/**
  * Index types are just an alias for Records
  * whose keys are of type `string`. The name
  * of this type, `Index`, signifies its canonical

@@ -1,17 +1,14 @@
 import * as Nexus from 'nexus'
-import * as NexusPrisma from 'nexus-prisma'
+import { nexusPrismaPlugin } from 'nexus-prisma'
 import * as Query from './Query'
 import * as Mutation from './Mutation'
 import * as Blog from './Blog'
 import * as Post from './Post'
 import * as User from './User'
 
-const appTypes = [Query, Mutation, Blog, Post, User]
-const nexusPrismaTypes = NexusPrisma.nexusPrismaPlugin({ types: appTypes })
-const allTypes = [appTypes, nexusPrismaTypes]
-
 export default Nexus.makeSchema({
-  types: allTypes,
+  types: [Query, Mutation, Blog, Post, User],
+  plugins: [nexusPrismaPlugin()],
   typegenAutoConfig: {
     contextType: 'Context.Context',
     sources: [

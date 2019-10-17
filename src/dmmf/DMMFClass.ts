@@ -41,7 +41,7 @@ export class DMMFClass implements DMMF.Document {
     return inputType
   }
 
-  getOutputType(outputTypeName: string) {
+  getOutputType(outputTypeName: string): OutputType {
     const outputType = this.outputTypesIndex[outputTypeName]
 
     if (!outputType) {

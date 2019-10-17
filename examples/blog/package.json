@@ -11,13 +11,14 @@
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
-    "data:inject": "ts-node prisma/fake-data.ts"
+    "data:inject": "ts-node prisma/fake-data.ts",
+    "postinstall": "yarn -s generate"
   },
   "dependencies": {
     "graphql": "^14.3.1",
     "graphql-yoga": "^1.18.2",
-    "nexus": "^0.12.0-beta.12",
-    "nexus-prisma": "^0.5.0-next.5"
+    "nexus": "^0.12.0-beta.14",
+    "nexus-prisma": "^0.0.0-pr.434.b880059"
   },
   "devDependencies": {
     "@types/faker": "^4.1.5",

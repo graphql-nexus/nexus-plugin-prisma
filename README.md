@@ -137,20 +137,6 @@ export const Post = objectType({
 })
 ```
 
-Setup your schema:
-
-```ts
-// src/schema.ts
-
-import { makeSchema } from 'nexus'
-import { nexusPrismaPlugin } from 'nexus-prisma'
-import * as types from './types'
-
-export const schema = makeSchema({
-  types: [types, nexusPrismaPlugin({ types })],
-})
-```
-
 Generate your Photon.js database client:
 
 ```
@@ -167,10 +153,16 @@ ts-node --transpile-only  src/main
 // src/main.ts
 
 import { GraphQLServer } from 'graphql-yoga'
-import { createContext } from './context'
-import { schema } from './schema'
+import { makeSchema } from 'nexus'
+import { nexusPrismaPlugin } from 'nexus-prisma'
+import * as types from './types'
 
-new GraphQLServer({ schema }).start()
+new GraphQLServer({
+  schema: makeSchema({
+    types,
+    plugins: [nexusPrismaPlugin()],
+  }),
+}).start()
 ```
 
 And get the resulting GraphQL API:
@@ -345,7 +337,7 @@ input UserWhereUniqueInput {
 
 <br>
 
-You can find a runnable version of this and other examples at [prisma-labs/nexus-examples](/TODO).
+You can find a runnable version of this and other examples in the [examples folder](/examples).
 
 # Reference
 
@@ -2229,12 +2221,6 @@ In most cases you should not need to configure anything. If you do, and you don'
 ```ts
 type Options = {
   /**
-   * The same types you pass into `Nexus.makeSchema`. This configuration will
-   * completely go away once Nexus has typeDef plugin support.
-   */
-  types: any
-
-  /**
    * nexus-prisma will call this to get a reference to an instance of Photon.
    * The function is passed the context object. Typically a Photon instance will
    * be available on the context to support your custom resolvers. Therefore the
@@ -2272,11 +2258,9 @@ type Options = {
 
 ### Usage
 
-This will become simpler once `nexus-prisma` becomes a [Nexus plugin](https://github.com/prisma-labs/nexus-prisma/pull/434). But, for now:
-
-1. import the `nexusPrismaPlugin` function
-1. Pass it your app types and additional config if needed (shouldn't be)
-1. Pass the returned `prismaTypes` to Nexus.makeSchema along with app types
+1. Import `nexusPrismaPlugin` from `nexus-prisma`
+1. Create and configure it if needed (shouldn't be)
+1. Pass into `Nexus.makeSchema` `plugins` array
 
 **Example**
 
@@ -2285,8 +2269,7 @@ import { nexusPrismaPlugin } from 'nexus-prisma'
 import { makeSchema } from 'nexus'
 import * as types from './types'
 
-const prismaTypes = nexusPrismaPlugin({ types })
-const schema = makeScheam({ types: [types, prismaTypes] })
+const schema = makeScheam({ types, plugins: [nexusPrismaPlugin()] })
 ```
 
 ### Project Setup
@@ -2298,16 +2281,24 @@ These are tips to help you with a successful project workflow
 1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve this with [pakage facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
 
    ```json
-   "generate:prisma": "prisma2 generate",
-   "generate:nexus": "ts-node --transpile-only path/to/schema/module",
-   "generate": "npm -s run generate:prisma && npm -s run generate:nexus"
-   "postinstall" "npm -s run generate"
+   {
+     "scripts": {
+       "generate:prisma": "prisma2 generate",
+       "generate:nexus": "ts-node --transpile-only path/to/schema/module",
+       "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
+       "postinstall": "npm -s run generate"
+     }
+   }
    ```
 
 1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app. In turn to ensure artifact generation runs we declare the environment variable as such. Artifact generation toggling based on `NODE_ENV` value is often sufficient but not always. For example in a deployment pipeline `NODE_ENV` may be set to "production" (it is with Heroku).
 
    ```json
-   "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
+   {
+     "scripts": {
+       "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
+     }
+   }
    ```
 
 <br>

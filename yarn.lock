@@ -3424,7 +3424,7 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-nexus@^0.12.0-beta.12:
+nexus@^0.12.0-beta.14:
   version "0.12.0-beta.14"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.14.tgz#541a0d41ce92cfa1a54d3199e9048fc92c3fc36a"
   integrity sha512-jWHi+j9YhTwZZ0n82STJRNoU+HfrnrNGIw1sZs0c/9iscr1ewwpeQ7Lo+so0fIaboErAz47CHVcAn1BSr8kiLg==
@@ -3918,7 +3918,7 @@ prisma-datamodel@1.36.0-test.2, prisma-datamodel@^1.36.0-test.2:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-alpha.185:
+prisma2@^2.0.0-alpha.251:
   version "2.0.0-preview014.2"
   resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview014.2.tgz#1a9437a91663b9abc9d13212ca76ff33b18743ef"
   integrity sha512-/AyU6C2xnAYHuJMVYRBFwXp2BJ7UGXet5C7YcN1sU9p0Rv8VXAauSS+SMjyP0RmYEjJPtiU8FqbYWyx4xLTsLg==
