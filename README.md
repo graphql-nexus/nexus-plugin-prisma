@@ -679,9 +679,7 @@ mutationType({
     t.crud.upsertOneUser()
     t.crud.deleteOneUser()
 
-    t.crud.createManyUser()
     t.crud.updateManyUser()
-    t.crud.upsertManyUser()
     t.crud.deleteManyUser()
   },
 })
