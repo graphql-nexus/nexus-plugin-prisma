@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --no-notify --respawn --transpile-only app",
     "generate": "yarn -s prisma2 generate",
-    "start": "ts-node app",
+    "start": "ts-node --transpile-only app",
     "postinstall": "yarn -s generate"
   },
   "dependencies": {
@@ -16,7 +15,6 @@
   "devDependencies": {
     "prisma2": "^2.0.0-alpha.243",
     "ts-node": "^8.4.1",
-    "ts-node-dev": "^1.0.0-pre.43",
     "typescript": "^3.6.4"
   }
 }
