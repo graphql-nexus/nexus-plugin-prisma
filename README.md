@@ -6,7 +6,7 @@
 [![CircleCI](https://circleci.com/gh/prisma-labs/nexus-prisma.svg?style=svg)](https://circleci.com/gh/prisma-labs/nexus-prisma)
 [![Slack](https://slack.prisma.io/badge.svg)](https://slack.prisma.io/)
 
-`nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and expose operations against them in your GraphQL API. Resolvers are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. Out-of-box features include pagination, filtering, and ordering. When you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself bulids upon.
+`nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and expose operations against them in your GraphQL API. Resolvers are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. Out-of-box features include pagination, filtering, and ordering. When you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself builds upon.
 
 If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [here](https://github.com/prisma-labs/nexus/blob/8cf2d6b3e22a9dec1f7c23f384bf33b7be5a25cc/docs/database-access-with-prisma-v2.md).
 
@@ -642,7 +642,7 @@ Like [relations](#relation) but also supports batch related options.
 
 **Options**
 
-[`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagiantion`](#pagiantion) [`ordering`](#ordering)
+[`type`](#type) [`alias`](#alias) [`filtering`](#filtering) [`pagination`](#pagination) [`ordering`](#ordering)
 
 **GraphQL Schema Contributions** [`?`](#graphql-schema-contributions 'How to read this')
 
@@ -1575,7 +1575,7 @@ model User {
   posts Post[]
 }
 
-modle Post {
+model Post {
   id String @id @default(cuid())
 }
 ```
@@ -1737,9 +1737,9 @@ undefined | true | false
 
 - `undefined` (default) Like `true`
 - `true` Enable pagination
-- `false` Disable paginaton
+- `false` Disable pagination
 
-**GraphQL Schema Contribuations**
+**GraphQL Schema Contributions**
 
 ```gql
 # t.crud.<BatchRead>
@@ -1758,7 +1758,7 @@ Ms(
 
   # The offset
   # If `first` used, then forwards from `after` (otherwise head)
-  # If `last` used, then backwrads from `before` (otherwie tail)
+  # If `last` used, then backwards from `before` (otherwise tail)
   skip: Int
 )
 
@@ -2180,7 +2180,7 @@ input UUIDFilter {} # like StringFilter
 
 Projection for Prisma list types always project as a fully non-nullable GraphQL type. This is because Prisma list fields (and list member type) can themselves never be null, and because Prisma does not support `@default` on list types.
 
-For consistentcy we also apply the same pattern for `t.crud.<BatchRead>`.
+For consistency we also apply the same pattern for `t.crud.<BatchRead>`.
 
 ```gql
 type Query {
@@ -2269,16 +2269,16 @@ import { nexusPrismaPlugin } from 'nexus-prisma'
 import { makeSchema } from 'nexus'
 import * as types from './types'
 
-const schema = makeScheam({ types, plugins: [nexusPrismaPlugin()] })
+const schema = makeSchema({ types, plugins: [nexusPrismaPlugin()] })
 ```
 
 ### Project Setup
 
 These are tips to help you with a successful project workflow
 
-1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to geneate typegen. This will come in handy in certain deployment contexts.
+1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to generate typegen. This will come in handy in certain deployment contexts.
 
-1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve this with [pakage facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
+1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve this with [package facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
 
    ```json
    {
