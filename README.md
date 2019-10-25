@@ -17,6 +17,16 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
 
 - [Installation](#installation)
 - [Example](#example)
+- [Guides](#guides)
+  - [Recipes](#recipes)
+    - [Projecting Prisma Model Fields](#projecting-prisma-model-fields)
+    - [Simple Computed GraphQL Fields](#simple-computed-graphql-fields)
+    - [Complex Computed GraphQL Fields](#complex-computed-graphql-fields)
+    - [Project a Prisma Field to a Differently Named GraphQL Field](#project-a-prisma-field-to-a-differently-named-graphql-field)
+    - [Publish Full-Featured Reads on a Prisma Model](#publish-full-featured-reads-on-a-prisma-model)
+    - [Publish Writes on a Prisma Model](#publish-writes-on-a-prisma-model)
+    - [Publish Customized Reads on a Prisma Model](#publish-customized-reads-on-a-prisma-model)
+    - [Publish Model Writes Along Side Photon-Resolved Fields](#publish-model-writes-along-side-photon-resolved-fields)
 - [Reference](#reference)
   - [`t.model`](#tmodel)
     - [Model-Object Mapping](#model-object-mapping)
@@ -50,15 +60,6 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
     - [Configuration](#configuration)
     - [Usage](#usage)
     - [Project Setup](#project-setup)
-- [Recipes](#recipes)
-  - [Projecting Prisma Model Fields](#projecting-prisma-model-fields)
-  - [Simple Computed GraphQL Fields](#simple-computed-graphql-fields)
-  - [Complex Computed GraphQL Fields](#complex-computed-graphql-fields)
-  - [Project a Prisma Field to a Differently Named GraphQL Field](#project-a-prisma-field-to-a-differently-named-graphql-field)
-  - [Publish Full-Featured Reads on a Prisma Model](#publish-full-featured-reads-on-a-prisma-model)
-  - [Publish Writes on a Prisma Model](#publish-writes-on-a-prisma-model)
-  - [Publish Customized Reads on a Prisma Model](#publish-customized-reads-on-a-prisma-model)
-  - [Publish Model Writes Along Side Photon-Resolved Fields](#publish-model-writes-along-side-photon-resolved-fields)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -338,6 +339,155 @@ input UserWhereUniqueInput {
 <br>
 
 You can find a runnable version of this and other examples in the [examples folder](/examples).
+
+# Guides
+
+## Recipes
+
+### Projecting Prisma Model Fields
+
+Exposing one of your Prisma models in your GraphQL API
+
+```ts
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.content()
+  },
+})
+```
+
+### Simple Computed GraphQL Fields
+
+You can add computed fields to a GraphQL object using the standard GraphQL Nexus API.
+
+```ts
+objectType({
+  name: "Post",
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.content()
+    t.string("uppercaseTitle", {
+      resolve({ title }, args, ctx) {
+        return title.toUpperCase(),
+      }
+    })
+  },
+})
+```
+
+### Complex Computed GraphQL Fields
+
+If you need more complicated logic for your computed field (e.g. have access to some information from the database), you can use the `photon` instance that's attached to the context and implement your resolver based on that.
+
+```ts
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.content()
+    t.string('anotherComputedField', {
+      async resolve(_parent, _args, ctx) {
+        const databaseInfo = await ctx.photon.someModel.someOperation(...)
+        const result = doSomething(databaseInfo)
+        return result
+      }
+    })
+  }
+})
+```
+
+### Project a Prisma Field to a Differently Named GraphQL Field
+
+```ts
+objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.content({ alias: 'body' })
+  },
+})
+```
+
+### Publish Full-Featured Reads on a Prisma Model
+
+```ts
+queryType({
+  definition(t) {
+    t.crud.post()
+    t.crud.posts({ ordering: true, filtering: true })
+  },
+})
+```
+
+### Publish Writes on a Prisma Model
+
+```ts
+queryType({
+  definition(t) {
+    t.crud.createPost()
+    t.crud.updatePost()
+    t.crud.updateManyPost()
+    t.crud.upsertPost()
+    t.crud.deletePost()
+    t.crud.deleteManyPost()
+  },
+})
+```
+
+### Publish Customized Reads on a Prisma Model
+
+```ts
+queryType({
+  definition(t) {
+    t.crud.posts({
+      filtering: { id: true, title: true },
+      ordering: { title: true },
+    })
+  },
+})
+```
+
+### Publish Model Writes Along Side Photon-Resolved Fields
+
+```ts
+mutationType({
+  definition(t) {
+    t.crud.createUser()
+    t.crud.updateUser()
+    t.crud.deleteUser()
+    t.crud.deletePost()
+
+    t.field('createDraft', {
+      type: 'Post',
+      args: {
+        title: stringArg(),
+        content: stringArg({ nullable: true }),
+      },
+      resolve: (parent, { title, content }, ctx) => {
+        return ctx.photon.posts.createPost({ title, content })
+      },
+    })
+
+    t.field('publish', {
+      type: 'Post',
+      nullable: true,
+      args: {
+        id: idArg(),
+      },
+      resolve(parent, { id }, ctx) {
+        return ctx.photon.posts.updatePost({
+          where: { id },
+          data: { published: true },
+        })
+      },
+    })
+  },
+})
+```
 
 # Reference
 
@@ -2302,153 +2452,6 @@ These are tips to help you with a successful project workflow
    ```
 
 <br>
-
-# Recipes
-
-### Projecting Prisma Model Fields
-
-Exposing one of your Prisma models in your GraphQL API
-
-```ts
-objectType({
-  name: 'Post',
-  definition(t) {
-    t.model.id()
-    t.model.title()
-    t.model.content()
-  },
-})
-```
-
-### Simple Computed GraphQL Fields
-
-You can add computed fields to a GraphQL object using the standard GraphQL Nexus API.
-
-```ts
-objectType({
-  name: "Post",
-  definition(t) {
-    t.model.id()
-    t.model.title()
-    t.model.content()
-    t.string("uppercaseTitle", {
-      resolve({ title }, args, ctx) {
-        return title.toUpperCase(),
-      }
-    })
-  },
-})
-```
-
-### Complex Computed GraphQL Fields
-
-If you need more complicated logic for your computed field (e.g. have access to some information from the database), you can use the `photon` instance that's attached to the context and implement your resolver based on that.
-
-```ts
-objectType({
-  name: 'Post',
-  definition(t) {
-    t.model.id()
-    t.model.content()
-    t.string('anotherComputedField', {
-      async resolve(_parent, _args, ctx) {
-        const databaseInfo = await ctx.photon.someModel.someOperation(...)
-        const result = doSomething(databaseInfo)
-        return result
-      }
-    })
-  }
-})
-```
-
-### Project a Prisma Field to a Differently Named GraphQL Field
-
-```ts
-objectType({
-  name: 'Post',
-  definition(t) {
-    t.model.id()
-    t.model.content({ alias: 'body' })
-  },
-})
-```
-
-### Publish Full-Featured Reads on a Prisma Model
-
-```ts
-queryType({
-  definition(t) {
-    t.crud.post()
-    t.crud.posts({ ordering: true, filtering: true })
-  },
-})
-```
-
-### Publish Writes on a Prisma Model
-
-```ts
-queryType({
-  definition(t) {
-    t.crud.createPost()
-    t.crud.updatePost()
-    t.crud.updateManyPost()
-    t.crud.upsertPost()
-    t.crud.deletePost()
-    t.crud.deleteManyPost()
-  },
-})
-```
-
-### Publish Customized Reads on a Prisma Model
-
-```ts
-queryType({
-  definition(t) {
-    t.crud.posts({
-      filtering: { id: true, title: true },
-      ordering: { title: true },
-    })
-  },
-})
-```
-
-### Publish Model Writes Along Side Photon-Resolved Fields
-
-```ts
-mutationType({
-  definition(t) {
-    t.crud.createUser()
-    t.crud.updateUser()
-    t.crud.deleteUser()
-    t.crud.deletePost()
-
-    t.field('createDraft', {
-      type: 'Post',
-      args: {
-        title: stringArg(),
-        content: stringArg({ nullable: true }),
-      },
-      resolve: (parent, { title, content }, ctx) => {
-        return ctx.photon.posts.createPost({ title, content })
-      },
-    })
-
-    t.field('publish', {
-      type: 'Post',
-      nullable: true,
-      args: {
-        id: idArg(),
-      },
-      resolve(parent, { id }, ctx) {
-        return ctx.photon.posts.updatePost({
-          where: { id },
-          data: { published: true },
-        })
-      },
-    })
-  },
-})
-```
 
 # Links
 
