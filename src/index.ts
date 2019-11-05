@@ -1,5 +1,6 @@
-import { createPlugin } from 'nexus'
+import { plugin } from 'nexus'
 import { build as buildNexusPrismaTypes, Options } from './builder'
+import { setupNexusConfig } from './nexusConfig'
 
 /**
  * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
@@ -19,7 +20,7 @@ import { build as buildNexusPrismaTypes, Options } from './builder'
  *
  * queryType({
  *   definition (t) {
- *    t.crud.user()
+ *      t.crud.user()
  *      t.crud.users({ filtering: true, ordering: true })
  *    }
  * })
@@ -36,9 +37,10 @@ import { build as buildNexusPrismaTypes, Options } from './builder'
  * class support for typegen.
  */
 export function nexusPrismaPlugin(options?: Options) {
-  return createPlugin({
+  return plugin({
     name: 'nexus-prisma',
     onInstall: nexusBuilder => {
+      setupNexusConfig(nexusBuilder)
       return {
         types: buildNexusPrismaTypes({ ...options, nexusBuilder }),
       }
