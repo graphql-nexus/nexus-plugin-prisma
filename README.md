@@ -825,7 +825,7 @@ queryType({
 mutationType({
   definition(t) {
     t.crud.createOneUser()
-    t.crud.udpateOneUser()
+    t.crud.updateOneUser()
     t.crud.upsertOneUser()
     t.crud.deleteOneUser()
 
