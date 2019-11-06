@@ -2419,7 +2419,7 @@ import { nexusPrismaPlugin } from 'nexus-prisma'
 import { makeSchema } from 'nexus'
 import * as types from './types'
 
-const schema = makeScheam({ types, plugins: [nexusPrismaPlugin()] })
+const schema = makeSchema({ types, plugins: [nexusPrismaPlugin()] })
 ```
 
 ### Project Setup
