@@ -2,15 +2,16 @@ import * as Nexus from 'nexus'
 import { CustomInputArg } from './builder'
 import * as DMMF from './dmmf'
 import { scalarsNameValues } from './graphql'
-import { dmmfFieldToNexusFieldConfig, partition } from './utils'
+import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
 export class Publisher {
+  typesPublished: Index<boolean> = {}
   constructor(
-    protected dmmf: DMMF.DMMF,
-    protected publishedTypesMap: Record<string, boolean>,
+    public dmmf: DMMF.DMMF,
+    public nexusBuilder: Nexus.PluginBuilderLens,
   ) {}
 
-  public inputType(
+  inputType(
     customArg: CustomInputArg,
   ):
     | string
@@ -115,41 +116,37 @@ export class Publisher {
     })
   }
 
-  protected publishInputObjectType(inputType: DMMF.Data.InputType) {
+  publishInputObjectType(inputType: DMMF.Data.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
       name: inputType.name,
       definition: t => {
-        const [scalarFields, objectFields] = partition(
-          inputType.fields,
-          f => f.inputType.kind === 'scalar',
-        )
-
-        const remappedObjectFields = objectFields.map(field => ({
-          ...field,
-          inputType: {
-            ...field.inputType,
-            type: this.isPublished(field.inputType.type)
-              ? // Simply reference the field input type if it's already been visited, otherwise create it
-                field.inputType.type
-              : this.inputType({
-                  arg: field,
-                  type: this.getTypeFromArg(field),
-                }),
-          },
-        }))
-        ;[...scalarFields, ...remappedObjectFields].forEach(field => {
-          t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
-        })
+        inputType.fields
+          .map(field => ({
+            ...field,
+            inputType: {
+              ...field.inputType,
+              type: this.isPublished(field.inputType.type)
+                ? // Simply reference the field input type if it's already been visited, otherwise create it
+                  field.inputType.type
+                : this.inputType({
+                    arg: field,
+                    type: this.getTypeFromArg(field),
+                  }),
+            },
+          }))
+          .forEach(field => {
+            t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
+          })
       },
     })
   }
 
-  protected getTypeFromArg(arg: DMMF.Data.SchemaArg) {
+  protected getTypeFromArg(arg: DMMF.Data.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
-        name: this.dmmf.getOutputType(typeName).name,
+        name: typeName,
       }),
       enum: (typeName: string) => this.dmmf.getEnumType(typeName),
       object: (typeName: string) => this.dmmf.getInputType(typeName),
@@ -158,11 +155,13 @@ export class Publisher {
     return kindToType[arg.inputType.kind](arg.inputType.type)
   }
 
-  protected isPublished(typeName: string) {
-    return this.publishedTypesMap[typeName]
+  isPublished(typeName: string) {
+    // If the user's app has published a type of the same name treat it as an
+    // overide to us auto publishing.
+    return this.nexusBuilder.hasType(typeName) || this.typesPublished[typeName]
   }
 
-  protected markTypeAsPublished(typeName: string) {
-    this.publishedTypesMap[typeName] = true
+  markTypeAsPublished(typeName: string) {
+    this.typesPublished[typeName] = true
   }
 }

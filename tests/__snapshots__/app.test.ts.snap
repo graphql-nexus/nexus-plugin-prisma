@@ -536,6 +536,16 @@ export interface NexusGenTypes {
   allNamedTypes: NexusGenTypes['allInputTypes'] | NexusGenTypes['allOutputTypes']
   abstractTypes: NexusGenTypes['interfaceNames'] | NexusGenTypes['unionNames'];
   abstractResolveReturn: NexusGenAbstractResolveReturnTypes;
+}
+
+
+declare global {
+  interface NexusGenPluginTypeConfig<TypeName extends string> {
+  }
+  interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
+  }
+  interface NexusGenPluginSchemaConfig {
+  }
 }"
 `;
 
@@ -5380,10 +5390,11 @@ Object {
 exports[`integrates together: photon source code 1`] = `
 "\\"use strict\\";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator[\\"throw\\"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -5475,7 +5486,6 @@ class Photon {
             prismaPath: engineConfig.binaryPath || undefined,
             datasources,
             generator: { \\"name\\": \\"photonjs\\", \\"provider\\": \\"photonjs\\", \\"output\\": \\"__NON_DETERMINISTIC_CONTENT__\\" \\"binaryTargets\\": [], \\"config\\": {} },
-            platform: undefined
         });
         this.dmmf = new runtime_1.DMMFClass(exports.dmmf);
         this.fetcher = new PhotonFetcher(this, this.engine, false, internal.hooks);
@@ -6990,27 +7000,27 @@ export declare type PostWhereInput = {
     authors?: UserFilter | null;
     rating?: number | FloatFilter | null;
     status?: PostStatus | PostStatusFilter | null;
-    AND?: Enumerable<PostWhereInput>;
-    OR?: Enumerable<PostWhereInput>;
-    NOT?: Enumerable<PostWhereInput>;
+    AND?: Enumerable<PostWhereInput> | null;
+    OR?: Enumerable<PostWhereInput> | null;
+    NOT?: Enumerable<PostWhereInput> | null;
 };
 export declare type UserWhereInput = {
     id?: string | StringFilter | null;
     posts?: PostFilter | null;
     firstName?: string | StringFilter | null;
     lastName?: string | StringFilter | null;
-    AND?: Enumerable<UserWhereInput>;
-    OR?: Enumerable<UserWhereInput>;
-    NOT?: Enumerable<UserWhereInput>;
+    AND?: Enumerable<UserWhereInput> | null;
+    OR?: Enumerable<UserWhereInput> | null;
+    NOT?: Enumerable<UserWhereInput> | null;
     bubble?: BubbleWhereInput | null;
 };
 export declare type BubbleWhereInput = {
     id?: string | UUIDFilter | null;
     createdAt?: string | Date | DateTimeFilter | null;
     members?: UserFilter | null;
-    AND?: Enumerable<BubbleWhereInput>;
-    OR?: Enumerable<BubbleWhereInput>;
-    NOT?: Enumerable<BubbleWhereInput>;
+    AND?: Enumerable<BubbleWhereInput> | null;
+    OR?: Enumerable<BubbleWhereInput> | null;
+    NOT?: Enumerable<BubbleWhereInput> | null;
 };
 export declare type BubbleWhereUniqueInput = {
     id?: string | null;
@@ -7026,8 +7036,8 @@ export declare type PostCreateWithoutAuthorsInput = {
     status: PostStatus;
 };
 export declare type PostCreateManyWithoutPostsInput = {
-    create?: Enumerable<PostCreateWithoutAuthorsInput>;
-    connect?: Enumerable<PostWhereUniqueInput>;
+    create?: Enumerable<PostCreateWithoutAuthorsInput> | null;
+    connect?: Enumerable<PostWhereUniqueInput> | null;
 };
 export declare type UserCreateWithoutBubbleInput = {
     id?: string | null;
@@ -7036,8 +7046,8 @@ export declare type UserCreateWithoutBubbleInput = {
     posts?: PostCreateManyWithoutPostsInput | null;
 };
 export declare type UserCreateManyWithoutMembersInput = {
-    create?: Enumerable<UserCreateWithoutBubbleInput>;
-    connect?: Enumerable<UserWhereUniqueInput>;
+    create?: Enumerable<UserCreateWithoutBubbleInput> | null;
+    connect?: Enumerable<UserWhereUniqueInput> | null;
 };
 export declare type BubbleCreateInput = {
     id?: string | null;
@@ -7058,9 +7068,9 @@ export declare type PostScalarWhereInput = {
     authors?: UserFilter | null;
     rating?: number | FloatFilter | null;
     status?: PostStatus | PostStatusFilter | null;
-    AND?: Enumerable<PostScalarWhereInput>;
-    OR?: Enumerable<PostScalarWhereInput>;
-    NOT?: Enumerable<PostScalarWhereInput>;
+    AND?: Enumerable<PostScalarWhereInput> | null;
+    OR?: Enumerable<PostScalarWhereInput> | null;
+    NOT?: Enumerable<PostScalarWhereInput> | null;
 };
 export declare type PostUpdateManyDataInput = {
     id?: number | null;
@@ -7077,15 +7087,15 @@ export declare type PostUpsertWithWhereUniqueWithoutAuthorsInput = {
     create: PostCreateWithoutAuthorsInput;
 };
 export declare type PostUpdateManyWithoutAuthorsInput = {
-    create?: Enumerable<PostCreateWithoutAuthorsInput>;
-    connect?: Enumerable<PostWhereUniqueInput>;
-    set?: Enumerable<PostWhereUniqueInput>;
-    disconnect?: Enumerable<PostWhereUniqueInput>;
-    delete?: Enumerable<PostWhereUniqueInput>;
-    update?: Enumerable<PostUpdateWithWhereUniqueWithoutAuthorsInput>;
-    updateMany?: Enumerable<PostUpdateManyWithWhereNestedInput>;
-    deleteMany?: Enumerable<PostScalarWhereInput>;
-    upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorsInput>;
+    create?: Enumerable<PostCreateWithoutAuthorsInput> | null;
+    connect?: Enumerable<PostWhereUniqueInput> | null;
+    set?: Enumerable<PostWhereUniqueInput> | null;
+    disconnect?: Enumerable<PostWhereUniqueInput> | null;
+    delete?: Enumerable<PostWhereUniqueInput> | null;
+    update?: Enumerable<PostUpdateWithWhereUniqueWithoutAuthorsInput> | null;
+    updateMany?: Enumerable<PostUpdateManyWithWhereNestedInput> | null;
+    deleteMany?: Enumerable<PostScalarWhereInput> | null;
+    upsert?: Enumerable<PostUpsertWithWhereUniqueWithoutAuthorsInput> | null;
 };
 export declare type UserUpdateWithoutBubbleDataInput = {
     id?: string | null;
@@ -7102,9 +7112,9 @@ export declare type UserScalarWhereInput = {
     posts?: PostFilter | null;
     firstName?: string | StringFilter | null;
     lastName?: string | StringFilter | null;
-    AND?: Enumerable<UserScalarWhereInput>;
-    OR?: Enumerable<UserScalarWhereInput>;
-    NOT?: Enumerable<UserScalarWhereInput>;
+    AND?: Enumerable<UserScalarWhereInput> | null;
+    OR?: Enumerable<UserScalarWhereInput> | null;
+    NOT?: Enumerable<UserScalarWhereInput> | null;
 };
 export declare type UserUpdateManyDataInput = {
     id?: string | null;
@@ -7121,15 +7131,15 @@ export declare type UserUpsertWithWhereUniqueWithoutBubbleInput = {
     create: UserCreateWithoutBubbleInput;
 };
 export declare type UserUpdateManyWithoutBubbleInput = {
-    create?: Enumerable<UserCreateWithoutBubbleInput>;
-    connect?: Enumerable<UserWhereUniqueInput>;
-    set?: Enumerable<UserWhereUniqueInput>;
-    disconnect?: Enumerable<UserWhereUniqueInput>;
-    delete?: Enumerable<UserWhereUniqueInput>;
-    update?: Enumerable<UserUpdateWithWhereUniqueWithoutBubbleInput>;
-    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput>;
-    deleteMany?: Enumerable<UserScalarWhereInput>;
-    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutBubbleInput>;
+    create?: Enumerable<UserCreateWithoutBubbleInput> | null;
+    connect?: Enumerable<UserWhereUniqueInput> | null;
+    set?: Enumerable<UserWhereUniqueInput> | null;
+    disconnect?: Enumerable<UserWhereUniqueInput> | null;
+    delete?: Enumerable<UserWhereUniqueInput> | null;
+    update?: Enumerable<UserUpdateWithWhereUniqueWithoutBubbleInput> | null;
+    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput> | null;
+    deleteMany?: Enumerable<UserScalarWhereInput> | null;
+    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutBubbleInput> | null;
 };
 export declare type BubbleUpdateInput = {
     id?: string | null;
@@ -7190,8 +7200,8 @@ export declare type UserCreateWithoutPostsInput = {
     bubble?: BubbleCreateOneWithoutBubbleInput | null;
 };
 export declare type UserCreateManyWithoutAuthorsInput = {
-    create?: Enumerable<UserCreateWithoutPostsInput>;
-    connect?: Enumerable<UserWhereUniqueInput>;
+    create?: Enumerable<UserCreateWithoutPostsInput> | null;
+    connect?: Enumerable<UserWhereUniqueInput> | null;
 };
 export declare type PostCreateInput = {
     rating: number;
@@ -7214,15 +7224,15 @@ export declare type UserUpsertWithWhereUniqueWithoutPostsInput = {
     create: UserCreateWithoutPostsInput;
 };
 export declare type UserUpdateManyWithoutPostsInput = {
-    create?: Enumerable<UserCreateWithoutPostsInput>;
-    connect?: Enumerable<UserWhereUniqueInput>;
-    set?: Enumerable<UserWhereUniqueInput>;
-    disconnect?: Enumerable<UserWhereUniqueInput>;
-    delete?: Enumerable<UserWhereUniqueInput>;
-    update?: Enumerable<UserUpdateWithWhereUniqueWithoutPostsInput>;
-    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput>;
-    deleteMany?: Enumerable<UserScalarWhereInput>;
-    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutPostsInput>;
+    create?: Enumerable<UserCreateWithoutPostsInput> | null;
+    connect?: Enumerable<UserWhereUniqueInput> | null;
+    set?: Enumerable<UserWhereUniqueInput> | null;
+    disconnect?: Enumerable<UserWhereUniqueInput> | null;
+    delete?: Enumerable<UserWhereUniqueInput> | null;
+    update?: Enumerable<UserUpdateWithWhereUniqueWithoutPostsInput> | null;
+    updateMany?: Enumerable<UserUpdateManyWithWhereNestedInput> | null;
+    deleteMany?: Enumerable<UserScalarWhereInput> | null;
+    upsert?: Enumerable<UserUpsertWithWhereUniqueWithoutPostsInput> | null;
 };
 export declare type PostUpdateInput = {
     id?: number | null;
@@ -7238,8 +7248,8 @@ export declare type PostUpdateManyMutationInput = {
 export declare type IntFilter = {
     equals?: number | null;
     not?: number | IntFilter | null;
-    in?: Enumerable<number>;
-    notIn?: Enumerable<number>;
+    in?: Enumerable<number> | null;
+    notIn?: Enumerable<number> | null;
     lt?: number | null;
     lte?: number | null;
     gt?: number | null;
@@ -7253,8 +7263,8 @@ export declare type UserFilter = {
 export declare type FloatFilter = {
     equals?: number | null;
     not?: number | FloatFilter | null;
-    in?: Enumerable<number>;
-    notIn?: Enumerable<number>;
+    in?: Enumerable<number> | null;
+    notIn?: Enumerable<number> | null;
     lt?: number | null;
     lte?: number | null;
     gt?: number | null;
@@ -7264,8 +7274,8 @@ export declare type PostStatusFilter = {};
 export declare type StringFilter = {
     equals?: string | null;
     not?: string | StringFilter | null;
-    in?: Enumerable<string>;
-    notIn?: Enumerable<string>;
+    in?: Enumerable<string> | null;
+    notIn?: Enumerable<string> | null;
     lt?: string | null;
     lte?: string | null;
     gt?: string | null;
@@ -7282,8 +7292,8 @@ export declare type PostFilter = {
 export declare type UUIDFilter = {
     equals?: string | null;
     not?: string | UUIDFilter | null;
-    in?: Enumerable<string>;
-    notIn?: Enumerable<string>;
+    in?: Enumerable<string> | null;
+    notIn?: Enumerable<string> | null;
     lt?: string | null;
     lte?: string | null;
     gt?: string | null;
@@ -7295,8 +7305,8 @@ export declare type UUIDFilter = {
 export declare type DateTimeFilter = {
     equals?: string | Date | null;
     not?: string | Date | DateTimeFilter | null;
-    in?: Enumerable<string | Date>;
-    notIn?: Enumerable<string | Date>;
+    in?: Enumerable<string | Date> | null;
+    notIn?: Enumerable<string | Date> | null;
     lt?: string | Date | null;
     lte?: string | Date | null;
     gt?: string | Date | null;

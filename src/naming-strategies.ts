@@ -1,6 +1,7 @@
 import pluralize from 'pluralize'
 import * as DMMF from './dmmf'
 import { upperFirst } from './utils'
+import camelCase from 'camelcase'
 
 export interface ArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string
@@ -28,8 +29,8 @@ export type FieldNamingStrategy = Record<
 >
 
 export const defaultFieldNamingStrategy: FieldNamingStrategy = {
-  findOne: (_, modelName) => modelName.toLowerCase(),
-  findMany: (_, modelName) => pluralize(modelName).toLowerCase(),
+  findOne: (_, modelName) => camelCase(modelName),
+  findMany: (_, modelName) => camelCase(pluralize(modelName)),
   create: fieldName => fieldName,
   update: fieldName => fieldName,
   delete: fieldName => fieldName,

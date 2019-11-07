@@ -12,7 +12,7 @@ import {
 } from './naming-strategies'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, unwrapTypes } from './utils'
+import { assertPhotonInContext } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -46,55 +46,46 @@ const dmmfListFieldTypeToNexus = (
 }
 
 export interface Options {
-  types: any
+  // TODO return type should be Photon
+  /**
+   * nexus-prisma will call this to get a reference to an instance of Photon.
+   * The function is passed the context object. Typically a Photon instance will
+   * be available on the context to support your custom resolvers. Therefore the
+   * default getter returns `ctx.photon`.
+   */
   photon?: (ctx: Nexus.core.GetGen<'context'>) => any
+  /**
+   * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
+   * and permits the same environment variables. This configuration will completely
+   * go away once Nexus has typeGen plugin support.
+   */
   shouldGenerateArtifacts?: boolean
   inputs?: {
+    /**
+     * Where can nexus-prisma find the Photon.js package? By default looks in
+     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * gets your Prisma schema AST and Photon.js crud info from the generated
+     * Photon.js package.
+     */
     photon?: string
   }
   outputs?: {
+    /**
+     * Where should nexus-prisma put its typegen on disk? By default matches the
+     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
+     * This configuration will completely go away once Nexus has typeGen plugin
+     * support.
+     */
     typegen?: string
   }
 }
 
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
+  nexusBuilder: Nexus.PluginBuilderLens
 }
 
-/**
- * Create nexus type definitions and resolvers particular to your prisma
- * schema that extend the Nexus DSL with e.g. t.model and t.crud. Example
- * effect in practice:
- *
- *    objectType({
- *      name: 'User',
- *      definition(t) {
- *        t.model.id()
- *        t.model.email()
- *      }
- *    })
- *
- *    queryType({
- *      definition (t) {
- *        t.crud.user()
- *        t.crud.users({ filtering: true, ordering: true })
- *      }
- *    })
- *
- * You must ensure the photon client has been generated prior as
- * it provides a data representation of the available models and CRUD
- * operations against them.
- *
- * Typically you will forward the type defs returned
- * here to Nexus' makeSchema function.
- *
- * Additionally, typegen will be run synchronously upon construction by default
- * if NODE_ENV is undefined or "development". Typegen can be explicitly enabled or
- * disabled via the shouldGenerateArtifacts option. This mirrors Nexus'
- * own typegen approach. This system will change once Nexus Plugins are
- * released.
- */
-export function build(options: Options) {
+export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
   return builder.build()
 }
@@ -155,13 +146,13 @@ export interface CustomInputArg {
 }
 
 export class SchemaBuilder {
-  protected readonly dmmf: DMMF.DMMF
-  protected argsNamingStrategy: ArgsNamingStrategy
-  protected fieldNamingStrategy: FieldNamingStrategy
-  protected getPhoton: any
-  protected publisher: Publisher
+  readonly dmmf: DMMF.DMMF
+  argsNamingStrategy: ArgsNamingStrategy
+  fieldNamingStrategy: FieldNamingStrategy
+  getPhoton: any
+  publisher: Publisher
 
-  constructor(protected options: InternalOptions) {
+  constructor(public options: InternalOptions) {
     const config = {
       ...defaultOptions,
       ...options,
@@ -169,7 +160,7 @@ export class SchemaBuilder {
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
     this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
-    this.publisher = new Publisher(this.dmmf, unwrapTypes(config.types))
+    this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
@@ -192,7 +183,7 @@ export class SchemaBuilder {
   /**
    * Build `t.crud` dynamic output property
    */
-  protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
+  buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
@@ -260,7 +251,7 @@ export class SchemaBuilder {
   /**
    * Build the `t.model` dynamic output property.
    */
-  protected buildModel() {
+  buildModel() {
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
@@ -315,7 +306,7 @@ export class SchemaBuilder {
     })
   }
 
-  protected internalBuildModel(
+  internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
   ) {
@@ -371,7 +362,7 @@ export class SchemaBuilder {
     return publishers
   }
 
-  protected buildArgsFromField(
+  buildArgsFromField(
     typeName: string,
     operationName: keyof DMMF.Data.Mapping | null,
     field: DMMF.Data.SchemaField,
@@ -395,7 +386,7 @@ export class SchemaBuilder {
     }, {})
   }
 
-  protected argsFromQueryOrModelField(
+  argsFromQueryOrModelField(
     typeName: string,
     dmmfField: DMMF.Data.SchemaField,
     resolvedConfig: FieldPublisherConfig,
@@ -472,23 +463,26 @@ export class SchemaBuilder {
   /**
    * This handles "tailored field feature publishing".
    *
-   * With tailord field feature publishing, users can specify that only
-   * some fields of the PSL model are exposed under the given field feature.
-   * For example, in the following...
+   * With tailord field feature publishing, users can specify that only some
+   * fields of the PSL model are exposed under the given field feature. For
+   * example, in the following...
    *
-   *    t.model.friends({ filtering: { firstName: true, location: true } })
-
-   * ...the field feature is "filtering" and the user has tailored it so
-   * that only "firstName" and "location" of the field's type (e.g. "User")
-   * are exposed to filtering on this field. So the resulting GQL TypeDef
-   * would look something like:
+   * ```ts
+   * t.model.friends({ filtering: { firstName: true, location: true } })
+   * ```
    *
-   *    ...
-   *   friends(where: { firstName: ..., location: ..., }): [User]
-   *   ...
+   * ...the field feature is "filtering" and the user has tailored it so that
+   * only "firstName" and "location" of the field's type (e.g. "User") are
+   * exposed to filtering on this field. So the resulting GQL TypeDef would look
+   * something like:
    *
+   * ```ts
+   * ...
+   * friends(where: { firstName: ..., location: ..., }): [User]
+   * ...
+   * ```
    */
-  protected handleInputObjectCustomization(
+  handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,

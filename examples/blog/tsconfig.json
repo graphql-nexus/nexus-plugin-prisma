@@ -3,11 +3,9 @@
     "target": "es2016",
     "module": "commonjs",
     "lib": ["esnext"],
-    "rootDir": ".",
+    "rootDir": "src",
     "strict": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["src"]
+  "exclude": ["prisma/**/*"]
 }

@@ -7,7 +7,7 @@ exports[`does not automatically publish input/enum type if already created by us
 }
 
 type Query {
-  users(where: UserWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]!
+  users(where: UserWhereInput, skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!
 }
 
 type User {
@@ -305,7 +305,7 @@ input IntFilter {
 }
 
 type Query {
-  users(where: UserWhereInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]!
+  users(where: UserWhereInput, skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!
 }
 
 type User {

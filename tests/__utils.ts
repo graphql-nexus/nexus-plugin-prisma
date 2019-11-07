@@ -1,48 +1,63 @@
-import { getDMMF } from '@prisma/photon'
+import * as Photon from '@prisma/photon'
+import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
-import { SchemaBuilder } from '../src/builder'
+import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
-import { printSchema } from 'graphql'
 
-export async function generateSchemaAndTypes(datamodel: string, types: any) {
-  const dmmf = DMMF.fromPhotonDMMF(await getDMMF({ datamodel }))
-
-  const nexusPrisma = new SchemaBuilder({
-    types,
-    dmmf,
-  }).build()
-
-  const schema = Nexus.makeSchema({
-    types: [types, nexusPrisma],
-    outputs: false,
+export const createNexusPrismaInternal = (
+  options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
+) =>
+  Nexus.createPlugin({
+    name: 'nexus-prisma-internal',
+    onInstall: nexusBuilder => ({
+      types: NexusPrismaBuilder.build({ ...options, nexusBuilder }),
+    }),
   })
 
-  const typegen = renderTypegen(dmmf, '@generated/photon')
+export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
+  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const nexusPrisma = createNexusPrismaInternal({
+    dmmf,
+  })
+  const schema = Nexus.makeSchema({
+    types,
+    plugins: [nexusPrisma],
+    shouldGenerateArtifacts: false,
+  })
 
-  return { schema: printSchema(schema), typegen }
+  return {
+    schema: GQL.printSchema(schema),
+    typegen: renderTypegen(dmmf, '@generated/photon'),
+  }
 }
 
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
   types: any,
 ) {
-  const dmmf = DMMF.fromPhotonDMMF(await getDMMF({ datamodel }))
-  const nexusPrisma = new SchemaBuilder({
-    types,
+  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
+    nexusBuilder: {
+      addType: () => false,
+      hasType: () => false,
+      getConfigOption: () => undefined,
+      hasConfigOption: () => false,
+      setConfigOption: () => false,
+    },
     dmmf,
   }).build()
   const schemaAndMissingTypes = Nexus.core.makeSchemaInternal({
     types: [types, nexusPrisma],
     outputs: {
       schema: false,
-      typegen: false
+      typegen: false,
     },
   })
   const typegen = renderTypegen(dmmf, '@generated/photon')
 
   return {
-    schema: printSchema(schemaAndMissingTypes.schema),
+    schema: GQL.printSchema(schemaAndMissingTypes.schema),
     missingTypes: schemaAndMissingTypes.missingTypes,
     typegen,
   }
