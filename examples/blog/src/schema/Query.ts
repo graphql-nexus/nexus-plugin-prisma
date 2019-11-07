@@ -18,11 +18,13 @@ export const Query = queryType({
         id: intArg({ required: true }),
       },
       resolve(_root, args, ctx) {
-        return ctx.photon.blogs.findOne({
-          where: {
-            id: args.id,
-          },
-        })
+        return ctx.photon.blogs
+          .findOne({
+            where: {
+              id: args.id,
+            },
+          })
+          .then()
       },
     })
 

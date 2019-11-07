@@ -10,7 +10,7 @@
     "dev": "ts-node-dev --no-notify --respawn --transpile-only src/main.ts",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
-    "generate:nexus": "ts-node --transpile-only src/schema",
+    "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
     "data:inject": "ts-node prisma/fake-data.ts",
     "postinstall": "yarn -s generate"
   },
@@ -25,7 +25,7 @@
     "@types/ws": "^6.0.3",
     "faker": "^4.1.0",
     "prettier": "^1.18.2",
-    "prisma2": "^2.0.0-preview014",
+    "prisma2": "^2.0.0-preview016",
     "ts-node": "^8.3.0",
     "ts-node-dev": "^1.0.0-pre.41",
     "typescript": "^3.5.3"

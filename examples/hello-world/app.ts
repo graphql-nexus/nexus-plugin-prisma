@@ -2,6 +2,7 @@ import { GraphQLServer } from 'graphql-yoga'
 import { makeSchema, queryType, mutationType, objectType } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
 import { Photon } from '@generated/photon'
+import * as path from 'path'
 
 const photon = new Photon()
 
@@ -11,6 +12,12 @@ new GraphQLServer({
     typegenAutoConfig: {
       contextType: '{ photon: Photon.Photon }',
       sources: [{ source: '@generated/photon', alias: 'Photon' }],
+    },
+    outputs: {
+      typegen: path.join(
+        __dirname,
+        'node_modules/@types/nexus-typegen/index.d.ts',
+      ),
     },
     plugins: [nexusPrismaPlugin()],
     types: [
@@ -48,4 +55,4 @@ new GraphQLServer({
       }),
     ],
   }),
-}).start(() => console.log(`🚀 GraphQL server ready at http://localhost:4000`))
+}).start(() => console.log(`🚀 GraphQL service ready at http://localhost:4000`))
