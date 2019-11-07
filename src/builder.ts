@@ -64,6 +64,8 @@ const dmmfListFieldTypeToNexus = (
       }
 }
 
+type PhotonFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
+
 export interface Options {
   // TODO return type should be Photon
   /**
@@ -72,7 +74,7 @@ export interface Options {
    * be available on the context to support your custom resolvers. Therefore the
    * default getter returns `ctx.photon`.
    */
-  photon?: (ctx: Nexus.core.GetGen<'context'>) => any
+  photon?: PhotonFetcher
   /**
    * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
    * and permits the same environment variables. This configuration will completely
@@ -168,7 +170,7 @@ export class SchemaBuilder {
   readonly dmmf: DMMF.DMMF
   argsNamingStrategy: ArgsNamingStrategy
   fieldNamingStrategy: FieldNamingStrategy
-  getPhoton: (ctx: any) => any
+  getPhoton: PhotonFetcher
   publisher: Publisher
 
   constructor(public options: InternalOptions) {
@@ -402,20 +404,11 @@ export class SchemaBuilder {
     publisherConfig: ResolvedFieldPublisherConfig,
   ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[] = []
-
     if (typeName === 'Mutation' || operationName === 'findOne') {
       args = field.args.map(arg => {
-        const inputType = this.dmmf.getInputType(arg.inputType.type)
-        if ('omitArgs' in publisherConfig) {
-          inputType.fields = inputType.fields.filter(
-            field =>
-              //@ts-ignore
-              !publisherConfig.omitArgs.includes(field.name),
-          )
-        }
         return {
           arg,
-          type: inputType,
+          type: this.dmmf.getInputType(arg.inputType.type),
         }
       })
     } else {
