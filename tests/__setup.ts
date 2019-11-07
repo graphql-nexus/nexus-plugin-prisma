@@ -61,7 +61,7 @@ expect.extend({
 
 declare global {
   namespace jest {
-    interface Matchers<R> {
+    interface Matchers<R, T> {
       toTypeCheck(): R
     }
   }

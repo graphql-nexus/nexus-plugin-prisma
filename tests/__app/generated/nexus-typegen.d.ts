@@ -266,8 +266,8 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
     }
     users: { // args
-      after?: string | null; // String
-      before?: string | null; // String
+      after?: string | null; // ID
+      before?: string | null; // ID
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
@@ -275,8 +275,8 @@ export interface NexusGenArgTypes {
   }
   User: {
     posts: { // args
-      after?: string | null; // String
-      before?: string | null; // String
+      after?: number | null; // Int
+      before?: number | null; // Int
       first?: number | null; // Int
       last?: number | null; // Int
       orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput

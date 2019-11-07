@@ -27,7 +27,7 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/sdk": "^0.0.20",
+    "@prisma/sdk": "^0.0.23",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
@@ -39,7 +39,7 @@
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
     "prettier": "^1.17.1",
-    "prisma2": "^2.0.0-alpha.251",
+    "prisma2": "^2.0.0-alpha.287",
     "tmp": "^0.1.0",
     "ts-jest": "^24.0.2",
     "ts-morph": "^4.0.1",

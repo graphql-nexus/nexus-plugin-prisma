@@ -46,4 +46,4 @@ export function nexusPrismaPlugin(options?: Options) {
   })
 }
 
-export type Options = Options
+export { Options } from './builder'
