@@ -3424,11 +3424,12 @@ nested-error-stacks@^2.0.0, nested-error-stacks@^2.1.0:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.0.tgz#0fbdcf3e13fe4994781280524f8b96b0cdff9c61"
   integrity sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
 
-nexus@^0.12.0-beta.14:
-  version "0.12.0-beta.14"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-beta.14.tgz#541a0d41ce92cfa1a54d3199e9048fc92c3fc36a"
-  integrity sha512-jWHi+j9YhTwZZ0n82STJRNoU+HfrnrNGIw1sZs0c/9iscr1ewwpeQ7Lo+so0fIaboErAz47CHVcAn1BSr8kiLg==
+nexus@^0.12.0-rc.4:
+  version "0.12.0-rc.4"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-rc.4.tgz#ba9308d050aaadd1e9495194d724b495668cfd29"
+  integrity sha512-8y8oeZjmIPHQO/pVKIHPFXyVg7NqDh61xH8Ccw42inezN6Q4Lx4K7hBLfTBXOFBtnUXeYRIWjqS3qylS6hLIWg==
   dependencies:
+    iterall "^1.2.2"
     tslib "^1.9.3"
 
 nice-try@^1.0.4:
