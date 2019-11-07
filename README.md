@@ -28,6 +28,10 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
     - [Publish Customized Reads on a Prisma Model](#publish-customized-reads-on-a-prisma-model)
     - [Publish Model Writes Along Side Photon-Resolved Fields](#publish-model-writes-along-side-photon-resolved-fields)
 - [Reference](#reference)
+  - [Workflow](#workflow)
+    - [Configuration](#configuration)
+    - [Usage](#usage)
+    - [Project Setup](#project-setup)
   - [`t.model`](#tmodel)
     - [Model-Object Mapping](#model-object-mapping)
     - [Enum](#enum)
@@ -56,10 +60,6 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
     - [Batch Filtering](#batch-filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
-  - [Workflow](#workflow)
-    - [Configuration](#configuration)
-    - [Usage](#usage)
-    - [Project Setup](#project-setup)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -153,6 +153,7 @@ ts-node --transpile-only  src/main
 ```ts
 // src/main.ts
 
+import * as path from 'path'
 import { GraphQLServer } from 'graphql-yoga'
 import { makeSchema } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
@@ -162,6 +163,12 @@ new GraphQLServer({
   schema: makeSchema({
     types,
     plugins: [nexusPrismaPlugin()],
+    outputs: {
+      typegen: path.join(
+        __dirname,
+        '../node_modules/@types/nexus-typegen/index.d.ts',
+      ),
+    },
   }),
 }).start()
 ```
@@ -490,6 +497,105 @@ mutationType({
 ```
 
 # Reference
+
+## Workflow
+
+### Configuration
+
+In most cases you should not need to configure anything. If you do, and you don't feel like it is an edge-case, we'd like to [know about it](https://github.com/prisma-labs/nexus-prisma/issues/new). Our goal is that for vast majority of cases nexus-prisma be zero-config.
+
+```ts
+type Options = {
+  /**
+   * nexus-prisma will call this to get a reference to an instance of Photon.
+   * The function is passed the context object. Typically a Photon instance will
+   * be available on the context to support your custom resolvers. Therefore the
+   * default getter returns `ctx.photon`.
+   */
+  photon?: (ctx: Nexus.core.GetGen<'context'>) => Photon
+
+  /**
+   * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
+   * and permits the same environment variables. This configuration will completely
+   * go away once Nexus has typeGen plugin support.
+   */
+  shouldGenerateArtifacts?: boolean
+
+  inputs?: {
+    /**
+     * Where can nexus-prisma find the Photon.js package? By default looks in
+     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * gets your Prisma schema AST and Photon.js crud info from the generated
+     * Photon.js package.
+     */
+    photon?: string
+  }
+  outputs?: {
+    /**
+     * Where should nexus-prisma put its typegen on disk? By default matches the
+     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
+     * This configuration will completely go away once Nexus has typeGen plugin
+     * support.
+     */
+    typegen?: string
+  }
+}
+```
+
+### Usage
+
+1. Import `nexusPrismaPlugin` from `nexus-prisma`
+1. Create and configure it if needed (shouldn't be)
+1. Pass into `Nexus.makeSchema` `plugins` array
+
+**Example**
+
+```ts
+import { nexusPrismaPlugin } from 'nexus-prisma'
+import { makeSchema } from 'nexus'
+import * as types from './types'
+
+const schema = makeSchema({ types, plugins: [nexusPrismaPlugin()] })
+```
+
+### Project Setup
+
+These are tips to help you with a successful project workflow
+
+1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to generate typegen. This will come in handy in certain deployment contexts.
+
+1. Consider using something like the following set of npm scripts. The
+   `postinstall` step is helpful for guarding against pruning since the
+   generated `@types` packages will be seen as extraneous. We have an idea to
+   solve this with [package
+   facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users
+   though this would still be helpful since yarn rebuilds all packages whenever
+   the dependency tree changes in any way
+   ([issue](https://github.com/yarnpkg/yarn/issues/4703)). The
+   `NODE_ENV=development` is needed to ensure typegen is run even in a context where `NODE_ENV` is set to `production` (like a heroku deploy pipeline, see next point).
+
+   ```json
+   {
+     "scripts": {
+       "generate:prisma": "prisma2 generate",
+       "generate:nexus": "NODE_ENV=development ts-node --transpile-only path/to/schema/module",
+       "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
+       "postinstall": "npm -s run generate"
+     }
+   }
+   ```
+
+1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app.
+
+   ```json
+   {
+     "scripts": {
+       "build": "npm -s run generate && tsc"
+     }
+   }
+   ```
+
+<br>
 
 ## `t.model`
 
@@ -2359,95 +2465,6 @@ model User {
   posts Post[]
 }
 ```
-
-## Workflow
-
-### Configuration
-
-In most cases you should not need to configure anything. If you do, and you don't feel like it is an edge-case, we'd like to [know about it](https://github.com/prisma-labs/nexus-prisma/issues/new). Our goal is that for vast majority of cases nexus-prisma be zero-config.
-
-```ts
-type Options = {
-  /**
-   * nexus-prisma will call this to get a reference to an instance of Photon.
-   * The function is passed the context object. Typically a Photon instance will
-   * be available on the context to support your custom resolvers. Therefore the
-   * default getter returns `ctx.photon`.
-   */
-  photon?: (ctx: Nexus.core.GetGen<'context'>) => Photon
-
-  /**
-   * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
-   * and permits the same environment variables. This configuration will completely
-   * go away once Nexus has typeGen plugin support.
-   */
-  shouldGenerateArtifacts?: boolean
-
-  inputs?: {
-    /**
-     * Where can nexus-prisma find the Photon.js package? By default looks in
-     * `node_modules/@generated/photon`. This is needed because nexus-prisma
-     * gets your Prisma schema AST and Photon.js crud info from the generated
-     * Photon.js package.
-     */
-    photon?: string
-  }
-  outputs?: {
-    /**
-     * Where should nexus-prisma put its typegen on disk? By default matches the
-     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
-     * This configuration will completely go away once Nexus has typeGen plugin
-     * support.
-     */
-    typegen?: string
-  }
-}
-```
-
-### Usage
-
-1. Import `nexusPrismaPlugin` from `nexus-prisma`
-1. Create and configure it if needed (shouldn't be)
-1. Pass into `Nexus.makeSchema` `plugins` array
-
-**Example**
-
-```ts
-import { nexusPrismaPlugin } from 'nexus-prisma'
-import { makeSchema } from 'nexus'
-import * as types from './types'
-
-const schema = makeSchema({ types, plugins: [nexusPrismaPlugin()] })
-```
-
-### Project Setup
-
-These are tips to help you with a successful project workflow
-
-1. Keep app schema somewhere apart from server so that you can do `ts-node --transpile-only path/to/schema/module` to generate typegen. This will come in handy in certain deployment contexts.
-
-1. Consider using something like the following set of npm scripts. The `postinstall` step is helpful for guarding against pruning since the generated `@types` packages will be seen as extraneous. We have an idea to solve this with [package facades](https://github.com/prisma-labs/nexus/issues/253). For yarn users though this would still be helpful since yarn rebuilds all packages whenever the dependency tree changes in any way ([issue](https://github.com/yarnpkg/yarn/issues/4703)).
-
-   ```json
-   {
-     "scripts": {
-       "generate:prisma": "prisma2 generate",
-       "generate:nexus": "ts-node --transpile-only path/to/schema/module",
-       "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
-       "postinstall": "npm -s run generate"
-     }
-   }
-   ```
-
-1. In your deployment pipeline you may wish to run a build step. Heroku buildpacks for example call `npm run build` if that script is defined in your `package.json`. If this is your case and you are a TypeScript user consider a build setup as follows. Prior to `tsc` we run artifact generation so that TypeScript will have types for the all the resolver signatures etc. of your app. In turn to ensure artifact generation runs we declare the environment variable as such. Artifact generation toggling based on `NODE_ENV` value is often sufficient but not always. For example in a deployment pipeline `NODE_ENV` may be set to "production" (it is with Heroku).
-
-   ```json
-   {
-     "scripts": {
-       "build": "NEXUS_SHOULD_GENERATE_ARTIFACTS=true npm -s run generate && tsc"
-     }
-   }
-   ```
 
 <br>
 

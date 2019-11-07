@@ -7,7 +7,7 @@
     "clean": "rm -rf dist",
     "build": "yarn -s clean && yarn -s generate && tsc",
     "style": "prettier --write 'src/**/*'",
-    "dev": "ts-node-dev --no-notify --respawn --transpile-only src/main.ts",
+    "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
