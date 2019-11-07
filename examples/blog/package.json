@@ -25,7 +25,7 @@
     "@types/ws": "^6.0.3",
     "faker": "^4.1.0",
     "prettier": "^1.18.2",
-    "prisma2": "^2.0.0-alpha.185",
+    "prisma2": "^2.0.0-preview014",
     "ts-node": "^8.3.0",
     "ts-node-dev": "^1.0.0-pre.41",
     "typescript": "^3.5.3"
