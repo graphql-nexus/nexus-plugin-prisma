@@ -1,6 +1,5 @@
 import { plugin } from 'nexus'
 import { build as buildNexusPrismaTypes, Options } from './builder'
-import { setupNexusConfig } from './nexusConfig'
 
 /**
  * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
@@ -40,7 +39,6 @@ export function nexusPrismaPlugin(options?: Options) {
   return plugin({
     name: 'nexus-prisma',
     onInstall: nexusBuilder => {
-      setupNexusConfig(nexusBuilder)
       return {
         types: buildNexusPrismaTypes({ ...options, nexusBuilder }),
       }
