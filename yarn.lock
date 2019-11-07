@@ -421,7 +421,7 @@
   dependencies:
     debug "^4.1.1"
 
-"@prisma/photon@^0.2.94":
+"@prisma/photon@^0.2.152":
   version "0.2.152"
   resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-0.2.152.tgz#75adcf32c2a5e6fb61b99d2624bf6628c7b3c938"
   integrity sha512-Dg5GcXIFeriKHRCEUbeEdEJd9c2kjCifIjOeJeCdOOvz0hiAgVZ2BKqNUkiO9xTr/Gt6a6z7Z/PVFf7lneySFw==
