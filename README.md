@@ -60,6 +60,8 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
     - [Batch Filtering](#batch-filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
+- [Development](#development)
+  - [link workflow with the blog example](#link-workflow-with-the-blog-example)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -2467,6 +2469,28 @@ model User {
 ```
 
 <br>
+
+# Development
+
+### link workflow with the blog example
+
+Sometimes it is desirable to link the current version of the source code into an example app to get more feedback as you work etc.
+
+Do the following to achieve this:
+
+Terminal 1
+
+```
+yarn && yarn link && yarn dev
+```
+
+Terminal 2
+
+```
+export NEXUS_PRISMA_LINK=true
+cd examples/blog
+yarn && yarn link nexus-prisma
+```
 
 # Links
 
