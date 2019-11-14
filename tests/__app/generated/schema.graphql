@@ -56,17 +56,6 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
-input FloatFilter {
-  equals: Float
-  gt: Float
-  gte: Float
-  in: [Float!]
-  lt: Float
-  lte: Float
-  not: Float
-  notIn: [Float!]
-}
-
 input IntFilter {
   equals: Int
   gt: Int
@@ -95,7 +84,6 @@ type Post {
 
 input PostCreateInput {
   authors: UserCreateManyWithoutAuthorsInput
-  rating: Float!
   status: PostStatus!
 }
 
@@ -107,7 +95,6 @@ input PostFilter {
 
 input PostOrderByInput {
   id: OrderByArg
-  rating: OrderByArg
   status: OrderByArg
 }
 
@@ -118,7 +105,6 @@ enum PostStatus {
 
 input PostUpdateManyMutationInput {
   id: Int
-  rating: Float
   status: PostStatus
 }
 
@@ -128,7 +114,6 @@ input PostWhereInput {
   id: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
-  rating: FloatFilter
   status: PostStatus
 }
 

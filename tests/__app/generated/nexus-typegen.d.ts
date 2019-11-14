@@ -54,16 +54,6 @@ export interface NexusGenInputs {
     not?: any | null; // DateTime
     notIn?: any[] | null; // [DateTime!]
   }
-  FloatFilter: { // input type
-    equals?: number | null; // Float
-    gt?: number | null; // Float
-    gte?: number | null; // Float
-    in?: number[] | null; // [Float!]
-    lt?: number | null; // Float
-    lte?: number | null; // Float
-    not?: number | null; // Float
-    notIn?: number[] | null; // [Float!]
-  }
   IntFilter: { // input type
     equals?: number | null; // Int
     gt?: number | null; // Int
@@ -76,7 +66,6 @@ export interface NexusGenInputs {
   }
   PostCreateInput: { // input type
     authors?: NexusGenInputs['UserCreateManyWithoutAuthorsInput'] | null; // UserCreateManyWithoutAuthorsInput
-    rating: number; // Float!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   PostFilter: { // input type
@@ -86,12 +75,10 @@ export interface NexusGenInputs {
   }
   PostOrderByInput: { // input type
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
-    rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     status?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
   PostUpdateManyMutationInput: { // input type
     id?: number | null; // Int
-    rating?: number | null; // Float
     status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
   PostWhereInput: { // input type
@@ -100,7 +87,6 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
-    rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
     status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
   StringFilter: { // input type
@@ -198,7 +184,6 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   BubbleWhereInput: NexusGenInputs['BubbleWhereInput'];
   BubbleWhereUniqueInput: NexusGenInputs['BubbleWhereUniqueInput'];
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
-  FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
   PostCreateInput: NexusGenInputs['PostCreateInput'];
   PostFilter: NexusGenInputs['PostFilter'];
@@ -293,7 +278,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Mutation" | "Post" | "Query" | "User";
 
-export type NexusGenInputNames = "BubbleCreateOneWithoutBubbleInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutAuthorsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "BubbleCreateOneWithoutBubbleInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "IntFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutAuthorsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "OrderByArg" | "PostStatus";
 

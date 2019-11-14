@@ -14,6 +14,7 @@ import {
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext } from './utils'
+import { DmmfDocumentTransform } from './dmmf'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -99,6 +100,7 @@ export interface Options {
      */
     typegen?: string
   }
+  transform?: DmmfDocumentTransform
 }
 
 export interface InternalOptions extends Options {
@@ -180,7 +182,9 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
+    this.dmmf =
+      options.dmmf ||
+      DMMF.get(config.inputs.photon, { transform: options.transform })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
