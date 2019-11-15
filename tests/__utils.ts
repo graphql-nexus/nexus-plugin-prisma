@@ -3,6 +3,7 @@ import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
+import { GetDmmfClassOptions } from '../src/dmmf/utils'
 import { render as renderTypegen } from '../src/typegen'
 
 export const createNexusPrismaInternal = (
@@ -35,8 +36,12 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
   types: any,
+  dmmfOptions?: GetDmmfClassOptions,
 ) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const dmmf = DMMF.fromPhotonDMMF(
+    await Photon.getDMMF({ datamodel }),
+    dmmfOptions,
+  )
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
     nexusBuilder: {
       addType: () => false,

@@ -53,16 +53,6 @@ it('integrates together', async () => {
     outputs: {
       typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
     },
-    // transform: document => ({
-    //   ...document,
-    //   schema: {
-    //     ...document.schema,
-    //     inputTypes: document.schema.inputTypes.map(input => ({
-    //       ...input,
-    //       fields: input.fields.filter(({ name }) => name !== 'rating'),
-    //     })),
-    //   },
-    // }),
   })
 
   await nexusBuilder.generateSchema({
