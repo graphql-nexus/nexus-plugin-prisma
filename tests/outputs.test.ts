@@ -51,7 +51,9 @@ it('can get args from context', async () => {
   const Mutation = Nexus.objectType({
     name: 'Mutation',
     definition(t: any) {
-      t.crud.createOneUser({ contextArgs = ()  })
+      t.crud.createOneUser({
+        contextArgs: { browser: (ctx: any) => ctx.browser },
+      })
     },
   })
 

@@ -14,7 +14,8 @@ import {
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext } from './utils'
-import { DmmfDocumentTransform } from './dmmf'
+
+export type ContextArgs = Record<string, (ctx: any) => any>
 
 interface FieldPublisherConfig {
   alias?: string
@@ -22,6 +23,7 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
+  contextArgs?: ContextArgs
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
@@ -100,7 +102,6 @@ export interface Options {
      */
     typegen?: string
   }
-  transform?: DmmfDocumentTransform
 }
 
 export interface InternalOptions extends Options {
@@ -182,9 +183,7 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.dmmf =
-      options.dmmf ||
-      DMMF.get(config.inputs.photon, { transform: options.transform })
+    this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
@@ -407,9 +406,12 @@ export class SchemaBuilder {
     field: DMMF.Data.SchemaField,
     publisherConfig: ResolvedFieldPublisherConfig,
   ): Nexus.core.ArgsRecord {
-    let args: CustomInputArg[] = []
+    let args: CustomInputArg[]
+    const fieldArgs = publisherConfig.contextArgs
+      ? field.args.filter(arg => !(arg.name in publisherConfig.contextArgs!))
+      : field.args
     if (typeName === 'Mutation' || operationName === 'findOne') {
-      args = field.args.map(arg => {
+      args = fieldArgs.map(arg => {
         return {
           arg,
           type: this.dmmf.getInputType(arg.inputType.type),
