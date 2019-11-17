@@ -33,12 +33,12 @@ it('only publishes output types that do not map to prisma models', async () => {
   expect(Object.keys(missingTypes)).toEqual(['User'])
 })
 
-it('transforms model before generating output', async () => {
+it('can get args from context', async () => {
   const datamodel = `
   model User {
     id  Int @id
     name String
-    ignoredField String
+    browser String
   }
 `
   const Query = Nexus.objectType({
@@ -51,7 +51,7 @@ it('transforms model before generating output', async () => {
   const Mutation = Nexus.objectType({
     name: 'Mutation',
     definition(t: any) {
-      t.crud.createOneUser()
+      t.crud.createOneUser({ contextArgs = ()  })
     },
   })
 
@@ -60,27 +60,16 @@ it('transforms model before generating output', async () => {
     definition: (t: any) => {
       t.model.id()
       t.model.name()
+      t.model.browser()
     },
   })
 
-  const result = await generateSchemaAndTypesWithoutThrowing(
-    datamodel,
-    [Query, Mutation, User],
-    {
-      transform: document => ({
-        ...document,
-        schema: {
-          ...document.schema,
-          inputTypes: document.schema.inputTypes.map(input => ({
-            ...input,
-            fields: input.fields.filter(({ name }) => name !== 'ignoredField'),
-          })),
-        },
-      }),
-    },
-  )
-  expect(result.schema.includes('ignoredField')).toBeFalsy()
-  expect(result).toMatchSnapshot('transform')
+  const result = await generateSchemaAndTypesWithoutThrowing(datamodel, [
+    Query,
+    Mutation,
+    User,
+  ])
+  expect(result).toMatchSnapshot('contextArgs')
 })
 
 it('publishes scalars from input types', async () => {
