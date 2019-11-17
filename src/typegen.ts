@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as DMMF from './dmmf'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
@@ -33,7 +34,7 @@ export function doGenerate(
 
 export function render(dmmf: DMMF.DMMF, photonPath: string) {
   return `\
-import * as photon from '${photonPath}';
+import * as photon from '${photonPath.split(path.sep).join('/')}';
 import { core } from 'nexus';
 // Types helpers
 ${renderStaticTypes()}
