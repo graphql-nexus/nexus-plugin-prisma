@@ -118,7 +118,7 @@ if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
     '/node_modules/@generated/photon',
   )
 } else {
-  defaultPhotonPath = '@generated/photon'
+  defaultPhotonPath = require.resolve('@generated/photon')
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
