@@ -407,11 +407,9 @@ export class SchemaBuilder {
     publisherConfig: ResolvedFieldPublisherConfig,
   ): Nexus.core.ArgsRecord {
     let args: CustomInputArg[]
-    const fieldArgs = publisherConfig.contextArgs
-      ? field.args.filter(arg => !(arg.name in publisherConfig.contextArgs!))
-      : field.args
+
     if (typeName === 'Mutation' || operationName === 'findOne') {
-      args = fieldArgs.map(arg => {
+      args = field.args.map(arg => {
         return {
           arg,
           type: this.dmmf.getInputType(arg.inputType.type),
@@ -497,6 +495,23 @@ export class SchemaBuilder {
           type: { name: a.inputType.type },
         })),
       )
+    }
+
+    if (publisherConfig.contextArgs) {
+      const modifiedArg = dmmfField.args[0]
+      const photonObject = this.dmmf.getInputType(modifiedArg.inputType.type)
+      const modifiedArgData = {
+        arg: modifiedArg,
+        type: {
+          ...photonObject,
+          name: modifiedArg.inputType.type,
+          fields: photonObject.fields.filter(
+            field => !(field.name in publisherConfig.contextArgs!),
+          ),
+        },
+      }
+
+      args.push(modifiedArgData)
     }
 
     return args
