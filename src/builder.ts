@@ -13,6 +13,7 @@ import {
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext } from './utils'
+import { proxify, OnUnknownFieldName } from './proxifier'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -83,6 +84,7 @@ export interface Options {
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.PluginBuilderLens
+  onUnknownFieldName?: OnUnknownFieldName // For pumpkins
 }
 
 export function build(options: InternalOptions) {
@@ -189,7 +191,7 @@ export class SchemaBuilder {
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       // FIXME
       // Nexus should improve the type of typeName to be AllOutputTypes
-      factory: ({ typeDef: t, typeName }) => {
+      factory: ({ typeDef: t, typeName, stage }) => {
         if (typeName === GraphQL.rootNames.Subscription) {
           // TODO Lets put a GitHub issue link in this error message
           throw new Error(
@@ -205,7 +207,7 @@ export class SchemaBuilder {
             `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-        return getCrudMappedFields(typeName, this.dmmf).reduce<
+        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce<
           PublisherMethods
         >((crud, mappedField) => {
           const fieldPublisher: FieldPublisher = givenConfig => {
@@ -244,6 +246,14 @@ export class SchemaBuilder {
 
           return crud
         }, {})
+
+        return proxify(
+          publishers,
+          typeName,
+          stage,
+          'crud',
+          this.options.onUnknownFieldName,
+        )
       },
     })
   }
@@ -299,16 +309,18 @@ export class SchemaBuilder {
        *    })
        *
        */
-      factory: ({ typeDef, typeName }) =>
+      factory: ({ typeDef, typeName, stage }) =>
         this.dmmf.hasModel(typeName)
-          ? this.internalBuildModel(typeName, typeDef)
-          : (modelName: string) => this.internalBuildModel(modelName, typeDef),
+          ? this.internalBuildModel(typeName, typeDef, stage)
+          : (modelName: string) =>
+              this.internalBuildModel(modelName, typeDef, stage),
     })
   }
 
   internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
+    stage: Nexus.core.OutputFactoryConfig<any>['stage'],
   ) {
     const model = this.dmmf.getModelOrThrow(typeName)
     const outputType = this.dmmf.getOutputType(model.name)
@@ -359,7 +371,13 @@ export class SchemaBuilder {
       {},
     )
 
-    return publishers
+    return proxify(
+      publishers,
+      typeName,
+      stage,
+      'model',
+      this.options.onUnknownFieldName,
+    )
   }
 
   buildArgsFromField(
