@@ -19,7 +19,6 @@ type User {
 
 input UserCreateInput {
   name: String!
-  browser: String!
 }
 
 input UserWhereUniqueInput {
