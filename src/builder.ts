@@ -419,11 +419,35 @@ export class SchemaBuilder {
       args = this.argsFromQueryOrModelField(typeName, field, publisherConfig)
     }
 
-    return args.reduce<Nexus.core.ArgsRecord>((acc, customArg) => {
-      acc[customArg.arg.name] = this.publisher.inputType(customArg) as any //FIXME
+    return args.reduce<Nexus.core.ArgsRecord>(
+      (acc, customArg) => ({
+        ...acc,
+        [customArg.arg.name]: this.publisher.inputType(
+          this.filterContextArgs(customArg, publisherConfig),
+        ) as any, //FIX ME,
+      }),
+      {},
+    )
+  }
 
-      return acc
-    }, {})
+  filterContextArgs(
+    { arg, type }: CustomInputArg,
+    publisherConfig: ResolvedFieldPublisherConfig,
+  ) {
+    if (!publisherConfig.contextArgs) {
+      return { arg, type }
+    }
+    const photonObject = this.dmmf.getInputType(arg.inputType.type)
+    return {
+      arg,
+      type: {
+        ...photonObject,
+        name: arg.inputType.type,
+        fields: photonObject.fields.filter(
+          field => !(field.name in publisherConfig.contextArgs!),
+        ),
+      },
+    }
   }
 
   argsFromQueryOrModelField(
@@ -495,23 +519,6 @@ export class SchemaBuilder {
           type: { name: a.inputType.type },
         })),
       )
-    }
-
-    if (publisherConfig.contextArgs) {
-      const modifiedArg = dmmfField.args[0]
-      const photonObject = this.dmmf.getInputType(modifiedArg.inputType.type)
-      const modifiedArgData = {
-        arg: modifiedArg,
-        type: {
-          ...photonObject,
-          name: modifiedArg.inputType.type,
-          fields: photonObject.fields.filter(
-            field => !(field.name in publisherConfig.contextArgs!),
-          ),
-        },
-      }
-
-      args.push(modifiedArgData)
     }
 
     return args
