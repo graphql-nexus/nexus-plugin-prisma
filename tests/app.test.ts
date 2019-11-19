@@ -1,4 +1,5 @@
 import * as cp from 'child_process'
+import * as os from 'os'
 import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
 import * as NexusPrisma from '../src'
@@ -7,6 +8,10 @@ import * as types from './__app/main'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
+
+function quoteOnWindows(str: string) {
+  return os.platform() === 'win32' ? '"' + str + '"' : str
+}
 
 it('integrates together', async () => {
   // Setup file system vars & helpers
@@ -17,7 +22,7 @@ it('integrates together', async () => {
     fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
 
   const projectPath = (...paths: string[]): string =>
-    path.join(projectRoot, ...paths)
+    path.join(projectRoot, ...paths).replace(/\\/g, '/')
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -34,7 +39,7 @@ it('integrates together', async () => {
   // Run Prisma generation:
   // - Photon JS Client
   //
-  cp.execSync('../../node_modules/.bin/prisma2 generate', {
+  cp.execSync(quoteOnWindows('../../node_modules/.bin/prisma2') + ' generate', {
     cwd: projectRoot,
   })
 
