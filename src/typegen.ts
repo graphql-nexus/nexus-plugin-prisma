@@ -17,6 +17,13 @@ export function generate(options: Options): Promise<void> {
   return doGenerate(false, options)
 }
 
+function isModule(name: string) {
+  return (
+    !name.includes('/') ||
+    (name.startsWith('@') && (name.match(/\//g) || []).length === 1)
+  )
+}
+
 export function doGenerate(sync: true, options: Options): void
 export function doGenerate(sync: false, options: Options): Promise<void>
 export function doGenerate(
@@ -24,13 +31,16 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = DMMF.get(options.photonPath)
+  console.log({ options })
   const tsDeclaration = render(
     dmmf,
-    // Support Serverless platforms by resolving module paths relatively
-    './' +
-      path
-        .relative(path.dirname(options.typegenPath), options.photonPath)
-        .replace(/\\/g, '/'), // Use '/' instead of '\' on Windows
+    isModule(options.photonPath)
+      ? options.photonPath
+      : // Support Serverless platforms by resolving module paths relatively
+        './' +
+          path
+            .relative(path.dirname(options.typegenPath), options.photonPath)
+            .replace(/\\/g, '/'), // Use '/' instead of '\' on Windows
   )
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
