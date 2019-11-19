@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as DMMF from './dmmf'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
@@ -23,7 +24,14 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = DMMF.get(options.photonPath)
-  const tsDeclaration = render(dmmf, options.photonPath)
+  const tsDeclaration = render(
+    dmmf,
+    // Support Serverless platforms by resolving module paths relatively
+    './' +
+      path
+        .relative(path.dirname(options.typegenPath), options.photonPath)
+        .replace(/\\/g, '/'), // Use '/' instead of '\' on Windows
+  )
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {
