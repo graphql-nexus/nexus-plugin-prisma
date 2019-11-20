@@ -12,7 +12,9 @@ export const get = (photonClientPackagePath: string): DMMFClass => {
     photonClientPackage = require(photonClientPackagePath)
   } catch (error) {
     throw new Error(
-      `Could not find photon package at ${photonClientPackagePath}. Check that you have configured your Photon generator block in schema.prisma correctly and run prisma generate.`,
+      `Failed to import photon package at ${photonClientPackagePath}. The following error occured while trying:
+
+        ${error.stack}`,
     )
   }
   return fromPhotonDMMF(photonClientPackage.dmmf)
