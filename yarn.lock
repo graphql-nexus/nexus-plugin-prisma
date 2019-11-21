@@ -371,12 +371,12 @@
   dependencies:
     debug "^4.1.1"
 
-"@prisma/photon@^2.0.0-alpha.344":
+"@prisma/photon@2.0.0-alpha.344":
   version "2.0.0-alpha.344"
   resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-2.0.0-alpha.344.tgz#4c17b2f41a39cfc3f41a717be3be285277e9245a"
   integrity sha512-ta0pupwmgyfPfRz8XvhzUlGh5UWSnHyf1VTgVexWRnbvSaHMVlQX3KLiHqnd44s4wqNPC9evW3nuRANr8BweIg==
 
-"@prisma/sdk@^0.0.55":
+"@prisma/sdk@0.0.55":
   version "0.0.55"
   resolved "https://registry.yarnpkg.com/@prisma/sdk/-/sdk-0.0.55.tgz#2f6747a2486d83072e511f2b10a729e094b51e35"
   integrity sha512-1Tf+Vd4E8gaD6Se620hlHz99VKYt+B1yoO4cYY4pMNLp781OTDG3MVCjF5BbAhau83bSqhoMJHZB9dxm9KPwSQ==
@@ -3810,7 +3810,7 @@ prisma-datamodel@1.34.10:
     pluralize "^7.0.0"
     popsicle "10"
 
-prisma2@^2.0.0-alpha.344:
+prisma2@2.0.0-alpha.344:
   version "2.0.0-alpha.344"
   resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.344.tgz#be8f39a498246dba92c711a900ba8dd1c7af596f"
   integrity sha512-xJK6ghBzvecgjyGRYc+E/JLvvOTl0ifI2/O55r+nVoBgpE2UBZCsFccnIDY5o3MbvhTziMdUSqAbESGtkg+ong==
