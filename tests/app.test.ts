@@ -77,10 +77,10 @@ it('integrates together', async () => {
     '/generated/nexus-typegen.d.ts',
   )
   const photonTSD = await projectReadFile(
-    '../../node_modules/@generated/photon/index.d.ts',
+    '../../node_modules/@prisma/photon/index.d.ts',
   )
   const photonSource = (await projectReadFile(
-    '../../node_modules/@generated/photon/index.js',
+    '../../node_modules/@prisma/photon/index.js',
   ))
     .replace(
       /(path\.join\(__dirname, 'runtime\/).*('\);)/,
@@ -95,7 +95,7 @@ it('integrates together', async () => {
   expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
-  expect(require('@generated/photon').dmmf).toMatchSnapshot('photon dmmf')
+  expect(require('@prisma/photon').dmmf).toMatchSnapshot('photon dmmf')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.

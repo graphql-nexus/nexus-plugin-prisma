@@ -61,7 +61,7 @@ You can use a specific Photon built for this migration (20191004153921-post-stat
 in your `before` or `after` migration script like this:
 
 ```ts
-import Photon from '@generated/photon/20191004153921-post-status'
+import Photon from '@prisma/photon/20191004153921-post-status'
 
 const photon = new Photon()
 

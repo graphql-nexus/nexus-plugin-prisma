@@ -1,4 +1,4 @@
-import * as Photon from '@prisma/photon'
+import * as Photon from '@prisma/photon/dist'
 import { transform } from './transformer'
 import { DMMFClass } from './DMMFClass'
 
