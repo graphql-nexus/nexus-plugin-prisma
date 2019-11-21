@@ -10,6 +10,7 @@
     "src"
   ],
   "scripts": {
+    "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
