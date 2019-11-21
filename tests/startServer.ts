@@ -8,14 +8,10 @@ import * as types from './__app/main'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
-
-it('integrates together', async () => {
+const serve = async () => {
   // Setup file system vars & helpers
   //
   const projectRoot = path.join(__dirname, '/__app')
-
-  const projectReadFile = (relPath: string): Promise<string> =>
-    fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
 
   const projectPath = (...paths: string[]): string =>
     path.join(projectRoot, ...paths)
@@ -27,6 +23,7 @@ it('integrates together', async () => {
   //   - The test will produce something identical to what was there before
   //   - If it does not, the snapshots will fail + git diff (redundant, though)
   //
+
   await Promise.all([
     fs.emptyDir(projectPath('/generated')),
     fs.emptyDir(projectPath('../../node_modules/@generated')),
@@ -71,41 +68,6 @@ it('integrates together', async () => {
   })
 
   server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
+}
 
-  // Snapshot generated files for manual correctness tracking.
-  // Generated files from deps are tracked too, for easier debugging,
-  // learning, and detecting unexpected changes.
-  //
-  const graphqlSchema = await projectReadFile('/generated/schema.graphql')
-  const nexusPrismaTypeGen = await projectReadFile(
-    '/generated/nexus-prisma-typegen.d.ts',
-  )
-  const nexusCoreTypegen = await projectReadFile(
-    '/generated/nexus-typegen.d.ts',
-  )
-  const photonTSD = await projectReadFile(
-    '../../node_modules/@generated/photon/index.d.ts',
-  )
-  const photonSource = (await projectReadFile(
-    '../../node_modules/@generated/photon/index.js',
-  ))
-    .replace(
-      /(path\.join\(__dirname, 'runtime\/).*('\);)/,
-      '$1__NON_DETERMINISTIC_CONTENT__$2',
-    )
-    .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
-
-  expect(graphqlSchema).toMatchSnapshot('graphql schema')
-  expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
-
-  // For convenience
-  expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
-  expect(photonTSD).toMatchSnapshot('photon typescript declaration')
-  expect(photonSource).toMatchSnapshot('photon source code')
-  expect(require('@generated/photon').dmmf).toMatchSnapshot('photon dmmf')
-
-  // Assert the app type checks. In effect this is testing that our
-  // typegen works.
-  //
-  // expect(projectRoot).toTypeCheck()
-})
+serve()
