@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.5.3-next.2",
+  "version": "0.0.0-pr.539.3ed8041",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -30,7 +30,6 @@
     "pluralize": "^8.0.0"
   },
   "devDependencies": {
-    "prisma2": "2.0.0-alpha.344",
     "@types/debug": "^4.1.5",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
@@ -43,6 +42,7 @@
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
     "prettier": "^1.17.1",
+    "prisma2": "2.0.0-alpha.344",
     "tmp": "^0.1.0",
     "ts-jest": "^24.0.2",
     "ts-morph": "^5.0.0",
