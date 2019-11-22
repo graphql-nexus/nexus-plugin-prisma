@@ -64,7 +64,7 @@ export interface Options {
   inputs?: {
     /**
      * Where can nexus-prisma find the Photon.js package? By default looks in
-     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * `node_modules/@prisma/photon`. This is needed because nexus-prisma
      * gets your Prisma schema AST and Photon.js crud info from the generated
      * Photon.js package.
      */
@@ -117,10 +117,10 @@ if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
 } else if (process.env.NEXUS_PRISMA_LINK) {
   defaultPhotonPath = path.join(
     process.cwd(),
-    '/node_modules/@generated/photon',
+    '/node_modules/@prisma/photon',
   )
 } else {
-  defaultPhotonPath = '@generated/photon'
+  defaultPhotonPath = '@prisma/photon'
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.

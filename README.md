@@ -526,7 +526,7 @@ type Options = {
   inputs?: {
     /**
      * Where can nexus-prisma find the Photon.js package? By default looks in
-     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * `node_modules/@prisma/photon`. This is needed because nexus-prisma
      * gets your Prisma schema AST and Photon.js crud info from the generated
      * Photon.js package.
      */

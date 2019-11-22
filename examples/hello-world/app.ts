@@ -1,7 +1,7 @@
 import { GraphQLServer } from 'graphql-yoga'
 import { makeSchema, queryType, mutationType, objectType } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { Photon } from '@generated/photon'
+import { Photon } from '@prisma/photon'
 import * as path from 'path'
 
 const photon = new Photon()
@@ -11,7 +11,7 @@ new GraphQLServer({
   schema: makeSchema({
     typegenAutoConfig: {
       contextType: '{ photon: Photon.Photon }',
-      sources: [{ source: '@generated/photon', alias: 'Photon' }],
+      sources: [{ source: '@prisma/photon', alias: 'Photon' }],
     },
     outputs: {
       typegen: path.join(

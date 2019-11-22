@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { DMMF } from '@prisma/photon'
+import { DMMF } from '@prisma/photon/runtime'
 
 export function transform(document: DMMF.Document): ExternalDMMF.Document {
   return {
