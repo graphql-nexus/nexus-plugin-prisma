@@ -1,4 +1,4 @@
-import * as Photon from '@prisma/photon/dist'
+import * as Photon from '@prisma/photon/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
