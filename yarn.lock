@@ -339,10 +339,10 @@
   dependencies:
     debug "^4.1.1"
 
-"@prisma/photon@^2.0.0-alpha.349":
-  version "2.0.0-alpha.349"
-  resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-2.0.0-alpha.349.tgz#9f44cca76ff694f4f3162491880c178171dbcc62"
-  integrity sha512-AIs+3CprdJ18rx/BJe36Ap9RWSrJa+BdRvwVwQbUs8UGRZsGATiRJHD5aJh92HTadMgHU4P0S0TeS9cie5LUJA==
+"@prisma/photon@^2.0.0-alpha.351":
+  version "2.0.0-alpha.351"
+  resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-2.0.0-alpha.351.tgz#844264f9d0293c6e8bad406268a63489b943a511"
+  integrity sha512-Y2OCkGNMNKEYflOs8AfHFwiDu8Zgs5FeNizjc2X20YUyTuseK/PPP3dUFAvuQ2G/F2XFdFRq8+6EBtQbFeE0Bw==
 
 "@textlint/ast-node-types@^4.0.3":
   version "4.2.5"
@@ -412,11 +412,6 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
-
-"@types/debug@^4.1.5":
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
-  integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
 "@types/events@*":
   version "3.0.0"
@@ -3412,10 +3407,10 @@ pretty-format@^24.9.0:
     ansi-styles "^3.2.0"
     react-is "^16.8.4"
 
-prisma2@^2.0.0-alpha.349:
-  version "2.0.0-alpha.349"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.349.tgz#5d275be7011f2e1fa4ba22bb95477deeab03ba4f"
-  integrity sha512-cIMAS/v7VajVe/pEq4JV98j1RB4g+fDsfF2DFoNTys7cC2qBXDLMKXW2AEsLgqnCS39VRWbP4u2uDsWygpB1Sg==
+prisma2@^2.0.0-alpha.351:
+  version "2.0.0-alpha.351"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-alpha.351.tgz#d3cd709e7ff60b55520ebdddfe17d60d0f308a31"
+  integrity sha512-o4cMfQK+pNCTYPsrUtyxfmu7j7xna0YWZQkZreHukKZIqAOh/lJZvlLfI9PST49ssnLwPzzmm/ORHdNwuUDkKg==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
