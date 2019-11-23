@@ -17,8 +17,7 @@
     "dev:test": "jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "jest",
-    "testServe": "ts-node --transpile-only tests/startServer"
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/photon": "^0.2.152",
@@ -37,7 +36,6 @@
     "@types/tmp": "^0.1.0",
     "doctoc": "^1.4.0",
     "graphql": "^14.5.4",
-    "graphql-yoga": "^1.18.3",
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
     "prettier": "^1.17.1",

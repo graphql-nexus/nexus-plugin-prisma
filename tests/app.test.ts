@@ -1,4 +1,3 @@
-import { GraphQLServer } from 'graphql-yoga'
 import * as cp from 'child_process'
 import * as path from 'path'
 import * as nexusBuilder from 'nexus/dist/builder'
