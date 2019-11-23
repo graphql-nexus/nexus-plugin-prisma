@@ -286,6 +286,8 @@ type GetNexusPrismaInput<
     : never
   : never;
 
+type ContextArgs = Record<string, (ctx: any) => any>;
+
 type NexusPrismaRelationOpts<
   ModelName extends any,
   MethodName extends any,
@@ -298,9 +300,11 @@ type NexusPrismaRelationOpts<
 > extends never
   ? {
       alias?: string;
+      contextArgs?: ContextArgs;
     } & DynamicRequiredType<ReturnType>
   : {
       alias?: string;
+      contextArgs?: ContextArgs;
       filtering?:
         | boolean
         | Partial<

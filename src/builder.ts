@@ -167,6 +167,7 @@ const defaultOptions = {
 export interface CustomInputArg {
   arg: DMMF.Data.SchemaArg
   type: DMMF.Data.InputType | DMMF.Data.Enum | { name: string } // scalar
+  contextArgs?: ContextArgs
 }
 
 export class SchemaBuilder {
@@ -248,9 +249,18 @@ export class SchemaBuilder {
               operation: mappedField.operation,
               resolve: (parent, args, ctx) => {
                 const photon = this.getPhoton(ctx)
+                const contextArgs = publisherConfig.contextArgs
+                  ? Object.keys(publisherConfig.contextArgs).reduce(
+                      (args, key) => {
+                        args[key] = publisherConfig.contextArgs![key](ctx)
+                        return args
+                      },
+                      {} as Record<string, any>,
+                    )
+                  : undefined
                 return photon[mappedField.photonAccessor][
                   mappedField.operation
-                ](args)
+                ](this.withContextArgs(publisherConfig, args, ctx))
               },
             })
             t.field(publisherConfig.alias, fieldConfig)
@@ -349,7 +359,9 @@ export class SchemaBuilder {
                     const mapping = this.dmmf.getMapping(typeName)
                     return photon[mapping.plural!]
                       ['findOne']({ where: { id: root.id } })
-                      [field.name](args)
+                      [field.name](
+                        this.withContextArgs(publisherConfig, args, ctx),
+                      )
                   }
                 : undefined,
           })
@@ -366,6 +378,25 @@ export class SchemaBuilder {
     )
 
     return publishers
+  }
+
+  withContextArgs(
+    publisherConfig: ResolvedFieldPublisherConfig,
+    args: any,
+    ctx: any,
+  ) {
+    const contextArgs = publisherConfig.contextArgs
+      ? Object.keys(publisherConfig.contextArgs).reduce(
+          (args, key) => {
+            args[key] = publisherConfig.contextArgs![key](ctx)
+            return args
+          },
+          {} as Record<string, any>,
+        )
+      : undefined
+    return contextArgs
+      ? { ...args, data: { ...contextArgs, ...args.data } }
+      : args
   }
 
   buildPublisherConfig({

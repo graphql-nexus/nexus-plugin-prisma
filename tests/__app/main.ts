@@ -10,10 +10,7 @@ export const Query = queryType({
 
 export const Mutation = mutationType({
   definition: t => {
-    t.crud.createOnePost({
-      // @ts-ignore
-      contextArgs: { status: (ctx: any) => ctx.status },
-    })
+    t.crud.createOnePost()
     t.crud.updateManyPost()
   },
 })
