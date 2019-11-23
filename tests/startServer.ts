@@ -5,6 +5,7 @@ import * as nexusBuilder from 'nexus/dist/builder'
 import * as NexusPrisma from '../src'
 import * as fs from 'fs-extra'
 import * as types from './__app/main'
+import { Photon } from '@generated/photon'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
@@ -65,6 +66,7 @@ const serve = async () => {
 
   const server = new GraphQLServer({
     schema,
+    context: { photon: new Photon() },
   })
 
   server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))

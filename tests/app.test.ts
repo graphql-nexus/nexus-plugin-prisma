@@ -56,7 +56,7 @@ it('integrates together', async () => {
     },
   })
 
-  const schema = await nexusBuilder.generateSchema({
+  await nexusBuilder.generateSchema({
     types,
     plugins: [nexusPrisma],
     shouldGenerateArtifacts: true,
@@ -65,12 +65,6 @@ it('integrates together', async () => {
       schema: projectPath(`/generated/schema.graphql`),
     },
   })
-
-  const server = new GraphQLServer({
-    schema,
-  })
-
-  server.start(() => console.log(`🚀 Server ready at http://localhost:4000`))
 
   // Snapshot generated files for manual correctness tracking.
   // Generated files from deps are tracked too, for easier debugging,
@@ -107,5 +101,5 @@ it('integrates together', async () => {
   // Assert the app type checks. In effect this is testing that our
   // typegen works.
   //
-  // expect(projectRoot).toTypeCheck()
+  expect(projectRoot).toTypeCheck()
 })
