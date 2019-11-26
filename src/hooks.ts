@@ -5,9 +5,9 @@ export type OnUnknownFieldName = (info: {
   typeName: string
 }) => void
 
-export type OnUnknownOutputType = (info: {
-  unknownOutputType: string
+export type OnUnknownFieldType = (info: {
+  unknownFieldType: string
   error: Error
   typeName: string
-  fieldName: string,
+  fieldName: string
 }) => void

@@ -3,7 +3,7 @@ import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as DMMF from './dmmf'
 import * as GraphQL from './graphql'
-import { OnUnknownFieldName, OnUnknownOutputType } from './hooks'
+import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
 import { isDevMode } from './is-dev-mode'
 import { getCrudMappedFields } from './mapping'
 import {
@@ -87,7 +87,7 @@ export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
-  onUnknownOutputType?: OnUnknownOutputType // For pumpkins
+  onUnknownFieldType?: OnUnknownFieldType // For pumpkins
 }
 
 export function build(options: InternalOptions) {
@@ -569,9 +569,9 @@ export class SchemaBuilder {
 
     if (stage === 'build') {
       if (isDevMode()) {
-        if (this.options.onUnknownOutputType) {
-          this.options.onUnknownOutputType({
-            unknownOutputType: outputType,
+        if (this.options.onUnknownFieldType) {
+          this.options.onUnknownFieldType({
+            unknownFieldType: outputType,
             typeName,
             fieldName,
             error: new Error(message),
