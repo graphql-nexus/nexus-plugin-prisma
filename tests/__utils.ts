@@ -23,7 +23,7 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   const schema = Nexus.makeSchema({
     types,
     plugins: [nexusPrisma],
-    shouldGenerateArtifacts: false,
+    outputs: false,
   })
 
   return {
@@ -49,10 +49,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
   }).build()
   const schemaAndMissingTypes = Nexus.core.makeSchemaInternal({
     types: [types, nexusPrisma],
-    outputs: {
-      schema: false,
-      typegen: false,
-    },
+    outputs: false,
   })
   const typegen = renderTypegen(dmmf, '@prisma/photon')
 
