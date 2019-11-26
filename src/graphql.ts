@@ -27,3 +27,5 @@ export const scalarsNameValues: ScalarName[] = [
   'ID',
   'Boolean',
 ]
+
+export const isScalarType = (name: string) => scalarsNameValues.includes(name as any)
