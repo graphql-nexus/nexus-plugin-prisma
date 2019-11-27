@@ -345,16 +345,16 @@ export class SchemaBuilder {
             ...givenConfig,
           }
           const fieldName = resolvedConfig.alias || field.name
-          const type = resolvedConfig.type || field.outputType.type
+          const fieldType = resolvedConfig.type || field.outputType.type
 
           if (
-            !this.assertOutputTypeIsDefined(typeName, fieldName, type, stage)
+            !this.assertOutputTypeIsDefined(typeName, fieldName, fieldType, stage)
           ) {
             return acc
           }
 
           const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
-            type: this.publisher.outputType(type, field),
+            type: this.publisher.outputType(fieldType, field),
             ...dmmfListFieldTypeToNexus(field.outputType),
             args: this.buildArgsFromField(
               typeName,
