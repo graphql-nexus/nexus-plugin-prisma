@@ -3,6 +3,8 @@ import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as DMMF from './dmmf'
 import * as GraphQL from './graphql'
+import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
+import { isDevMode } from './is-dev-mode'
 import { getCrudMappedFields } from './mapping'
 import {
   ArgsNamingStrategy,
@@ -10,10 +12,10 @@ import {
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
 } from './naming-strategies'
+import { proxify } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext } from './utils'
-import { proxify, OnUnknownFieldName } from './proxifier'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -85,6 +87,7 @@ export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
+  onUnknownFieldType?: OnUnknownFieldType // For pumpkins
 }
 
 export function build(options: InternalOptions) {
@@ -115,10 +118,7 @@ let defaultPhotonPath: string
 if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
   defaultPhotonPath = process.env.NEXUS_PRISMA_PHOTON_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultPhotonPath = path.join(
-    process.cwd(),
-    '/node_modules/@prisma/photon',
-  )
+  defaultPhotonPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
 } else {
   defaultPhotonPath = '@prisma/photon'
 }
@@ -217,6 +217,17 @@ export class SchemaBuilder {
               ...givenConfig,
             }
             const gqlFieldName = resolvedConfig.alias || mappedField.field.name
+
+            if (
+              !this.assertOutputTypeIsDefined(
+                typeName,
+                mappedField.field.name,
+                resolvedConfig.type!,
+                stage,
+              )
+            ) {
+              return crud
+            }
 
             t.field(gqlFieldName, {
               type: this.publisher.outputType(
@@ -334,9 +345,16 @@ export class SchemaBuilder {
             ...givenConfig,
           }
           const fieldName = resolvedConfig.alias || field.name
-          const type = resolvedConfig.type || field.outputType.type
+          const fieldType = resolvedConfig.type || field.outputType.type
+
+          if (
+            !this.assertOutputTypeIsDefined(typeName, fieldName, fieldType, stage)
+          ) {
+            return acc
+          }
+
           const fieldOpts: Nexus.core.NexusOutputFieldConfig<any, string> = {
-            type: this.publisher.outputType(type, field),
+            type: this.publisher.outputType(fieldType, field),
             ...dmmfListFieldTypeToNexus(field.outputType),
             args: this.buildArgsFromField(
               typeName,
@@ -531,5 +549,41 @@ export class SchemaBuilder {
       name: uniqueName,
       fields: userExposedObjectFields,
     }
+  }
+
+  assertOutputTypeIsDefined(
+    typeName: string,
+    fieldName: string,
+    outputType: string,
+    stage: 'walk' | 'build',
+  ): boolean {
+    if (
+      this.options.nexusBuilder.hasType(outputType) ||
+      GraphQL.isScalarType(outputType) || // scalar types are auto-published
+      !this.dmmf.hasModel(outputType) // output types that are not models are auto-published
+    ) {
+      return true
+    }
+
+    const message = `${typeName}.${fieldName} is referencing a type "${outputType}" that is not defined in your GraphQL schema.`
+
+    if (stage === 'build') {
+      if (isDevMode()) {
+        if (this.options.onUnknownFieldType) {
+          this.options.onUnknownFieldType({
+            unknownFieldType: outputType,
+            typeName,
+            fieldName,
+            error: new Error(message),
+          })
+        } else {
+          console.log(`Warning: ${message}`)
+        }
+      } else {
+        throw new Error(message)
+      }
+    }
+
+    return false
   }
 }

@@ -1,11 +1,6 @@
 import * as Nexus from 'nexus'
-
-export type OnUnknownFieldName = (info: {
-  unknownFieldName: string
-  error: Error
-  validFieldNames: string[]
-  typeName: string
-}) => void
+import { OnUnknownFieldName } from './hooks'
+import { isDevMode } from './is-dev-mode'
 
 export function proxify<T extends object>(
   publishers: T,
@@ -34,11 +29,7 @@ export function proxify<T extends object>(
             validFieldNames: Object.keys(publishers),
           })
         } else {
-          if (
-            Boolean(
-              !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
-            )
-          ) {
+          if (isDevMode()) {
             console.log(`Warning: ${message}`)
           } else {
             throw new Error(message)

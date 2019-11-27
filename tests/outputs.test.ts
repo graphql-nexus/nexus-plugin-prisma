@@ -25,12 +25,13 @@ it('only publishes output types that do not map to prisma models', async () => {
     },
   })
 
-  const { missingTypes } = await generateSchemaAndTypesWithoutThrowing(
-    datamodel,
-    [Query, Mutation],
-  )
-
-  expect(Object.keys(missingTypes)).toEqual(['User'])
+  try {
+    await generateSchemaAndTypes(datamodel, [Query, Mutation])
+  } catch (e) {
+    expect(e).toMatchInlineSnapshot(
+      `[Error: Query.user is referencing a type "User" that is not defined in your GraphQL schema.]`,
+    )
+  }
 })
 
 it('publishes scalars from input types', async () => {
