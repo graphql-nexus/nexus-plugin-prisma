@@ -249,15 +249,6 @@ export class SchemaBuilder {
               operation: mappedField.operation,
               resolve: (parent, args, ctx) => {
                 const photon = this.getPhoton(ctx)
-                const contextArgs = publisherConfig.contextArgs
-                  ? Object.keys(publisherConfig.contextArgs).reduce(
-                      (args, key) => {
-                        args[key] = publisherConfig.contextArgs![key](ctx)
-                        return args
-                      },
-                      {} as Record<string, any>,
-                    )
-                  : undefined
                 return photon[mappedField.photonAccessor][
                   mappedField.operation
                 ](this.withContextArgs(publisherConfig, args, ctx))
