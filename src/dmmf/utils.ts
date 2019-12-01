@@ -1,12 +1,18 @@
 import * as Photon from '@prisma/photon'
-import { transform } from './transformer'
+import { transform, SchemaTransformOptions } from './transformer'
 import { DMMFClass } from './DMMFClass'
 
-export function fromPhotonDMMF(photonDMMF: Photon.DMMF.Document): DMMFClass {
-  return new DMMFClass(transform(photonDMMF))
+export function fromPhotonDMMF(
+  photonDMMF: Photon.DMMF.Document,
+  options?: SchemaTransformOptions,
+): DMMFClass {
+  return new DMMFClass(transform(photonDMMF, options))
 }
 
-export const get = (photonClientPackagePath: string): DMMFClass => {
+export const get = (
+  photonClientPackagePath: string,
+  options?: SchemaTransformOptions,
+): DMMFClass => {
   let photonClientPackage
   try {
     photonClientPackage = require(photonClientPackagePath)

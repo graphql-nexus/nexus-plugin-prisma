@@ -102,6 +102,7 @@ export interface Options {
      */
     typegen?: string
   }
+  contextArgs?: ContextArgs | undefined
 }
 
 export interface InternalOptions extends Options {
@@ -176,6 +177,7 @@ export class SchemaBuilder {
   fieldNamingStrategy: FieldNamingStrategy
   getPhoton: PhotonFetcher
   publisher: Publisher
+  contextArgs: ContextArgs | undefined
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -189,6 +191,7 @@ export class SchemaBuilder {
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
+
     this.getPhoton = (ctx: any) => {
       const photon = config.photon(ctx)
       assertPhotonInContext(photon)

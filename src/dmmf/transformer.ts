@@ -1,11 +1,26 @@
 import * as Nexus from 'nexus'
 import { DMMF } from '@prisma/photon'
 
-export function transform(document: DMMF.Document): ExternalDMMF.Document {
+export type SchemaTransformOptions = {
+  contextArgNames?: string[]
+}
+
+const defaultSchemaTransformOptions: Required<SchemaTransformOptions> = {
+  contextArgNames: [],
+}
+
+export function transform(
+  document: DMMF.Document,
+  options?: SchemaTransformOptions,
+): ExternalDMMF.Document {
+  const schemaTransformOptions = {
+    ...defaultSchemaTransformOptions,
+    ...options,
+  }
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as ExternalDMMF.Mapping[],
-    schema: transformSchema(document.schema),
+    schema: transformSchema(document.schema, schemaTransformOptions),
   }
 }
 
@@ -22,10 +37,15 @@ function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
   }
 }
 
-function transformSchema(schema: DMMF.Schema): ExternalDMMF.Schema {
+function transformSchema(
+  schema: DMMF.Schema,
+  { contextArgNames }: Required<SchemaTransformOptions>,
+): ExternalDMMF.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map(transformInputType),
+    inputTypes: schema.inputTypes.map(_ =>
+      transformInputType(_, contextArgNames),
+    ),
     outputTypes: schema.outputTypes.map(o => ({
       ...o,
       fields: o.fields.map(f => ({
@@ -66,10 +86,15 @@ function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
   }
 }
 
-function transformInputType(inputType: DMMF.InputType): ExternalDMMF.InputType {
+function transformInputType(
+  inputType: DMMF.InputType,
+  contextArgNames: string[],
+): ExternalDMMF.InputType {
   return {
     ...inputType,
-    fields: inputType.fields.map(transformArg),
+    fields: inputType.fields
+      .filter(field => !contextArgNames.includes(field.name))
+      .map(transformArg),
   }
 }
 
