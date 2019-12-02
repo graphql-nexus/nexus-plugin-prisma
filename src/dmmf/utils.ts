@@ -21,5 +21,5 @@ export const get = (
       `Could not find photon package at ${photonClientPackagePath}. Check that you have configured your Photon generator block in schema.prisma correctly and run prisma generate.`,
     )
   }
-  return fromPhotonDMMF(photonClientPackage.dmmf)
+  return fromPhotonDMMF(photonClientPackage.dmmf, options)
 }

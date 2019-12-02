@@ -1,12 +1,13 @@
 import * as Nexus from 'nexus'
 import { DMMF } from '@prisma/photon'
+import { ContextArgs } from '../utils'
 
 export type SchemaTransformOptions = {
-  contextArgNames?: string[]
+  contextArgs?: ContextArgs
 }
 
 const defaultSchemaTransformOptions: Required<SchemaTransformOptions> = {
-  contextArgNames: [],
+  contextArgs: {},
 }
 
 export function transform(
@@ -39,13 +40,11 @@ function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
 
 function transformSchema(
   schema: DMMF.Schema,
-  { contextArgNames }: Required<SchemaTransformOptions>,
+  { contextArgs }: Required<SchemaTransformOptions>,
 ): ExternalDMMF.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map(_ =>
-      transformInputType(_, contextArgNames),
-    ),
+    inputTypes: schema.inputTypes.map(_ => transformInputType(_, contextArgs)),
     outputTypes: schema.outputTypes.map(o => ({
       ...o,
       fields: o.fields.map(f => ({
@@ -88,12 +87,12 @@ function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
 
 function transformInputType(
   inputType: DMMF.InputType,
-  contextArgNames: string[],
+  contextArgs: ContextArgs,
 ): ExternalDMMF.InputType {
   return {
     ...inputType,
     fields: inputType.fields
-      .filter(field => !contextArgNames.includes(field.name))
+      .filter(field => !Object.keys(contextArgs).includes(field.name))
       .map(transformArg),
   }
 }

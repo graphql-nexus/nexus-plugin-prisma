@@ -1,5 +1,3 @@
-import { isNamedType } from 'graphql'
-import { core } from 'nexus'
 import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -146,3 +144,13 @@ export function getImportPathRelativeToOutput(
  * a list of users indexed by email.
  */
 export type Index<T> = Record<string, T>
+
+/**
+ *  Represents arguments required by Photon that will
+ *  be derived from a request's context and omitted from
+ *  the GraphQL API. The object itself maps the names of
+ *  these args to a function that takes the request's context
+ *  and returns the value to pass to the photon arg of the
+ *  same name.
+ */
+export type ContextArgs = Record<string, (ctx: any) => any>

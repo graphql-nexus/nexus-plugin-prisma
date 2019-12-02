@@ -13,9 +13,7 @@ import {
 } from './naming-strategies'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext } from './utils'
-
-export type ContextArgs = Record<string, (ctx: any) => any>
+import { assertPhotonInContext, ContextArgs } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -186,7 +184,9 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
+    this.dmmf =
+      options.dmmf ||
+      DMMF.get(config.inputs.photon, { contextArgs: config.contextArgs })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
