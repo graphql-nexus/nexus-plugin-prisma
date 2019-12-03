@@ -7,3 +7,5 @@ example/generated
 yarn-error.log
 failed-*.md
 .idea
+.yalc
+yalc.lock
