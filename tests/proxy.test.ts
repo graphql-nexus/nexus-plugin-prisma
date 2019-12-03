@@ -1,5 +1,5 @@
 import { objectType } from 'nexus'
-import { generateSchemaAndTypes } from './__utils'
+import { generateSchemaAndTypes, mockConsoleLog } from './__utils'
 
 it('in dev stage, warns when wrong projected field or crud', async () => {
   process.env.NODE_ENV = 'development'
@@ -26,16 +26,16 @@ it('in dev stage, warns when wrong projected field or crud', async () => {
     },
   })
 
-  let outputData = ''
-  const storeLog = (inputs: string) => (outputData += '\n' + inputs)
-  console.log = jest.fn(storeLog)
-
-  await generateSchemaAndTypes(datamodel, [Query, User])
+  const outputData = await mockConsoleLog(async () => {
+    await generateSchemaAndTypes(datamodel, [Query, User])
+  })
 
   expect(outputData).toMatchInlineSnapshot(`
     "
-    Warning: t.crud.userss() is not a valid CRUD field given your Prisma Schema.
-    Warning: t.model.userName() does not map to a field in your Prisma Schema."
+    Warning: Your GraphQL \`Query\` object definition is attempting to expose a Prisma model field called \`userss\`, but your Prisma model \`Query\` has no such field
+
+    Warning: Your GraphQL \`User\` object definition is attempting to expose a Prisma model field called \`userName\`, but your Prisma model \`User\` has no such field
+    "
   `)
 })
 
@@ -64,16 +64,16 @@ it('in undefined stages, warns when wrong projected field or crud', async () => 
     },
   })
 
-  let outputData = ''
-  const storeLog = (inputs: string) => (outputData += '\n' + inputs)
-  console.log = jest.fn(storeLog)
-
-  await generateSchemaAndTypes(datamodel, [Query, User])
+  const outputData = await mockConsoleLog(async () => {
+    await generateSchemaAndTypes(datamodel, [Query, User])
+  })
 
   expect(outputData).toMatchInlineSnapshot(`
     "
-    Warning: t.crud.userss() is not a valid CRUD field given your Prisma Schema.
-    Warning: t.model.userName() does not map to a field in your Prisma Schema."
+    Warning: Your GraphQL \`Query\` object definition is attempting to expose a Prisma model field called \`userss\`, but your Prisma model \`Query\` has no such field
+
+    Warning: Your GraphQL \`User\` object definition is attempting to expose a Prisma model field called \`userName\`, but your Prisma model \`User\` has no such field
+    "
   `)
 })
 

@@ -29,7 +29,7 @@ it('only publishes output types that do not map to prisma models', async () => {
     await generateSchemaAndTypes(datamodel, [Query, Mutation])
   } catch (e) {
     expect(e).toMatchInlineSnapshot(
-      `[Error: Query.user is referencing a type "User" that is not defined in your GraphQL schema.]`,
+      `[Error: Your GraphQL \`Query\` object definition is projecting a field \`user\` with \`User\` as output type, but \`User\` is not defined in your GraphQL Schema]`,
     )
   }
 })
