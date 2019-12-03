@@ -1,6 +1,3 @@
-import { isNamedType } from 'graphql'
-import { core } from 'nexus'
-import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
@@ -120,7 +117,7 @@ export function getImportPathRelativeToOutput(
     return trimIfInNodeModules(to)
   }
 
-  let relativePath = relative(from, to)
+  let relativePath = path.relative(from, to)
 
   if (!relativePath.startsWith('.')) {
     relativePath = './' + relativePath

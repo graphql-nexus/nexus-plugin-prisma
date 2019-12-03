@@ -4,6 +4,7 @@ import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
+import stripAnsi from 'strip-ansi'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -58,4 +59,18 @@ export async function generateSchemaAndTypesWithoutThrowing(
     missingTypes: schemaAndMissingTypes.missingTypes,
     typegen,
   }
+}
+
+export async function mockConsoleLog(
+  func: (...args: any) => any | Promise<any>,
+) {
+  const oldLog = console.log
+  let outputData = ''
+  const storeLog = (inputs: string) => (outputData += '\n' + inputs)
+
+  console.log = jest.fn(storeLog)
+  await func()
+  console.log = oldLog
+
+  return stripAnsi(outputData)
 }
