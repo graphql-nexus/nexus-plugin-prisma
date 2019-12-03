@@ -16,12 +16,16 @@ export const createNexusPrismaInternal = (
     }),
   })
 
+export async function getDmmf(datamodel: string, options?: TransformOptions) {
+  return DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
+}
+
 export async function generateSchemaAndTypes(
   datamodel: string,
   types: any[],
   options?: TransformOptions,
 ) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
+  const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
   })
@@ -39,10 +43,10 @@ export async function generateSchemaAndTypes(
 
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
-  types: any,
+  types: any[],
   options?: TransformOptions,
 ) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
+  const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
     nexusBuilder: {
       addType: () => false,

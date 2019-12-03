@@ -1,6 +1,7 @@
 import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { isDeepStrictEqual } from 'util'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -154,3 +155,5 @@ export type Index<T> = Record<string, T>
  *  same name.
  */
 export type ContextArgs = Record<string, (ctx: any) => any>
+
+export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})

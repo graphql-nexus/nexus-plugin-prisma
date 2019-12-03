@@ -13,7 +13,8 @@ import {
 } from './naming-strategies'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, ContextArgs } from './utils'
+import { assertPhotonInContext, ContextArgs, isEmptyObject } from './utils'
+import { addContextArgs } from './dmmf/transformer'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -28,7 +29,7 @@ type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
-  'alias' | 'type'
+  'alias' | 'type' | 'contextArgs'
 >
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
@@ -248,25 +249,29 @@ export class SchemaBuilder {
               field: mappedField.field,
               givenConfig,
             })
-            let fieldConfig: Nexus.core.NexusOutputFieldConfig<any, string>
-            fieldConfig = this.buildFieldConfig({
+            let fieldConfig = this.buildFieldConfig({
               field: mappedField.field,
               publisherConfig,
               typeName,
               operation: mappedField.operation,
               resolve: (parent, args, ctx) => {
                 const photon = this.getPhoton(ctx)
+                if (
+                  typeName === 'Mutation' &&
+                  (!isEmptyObject(publisherConfig.contextArgs) ||
+                    !isEmptyObject(this.globalContextArgs))
+                ) {
+                  args = addContextArgs({
+                    inputType,
+                    baseArgs: args,
+                    contextArgs: publisherConfig.contextArgs,
+                    ctx,
+                    dmmf: this.dmmf,
+                  })
+                }
                 return photon[mappedField.photonAccessor][
                   mappedField.operation
-                ](
-                  // @ts-ignore
-                  inputType.getContextArgs(
-                    args,
-                    publisherConfig.contextArgs,
-                    ctx,
-                    this.dmmf,
-                  ),
-                )
+                ](args)
               },
             })
             t.field(publisherConfig.alias, fieldConfig)
@@ -365,14 +370,7 @@ export class SchemaBuilder {
                     const mapping = this.dmmf.getMapping(typeName)
                     return photon[mapping.plural!]
                       ['findOne']({ where: { id: root.id } })
-                      [field.name](
-                        // @ts-ignore
-                        inputType.getContextArgs(
-                          args,
-                          publisherConfig.contextArgs,
-                          ctx,
-                        ),
-                      )
+                      [field.name](args)
                   }
                 : undefined,
           })
@@ -399,6 +397,7 @@ export class SchemaBuilder {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
+      contextArgs: {},
       ...givenConfig,
     }
   }

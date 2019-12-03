@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { generateSchemaAndTypesWithoutThrowing } from './__utils'
+import { generateSchemaAndTypesWithoutThrowing, getDmmf } from './__utils'
 
 const resolverTestData = {
   datamodel: `
@@ -32,18 +32,6 @@ const resolverTestData = {
     },
   }),
 }
-
-it('removes resolver-level contextArgs from the corresponding input type', async () => {
-  const { datamodel, ...resolvers } = resolverTestData
-  const result = await generateSchemaAndTypesWithoutThrowing(
-    datamodel,
-    Object.values(resolvers),
-  )
-
-  expect(result).toMatchSnapshot('resolverContextArgs')
-})
-
-it('infers the value of resolver-level contextArgs at runtime', () => {})
 
 const globalTestData = {
   datamodel: `
@@ -90,8 +78,34 @@ const globalTestData = {
   }),
 }
 
-it('removes global contextArg fields from all input types', async () => {
+it('removes resolver-level contextArgs from the corresponding input type', async () => {
   const { datamodel, ...resolvers } = resolverTestData
+  const result = await generateSchemaAndTypesWithoutThrowing(
+    datamodel,
+    Object.values(resolvers),
+  )
+
+  expect(result).toMatchSnapshot('resolverContextArgs')
+})
+
+import { addContextArgs } from '../src/dmmf/transformer'
+
+it('infers the value of resolver-level contextArgs at runtime', async () => {
+  const { datamodel } = resolverTestData
+  const dmmf = await getDmmf(datamodel)
+  expect(
+    addContextArgs({
+      baseArgs: { data: { name: 'New User' } },
+      ctx: { browser: 'firefox' },
+      inputType: dmmf.getInputType('UserCreateInput'),
+      dmmf,
+      contextArgs: { browser: (ctx: any) => ctx.browser },
+    }),
+  ).toStrictEqual({ data: { name: 'New User', browser: 'firefox' } })
+})
+
+it('removes global contextArg fields from all input types', async () => {
+  const { datamodel, ...resolvers } = globalTestData
   const result = await generateSchemaAndTypesWithoutThrowing(
     datamodel,
     Object.values(resolvers),
@@ -101,4 +115,115 @@ it('removes global contextArg fields from all input types', async () => {
   expect(result).toMatchSnapshot('globalContextArgs')
 })
 
-it('infers the value of resolver-level contextArgs at runtime', async () => {})
+it('infers the value of global contextArgs at runtime', async () => {
+  const { datamodel } = globalTestData
+  const dmmf = await getDmmf(datamodel)
+  expect(
+    addContextArgs({
+      baseArgs: { data: { name: 'New User', nested: { create: {} } } },
+      ctx: { browser: 'firefox' },
+      inputType: {
+        ...dmmf.getInputType('UserCreateInput'),
+        contextArgs: { browser: (ctx: any) => ctx.browser },
+      },
+      dmmf,
+      contextArgs: {},
+    }),
+  ).toStrictEqual({
+    data: {
+      name: 'New User',
+      browser: 'firefox',
+      nested: { create: { browser: 'firefox' } },
+    },
+  })
+})
+
+it('handles arrays when recursing for contextArgs', async () => {
+  const { datamodel } = globalTestData
+  const dmmf = await getDmmf(datamodel)
+  expect(
+    addContextArgs({
+      baseArgs: { data: { name: 'New User', nested: { create: [{}, {}] } } },
+      ctx: { browser: 'firefox' },
+      inputType: {
+        ...dmmf.getInputType('UserCreateInput'),
+        contextArgs: { browser: (ctx: any) => ctx.browser },
+      },
+      dmmf,
+      contextArgs: {},
+    }),
+  ).toStrictEqual({
+    data: {
+      name: 'New User',
+      browser: 'firefox',
+      nested: { create: [{ browser: 'firefox' }, { browser: 'firefox' }] },
+    },
+  })
+})
+
+it('Works on Redo', async () => {
+  const dmmf = await getDmmf(`model Tag {
+  id   Int    @id
+  user User
+  name String
+  @@unique([name, user])
+}
+
+model Selector {
+  id   Int    @id
+  user User
+  css  String
+}
+
+model Step {
+  id       Int      @id
+  user     User
+  action   String
+  selector Selector
+  value    String
+}
+
+model Test {
+  id    Int    @id
+  user  User
+  name  String
+  steps Step[]
+  tags  Tag[]
+  @@unique([name, user])
+}
+
+model User {
+  id       Int    @id
+  email    String @unique
+  password String
+  first    String
+  last     String
+}`)
+  expect(
+    addContextArgs({
+      baseArgs: {
+        data: {
+          name: 'Test 1',
+          steps: { create: [{ action: 'click', value: 'something' }] },
+        },
+      },
+      ctx: { userId: 1 },
+      inputType: {
+        ...dmmf.getInputType('TestCreateInput'),
+        contextArgs: { user: (ctx: any) => ({ connect: { id: ctx.userId } }) },
+      },
+      dmmf,
+      contextArgs: {},
+    }),
+  ).toStrictEqual({
+    data: {
+      name: 'Test 1',
+      steps: {
+        create: [
+          { action: 'click', value: 'something', user: { connect: { id: 1 } } },
+        ],
+      },
+      user: { connect: { id: 1 } },
+    },
+  })
+})
