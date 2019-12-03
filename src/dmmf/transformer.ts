@@ -1,27 +1,27 @@
 import * as Nexus from 'nexus'
 import { DMMF } from '@prisma/photon'
 import { ContextArgs } from '../utils'
+import { DMMFClass } from './DMMFClass'
 
-export type SchemaTransformOptions = {
+export type TransformOptions = {
   contextArgs?: ContextArgs
 }
 
-const defaultSchemaTransformOptions: Required<SchemaTransformOptions> = {
+const addDefaultsOptions = (
+  givenOptions?: TransformOptions,
+): Required<TransformOptions> => ({
   contextArgs: {},
-}
+  ...givenOptions,
+})
 
 export function transform(
   document: DMMF.Document,
-  options?: SchemaTransformOptions,
+  options?: TransformOptions,
 ): ExternalDMMF.Document {
-  const schemaTransformOptions = {
-    ...defaultSchemaTransformOptions,
-    ...options,
-  }
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as ExternalDMMF.Mapping[],
-    schema: transformSchema(document.schema, schemaTransformOptions),
+    schema: transformSchema(document.schema, addDefaultsOptions(options)),
   }
 }
 
@@ -40,7 +40,7 @@ function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
 
 function transformSchema(
   schema: DMMF.Schema,
-  { contextArgs }: Required<SchemaTransformOptions>,
+  { contextArgs }: Required<TransformOptions>,
 ): ExternalDMMF.Schema {
   return {
     enums: schema.enums,
@@ -85,16 +85,68 @@ function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
   }
 }
 
+type AddContextArgsParams = {
+  inputType: DMMF.InputType
+  baseArgs: Record<string, any>
+  contextArgs: ContextArgs
+  ctx: any
+  dmmf: DMMFClass
+}
+
+function addDeepContextArgs({
+  inputType,
+  baseArgs,
+  contextArgs,
+  ctx,
+  dmmf,
+}: AddContextArgsParams) {
+  const result = inputType.fields.reduce(
+    (args, field) => ({
+      ...args,
+      [field.name]: dmmf
+        .getInputType(field.name)
+        .getContextArgs({ inputType: field.inputType, baseArgs: baseArgs }),
+    }),
+    {},
+  )
+}
+
+function addShallowContextArgs({
+  baseArgs,
+  contextArgs,
+  ctx,
+}: AddContextArgsParams) {
+  return Object.keys(contextArgs).reduce((args, key) => {
+    return {
+      ...args,
+      data: {
+        ...args.data,
+        [key]: contextArgs[key](ctx),
+      },
+    }
+  }, baseArgs)
+}
+
 function transformInputType(
   inputType: DMMF.InputType,
-  contextArgs: ContextArgs,
+  globalContextArgs: ContextArgs,
 ): ExternalDMMF.InputType {
+  const fieldNames = inputType.fields.map(field => field.name)
+  const relevantGlobalContextArgs = Object.keys(globalContextArgs).reduce(
+    (args, arg) =>
+      fieldNames.includes(arg)
+        ? { ...args, [arg]: globalContextArgs[arg] }
+        : args,
+    {} as ContextArgs,
+  )
+
   return {
     ...inputType,
     fields: inputType.fields
-      .filter(field => !Object.keys(contextArgs).includes(field.name))
+      .filter(field => !(field.name in relevantGlobalContextArgs))
       .map(transformArg),
-  }
+    getContextArgs: (params: AddContextArgsParams) => params.baseArgs,
+  } as ExternalDMMF.InputType
 }
 
 /**

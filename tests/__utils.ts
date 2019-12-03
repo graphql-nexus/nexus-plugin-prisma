@@ -4,7 +4,7 @@ import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
 import * as DMMF from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
-import { SchemaTransformOptions } from '../src/dmmf/transformer'
+import { TransformOptions } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -16,8 +16,12 @@ export const createNexusPrismaInternal = (
     }),
   })
 
-export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+export async function generateSchemaAndTypes(
+  datamodel: string,
+  types: any[],
+  options?: TransformOptions,
+) {
+  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
   })
@@ -36,7 +40,7 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
   types: any,
-  options?: SchemaTransformOptions,
+  options?: TransformOptions,
 ) {
   const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({

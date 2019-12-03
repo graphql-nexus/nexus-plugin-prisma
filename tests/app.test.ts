@@ -101,4 +101,4 @@ it('integrates together', async () => {
   // typegen works.
   //
   expect(projectRoot).toTypeCheck()
-})
+}, 999999999)

@@ -33,11 +33,11 @@ type ResolvedFieldPublisherConfig = WithRequiredKeys<
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
-type BuildPublisherConfigArgs = {
+type PublisherConfigData = {
   field: DMMF.Data.SchemaField
   givenConfig: FieldPublisherConfig | undefined
 }
-type BuildFieldConfigArgs = {
+type FieldConfigData = {
   field: DMMF.Data.SchemaField
   publisherConfig: ResolvedFieldPublisherConfig
   typeName: string
@@ -100,7 +100,7 @@ export interface Options {
      */
     typegen?: string
   }
-  contextArgs?: ContextArgs | undefined
+  contextArgs?: ContextArgs
 }
 
 export interface InternalOptions extends Options {
@@ -166,7 +166,6 @@ const defaultOptions = {
 export interface CustomInputArg {
   arg: DMMF.Data.SchemaArg
   type: DMMF.Data.InputType | DMMF.Data.Enum | { name: string } // scalar
-  contextArgs?: ContextArgs
 }
 
 export class SchemaBuilder {
@@ -175,7 +174,7 @@ export class SchemaBuilder {
   fieldNamingStrategy: FieldNamingStrategy
   getPhoton: PhotonFetcher
   publisher: Publisher
-  contextArgs: ContextArgs | undefined
+  globalContextArgs: ContextArgs
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -184,9 +183,10 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
+    this.globalContextArgs = config.contextArgs ? config.contextArgs : {}
     this.dmmf =
       options.dmmf ||
-      DMMF.get(config.inputs.photon, { contextArgs: config.contextArgs })
+      DMMF.get(config.inputs.photon, { contextArgs: this.globalContextArgs })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
@@ -241,11 +241,15 @@ export class SchemaBuilder {
           PublisherMethods
         >((crud, mappedField) => {
           const fieldPublisher: FieldPublisher = givenConfig => {
+            const inputType = this.dmmf.getInputType(
+              mappedField.field.args[0].inputType.type,
+            )
             const publisherConfig = this.buildPublisherConfig({
               field: mappedField.field,
               givenConfig,
             })
-            const fieldConfig = this.buildFieldConfig({
+            let fieldConfig: Nexus.core.NexusOutputFieldConfig<any, string>
+            fieldConfig = this.buildFieldConfig({
               field: mappedField.field,
               publisherConfig,
               typeName,
@@ -254,7 +258,15 @@ export class SchemaBuilder {
                 const photon = this.getPhoton(ctx)
                 return photon[mappedField.photonAccessor][
                   mappedField.operation
-                ](this.withContextArgs(publisherConfig, args, ctx))
+                ](
+                  // @ts-ignore
+                  inputType.getContextArgs(
+                    args,
+                    publisherConfig.contextArgs,
+                    ctx,
+                    this.dmmf,
+                  ),
+                )
               },
             })
             t.field(publisherConfig.alias, fieldConfig)
@@ -354,7 +366,12 @@ export class SchemaBuilder {
                     return photon[mapping.plural!]
                       ['findOne']({ where: { id: root.id } })
                       [field.name](
-                        this.withContextArgs(publisherConfig, args, ctx),
+                        // @ts-ignore
+                        inputType.getContextArgs(
+                          args,
+                          publisherConfig.contextArgs,
+                          ctx,
+                        ),
                       )
                   }
                 : undefined,
@@ -374,29 +391,10 @@ export class SchemaBuilder {
     return publishers
   }
 
-  withContextArgs(
-    publisherConfig: ResolvedFieldPublisherConfig,
-    args: any,
-    ctx: any,
-  ) {
-    const contextArgs = publisherConfig.contextArgs
-      ? Object.keys(publisherConfig.contextArgs).reduce(
-          (args, key) => {
-            args[key] = publisherConfig.contextArgs![key](ctx)
-            return args
-          },
-          {} as Record<string, any>,
-        )
-      : undefined
-    return contextArgs
-      ? { ...args, data: { ...contextArgs, ...args.data } }
-      : args
-  }
-
   buildPublisherConfig({
     field,
     givenConfig,
-  }: BuildPublisherConfigArgs): ResolvedFieldPublisherConfig {
+  }: PublisherConfigData): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
@@ -405,93 +403,84 @@ export class SchemaBuilder {
     }
   }
 
-  buildFieldConfig({
-    field,
-    publisherConfig,
-    typeName,
-    operation = null,
-    resolve,
-  }: BuildFieldConfigArgs): Nexus.core.NexusOutputFieldConfig<any, string> {
+  buildFieldConfig(
+    config: FieldConfigData,
+  ): Nexus.core.NexusOutputFieldConfig<any, string> {
     return {
-      type: this.publisher.outputType(publisherConfig.type, field),
-      ...dmmfListFieldTypeToNexus(field.outputType),
-      args: this.buildArgsFromField(
-        typeName,
-        operation,
-        field,
-        publisherConfig,
+      type: this.publisher.outputType(
+        config.publisherConfig.type,
+        config.field,
       ),
-      resolve,
+      ...dmmfListFieldTypeToNexus(config.field.outputType),
+      args: this.buildArgsFromField(config),
+      resolve: config.resolve,
     }
   }
 
-  buildArgsFromField(
-    typeName: string,
-    operationName: OperationName | null,
-    field: DMMF.Data.SchemaField,
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ): Nexus.core.ArgsRecord {
-    let args: CustomInputArg[]
-
-    if (typeName === 'Mutation' || operationName === 'findOne') {
-      args = field.args.map(arg => {
-        return {
-          arg,
-          type: this.dmmf.getInputType(arg.inputType.type),
-        }
-      })
-    } else {
-      args = this.argsFromQueryOrModelField(typeName, field, publisherConfig)
-    }
-
-    return args.reduce<Nexus.core.ArgsRecord>(
+  buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
+    return this.determineArgs(config).reduce<Nexus.core.ArgsRecord>(
       (acc, customArg) => ({
         ...acc,
-        [customArg.arg.name]: this.publisher.inputType(
-          this.filterContextArgs(customArg, publisherConfig),
-        ) as any, //FIX ME,
+        [customArg.arg.name]: this.publisher.inputType(customArg),
       }),
       {},
     )
   }
 
-  filterContextArgs(
-    { arg, type }: CustomInputArg,
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ) {
-    if (!publisherConfig.contextArgs) {
-      return { arg, type }
-    }
-    const photonObject = this.dmmf.getInputType(arg.inputType.type)
-    return {
-      arg,
-      type: {
-        ...photonObject,
-        name: arg.inputType.type,
-        fields: photonObject.fields.filter(
-          field => !(field.name in publisherConfig.contextArgs!),
-        ),
-      },
+  determineArgs(config: FieldConfigData): CustomInputArg[] {
+    if (config.typeName === 'Mutation') {
+      return this.argsFromMutationField(config)
+    } else if (config.operation === 'findOne') {
+      return config.field.args.map(arg => ({
+        arg,
+        type: this.dmmf.getInputType(arg.inputType.type),
+      }))
+    } else {
+      return this.argsFromQueryOrModelField(config)
     }
   }
 
-  argsFromQueryOrModelField(
-    typeName: string,
-    dmmfField: DMMF.Data.SchemaField,
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ) {
+  argsFromMutationField({
+    publisherConfig,
+    field,
+  }: FieldConfigData): CustomInputArg[] {
+    return field.args.map(arg => {
+      const photonInputType = this.dmmf.getInputType(arg.inputType.type)
+      /*
+      Since global contextArgs (passed to the makeSchema function) were
+      already filtered, at this point we just need to filter at the arg-level
+      */
+      return {
+        arg,
+        type: {
+          ...photonInputType,
+          fields: publisherConfig.contextArgs
+            ? photonInputType.fields.filter(
+                field => !(field.name in publisherConfig.contextArgs!),
+              )
+            : photonInputType.fields,
+        },
+      }
+    })
+  }
+
+  argsFromQueryOrModelField({
+    typeName,
+    field,
+    publisherConfig,
+  }: FieldConfigData) {
     let args: CustomInputArg[] = []
 
     if (publisherConfig.filtering) {
-      const inputObjectTypeDefName = `${dmmfField.outputType.type}WhereInput`
-      const whereArg = dmmfField.args.find(
+      const inputObjectTypeDefName = `${field.outputType.type}WhereInput`
+      const whereArg = field.args.find(
         arg =>
           arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
       )
 
       if (!whereArg) {
         throw new Error(
-          `Could not find filtering argument for ${typeName}.${dmmfField.name}`,
+          `Could not find filtering argument for ${typeName}.${field.name}`,
         )
       }
 
@@ -500,21 +489,21 @@ export class SchemaBuilder {
         type: this.handleInputObjectCustomization(
           publisherConfig.filtering,
           inputObjectTypeDefName,
-          dmmfField.name,
+          field.name,
           typeName,
         ),
       })
     }
 
     if (publisherConfig.ordering) {
-      const orderByTypeName = `${dmmfField.outputType.type}OrderByInput`
-      const orderByArg = dmmfField.args.find(
+      const orderByTypeName = `${field.outputType.type}OrderByInput`
+      const orderByArg = field.args.find(
         arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
       )
 
       if (!orderByArg) {
         throw new Error(
-          `Could not find ordering argument for ${typeName}.${dmmfField.name}`,
+          `Could not find ordering argument for ${typeName}.${field.name}`,
         )
       }
 
@@ -523,7 +512,7 @@ export class SchemaBuilder {
         type: this.handleInputObjectCustomization(
           publisherConfig.ordering,
           orderByTypeName,
-          dmmfField.name,
+          field.name,
           typeName,
         ),
       })
@@ -533,8 +522,8 @@ export class SchemaBuilder {
       const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
       const paginationsArgs =
         publisherConfig.pagination === true
-          ? dmmfField.args.filter(a => paginationKeys.includes(a.name))
-          : dmmfField.args.filter(
+          ? field.args.filter(a => paginationKeys.includes(a.name))
+          : field.args.filter(
               arg => (publisherConfig.pagination as any)[arg.name] === true,
             )
 
