@@ -117,15 +117,14 @@ it('removes global contextArg fields from all input types', async () => {
 
 it('infers the value of global contextArgs at runtime', async () => {
   const { datamodel } = globalTestData
-  const dmmf = await getDmmf(datamodel)
+  const dmmf = await getDmmf(datamodel, {
+    contextArgs: { browser: (ctx: any) => ctx.browser },
+  })
   expect(
     addContextArgs({
       baseArgs: { data: { name: 'New User', nested: { create: {} } } },
       ctx: { browser: 'firefox' },
-      inputType: {
-        ...dmmf.getInputType('UserCreateInput'),
-        contextArgs: { browser: (ctx: any) => ctx.browser },
-      },
+      inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       contextArgs: {},
     }),
@@ -140,15 +139,14 @@ it('infers the value of global contextArgs at runtime', async () => {
 
 it('handles arrays when recursing for contextArgs', async () => {
   const { datamodel } = globalTestData
-  const dmmf = await getDmmf(datamodel)
+  const dmmf = await getDmmf(datamodel, {
+    contextArgs: { browser: (ctx: any) => ctx.browser },
+  })
   expect(
     addContextArgs({
       baseArgs: { data: { name: 'New User', nested: { create: [{}, {}] } } },
       ctx: { browser: 'firefox' },
-      inputType: {
-        ...dmmf.getInputType('UserCreateInput'),
-        contextArgs: { browser: (ctx: any) => ctx.browser },
-      },
+      inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       contextArgs: {},
     }),
@@ -162,7 +160,8 @@ it('handles arrays when recursing for contextArgs', async () => {
 })
 
 it('Works on Redo', async () => {
-  const dmmf = await getDmmf(`model Tag {
+  const dmmf = await getDmmf(
+    `model Tag {
   id   Int    @id
   user User
   name String
@@ -198,7 +197,9 @@ model User {
   password String
   first    String
   last     String
-}`)
+}`,
+    { contextArgs: { user: (ctx: any) => ({ connect: { id: ctx.userId } }) } },
+  )
   expect(
     addContextArgs({
       baseArgs: {
@@ -208,10 +209,7 @@ model User {
         },
       },
       ctx: { userId: 1 },
-      inputType: {
-        ...dmmf.getInputType('TestCreateInput'),
-        contextArgs: { user: (ctx: any) => ({ connect: { id: ctx.userId } }) },
-      },
+      inputType: dmmf.getInputType('TestCreateInput'),
       dmmf,
       contextArgs: {},
     }),

@@ -161,9 +161,9 @@ function transformInputType(
 ): ExternalDMMF.InputType {
   const fieldNames = inputType.fields.map(field => field.name)
   const contextArgs = Object.keys(globalContextArgs).reduce(
-    (args, arg) =>
-      fieldNames.includes(arg)
-        ? { ...args, [arg]: globalContextArgs[arg] }
+    (args, key) =>
+      fieldNames.includes(key)
+        ? { ...args, [key]: globalContextArgs[key] }
         : args,
     {} as ContextArgs,
   )
