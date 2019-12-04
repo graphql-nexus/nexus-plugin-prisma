@@ -455,7 +455,7 @@ export class SchemaBuilder {
     return this.determineArgs(config).reduce(
       (acc, customArg) => ({
         ...acc,
-        [customArg.arg.name]: this.publisher.inputType(customArg),
+        [customArg.arg.name]: this.publisher.inputType(customArg) as any,
       }),
       {} as Nexus.core.ArgsRecord,
     )
