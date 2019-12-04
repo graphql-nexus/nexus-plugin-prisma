@@ -6,20 +6,20 @@ const resolverTestData = {
   model User {
     id  Int @id
     name String
-    browser String
+    createdWithBrowser String
   }
 `,
-  query: Nexus.objectType({
-    name: 'Query',
+  query: Nexus.queryType({
     definition(t: any) {
       t.crud.user()
     },
   }),
-  mutation: Nexus.objectType({
-    name: 'Mutation',
+  mutation: Nexus.mutationType({
     definition(t: any) {
       t.crud.createOneUser({
-        contextArgs: { browser: (ctx: any) => ctx.browser },
+        contextArgs: {
+          createdWithBrowser: (ctx: any) => ctx.browser,
+        },
       })
     },
   }),
@@ -28,7 +28,7 @@ const resolverTestData = {
     definition: (t: any) => {
       t.model.id()
       t.model.name()
-      t.model.browser()
+      t.model.createdWithBrowser()
     },
   }),
 }
@@ -39,22 +39,21 @@ const globalTestData = {
     id  Int @id
     name String
     nested Nested[]
-    browser String
+    createdWithBrowser String
   }
 
   model Nested {
     id Int @id
-    browser String
+    name String
+    createdWithBrowser String
   }
 `,
-  query: Nexus.objectType({
-    name: 'Query',
+  query: Nexus.queryType({
     definition(t: any) {
       t.crud.user()
     },
   }),
-  mutation: Nexus.objectType({
-    name: 'Mutation',
+  mutation: Nexus.mutationType({
     definition(t: any) {
       t.crud.createOneUser()
       t.crud.createOneNested()
@@ -66,14 +65,15 @@ const globalTestData = {
       t.model.id()
       t.model.name()
       t.model.nested()
-      t.model.browser()
+      t.model.createdWithBrowser()
     },
   }),
   nested: Nexus.objectType({
     name: 'Nested',
     definition: (t: any) => {
       t.model.id()
-      t.model.browser()
+      t.model.createdWithBrowser()
+      t.model.name()
     },
   }),
 }
@@ -99,9 +99,11 @@ it('infers the value of resolver-level contextArgs at runtime', async () => {
       ctx: { browser: 'firefox' },
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
-      contextArgs: { browser: (ctx: any) => ctx.browser },
+      contextArgs: {
+        createdWithBrowser: (ctx: any) => ctx.browser,
+      },
     }),
-  ).toStrictEqual({ data: { name: 'New User', browser: 'firefox' } })
+  ).toStrictEqual({ data: { name: 'New User', createdWithBrowser: 'firefox' } })
 })
 
 it('removes global contextArg fields from all input types', async () => {
@@ -109,7 +111,9 @@ it('removes global contextArg fields from all input types', async () => {
   const result = await generateSchemaAndTypesWithoutThrowing(
     datamodel,
     Object.values(resolvers),
-    { contextArgs: { browser: (ctx: any) => ctx.browser } },
+    {
+      contextArgs: { createdWithBrowser: (ctx: any) => ctx.browser },
+    },
   )
 
   expect(result).toMatchSnapshot('globalContextArgs')
@@ -118,11 +122,13 @@ it('removes global contextArg fields from all input types', async () => {
 it('infers the value of global contextArgs at runtime', async () => {
   const { datamodel } = globalTestData
   const dmmf = await getDmmf(datamodel, {
-    contextArgs: { browser: (ctx: any) => ctx.browser },
+    contextArgs: { createdWithBrowser: (ctx: any) => ctx.browser },
   })
   expect(
     addContextArgs({
-      baseArgs: { data: { name: 'New User', nested: { create: {} } } },
+      baseArgs: {
+        data: { name: 'New User', nested: { create: { name: 'Nested Name' } } },
+      },
       ctx: { browser: 'firefox' },
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
@@ -131,8 +137,10 @@ it('infers the value of global contextArgs at runtime', async () => {
   ).toStrictEqual({
     data: {
       name: 'New User',
-      browser: 'firefox',
-      nested: { create: { browser: 'firefox' } },
+      createdWithBrowser: 'firefox',
+      nested: {
+        create: { createdWithBrowser: 'firefox', name: 'Nested Name' },
+      },
     },
   })
 })
@@ -140,11 +148,18 @@ it('infers the value of global contextArgs at runtime', async () => {
 it('handles arrays when recursing for contextArgs', async () => {
   const { datamodel } = globalTestData
   const dmmf = await getDmmf(datamodel, {
-    contextArgs: { browser: (ctx: any) => ctx.browser },
+    contextArgs: { createdWithBrowser: (ctx: any) => ctx.browser },
   })
   expect(
     addContextArgs({
-      baseArgs: { data: { name: 'New User', nested: { create: [{}, {}] } } },
+      baseArgs: {
+        data: {
+          name: 'New User',
+          nested: {
+            create: [{ name: 'Nested Name' }, { name: 'Nested Name' }],
+          },
+        },
+      },
       ctx: { browser: 'firefox' },
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
@@ -153,75 +168,41 @@ it('handles arrays when recursing for contextArgs', async () => {
   ).toStrictEqual({
     data: {
       name: 'New User',
-      browser: 'firefox',
-      nested: { create: [{ browser: 'firefox' }, { browser: 'firefox' }] },
+      createdWithBrowser: 'firefox',
+      nested: {
+        create: [
+          { createdWithBrowser: 'firefox', name: 'Nested Name' },
+          { createdWithBrowser: 'firefox', name: 'Nested Name' },
+        ],
+      },
     },
   })
 })
 
-it('Works on Redo', async () => {
-  const dmmf = await getDmmf(
-    `model Tag {
-  id   Int    @id
-  user User
-  name String
-  @@unique([name, user])
-}
-
-model Selector {
-  id   Int    @id
-  user User
-  css  String
-}
-
-model Step {
-  id       Int      @id
-  user     User
-  action   String
-  selector Selector
-  value    String
-}
-
-model Test {
-  id    Int    @id
-  user  User
-  name  String
-  steps Step[]
-  tags  Tag[]
-  @@unique([name, user])
-}
-
-model User {
-  id       Int    @id
-  email    String @unique
-  password String
-  first    String
-  last     String
-}`,
-    { contextArgs: { user: (ctx: any) => ({ connect: { id: ctx.userId } }) } },
-  )
+it('can combine resolver-level (shallow) and global (deep) context args', async () => {
+  const { datamodel } = globalTestData
+  const dmmf = await getDmmf(datamodel, {
+    // These are applied globally
+    contextArgs: { createdWithBrowser: (ctx: any) => ctx.browser },
+  })
   expect(
     addContextArgs({
-      baseArgs: {
-        data: {
-          name: 'Test 1',
-          steps: { create: [{ action: 'click', value: 'something' }] },
-        },
-      },
-      ctx: { userId: 1 },
-      inputType: dmmf.getInputType('TestCreateInput'),
+      // name should be required when creating Nested since the contextArg providing
+      // it is specific to UserCreateInput and therefore shallow
+      baseArgs: { data: { nested: { create: { name: 'Nested Name' } } } },
+      ctx: { browser: 'firefox', name: 'autopopulated' },
+      inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
-      contextArgs: {},
+      // These are applied only to UserCreateInput
+      contextArgs: { name: ctx => ctx.name },
     }),
   ).toStrictEqual({
     data: {
-      name: 'Test 1',
-      steps: {
-        create: [
-          { action: 'click', value: 'something', user: { connect: { id: 1 } } },
-        ],
+      name: 'autopopulated',
+      createdWithBrowser: 'firefox',
+      nested: {
+        create: { createdWithBrowser: 'firefox', name: 'Nested Name' },
       },
-      user: { connect: { id: 1 } },
     },
   })
 })

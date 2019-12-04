@@ -10,10 +10,12 @@ Object {
 
 type Nested {
   id: Int!
-  browser: String!
+  createdWithBrowser: String!
+  name: String!
 }
 
 input NestedCreateInput {
+  name: String!
   user: UserCreateOneWithoutUserInput
 }
 
@@ -22,7 +24,9 @@ input NestedCreateManyWithoutNestedInput {
   connect: [NestedWhereUniqueInput!]
 }
 
-input NestedCreateWithoutUserInput
+input NestedCreateWithoutUserInput {
+  name: String!
+}
 
 input NestedWhereUniqueInput {
   id: Int
@@ -36,7 +40,7 @@ type User {
   id: Int!
   name: String!
   nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
-  browser: String!
+  createdWithBrowser: String!
 }
 
 input UserCreateInput {
@@ -281,15 +285,15 @@ interface NexusPrismaInputs {
   ordering: 'id' | 'name'
 }
     nesteds: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'user'
-  ordering: 'id'
+  filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name'
 }
 
   },
     User: {
     nested: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'user'
-  ordering: 'id'
+  filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name'
 }
 
   },  Nested: {
@@ -325,11 +329,12 @@ interface NexusPrismaTypes {
     id: 'Int'
     name: 'String'
     nested: 'Nested'
-    browser: 'String'
+    createdWithBrowser: 'String'
 
 },  Nested: {
     id: 'Int'
-    browser: 'String'
+    name: 'String'
+    createdWithBrowser: 'String'
     user: 'User'
 
 }
@@ -367,7 +372,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  browser: String!
+  createdWithBrowser: String!
 }
 
 input UserCreateInput {
@@ -597,8 +602,8 @@ interface ModelTypes {
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'browser' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'name' | 'browser'
+  filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
   },
@@ -626,7 +631,7 @@ interface NexusPrismaTypes {
   User: {
     id: 'Int'
     name: 'String'
-    browser: 'String'
+    createdWithBrowser: 'String'
 
 }
 }
