@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { DMMF } from '@prisma/photon'
+import { DMMF } from '@prisma/photon/runtime'
 import { ContextArgs } from '../utils'
 import { DMMFClass } from './DMMFClass'
 

@@ -1,9 +1,9 @@
-import * as Photon from '@prisma/photon'
+import { DMMF } from '@prisma/photon/runtime'
 import { transform, TransformOptions } from './transformer'
 import { DMMFClass } from './DMMFClass'
 
 export function fromPhotonDMMF(
-  photonDMMF: Photon.DMMF.Document,
+  photonDMMF: DMMF.Document,
   options?: TransformOptions,
 ): DMMFClass {
   return new DMMFClass(transform(photonDMMF, options))
