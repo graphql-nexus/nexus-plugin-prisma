@@ -109,7 +109,7 @@ function addDeepContextArgs({
   // Get values for contextArgs corresponding to keys that exist in inputType
   const contextArgValues = Object.keys(inputType.contextArgs).reduce(
     (args, key) => ({ ...args, [key]: inputType.contextArgs[key](ctx) }),
-    {},
+    {} as Record<string, any>,
   )
   // Combine contextArgValues with values provided by the user, recursing to add
   // context args to nested types
@@ -149,7 +149,7 @@ export function addContextArgs({
       }),
       ...Object.keys(contextArgs).reduce(
         (args, key) => ({ ...args, [key]: contextArgs[key](ctx) }),
-        {},
+        {} as Record<string, any>,
       ),
     },
   }

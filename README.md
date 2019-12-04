@@ -2382,7 +2382,9 @@ Record<string, (ctx: any) => any> | undefined
 Allow clients to omit fields from one mutation's corresponding input type and infer the value of those fields from context when determining what to pass to Photon.
 
 - `undefined` (default) Like `{}`; inputs are unchanged
-- `ContextArgs` (`Record<string, (ctx: any) => any>`) Keys in the ContextArgs object will be omitted from the mutation's corresponding input type. When resolving the mutation at runtime, each omitted key will be passed to Photon based on the return value of that key's corresponding function in the ContextArgs object when passed the current request's context.
+- `ContextArgs` (`Record<string, (ctx: any) => any>`)
+
+  Keys in the ContextArgs object will be omitted from the mutation's corresponding input type. When resolving the mutation at runtime, each omitted key will be passed to Photon based on the return value of that key's corresponding function in the ContextArgs object when passed the current request's context.
 
 **GraphQL Schema Contributions**
 
@@ -2475,6 +2477,7 @@ Allow clients to omit fields with a given name across all of their GraphQL schem
 
 - `undefined` (default) Like `{}`; inputs are unchanged
 - `ContextArgs` (`Record<string, (ctx: any) => any>`)
+
   Keys in the ContextArgs object will be omitted from all input types. When resolving the mutation at runtime, each omitted key will be passed to Photon based on the return value of that key's corresponding function in the ContextArgs object when passed the current request's context recursively.
 
 **GraphQL Schema Contributions**

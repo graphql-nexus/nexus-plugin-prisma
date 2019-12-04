@@ -240,60 +240,61 @@ export class SchemaBuilder {
             `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce<
-          PublisherMethods
-        >((crud, mappedField) => {
-          const fieldPublisher: FieldPublisher = givenConfig => {
-            const inputType = this.dmmf.getInputType(
-              mappedField.field.args[0].inputType.type,
-            )
-            const publisherConfig = this.buildPublisherConfig({
-              field: mappedField.field,
-              givenConfig,
-            })
-            let fieldConfig = this.buildFieldConfig({
-              field: mappedField.field,
-              publisherConfig,
-              typeName,
-              operation: mappedField.operation,
-              resolve: (parent, args, ctx) => {
-                const photon = this.getPhoton(ctx)
-                if (
-                  typeName === 'Mutation' &&
-                  (!isEmptyObject(publisherConfig.contextArgs) ||
-                    !isEmptyObject(this.globalContextArgs))
-                ) {
-                  args = addContextArgs({
-                    inputType,
-                    baseArgs: args,
-                    contextArgs: publisherConfig.contextArgs,
-                    ctx,
-                    dmmf: this.dmmf,
-                  })
-                }
-                return photon[mappedField.photonAccessor][
-                  mappedField.operation
-                ](args)
-              },
-            })
-            if (
-              this.assertOutputTypeIsDefined(
-                typeName,
-                mappedField.field.name,
-                publisherConfig.type,
-                stage,
+        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
+          (crud, mappedField) => {
+            const fieldPublisher: FieldPublisher = givenConfig => {
+              const inputType = this.dmmf.getInputType(
+                mappedField.field.args[0].inputType.type,
               )
-            ) {
-              t.field(publisherConfig.alias, fieldConfig)
+              const publisherConfig = this.buildPublisherConfig({
+                field: mappedField.field,
+                givenConfig,
+              })
+              let fieldConfig = this.buildFieldConfig({
+                field: mappedField.field,
+                publisherConfig,
+                typeName,
+                operation: mappedField.operation,
+                resolve: (parent, args, ctx) => {
+                  const photon = this.getPhoton(ctx)
+                  if (
+                    typeName === 'Mutation' &&
+                    (!isEmptyObject(publisherConfig.contextArgs) ||
+                      !isEmptyObject(this.globalContextArgs))
+                  ) {
+                    args = addContextArgs({
+                      inputType,
+                      baseArgs: args,
+                      contextArgs: publisherConfig.contextArgs,
+                      ctx,
+                      dmmf: this.dmmf,
+                    })
+                  }
+                  return photon[mappedField.photonAccessor][
+                    mappedField.operation
+                  ](args)
+                },
+              })
+              if (
+                this.assertOutputTypeIsDefined(
+                  typeName,
+                  mappedField.field.name,
+                  publisherConfig.type,
+                  stage,
+                )
+              ) {
+                t.field(publisherConfig.alias, fieldConfig)
+              }
+
+              return crud
             }
 
+            crud[mappedField.field.name] = fieldPublisher
+
             return crud
-          }
-
-          crud[mappedField.field.name] = fieldPublisher
-
-          return crud
-        }, {})
+          },
+          {} as PublisherMethods,
+        )
 
         return proxify(
           publishers,
@@ -373,49 +374,46 @@ export class SchemaBuilder {
     const model = this.dmmf.getModelOrThrow(typeName)
     const outputType = this.dmmf.getOutputType(model.name)
 
-    const publishers = outputType.fields.reduce<PublisherMethods>(
-      (acc, field) => {
-        const fieldPublisher: FieldPublisher = givenConfig => {
-          const publisherConfig = this.buildPublisherConfig({
-            field,
-            givenConfig,
-          })
-          if (
-            !this.assertOutputTypeIsDefined(
-              typeName,
-              publisherConfig.alias,
-              publisherConfig.type,
-              stage,
-            )
-          ) {
-            return acc
-          }
-          const fieldConfig = this.buildFieldConfig({
-            field,
-            publisherConfig,
+    const publishers = outputType.fields.reduce((acc, field) => {
+      const fieldPublisher: FieldPublisher = givenConfig => {
+        const publisherConfig = this.buildPublisherConfig({
+          field,
+          givenConfig,
+        })
+        if (
+          !this.assertOutputTypeIsDefined(
             typeName,
-            resolve:
-              field.outputType.kind === 'object'
-                ? (root, args, ctx) => {
-                    const photon = this.getPhoton(ctx)
-                    const mapping = this.dmmf.getMapping(typeName)
-                    return photon[mapping.plural!]
-                      ['findOne']({ where: { id: root.id } })
-                      [field.name](args)
-                  }
-                : undefined,
-          })
-
-          t.field(publisherConfig.alias, fieldConfig)
-
-          return publishers
+            publisherConfig.alias,
+            publisherConfig.type,
+            stage,
+          )
+        ) {
+          return acc
         }
+        const fieldConfig = this.buildFieldConfig({
+          field,
+          publisherConfig,
+          typeName,
+          resolve:
+            field.outputType.kind === 'object'
+              ? (root, args, ctx) => {
+                  const photon = this.getPhoton(ctx)
+                  const mapping = this.dmmf.getMapping(typeName)
+                  return photon[mapping.plural!]
+                    ['findOne']({ where: { id: root.id } })
+                    [field.name](args)
+                }
+              : undefined,
+        })
 
-        acc[field.name] = fieldPublisher
-        return acc
-      },
-      {},
-    )
+        t.field(publisherConfig.alias, fieldConfig)
+
+        return publishers
+      }
+
+      acc[field.name] = fieldPublisher
+      return acc
+    }, {} as PublisherMethods)
 
     return proxify(
       publishers,
@@ -453,13 +451,13 @@ export class SchemaBuilder {
     }
   }
 
-  buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
-    return this.determineArgs(config).reduce<Nexus.core.ArgsRecord>(
+  buildArgsFromField(config: FieldConfigData) {
+    return this.determineArgs(config).reduce(
       (acc, customArg) => ({
         ...acc,
         [customArg.arg.name]: this.publisher.inputType(customArg),
       }),
-      {},
+      {} as Nexus.core.ArgsRecord,
     )
   }
 
