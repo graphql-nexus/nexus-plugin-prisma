@@ -17,7 +17,7 @@ export function generate(options: Options): Promise<void> {
   return doGenerate(false, options)
 }
 
-function isModule(name: string) {
+function isPackage(name: string) {
   return (
     !name.includes('/') ||
     (name.startsWith('@') && (name.match(/\//g) || []).length === 1)
