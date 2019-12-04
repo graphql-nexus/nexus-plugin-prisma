@@ -31,7 +31,6 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = DMMF.get(options.photonPath)
-  console.log({ options })
   const tsDeclaration = render(
     dmmf,
     isModule(options.photonPath)
