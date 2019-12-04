@@ -1,4 +1,4 @@
-import * as Photon from '@prisma/photon'
+import * as Photon from '@prisma/photon/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
@@ -32,12 +32,12 @@ export async function generateSchemaAndTypes(
   const schema = Nexus.makeSchema({
     types,
     plugins: [nexusPrisma],
-    shouldGenerateArtifacts: false,
+    outputs: false,
   })
 
   return {
     schema: GQL.printSchema(schema),
-    typegen: renderTypegen(dmmf, '@generated/photon'),
+    typegen: renderTypegen(dmmf, '@prisma/photon'),
   }
 }
 
@@ -59,12 +59,9 @@ export async function generateSchemaAndTypesWithoutThrowing(
   }).build()
   const schemaAndMissingTypes = Nexus.core.makeSchemaInternal({
     types: [types, nexusPrisma],
-    outputs: {
-      schema: false,
-      typegen: false,
-    },
+    outputs: false,
   })
-  const typegen = renderTypegen(dmmf, '@generated/photon')
+  const typegen = renderTypegen(dmmf, '@prisma/photon')
 
   return {
     schema: GQL.printSchema(schemaAndMissingTypes.schema),

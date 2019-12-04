@@ -34,7 +34,7 @@ You can use a specific Photon built for this migration (20191005224939-default-v
 in your `before` or `after` migration script like this:
 
 ```ts
-import Photon from '@generated/photon/20191005224939-default-view-count'
+import Photon from '@prisma/photon/20191005224939-default-view-count'
 
 const photon = new Photon()
 

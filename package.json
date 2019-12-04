@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.5.2",
+  "version": "0.6.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -10,6 +10,7 @@
     "src"
   ],
   "scripts": {
+    "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
@@ -17,17 +18,20 @@
     "dev:test": "jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "jest"
+    "test": "ts-node tests/__ensure-engine.ts && jest"
   },
   "dependencies": {
-    "@prisma/photon": "^0.2.152",
-    "@prisma/sdk": "^0.0.23",
     "camelcase": "^5.3.1",
     "fs-extra": "^8.1.0",
     "nexus": "^0.12.0-rc.4",
     "pluralize": "^8.0.0"
   },
+  "peerDependencies": {
+    "@prisma/photon": "^2.0.0-alpha.351"
+  },
   "devDependencies": {
+    "@prisma/fetch-engine": "^0.3.30",
+    "@prisma/photon": "^2.0.0-alpha.351",
     "@types/fs-extra": "^8.0.0",
     "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
@@ -39,10 +43,10 @@
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
     "prettier": "^1.17.1",
-    "prisma2": "^2.0.0-alpha.287",
+    "prisma2": "^2.0.0-alpha.351",
     "tmp": "^0.1.0",
     "ts-jest": "^24.0.2",
-    "ts-morph": "^4.0.1",
+    "ts-morph": "^5.0.0",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },

@@ -18,16 +18,18 @@ export const Query = queryType({
         id: intArg({ required: true }),
       },
       resolve(_root, args, ctx) {
-        return (
-          ctx.photon.blogs
-            .findOne({
-              where: {
-                id: args.id,
-              },
-            })
-            // https://github.com/prisma/photonjs/issues/288
-            .then()
-        )
+        return ctx.photon.blogs
+          .findOne({
+            where: {
+              id: args.id,
+            },
+          })
+          .then(result => {
+            if (result === null) {
+              throw new Error(`No blog with id of "${args.id}"`)
+            }
+            return result
+          })
       },
     })
 

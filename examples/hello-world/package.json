@@ -3,18 +3,17 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "generate": "yarn -s prisma2 generate",
-    "start": "ts-node --transpile-only app",
-    "postinstall": "yarn -s generate"
+    "start": "ts-node --transpile-only app"
   },
   "dependencies": {
+    "@prisma/photon": "^2.0.0-alpha.351",
     "graphql-yoga": "^1.18.3",
-    "nexus": "^0.12.0-rc.4",
-    "nexus-prisma": "^0.5.0"
+    "nexus": "^0.12.0-rc.5",
+    "nexus-prisma": "^0.0.0-pr.539.d2ab85e"
   },
   "devDependencies": {
     "@types/ws": "^6.0.3",
-    "prisma2": "^2.0.0-preview016",
+    "prisma2": "2.0.0-alpha.351",
     "ts-node": "^8.4.1",
     "typescript": "^3.7.2"
   }

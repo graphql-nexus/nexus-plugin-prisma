@@ -22,7 +22,7 @@ input UserWhereInput {
 `;
 
 exports[`does not automatically publish input/enum type if already created by user: typegen 1`] = `
-"import * as photon from '@generated/photon';
+"import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
@@ -328,7 +328,7 @@ input UserWhereInput {
 `;
 
 exports[`does not publish enum twice (from input/output type): typegen 1`] = `
-"import * as photon from '@generated/photon';
+"import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
@@ -615,7 +615,7 @@ type User {
 `;
 
 exports[`publishes enum even as output type: typegen 1`] = `
-"import * as photon from '@generated/photon';
+"import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<

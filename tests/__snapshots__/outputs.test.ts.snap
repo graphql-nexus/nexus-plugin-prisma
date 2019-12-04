@@ -44,7 +44,7 @@ input UserWhereInput {
 `;
 
 exports[`publishes scalars from input types: typegen 1`] = `
-"import * as photon from '@generated/photon';
+"import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<

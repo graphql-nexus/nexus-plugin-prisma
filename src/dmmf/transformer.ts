@@ -1,6 +1,6 @@
 import * as Nexus from 'nexus'
 import { DMMF } from '@prisma/photon'
-import { ContextArgs, isEmptyObject } from '../utils'
+import { ContextArgs } from '../utils'
 import { DMMFClass } from './DMMFClass'
 
 export type TransformOptions = {

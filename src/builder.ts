@@ -3,6 +3,8 @@ import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as DMMF from './dmmf'
 import * as GraphQL from './graphql'
+import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
+import { isDevMode } from './is-dev-mode'
 import { getCrudMappedFields } from './mapping'
 import {
   ArgsNamingStrategy,
@@ -11,6 +13,7 @@ import {
   FieldNamingStrategy,
   OperationName,
 } from './naming-strategies'
+import { proxify } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext, ContextArgs, isEmptyObject } from './utils'
@@ -86,7 +89,7 @@ export interface Options {
   inputs?: {
     /**
      * Where can nexus-prisma find the Photon.js package? By default looks in
-     * `node_modules/@generated/photon`. This is needed because nexus-prisma
+     * `node_modules/@prisma/photon`. This is needed because nexus-prisma
      * gets your Prisma schema AST and Photon.js crud info from the generated
      * Photon.js package.
      */
@@ -107,6 +110,8 @@ export interface Options {
 export interface InternalOptions extends Options {
   dmmf?: DMMF.DMMF // For testing
   nexusBuilder: Nexus.PluginBuilderLens
+  onUnknownFieldName?: OnUnknownFieldName // For pumpkins
+  onUnknownFieldType?: OnUnknownFieldType // For pumpkins
 }
 
 export function build(options: InternalOptions) {
@@ -137,12 +142,9 @@ let defaultPhotonPath: string
 if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
   defaultPhotonPath = process.env.NEXUS_PRISMA_PHOTON_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultPhotonPath = path.join(
-    process.cwd(),
-    '/node_modules/@generated/photon',
-  )
+  defaultPhotonPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
 } else {
-  defaultPhotonPath = '@generated/photon'
+  defaultPhotonPath = '@prisma/photon'
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
@@ -222,7 +224,7 @@ export class SchemaBuilder {
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
       // FIXME
       // Nexus should improve the type of typeName to be AllOutputTypes
-      factory: ({ typeDef: t, typeName }) => {
+      factory: ({ typeDef: t, typeName, stage }) => {
         if (typeName === GraphQL.rootNames.Subscription) {
           // TODO Lets put a GitHub issue link in this error message
           throw new Error(
@@ -238,7 +240,7 @@ export class SchemaBuilder {
             `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
           )
         }
-        return getCrudMappedFields(typeName, this.dmmf).reduce<
+        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce<
           PublisherMethods
         >((crud, mappedField) => {
           const fieldPublisher: FieldPublisher = givenConfig => {
@@ -274,7 +276,16 @@ export class SchemaBuilder {
                 ](args)
               },
             })
-            t.field(publisherConfig.alias, fieldConfig)
+            if (
+              this.assertOutputTypeIsDefined(
+                typeName,
+                mappedField.field.name,
+                publisherConfig.type,
+                stage,
+              )
+            ) {
+              t.field(publisherConfig.alias, fieldConfig)
+            }
 
             return crud
           }
@@ -283,6 +294,14 @@ export class SchemaBuilder {
 
           return crud
         }, {})
+
+        return proxify(
+          publishers,
+          typeName,
+          stage,
+          'crud',
+          this.options.onUnknownFieldName,
+        )
       },
     })
   }
@@ -338,16 +357,18 @@ export class SchemaBuilder {
        *    })
        *
        */
-      factory: ({ typeDef, typeName }) =>
+      factory: ({ typeDef, typeName, stage }) =>
         this.dmmf.hasModel(typeName)
-          ? this.internalBuildModel(typeName, typeDef)
-          : (modelName: string) => this.internalBuildModel(modelName, typeDef),
+          ? this.internalBuildModel(typeName, typeDef, stage)
+          : (modelName: string) =>
+              this.internalBuildModel(modelName, typeDef, stage),
     })
   }
 
   internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
+    stage: Nexus.core.OutputFactoryConfig<any>['stage'],
   ) {
     const model = this.dmmf.getModelOrThrow(typeName)
     const outputType = this.dmmf.getOutputType(model.name)
@@ -359,6 +380,16 @@ export class SchemaBuilder {
             field,
             givenConfig,
           })
+          if (
+            !this.assertOutputTypeIsDefined(
+              typeName,
+              publisherConfig.alias,
+              publisherConfig.type,
+              stage,
+            )
+          ) {
+            return acc
+          }
           const fieldConfig = this.buildFieldConfig({
             field,
             publisherConfig,
@@ -386,7 +417,13 @@ export class SchemaBuilder {
       {},
     )
 
-    return publishers
+    return proxify(
+      publishers,
+      typeName,
+      stage,
+      'model',
+      this.options.onUnknownFieldName,
+    )
   }
 
   buildPublisherConfig({
@@ -590,5 +627,41 @@ export class SchemaBuilder {
       name: uniqueName,
       fields: userExposedObjectFields,
     }
+  }
+
+  assertOutputTypeIsDefined(
+    typeName: string,
+    fieldName: string,
+    outputType: string,
+    stage: 'walk' | 'build',
+  ): boolean {
+    if (
+      this.options.nexusBuilder.hasType(outputType) ||
+      GraphQL.isScalarType(outputType) || // scalar types are auto-published
+      !this.dmmf.hasModel(outputType) // output types that are not models are auto-published
+    ) {
+      return true
+    }
+
+    const message = `${typeName}.${fieldName} is referencing a type "${outputType}" that is not defined in your GraphQL schema.`
+
+    if (stage === 'build') {
+      if (isDevMode()) {
+        if (this.options.onUnknownFieldType) {
+          this.options.onUnknownFieldType({
+            unknownFieldType: outputType,
+            typeName,
+            fieldName,
+            error: new Error(message),
+          })
+        } else {
+          console.log(`Warning: ${message}`)
+        }
+      } else {
+        throw new Error(message)
+      }
+    }
+
+    return false
   }
 }

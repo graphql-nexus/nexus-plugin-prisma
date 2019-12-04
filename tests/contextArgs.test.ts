@@ -1,5 +1,9 @@
 import * as Nexus from 'nexus'
-import { generateSchemaAndTypesWithoutThrowing, getDmmf } from './__utils'
+import {
+  generateSchemaAndTypesWithoutThrowing,
+  getDmmf,
+  generateSchemaAndTypes,
+} from './__utils'
 
 const resolverTestData = {
   datamodel: `
@@ -80,7 +84,7 @@ const globalTestData = {
 
 it('removes resolver-level contextArgs from the corresponding input type', async () => {
   const { datamodel, ...resolvers } = resolverTestData
-  const result = await generateSchemaAndTypesWithoutThrowing(
+  const result = await generateSchemaAndTypes(
     datamodel,
     Object.values(resolvers),
   )
@@ -108,7 +112,7 @@ it('infers the value of resolver-level contextArgs at runtime', async () => {
 
 it('removes global contextArg fields from all input types', async () => {
   const { datamodel, ...resolvers } = globalTestData
-  const result = await generateSchemaAndTypesWithoutThrowing(
+  const result = await generateSchemaAndTypes(
     datamodel,
     Object.values(resolvers),
     {

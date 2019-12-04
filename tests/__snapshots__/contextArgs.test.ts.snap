@@ -2,7 +2,6 @@
 
 exports[`removes global contextArg fields from all input types: globalContextArgs 1`] = `
 Object {
-  "missingTypes": Object {},
   "schema": "type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
@@ -61,7 +60,7 @@ input UserWhereUniqueInput {
   id: Int
 }
 ",
-  "typegen": "import * as photon from '@generated/photon';
+  "typegen": "import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
@@ -360,7 +359,6 @@ declare global {
 
 exports[`removes resolver-level contextArgs from the corresponding input type: resolverContextArgs 1`] = `
 Object {
-  "missingTypes": Object {},
   "schema": "type Mutation {
   createOneUser(data: UserCreateInput!): User!
 }
@@ -383,7 +381,7 @@ input UserWhereUniqueInput {
   id: Int
 }
 ",
-  "typegen": "import * as photon from '@generated/photon';
+  "typegen": "import * as photon from '@prisma/photon';
 import { core } from 'nexus';
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
