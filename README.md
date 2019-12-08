@@ -435,7 +435,7 @@ queryType({
 ### Publish Writes on a Prisma Model
 
 ```ts
-queryType({
+mutationType({
   definition(t) {
     t.crud.createPost()
     t.crud.updatePost()
