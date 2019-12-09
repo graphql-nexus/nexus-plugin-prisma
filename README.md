@@ -597,6 +597,56 @@ These are tips to help you with a successful project workflow
    }
    ```
 
+1. You can use [`Create nexus types`](https://github.com/AhmedElywa/create-nexus-type) tool to generate `objectType` , `queryType` and `mutationType` from your `schema.prisma` file for every model.
+
+**Example**
+
+```prisma
+model User {
+  id        String   @id @unique @default(cuid())
+  email     String   @unique
+  birthDate DateTime
+  posts     Post[]
+}
+```
+
+Output
+
+```ts
+import { objectType, extendType } from 'nexus'
+
+export const User = objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.birthDate()
+    t.model.posts()
+  },
+})
+
+export const userQuery = extendType({
+  type: 'Query',
+  definition(t) {
+    t.crud.user()
+    t.crud.users({ filtering: true, ordering: true })
+  },
+})
+
+export const userMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.crud.createOneUser()
+    t.crud.updateOneUser()
+    t.crud.upsertOneUser()
+    t.crud.deleteOneUser()
+
+    t.crud.updateManyUser()
+    t.crud.deleteManyUser()
+  },
+})
+```
+
 <br>
 
 ## `t.model`
