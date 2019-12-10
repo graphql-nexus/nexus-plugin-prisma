@@ -576,13 +576,13 @@ These are tips to help you with a successful project workflow
    though this would still be helpful since yarn rebuilds all packages whenever
    the dependency tree changes in any way
    ([issue](https://github.com/yarnpkg/yarn/issues/4703)). The
-   `NODE_ENV=development` is needed to ensure typegen is run even in a context where `NODE_ENV` is set to `production` (like a heroku deploy pipeline, see next point).
+   `NODE_ENV=development` is needed to ensure typegen is run even in a context where `NODE_ENV` is set to `production` (like a heroku deploy pipeline, see next point). Also, consider using [cross-env][https://github.com/kentcdodds/cross-env] for better compatibility with different environments, e.g. on Windows.
 
    ```json
    {
      "scripts": {
        "generate:prisma": "prisma2 generate",
-       "generate:nexus": "NODE_ENV=development ts-node --transpile-only path/to/schema/module",
+       "generate:nexus": "cross-env NODE_ENV=development ts-node --transpile-only path/to/schema/module",
        "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
        "postinstall": "npm -s run generate"
      }
