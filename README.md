@@ -60,6 +60,8 @@ If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [
     - [Batch Filtering](#batch-filtering)
   - [System Behaviours](#system-behaviours)
     - [Null-Free Lists](#null-free-lists)
+- [Community](#community)
+  - [create-nexus-type](#create-nexus-type)
 - [Development](#development)
   - [link workflow with the blog example](#link-workflow-with-the-blog-example)
 - [Links](#links)
@@ -2468,6 +2470,141 @@ model User {
 }
 ```
 
+<br>
+
+### Community
+
+#### `create-nexus-type`
+
+You can use [`Create nexus types`](https://github.com/AhmedElywa/create-nexus-type) tool to generate `objectType` , `queryType` and `mutationType` from your `schema.prisma` file for every model.
+
+**Install**
+
+```
+yarn add -D create-nexus-type
+or 
+npm i create-nexus-type --save-dev
+```
+**Command options for `cnt`**
+
+```
+  --schema To add schema file path if you not run command in root of project
+  --outDir Created files output dir default src/types
+  -mq      add this option to create Queries and Mutations for models 
+  -m       add this option to create Mutations
+  -q       add this option to create Queries
+  -f       add this option to add {filtering: true} option to Queries
+  -o       add this option to add {ordering: true} option to Queries
+```
+
+**Example**
+    
+```prisma
+// schema.prisma
+
+generator photonjs {
+  provider = "photonjs"
+}
+
+model User {
+  id        String   @id @unique @default(cuid())
+  email     String   @unique
+  birthDate DateTime
+  posts     Post[]
+}
+
+model Post {
+  id     String @id @unique @default(cuid())
+  author User[]
+}
+```
+
+run 
+
+```
+npx cnt
+```
+
+OutPut
+
+```ts
+// User.ts
+import { objectType } from 'nexus'
+
+export const User = objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.birthDate()
+    t.model.posts()
+  },
+})
+```
+
+```ts
+// Post.ts
+import { objectType } from 'nexus'
+
+export const Post = objectType({
+  name: 'Post',
+  definition(t) {
+    t.model.id()
+    t.model.author()
+  },
+})
+```
+
+```ts
+// index.ts
+export * from './User'
+export * from './Post'
+```
+
+**Create Queries and Mutations**
+
+run 
+
+```
+npx cnt --mq -f -o
+```
+
+OutPut
+
+```ts
+import { objectType, extendType } from 'nexus'
+
+export const User = objectType({
+  name: 'User',
+  definition(t) {
+    t.model.id()
+    t.model.email()
+    t.model.birthDate()
+    t.model.posts()
+  },
+})
+
+export const userQuery = extendType({
+  type: 'Query',
+  definition(t) {
+    t.crud.user()
+    t.crud.users({ filtering: true, ordering: true })
+  },
+})
+
+export const userMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.crud.createOneUser()
+    t.crud.updateOneUser()
+    t.crud.upsertOneUser()
+    t.crud.deleteOneUser()
+
+    t.crud.updateManyUser()
+    t.crud.deleteManyUser()
+  },
+})
+```
 <br>
 
 # Development
