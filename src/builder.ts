@@ -1,7 +1,6 @@
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
-import * as DMMF from './dmmf'
 import * as GraphQL from './graphql'
 import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
 import { isDevMode } from './is-dev-mode'
@@ -16,8 +15,13 @@ import {
 import { proxify } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, ContextArgs, isEmptyObject } from './utils'
-import { addContextArgs } from './dmmf/transformer'
+import { assertPhotonInContext, ComputedInputs, isEmptyObject } from './utils'
+import {
+  addComputedInputs,
+  getTransformedDmmf,
+  DmmfTypes,
+  DmmfDocument,
+} from './dmmf'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -25,24 +29,25 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-  contextArgs?: ContextArgs
+  computedInputs?: ComputedInputs
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 // Config options that are populated with defaults will not be undefined
-type ResolvedFieldPublisherConfig = WithRequiredKeys<
-  FieldPublisherConfig,
-  'alias' | 'type' | 'contextArgs'
->
+type ResolvedFieldPublisherConfig = Omit<
+  WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
+  'computedInputs'
+  // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
+> & { locallyComputedInputs: ComputedInputs }
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
 type PublisherConfigData = {
-  field: DMMF.Data.SchemaField
-  givenConfig: FieldPublisherConfig | undefined
+  field: DmmfTypes.SchemaField
+  givenConfig?: FieldPublisherConfig
 }
 type FieldConfigData = {
-  field: DMMF.Data.SchemaField
+  field: DmmfTypes.SchemaField
   publisherConfig: ResolvedFieldPublisherConfig
   typeName: string
   operation?: OperationName | null
@@ -57,7 +62,7 @@ type FieldConfigData = {
  * ever return null value list members.
  */
 const dmmfListFieldTypeToNexus = (
-  fieldType: DMMF.Data.SchemaField['outputType'],
+  fieldType: DmmfTypes.SchemaField['outputType'],
 ) => {
   return fieldType.isList
     ? {
@@ -104,11 +109,11 @@ export interface Options {
      */
     typegen?: string
   }
-  contextArgs?: ContextArgs
+  computedInputs?: ComputedInputs
 }
 
 export interface InternalOptions extends Options {
-  dmmf?: DMMF.DMMF // For testing
+  dmmf?: DmmfDocument // For testing
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
@@ -167,17 +172,17 @@ const defaultOptions = {
 }
 
 export interface CustomInputArg {
-  arg: DMMF.Data.SchemaArg
-  type: DMMF.Data.InputType | DMMF.Data.Enum | { name: string } // scalar
+  arg: DmmfTypes.SchemaArg
+  type: DmmfTypes.InputType | DmmfTypes.Enum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
-  readonly dmmf: DMMF.DMMF
+  readonly dmmf: DmmfDocument
   argsNamingStrategy: ArgsNamingStrategy
   fieldNamingStrategy: FieldNamingStrategy
   getPhoton: PhotonFetcher
   publisher: Publisher
-  globalContextArgs: ContextArgs
+  globallyComputedInputs: ComputedInputs
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -186,10 +191,15 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.globalContextArgs = config.contextArgs ? config.contextArgs : {}
+    // Internally rename the 'computedInputs' plugin option to clarify scope
+    this.globallyComputedInputs = config.computedInputs
+      ? config.computedInputs
+      : {}
     this.dmmf =
       options.dmmf ||
-      DMMF.get(config.inputs.photon, { contextArgs: this.globalContextArgs })
+      getTransformedDmmf(config.inputs.photon, {
+        globallyComputedInputs: this.globallyComputedInputs,
+      })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
@@ -248,26 +258,30 @@ export class SchemaBuilder {
               )
               const publisherConfig = this.buildPublisherConfig({
                 field: mappedField.field,
-                givenConfig,
+                givenConfig: givenConfig ? givenConfig : {},
               })
               let fieldConfig = this.buildFieldConfig({
                 field: mappedField.field,
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
-                resolve: (parent, args, ctx) => {
+                resolve: (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
                   if (
                     typeName === 'Mutation' &&
-                    (!isEmptyObject(publisherConfig.contextArgs) ||
-                      !isEmptyObject(this.globalContextArgs))
+                    (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
+                      !isEmptyObject(this.globallyComputedInputs))
                   ) {
-                    args = addContextArgs({
+                    args = addComputedInputs({
                       inputType,
-                      baseArgs: args,
-                      contextArgs: publisherConfig.contextArgs,
-                      ctx,
                       dmmf: this.dmmf,
+                      params: {
+                        root,
+                        args,
+                        ctx,
+                      },
+                      locallyComputedInputs:
+                        publisherConfig.locallyComputedInputs,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -378,7 +392,7 @@ export class SchemaBuilder {
       const fieldPublisher: FieldPublisher = givenConfig => {
         const publisherConfig = this.buildPublisherConfig({
           field,
-          givenConfig,
+          givenConfig: givenConfig ? givenConfig : {},
         })
         if (
           !this.assertOutputTypeIsDefined(
@@ -426,14 +440,14 @@ export class SchemaBuilder {
 
   buildPublisherConfig({
     field,
-    givenConfig,
-  }: PublisherConfigData): ResolvedFieldPublisherConfig {
+    givenConfig: { computedInputs, ...otherConfig },
+  }: Required<PublisherConfigData>): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
-      contextArgs: {},
-      ...givenConfig,
+      locallyComputedInputs: computedInputs ? computedInputs : {},
+      ...otherConfig,
     }
   }
 
@@ -481,16 +495,16 @@ export class SchemaBuilder {
     return field.args.map(arg => {
       const photonInputType = this.dmmf.getInputType(arg.inputType.type)
       /*
-      Since global contextArgs (passed to the makeSchema function) were
-      already filtered, at this point we just need to filter at the arg-level
+      Since globallyComputedInputs were already filtered during schema transformation,
+      at this point we just need to filter at the resolver-level.
       */
       return {
         arg,
         type: {
           ...photonInputType,
-          fields: publisherConfig.contextArgs
+          fields: publisherConfig.locallyComputedInputs
             ? photonInputType.fields.filter(
-                field => !(field.name in publisherConfig.contextArgs!),
+                field => !(field.name in publisherConfig.locallyComputedInputs),
               )
             : photonInputType.fields,
         },
@@ -599,7 +613,7 @@ export class SchemaBuilder {
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
-  ): DMMF.Data.InputType {
+  ): DmmfTypes.InputType {
     const photonObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)

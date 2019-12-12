@@ -1,6 +1,7 @@
 import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { core } from 'nexus'
 import { isDeepStrictEqual } from 'util'
 
 /**
@@ -148,12 +149,37 @@ export type Index<T> = Record<string, T>
 
 /**
  *  Represents arguments required by Photon that will
- *  be derived from a request's context and omitted from
- *  the GraphQL API. The object itself maps the names of
- *  these args to a function that takes the request's context
- *  and returns the value to pass to the photon arg of the
- *  same name.
+ *  be derived from a request's input (root, args, and context)
+ *  and omitted from the GraphQL API. The object itself maps the
+ *  names of these args to a function that takes an object representing
+ *  the request's input and returns the value to pass to the photon
+ *  arg of the same name.
  */
-export type ContextArgs = Record<string, (ctx: any) => any>
+export type ComputedInputs<
+  MethodName extends MutationMethodName | null = null
+> = Record<string, (params: MutationResolverParams<MethodName>) => any>
+
+export type MutationResolverParams<
+  MethodName extends MutationMethodName | null = null
+> = {
+  root: any
+  // 'args' will be typed according to its corresponding mutation's input type for resolver-level computedInputs.
+  // 'args' will be typed as 'any' for global computedInputs.
+  args: MethodName extends null
+    ? any
+    : MutationResolverArgsParam<
+        // Second conditional type is redundant but required due to a TS bug
+        MethodName extends null ? never : MethodName
+      >
+  ctx: Context
+}
+
+export type MutationResolverArgsParam<
+  MethodName extends MutationMethodName
+> = core.GetGen<'argTypes'>['Mutation'][MethodName]
+
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+
+export type Context = core.GetGen<'context'>
 
 export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})

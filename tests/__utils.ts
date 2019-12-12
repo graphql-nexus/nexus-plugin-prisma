@@ -2,9 +2,9 @@ import * as Photon from '@prisma/photon/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
-import * as DMMF from '../src/dmmf'
+import { DmmfDocument } from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
-import { TransformOptions } from '../src/dmmf/transformer'
+import { TransformOptions, transform } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -17,7 +17,9 @@ export const createNexusPrismaInternal = (
   })
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
-  return DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }), options)
+  return new DmmfDocument(
+    transform(await Photon.getDMMF({ datamodel }), options),
+  )
 }
 
 export async function generateSchemaAndTypes(

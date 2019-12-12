@@ -1,3 +1,4 @@
 export * from './utils'
-export { ExternalDMMF as Data } from './transformer'
-export { DMMFClass as DMMF } from './DMMFClass'
+export * from './transformer'
+export * from './DmmfDocument'
+export * from './DmmfTypes'

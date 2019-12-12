@@ -1,27 +1,12 @@
 import { DMMF } from '@prisma/photon/runtime'
-import { transform, TransformOptions } from './transformer'
-import { DMMFClass } from './DMMFClass'
 
-export function fromPhotonDMMF(
-  photonDMMF: DMMF.Document,
-  options?: TransformOptions,
-): DMMFClass {
-  return new DMMFClass(transform(photonDMMF, options))
-}
-
-export const get = (
-  photonClientPackagePath: string,
-  options?: TransformOptions,
-): DMMFClass => {
-  let photonClientPackage
+export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   try {
-    photonClientPackage = require(photonClientPackagePath)
+    return require(packagePath).dmmf
   } catch (error) {
     throw new Error(
-      `Failed to import photon package at ${photonClientPackagePath}. The following error occured while trying:
-
+      `Failed to import photon package at ${packagePath}. The following error occured while trying:
         ${error.stack}`,
     )
   }
-  return fromPhotonDMMF(photonClientPackage.dmmf, options)
 }

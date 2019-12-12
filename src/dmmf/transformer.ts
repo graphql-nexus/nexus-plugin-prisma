@@ -1,31 +1,38 @@
-import * as Nexus from 'nexus'
 import { DMMF } from '@prisma/photon/runtime'
-import { ContextArgs } from '../utils'
-import { DMMFClass } from './DMMFClass'
+import { ComputedInputs, MutationResolverParams } from '../utils'
+import { getPhotonDmmf } from './utils'
+import { DmmfDocument } from './DmmfDocument'
+import { DmmfTypes } from './DmmfTypes'
 
 export type TransformOptions = {
-  contextArgs?: ContextArgs
+  globallyComputedInputs?: ComputedInputs
 }
 
-const addDefaultsOptions = (
+export const getTransformedDmmf = (
+  photonClientPackagePath: string,
+  options?: TransformOptions,
+): DmmfDocument =>
+  new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath), options))
+
+const addDefaultOptions = (
   givenOptions?: TransformOptions,
 ): Required<TransformOptions> => ({
-  contextArgs: {},
+  globallyComputedInputs: {},
   ...givenOptions,
 })
 
 export function transform(
   document: DMMF.Document,
   options?: TransformOptions,
-): ExternalDMMF.Document {
+): DmmfTypes.Document {
   return {
     datamodel: transformDatamodel(document.datamodel),
-    mappings: document.mappings as ExternalDMMF.Mapping[],
-    schema: transformSchema(document.schema, addDefaultsOptions(options)),
+    mappings: document.mappings as DmmfTypes.Mapping[],
+    schema: transformSchema(document.schema, addDefaultOptions(options)),
   }
 }
 
-function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
+function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
   return {
     enums: datamodel.enums,
     models: datamodel.models.map(model => ({
@@ -40,11 +47,13 @@ function transformDatamodel(datamodel: DMMF.Datamodel): ExternalDMMF.Datamodel {
 
 function transformSchema(
   schema: DMMF.Schema,
-  { contextArgs }: Required<TransformOptions>,
-): ExternalDMMF.Schema {
+  { globallyComputedInputs }: Required<TransformOptions>,
+): DmmfTypes.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map(_ => transformInputType(_, contextArgs)),
+    inputTypes: schema.inputTypes.map(_ =>
+      transformInputType(_, globallyComputedInputs),
+    ),
     outputTypes: schema.outputTypes.map(o => ({
       ...o,
       fields: o.fields.map(f => ({
@@ -64,7 +73,7 @@ function transformSchema(
  * heuristics. A conversion is needed becuase GraphQL does not
  * support union types on args, but Photon does.
  */
-function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
+function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   // FIXME: *Enum*Filter are currently empty
   let inputType = arg.inputType.some(a => a.kind === 'enum')
     ? arg.inputType[0]
@@ -85,70 +94,93 @@ function transformArg(arg: DMMF.SchemaArg): ExternalDMMF.SchemaArg {
   }
 }
 
-type AddContextArgsParams = {
-  inputType: ExternalDMMF.InputType
-  baseArgs: Record<string, any>
-  ctx: any
-  dmmf: DMMFClass
-  contextArgs: ContextArgs
+type AddComputedInputParams = {
+  inputType: DmmfTypes.InputType
+  params: MutationResolverParams
+  dmmf: DmmfDocument
+  locallyComputedInputs: ComputedInputs
 }
 
-type AddDeepContextArgsParams = Omit<AddContextArgsParams, 'contextArgs'>
+/** Resolver-level computed inputs aren't recursive so aren't
+ *  needed for deep computed inputs.
+ */
+type AddDeepComputedInputsArgs = Omit<
+  AddComputedInputParams,
+  'locallyComputedInputs'
+> & { data: any } // Used to recurse through the input object
 
-function addDeepContextArgs({
+/**
+ * Recursively looks for inputs that need a value from globallyComputedInputs
+ * and populates them
+ */
+function addGloballyComputedInputs({
   inputType,
-  baseArgs,
-  ctx,
+  params,
   dmmf,
-}: AddDeepContextArgsParams): Record<string, any> {
-  if (Array.isArray(baseArgs)) {
-    return baseArgs.map(arg =>
-      addDeepContextArgs({ inputType, baseArgs: arg, ctx, dmmf }),
+  data,
+}: AddDeepComputedInputsArgs): Record<string, any> {
+  if (Array.isArray(data)) {
+    return data.map(value =>
+      addGloballyComputedInputs({
+        inputType,
+        dmmf,
+        params,
+        data: value,
+      }),
     )
   }
-  // Get values for contextArgs corresponding to keys that exist in inputType
-  const contextArgValues = Object.keys(inputType.contextArgs).reduce(
-    (args, key) => ({ ...args, [key]: inputType.contextArgs[key](ctx) }),
+  // Get values for computedInputs corresponding to keys that exist in inputType
+  const computedInputValues = Object.keys(inputType.computedInputs).reduce(
+    (values, key) => ({
+      ...values,
+      [key]: inputType.computedInputs[key](params),
+    }),
     {} as Record<string, any>,
   )
-  // Combine contextArgValues with values provided by the user, recursing to add
-  // context args to nested types
-  return Object.keys(baseArgs).reduce((args, key) => {
-    const field = inputType.fields.find(_ => _.name === key)!
+  // Combine computedInputValues with values provided by the user, recursing to add
+  // global computedInputs to nested types
+  return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
+    const field = inputType.fields.find(_ => _.name === fieldName)!
     const fieldValue =
       field.inputType.kind === 'object'
-        ? addDeepContextArgs({
+        ? addGloballyComputedInputs({
             inputType: dmmf.getInputType(field.inputType.type),
-            baseArgs: baseArgs[key],
-            ctx,
             dmmf,
+            params,
+            data: data[fieldName],
           })
-        : baseArgs[key]
+        : data[fieldName]
     return {
-      ...args,
-      [key]: fieldValue,
+      ...deeplyComputedData,
+      [fieldName]: fieldValue,
     }
-  }, contextArgValues)
+  }, computedInputValues)
 }
 
-export function addContextArgs({
-  baseArgs,
-  ctx,
+export function addComputedInputs({
   dmmf,
   inputType,
-  contextArgs,
-}: AddContextArgsParams) {
+  locallyComputedInputs,
+  params,
+}: AddComputedInputParams) {
   return {
-    ...baseArgs,
+    ...params.args,
     data: {
-      ...addDeepContextArgs({
-        baseArgs: baseArgs.data,
-        ctx,
-        dmmf,
+      /**
+       * Globally computed inputs are attached to the inputType object
+       * as 'computedInputs' by the transformInputType function.
+       */
+      ...addGloballyComputedInputs({
         inputType,
+        dmmf,
+        params,
+        data: params.args.data,
       }),
-      ...Object.keys(contextArgs).reduce(
-        (args, key) => ({ ...args, [key]: contextArgs[key](ctx) }),
+      ...Object.keys(locallyComputedInputs).reduce(
+        (args, key) => ({
+          ...args,
+          [key]: locallyComputedInputs[key](params),
+        }),
         {} as Record<string, any>,
       ),
     },
@@ -157,22 +189,31 @@ export function addContextArgs({
 
 function transformInputType(
   inputType: DMMF.InputType,
-  globalContextArgs: ContextArgs,
-): ExternalDMMF.InputType {
+  globallyComputedInputs: ComputedInputs,
+): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map(field => field.name)
-  const contextArgs = Object.keys(globalContextArgs).reduce(
+  /**
+   * Only global computed inputs are removed during schema transform.
+   * Resolver level computed inputs are filtered as part of the
+   * publishing process. They are then passed to addComputedInputs
+   * at runtime so their values can be inferred alongside the
+   * global values.
+   */
+  const globallyComputedInputsInType = Object.keys(
+    globallyComputedInputs,
+  ).reduce(
     (args, key) =>
       fieldNames.includes(key)
-        ? { ...args, [key]: globalContextArgs[key] }
+        ? { ...args, [key]: globallyComputedInputs[key] }
         : args,
-    {} as ContextArgs,
+    {} as ComputedInputs,
   )
   return {
     ...inputType,
     fields: inputType.fields
-      .filter(field => !(field.name in globalContextArgs))
+      .filter(field => !(field.name in globallyComputedInputs))
       .map(transformArg),
-    contextArgs,
+    computedInputs: globallyComputedInputsInType,
   }
 }
 
@@ -194,110 +235,4 @@ function getReturnTypeName(type: any) {
   }
 
   return type.name
-}
-
-export declare namespace ExternalDMMF {
-  interface Document {
-    datamodel: Datamodel
-    schema: Schema
-    mappings: Mapping[]
-  }
-  interface Enum {
-    name: string
-    values: string[]
-    dbName?: string | null
-  }
-  interface Datamodel {
-    models: Model[]
-    enums: Enum[]
-  }
-  interface Model {
-    name: string
-    isEmbedded: boolean
-    dbName: string | null
-    fields: Field[]
-  }
-  type FieldKind = 'scalar' | 'object' | 'enum'
-  type DatamodelFieldKind = 'scalar' | 'relation' | 'enum'
-  interface Field {
-    kind: DatamodelFieldKind
-    name: string
-    isRequired: boolean
-    isList: boolean
-    isUnique: boolean
-    isId: boolean
-    type: string
-    dbName: string | null
-    isGenerated: boolean
-    relationToFields?: any[]
-    relationOnDelete?: string
-    relationName?: string
-  }
-  interface Schema {
-    inputTypes: InputType[]
-    outputTypes: OutputType[]
-    enums: Enum[]
-  }
-  interface QueryOutput {
-    name: string
-    isRequired: boolean
-    isList: boolean
-  }
-  type ArgType = string
-  interface SchemaArg {
-    name: string
-    inputType: {
-      isRequired: boolean
-      isList: boolean
-      type: ArgType
-      kind: FieldKind
-    }
-    isRelationFilter?: boolean
-  }
-  interface OutputType {
-    name: string
-    fields: SchemaField[]
-    isEmbedded?: boolean
-  }
-  interface SchemaField {
-    name: string
-    outputType: {
-      type: Nexus.core.AllOutputTypes
-      isList: boolean
-      isRequired: boolean
-      kind: FieldKind
-    }
-    args: SchemaArg[]
-  }
-  interface InputType {
-    name: string
-    isWhereType?: boolean
-    isOrderType?: boolean
-    atLeastOne?: boolean
-    atMostOne?: boolean
-    fields: SchemaArg[]
-    contextArgs: ContextArgs
-  }
-  interface Mapping {
-    model: string
-    plural: string
-    findOne: string
-    findMany: string
-    create: string
-    update: string
-    updateMany: string
-    upsert: string
-    delete: string
-    deleteMany: string
-  }
-  enum ModelAction {
-    findOne = 'findOne',
-    findMany = 'findMany',
-    create = 'create',
-    update = 'update',
-    updateMany = 'updateMany',
-    upsert = 'upsert',
-    delete = 'delete',
-    deleteMany = 'deleteMany',
-  }
 }
