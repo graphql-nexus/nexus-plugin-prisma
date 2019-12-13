@@ -2638,7 +2638,7 @@ mutation createOneNested {
 }
 ```
 
-If `{user: {connect: {where: {id: 1}}}}` looks familiar, global computedInputs can also be used to determine the user making a request and automatically populate mutations affecting a single user accordingly. For example, assuming Photon's context includes a "userId" key, adding a user key to global computedInputs can simplify the "createdOneNested" mutation from the previous example:
+If `{user: {connect: {where: {id: 1}}}}` looks familiar, global computedInputs can also be used to determine the user making a request and automatically populate mutations affecting a single user accordingly. For example, assuming Photon's context includes a "userId" key, adding a user key to global computedInputs can simplify the "createOneNested" mutation from the previous example:
 
 ```ts
 nexusPrismaPlugin({
