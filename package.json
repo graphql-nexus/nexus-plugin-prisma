@@ -1,6 +1,6 @@
 {
-  "name": "redo-nexus-prisma",
-  "version": "0.6.1-2",
+  "name": "nexus-prisma",
+  "version": "0.6.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
