@@ -143,7 +143,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DmmfTypes.SchemaArg): CustomInputArg['type'] {
+  getTypeFromArg(arg: DmmfTypes.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: typeName,

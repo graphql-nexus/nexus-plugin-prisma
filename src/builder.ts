@@ -455,7 +455,7 @@ export class SchemaBuilder {
   buildFieldConfig(
     config: FieldConfigData,
   ): Nexus.core.NexusOutputFieldConfig<any, string> {
-    return {
+    const result = {
       type: this.publisher.outputType(
         config.publisherConfig.type,
         config.field,
@@ -464,6 +464,7 @@ export class SchemaBuilder {
       args: this.buildArgsFromField(config),
       resolve: config.resolve,
     }
+    return result
   }
 
   buildArgsFromField(config: FieldConfigData) {
@@ -494,7 +495,8 @@ export class SchemaBuilder {
     field,
   }: FieldConfigData): CustomInputArg[] {
     if (publisherConfig.upfilteredKey) {
-      return this.createUpfilteredTypes(field.args, publisherConfig)
+      const result = this.createUpfilteredTypes(field.args, publisherConfig)
+      return result
     }
     return field.args.map(arg => {
       const photonInputType = this.dmmf.getInputType(arg.inputType.type)
@@ -506,68 +508,85 @@ export class SchemaBuilder {
         arg,
         type: {
           ...photonInputType,
-          fields: publisherConfig.locallyComputedInputs
-            ? photonInputType.fields.filter(
-                field => !(field.name in publisherConfig.locallyComputedInputs),
-              )
-            : photonInputType.fields,
+          fields: this.filterLocallyComputedInputs(
+            photonInputType.fields,
+            publisherConfig,
+          ),
         },
       }
     })
+  }
+
+  filterLocallyComputedInputs(
+    fields: DmmfTypes.SchemaArg[],
+    publisherConfig: ResolvedFieldPublisherConfig,
+  ) {
+    return publisherConfig.locallyComputedInputs
+      ? fields.filter(
+          field => !(field.name in publisherConfig.locallyComputedInputs),
+        )
+      : fields
   }
 
   createUpfilteredTypes(
     args: DmmfTypes.SchemaArg[],
     publisherConfig: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
-    return args.reduce((customArgs, arg) => {
-      if (arg.inputType.kind !== 'object') {
-        return customArgs
+    // Convert to CapsCase
+    const upfilteredKeyTypeName = `${publisherConfig
+      .upfilteredKey!.charAt(0)
+      .toUpperCase()}${publisherConfig.upfilteredKey!.slice(1).toLowerCase()}`
+    const getCustomArg = (
+      inputType: DmmfTypes.InputType,
+      arg: DmmfTypes.SchemaArg,
+    ): CustomInputArg => {
+      const name = `${arg.inputType.type}${upfilteredKeyTypeName}Only`
+      return {
+        arg: {
+          ...arg,
+          inputType: {
+            ...arg.inputType,
+            type: name,
+          },
+        },
+        type: {
+          ...inputType,
+          name,
+          fields: this.filterLocallyComputedInputs(
+            this.createUpfilteredTypes(inputType.fields, publisherConfig).map(
+              _ => _.arg,
+            ),
+            publisherConfig,
+          ),
+        },
       }
-      const inputType = this.dmmf.getInputType(arg.inputType.type)
+    }
+    return args.map(arg => {
+      const inputType = this.publisher.getTypeFromArg(
+        arg,
+      ) as DmmfTypes.InputType
+      if (arg.inputType.kind !== 'object') {
+        return {
+          arg,
+          type: inputType,
+        }
+      }
       const filteredField = inputType.fields.find(
         _ => _.name === publisherConfig.upfilteredKey,
       )
-      if (filteredField) {
-        const upfilteredType = this.dmmf.getInputType(
-          filteredField!.inputType.type,
-        )
-        return [
-          ...customArgs,
-          {
+      const customArg = filteredField
+        ? getCustomArg(
+            this.dmmf.getInputType(filteredField!.inputType.type),
             arg,
-            type: {
-              ...upfilteredType,
-              name: `${arg.inputType.type}${publisherConfig.upfilteredKey}`,
-              fields: publisherConfig.locallyComputedInputs
-                ? upfilteredType.fields.filter(
-                    field =>
-                      !(field.name in publisherConfig.locallyComputedInputs),
-                  )
-                : upfilteredType.fields,
-            },
-          },
-          ...this.createUpfilteredTypes(upfilteredType.fields, publisherConfig),
-        ]
+          )
+        : getCustomArg(inputType, arg)
+      if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
+        this.publisher.nexusBuilder.addType(
+          this.publisher.inputType(customArg) as any,
+        )
       }
-      return [
-        ...customArgs,
-        {
-          arg,
-          type: {
-            ...inputType,
-            name: `${arg.inputType.type}${publisherConfig.upfilteredKey}`,
-            fields: publisherConfig.locallyComputedInputs
-              ? inputType.fields.filter(
-                  field =>
-                    !(field.name in publisherConfig.locallyComputedInputs),
-                )
-              : inputType.fields,
-          },
-        },
-        ...this.createUpfilteredTypes(inputType.fields, publisherConfig),
-      ]
-    }, [] as CustomInputArg[])
+      return customArg
+    })
   }
 
   argsFromQueryOrModelField({
