@@ -183,3 +183,33 @@ export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 export type Context = core.GetGen<'context'>
 
 export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
+
+export type Primitive = string | number | boolean | symbol
+export type NonRecursible = Primitive | Function | null | undefined
+export const isRecursible = (o: any) => o && typeof o === 'object'
+export type Unlisted<T> = T extends (infer V)[] ? V : T
+export type Key = string | number
+
+export type FilterUp<T, UpfilteredKey extends string> = {
+  [K in keyof T]: T[K] extends NonRecursible
+    ? T[K]
+    : Array<any> extends T[K]
+    ?
+        | Array<
+            FilterUp<
+              UpfilteredKey extends keyof Exclude<Unlisted<T[K]>, NonRecursible>
+                ? Exclude<Unlisted<T[K]>, NonRecursible>[UpfilteredKey]
+                : Exclude<Unlisted<T[K]>, NonRecursible>,
+              UpfilteredKey
+            >
+          >
+        | Extract<T[K], NonRecursible>
+    :
+        | FilterUp<
+            UpfilteredKey extends keyof Exclude<T[K], NonRecursible>
+              ? Exclude<T[K], NonRecursible>[UpfilteredKey]
+              : Exclude<T[K], NonRecursible>,
+            UpfilteredKey
+          >
+        | Extract<T[K], NonRecursible>
+}

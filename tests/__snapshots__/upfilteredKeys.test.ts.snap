@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`filters upfilteredKeys: upfilteredKeys 1`] = `
+"type Mutation {
+  createOneUser(data: UserCreateInput!): User!
+}
+
+type Nested {
+  id: Int!
+  name: String!
+}
+
+input NestedCreateOneWithoutNestedInput {
+  create: NestedCreateWithoutUsersInput
+  connect: NestedWhereUniqueInput
+}
+
+input NestedCreateWithoutUsersInput {
+  id: Int!
+  name: String!
+}
+
+input NestedWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type User {
+  id: Int!
+  name: String!
+  nested: Nested!
+}
+
+input UserCreateInput {
+  id: Int!
+  name: String!
+  nested: NestedCreateOneWithoutNestedInput!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+"
+`;

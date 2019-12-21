@@ -11,6 +11,20 @@
       "program": "${workspaceFolder}/dist/generator.js",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Current File",
+      "args": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/jest/bin/jest.js",
+        "${fileBasenameNoExtension}",
+        "--config",
+        "${workspaceRoot}/jest.config.js",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }

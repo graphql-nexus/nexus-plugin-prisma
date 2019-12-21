@@ -30,6 +30,7 @@ interface FieldPublisherConfig {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   computedInputs?: ComputedInputs
+  upfilteredKey?: string
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
@@ -492,6 +493,9 @@ export class SchemaBuilder {
     publisherConfig,
     field,
   }: FieldConfigData): CustomInputArg[] {
+    if (publisherConfig.upfilteredKey) {
+      return this.createUpfilteredTypes(field.args, publisherConfig)
+    }
     return field.args.map(arg => {
       const photonInputType = this.dmmf.getInputType(arg.inputType.type)
       /*
@@ -510,6 +514,60 @@ export class SchemaBuilder {
         },
       }
     })
+  }
+
+  createUpfilteredTypes(
+    args: DmmfTypes.SchemaArg[],
+    publisherConfig: ResolvedFieldPublisherConfig,
+  ): CustomInputArg[] {
+    return args.reduce((customArgs, arg) => {
+      if (arg.inputType.kind !== 'object') {
+        return customArgs
+      }
+      const inputType = this.dmmf.getInputType(arg.inputType.type)
+      const filteredField = inputType.fields.find(
+        _ => _.name === publisherConfig.upfilteredKey,
+      )
+      if (filteredField) {
+        const upfilteredType = this.dmmf.getInputType(
+          filteredField!.inputType.type,
+        )
+        return [
+          ...customArgs,
+          {
+            arg,
+            type: {
+              ...upfilteredType,
+              name: `${arg.inputType.type}${publisherConfig.upfilteredKey}`,
+              fields: publisherConfig.locallyComputedInputs
+                ? upfilteredType.fields.filter(
+                    field =>
+                      !(field.name in publisherConfig.locallyComputedInputs),
+                  )
+                : upfilteredType.fields,
+            },
+          },
+          ...this.createUpfilteredTypes(upfilteredType.fields, publisherConfig),
+        ]
+      }
+      return [
+        ...customArgs,
+        {
+          arg,
+          type: {
+            ...inputType,
+            name: `${arg.inputType.type}${publisherConfig.upfilteredKey}`,
+            fields: publisherConfig.locallyComputedInputs
+              ? inputType.fields.filter(
+                  field =>
+                    !(field.name in publisherConfig.locallyComputedInputs),
+                )
+              : inputType.fields,
+          },
+        },
+        ...this.createUpfilteredTypes(inputType.fields, publisherConfig),
+      ]
+    }, [] as CustomInputArg[])
   }
 
   argsFromQueryOrModelField({
