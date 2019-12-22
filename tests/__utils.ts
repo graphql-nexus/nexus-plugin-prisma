@@ -25,9 +25,9 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
 export async function generateSchemaAndTypes(
   datamodel: string,
   types: any[],
-  options?: TransformOptions,
+  transformOptions?: TransformOptions,
 ) {
-  const dmmf = await getDmmf(datamodel, options)
+  const dmmf = await getDmmf(datamodel, transformOptions)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
   })

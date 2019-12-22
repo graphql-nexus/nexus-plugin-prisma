@@ -1,8 +1,9 @@
 import { DMMF } from '@prisma/photon/runtime'
-import { ComputedInputs, MutationResolverParams } from '../utils'
+import { ComputedInputs, MutationResolverParams, isEmptyObject } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
+import { Publisher } from '../publisher'
 
 export type TransformOptions = {
   globallyComputedInputs?: ComputedInputs
@@ -94,97 +95,193 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   }
 }
 
-type AddComputedInputParams = {
+// type AddComputedInputParams = {
+//   inputType: DmmfTypes.InputType
+//   params: MutationResolverParams
+//   publisher: Publisher
+//   locallyComputedInputs: ComputedInputs
+// }
+
+// /** Resolver-level computed inputs aren't recursive so aren't
+//  *  needed for deep computed inputs.
+//  */
+// type AddDeepComputedInputsArgs = Omit<
+//   AddComputedInputParams,
+//   'locallyComputedInputs'
+// > & { data: any } // Used to recurse through the input object
+
+// /**
+//  * Recursively looks for inputs that need a value from globallyComputedInputs
+//  * and populates them
+//  */
+// function addGloballyComputedInputs({
+//   inputType,
+//   params,
+//   publisher,
+//   data,
+// }: AddDeepComputedInputsArgs): Record<string, any> {
+//   if (Array.isArray(data)) {
+//     return data.map(value =>
+//       addGloballyComputedInputs({
+//         inputType,
+//         publisher,
+//         params,
+//         data: value,
+//       }),
+//     )
+//   }
+//   // Get values for computedInputs corresponding to keys that exist in inputType
+//   const computedInputValues = Object.keys(inputType.computedInputs).reduce(
+//     (values, key) => ({
+//       ...values,
+//       [key]: inputType.computedInputs[key](params),
+//     }),
+//     {} as Record<string, any>,
+//   )
+//   // Combine computedInputValues with values provided by the user, recursing to add
+//   // global computedInputs to nested types
+//   return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
+//     const field = inputType.fields.find(_ => _.name === fieldName)!
+//     const fieldValue =
+//       field.inputType.kind === 'object'
+//         ? addGloballyComputedInputs({
+//             inputType: publisher.getInputType(field.inputType.type),
+//             publisher,
+//             params,
+//             data: data[fieldName],
+//           })
+//         : data[fieldName]
+//     return {
+//       ...deeplyComputedData,
+//       [fieldName]: fieldValue,
+//     }
+//   }, computedInputValues)
+// }
+
+type BaseTransformArgsParams = {
   inputType: DmmfTypes.InputType
   params: MutationResolverParams
-  dmmf: DmmfDocument
-  locallyComputedInputs: ComputedInputs
+  publisher: Publisher
 }
 
-/** Resolver-level computed inputs aren't recursive so aren't
- *  needed for deep computed inputs.
- */
-type AddDeepComputedInputsArgs = Omit<
-  AddComputedInputParams,
-  'locallyComputedInputs'
-> & { data: any } // Used to recurse through the input object
+type TransformArgsParams = BaseTransformArgsParams & {
+  locallyComputedInputs: ComputedInputs
+  globallyComputedInputs: ComputedInputs
+}
 
-/**
- * Recursively looks for inputs that need a value from globallyComputedInputs
- * and populates them
- */
-function addGloballyComputedInputs({
-  inputType,
-  params,
-  dmmf,
-  data,
-}: AddDeepComputedInputsArgs): Record<string, any> {
-  if (Array.isArray(data)) {
-    return data.map(value =>
-      addGloballyComputedInputs({
-        inputType,
-        dmmf,
-        params,
-        data: value,
-      }),
-    )
-  }
-  // Get values for computedInputs corresponding to keys that exist in inputType
-  const computedInputValues = Object.keys(inputType.computedInputs).reduce(
+type DeepTransformArgsParams = BaseTransformArgsParams & { data: any }
+
+function shallowComputeInputs(
+  inputType: DmmfTypes.InputType,
+  params: MutationResolverParams,
+) {
+  return Object.keys(inputType.computedInputs).reduce(
     (values, key) => ({
       ...values,
       [key]: inputType.computedInputs[key](params),
     }),
     {} as Record<string, any>,
   )
-  // Combine computedInputValues with values provided by the user, recursing to add
-  // global computedInputs to nested types
-  return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
-    const field = inputType.fields.find(_ => _.name === fieldName)!
-    const fieldValue =
-      field.inputType.kind === 'object'
-        ? addGloballyComputedInputs({
-            inputType: dmmf.getInputType(field.inputType.type),
-            dmmf,
-            params,
-            data: data[fieldName],
-          })
-        : data[fieldName]
-    return {
-      ...deeplyComputedData,
-      [fieldName]: fieldValue,
-    }
-  }, computedInputValues)
 }
 
-export function addComputedInputs({
-  dmmf,
+function shallowReplaceUpfilteredKeys(
+  inputType: DmmfTypes.InputType,
+  data: any,
+) {
+  return inputType.upfilteredKey ? { [inputType.upfilteredKey]: data } : data
+}
+
+/**
+ * Recursively transforms args by:
+ *   - Finding and populating values for inputs from globallyComputedInputs
+ *   - Replacing upfiltered keys that were removed from corresponding types
+ */
+function deepTransformArgs({
   inputType,
-  locallyComputedInputs,
   params,
-}: AddComputedInputParams) {
+  publisher,
+  data,
+}: DeepTransformArgsParams): Record<string, any> {
+  if (Array.isArray(data)) {
+    const deeplyTransformedValues = data.map(value =>
+      deepTransformArgs({
+        // If the type has an upfilteredKey, we're adding it after recursing and don't want to duplicate
+        inputType: { ...inputType, upfilteredKey: null },
+        publisher,
+        params,
+        data: value,
+      }),
+    )
+    return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedValues)
+  }
+  // Get values for computedInputs corresponding to keys that exist in inputType
+  const computedInputValues = shallowComputeInputs(inputType, params)
+  // Combine computedInputValues with values provided by the user, recursing to add
+  // global computedInputs to nested types
+  const deeplyTransformedArgs = Object.keys(data).reduce(
+    (transformedArgs, fieldName) => {
+      const field = inputType.fields.find(_ => _.name === fieldName)!
+      const fieldValue =
+        field.inputType.kind === 'object'
+          ? deepTransformArgs({
+              inputType: publisher.getInputType(field.inputType.type),
+              publisher,
+              params,
+              data: data[fieldName],
+            })
+          : data[fieldName]
+      return {
+        ...transformedArgs,
+        [fieldName]: fieldValue,
+      }
+    },
+    computedInputValues,
+  )
+  return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedArgs)
+}
+
+function addLocallyComputedInputs(
+  params: MutationResolverParams,
+  computedInputs: ComputedInputs,
+) {
   return {
     ...params.args,
     data: {
-      /**
-       * Globally computed inputs are attached to the inputType object
-       * as 'computedInputs' by the transformInputType function.
-       */
-      ...addGloballyComputedInputs({
-        inputType,
-        dmmf,
-        params,
-        data: params.args.data,
-      }),
-      ...Object.keys(locallyComputedInputs).reduce(
+      ...params.args.data,
+      ...Object.keys(computedInputs).reduce(
         (args, key) => ({
           ...args,
-          [key]: locallyComputedInputs[key](params),
+          [key]: computedInputs[key](params),
         }),
         {} as Record<string, any>,
       ),
     },
   }
+}
+
+export function transformArgs({
+  inputType,
+  params,
+  publisher,
+  locallyComputedInputs,
+  globallyComputedInputs,
+}: TransformArgsParams) {
+  let transformedParams = params
+  if (locallyComputedInputs) {
+    transformedParams.args = addLocallyComputedInputs(
+      transformedParams,
+      locallyComputedInputs,
+    )
+  }
+  if (!isEmptyObject(globallyComputedInputs) || 'upfilteredKey' in inputType) {
+    transformedParams.args.data = deepTransformArgs({
+      inputType,
+      publisher,
+      params: transformedParams,
+      data: transformedParams.args.data,
+    })
+  }
+  return transformedParams.args
 }
 
 function transformInputType(

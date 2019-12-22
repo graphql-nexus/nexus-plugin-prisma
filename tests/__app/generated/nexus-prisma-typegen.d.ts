@@ -117,10 +117,12 @@ type NexusPrismaRelationOpts<
   ? {
       alias?: string;
       computedInputs?: ComputedInputs<MethodName>;
+      upfilteredKey?: string;
     } & DynamicRequiredType<ReturnType>
   : {
       alias?: string;
       computedInputs?: ComputedInputs<MethodName>;
+      upfilteredKey?: string;
       filtering?:
         | boolean
         | Partial<

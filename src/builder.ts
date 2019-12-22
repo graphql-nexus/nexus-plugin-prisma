@@ -17,7 +17,7 @@ import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import { assertPhotonInContext, ComputedInputs, isEmptyObject } from './utils'
 import {
-  addComputedInputs,
+  transformArgs,
   getTransformedDmmf,
   DmmfTypes,
   DmmfDocument,
@@ -115,6 +115,7 @@ export interface Options {
 
 export interface InternalOptions extends Options {
   dmmf?: DmmfDocument // For testing
+  builderHook?: any // For testing
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
@@ -202,7 +203,9 @@ export class SchemaBuilder {
         globallyComputedInputs: this.globallyComputedInputs,
       })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
-
+    if (config.builderHook) {
+      config.builderHook.builder = this
+    }
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
 
@@ -254,7 +257,7 @@ export class SchemaBuilder {
         const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
           (crud, mappedField) => {
             const fieldPublisher: FieldPublisher = givenConfig => {
-              const inputType = this.dmmf.getInputType(
+              const inputType = this.publisher.getInputType(
                 mappedField.field.args[0].inputType.type,
               )
               const publisherConfig = this.buildPublisherConfig({
@@ -273,9 +276,9 @@ export class SchemaBuilder {
                     (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
                       !isEmptyObject(this.globallyComputedInputs))
                   ) {
-                    args = addComputedInputs({
+                    args = transformArgs({
                       inputType,
-                      dmmf: this.dmmf,
+                      publisher: this.publisher,
                       params: {
                         root,
                         args,
@@ -283,6 +286,7 @@ export class SchemaBuilder {
                       },
                       locallyComputedInputs:
                         publisherConfig.locallyComputedInputs,
+                      globallyComputedInputs: this.globallyComputedInputs,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -483,7 +487,7 @@ export class SchemaBuilder {
     } else if (config.operation === 'findOne') {
       return config.field.args.map(arg => ({
         arg,
-        type: this.dmmf.getInputType(arg.inputType.type),
+        type: this.publisher.getInputType(arg.inputType.type),
       }))
     } else {
       return this.argsFromQueryOrModelField(config)
@@ -495,11 +499,10 @@ export class SchemaBuilder {
     field,
   }: FieldConfigData): CustomInputArg[] {
     if (publisherConfig.upfilteredKey) {
-      const result = this.createUpfilteredTypes(field.args, publisherConfig)
-      return result
+      return this.createUpfilteredTypes(field.args, publisherConfig)
     }
     return field.args.map(arg => {
-      const photonInputType = this.dmmf.getInputType(arg.inputType.type)
+      const photonInputType = this.publisher.getInputType(arg.inputType.type)
       /*
       Since globallyComputedInputs were already filtered during schema transformation,
       at this point we just need to filter at the resolver-level.
@@ -532,18 +535,24 @@ export class SchemaBuilder {
     args: DmmfTypes.SchemaArg[],
     publisherConfig: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
-    // Convert to CapsCase
+    // E.g. CreateUserInput -> CreateUserCreateOnlyInput
     const upfilteredKeyTypeName = `${publisherConfig
       .upfilteredKey!.charAt(0)
-      .toUpperCase()}${publisherConfig.upfilteredKey!.slice(1).toLowerCase()}`
+      .toUpperCase()}${publisherConfig
+      .upfilteredKey!.slice(1)
+      .toLowerCase()}OnlyInput`
     const getCustomArg = (
       inputType: DmmfTypes.InputType,
       arg: DmmfTypes.SchemaArg,
+      key: string,
+      upfilteredKey: string | null,
     ): CustomInputArg => {
-      const name = `${arg.inputType.type}${upfilteredKeyTypeName}Only`
+      const name =
+        arg.inputType.type.replace('Input', '') + upfilteredKeyTypeName
       return {
         arg: {
           ...arg,
+          name: key,
           inputType: {
             ...arg.inputType,
             type: name,
@@ -552,6 +561,11 @@ export class SchemaBuilder {
         type: {
           ...inputType,
           name,
+          /** If the key was actually removed, the value of upfilteredKey will be that key as a string
+           *   Otherwise, upfilteredKey will be null, but its presence on the inputType dinstinguishes it
+           *   from types without any upfiltered keys in their hierarchy.
+           **/
+          upfilteredKey,
           fields: this.filterLocallyComputedInputs(
             this.createUpfilteredTypes(inputType.fields, publisherConfig).map(
               _ => _.arg,
@@ -576,10 +590,12 @@ export class SchemaBuilder {
       )
       const customArg = filteredField
         ? getCustomArg(
-            this.dmmf.getInputType(filteredField!.inputType.type),
-            arg,
+            this.publisher.getInputType(filteredField!.inputType.type),
+            filteredField,
+            arg.name,
+            publisherConfig.upfilteredKey!,
           )
-        : getCustomArg(inputType, arg)
+        : getCustomArg(inputType, arg, arg.name, null)
       if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
         this.publisher.nexusBuilder.addType(
           this.publisher.inputType(customArg) as any,
@@ -691,7 +707,7 @@ export class SchemaBuilder {
     fieldName: string,
     graphQLTypeName: string,
   ): DmmfTypes.InputType {
-    const photonObject = this.dmmf.getInputType(inputTypeName)
+    const photonObject = this.publisher.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing

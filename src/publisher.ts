@@ -4,21 +4,21 @@ import { DmmfTypes, DmmfDocument } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
+type NexusInputDef =
+  | Nexus.core.NexusInputObjectTypeDef<string>
+  | Nexus.core.NexusEnumTypeDef<string>
+  | Nexus.core.NexusScalarTypeDef<string>
+  | Nexus.core.NexusArgDef<any>
+
 export class Publisher {
   typesPublished: Index<boolean> = {}
+  inputsPublished: Index<DmmfTypes.InputType> = {}
   constructor(
     public dmmf: DmmfDocument,
     public nexusBuilder: Nexus.PluginBuilderLens,
   ) {}
 
-  inputType(
-    customArg: CustomInputArg,
-  ):
-    | string
-    | Nexus.core.NexusInputObjectTypeDef<string>
-    | Nexus.core.NexusEnumTypeDef<string>
-    | Nexus.core.NexusScalarTypeDef<string>
-    | Nexus.core.NexusArgDef<any> {
+  inputType(customArg: CustomInputArg): string | NexusInputDef {
     const typeName = customArg.type.name
 
     // If type is already published, just reference it
@@ -26,21 +26,21 @@ export class Publisher {
       return Nexus.arg(
         dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
-          type: customArg.type.name,
+          type: typeName,
         }),
       )
     }
 
     if (customArg.arg.inputType.kind === 'scalar') {
-      return this.publishScalar(customArg.type.name)
+      return this.publishScalar(typeName)
     }
 
     if (customArg.arg.inputType.kind === 'enum') {
-      return this.publishEnum(customArg.type.name)
+      return this.publishEnum(typeName)
     }
 
     const inputType = customArg.type as DmmfTypes.InputType
-
+    this.inputsPublished[typeName] = inputType
     return this.publishInputObjectType(inputType)
   }
 
@@ -153,6 +153,12 @@ export class Publisher {
     }
 
     return kindToType[arg.inputType.kind](arg.inputType.type)
+  }
+
+  getInputType(typeName: string) {
+    return typeName in this.inputsPublished
+      ? this.inputsPublished[typeName]
+      : this.dmmf.getInputType(typeName)
   }
 
   isPublished(typeName: string) {

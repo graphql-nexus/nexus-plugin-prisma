@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`filters upfilteredKeys: upfilteredKeys 1`] = `
+exports[`upfilteredKeys generates new types without upfilteredKeys: upfilteredKeys 1`] = `
 "type Mutation {
-  createOneUser(data: UserCreateInput!): User!
+  createOneUser(data: UserCreateCreateOnlyInput!): User!
 }
 
 type Nested {
@@ -10,18 +10,9 @@ type Nested {
   name: String!
 }
 
-input NestedCreateOneWithoutNestedInput {
-  create: NestedCreateWithoutUsersInput
-  connect: NestedWhereUniqueInput
-}
-
-input NestedCreateWithoutUsersInput {
+input NestedCreateWithoutUserCreateOnlyInput {
   id: Int!
   name: String!
-}
-
-input NestedWhereUniqueInput {
-  id: Int
 }
 
 type Query {
@@ -31,13 +22,13 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested: Nested!
+  nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
 }
 
-input UserCreateInput {
+input UserCreateCreateOnlyInput {
   id: Int!
   name: String!
-  nested: NestedCreateOneWithoutNestedInput!
+  nested: [NestedCreateWithoutUserCreateOnlyInput!]
 }
 
 input UserWhereUniqueInput {
