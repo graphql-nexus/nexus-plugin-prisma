@@ -95,69 +95,6 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   }
 }
 
-// type AddComputedInputParams = {
-//   inputType: DmmfTypes.InputType
-//   params: MutationResolverParams
-//   publisher: Publisher
-//   locallyComputedInputs: ComputedInputs
-// }
-
-// /** Resolver-level computed inputs aren't recursive so aren't
-//  *  needed for deep computed inputs.
-//  */
-// type AddDeepComputedInputsArgs = Omit<
-//   AddComputedInputParams,
-//   'locallyComputedInputs'
-// > & { data: any } // Used to recurse through the input object
-
-// /**
-//  * Recursively looks for inputs that need a value from globallyComputedInputs
-//  * and populates them
-//  */
-// function addGloballyComputedInputs({
-//   inputType,
-//   params,
-//   publisher,
-//   data,
-// }: AddDeepComputedInputsArgs): Record<string, any> {
-//   if (Array.isArray(data)) {
-//     return data.map(value =>
-//       addGloballyComputedInputs({
-//         inputType,
-//         publisher,
-//         params,
-//         data: value,
-//       }),
-//     )
-//   }
-//   // Get values for computedInputs corresponding to keys that exist in inputType
-//   const computedInputValues = Object.keys(inputType.computedInputs).reduce(
-//     (values, key) => ({
-//       ...values,
-//       [key]: inputType.computedInputs[key](params),
-//     }),
-//     {} as Record<string, any>,
-//   )
-//   // Combine computedInputValues with values provided by the user, recursing to add
-//   // global computedInputs to nested types
-//   return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
-//     const field = inputType.fields.find(_ => _.name === fieldName)!
-//     const fieldValue =
-//       field.inputType.kind === 'object'
-//         ? addGloballyComputedInputs({
-//             inputType: publisher.getInputType(field.inputType.type),
-//             publisher,
-//             params,
-//             data: data[fieldName],
-//           })
-//         : data[fieldName]
-//     return {
-//       ...deeplyComputedData,
-//       [fieldName]: fieldValue,
-//     }
-//   }, computedInputValues)
-// }
-
 type BaseTransformArgsParams = {
   inputType: DmmfTypes.InputType
   params: MutationResolverParams
