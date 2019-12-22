@@ -202,42 +202,44 @@ function deepTransformArgs({
   publisher,
   data,
 }: DeepTransformArgsParams): Record<string, any> {
-  if (Array.isArray(data)) {
-    const deeplyTransformedValues = data.map(value =>
-      deepTransformArgs({
-        // If the type has an upfilteredKey, we're adding it after recursing and don't want to duplicate
-        inputType: { ...inputType, upfilteredKey: null },
-        publisher,
-        params,
-        data: value,
-      }),
-    )
-    return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedValues)
-  }
-  // Get values for computedInputs corresponding to keys that exist in inputType
-  const computedInputValues = shallowComputeInputs(inputType, params)
-  // Combine computedInputValues with values provided by the user, recursing to add
-  // global computedInputs to nested types
-  const deeplyTransformedArgs = Object.keys(data).reduce(
-    (transformedArgs, fieldName) => {
-      const field = inputType.fields.find(_ => _.name === fieldName)!
-      const fieldValue =
-        field.inputType.kind === 'object'
-          ? deepTransformArgs({
-              inputType: publisher.getInputType(field.inputType.type),
-              publisher,
-              params,
-              data: data[fieldName],
-            })
-          : data[fieldName]
-      return {
-        ...transformedArgs,
-        [fieldName]: fieldValue,
-      }
-    },
-    computedInputValues,
-  )
-  return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedArgs)
+  const deeplyTransformedArgData = Array.isArray(data)
+    ? data.map(value =>
+        deepTransformArgs({
+          // If the type has an upfilteredKey, we're adding it after recursing and don't want to duplicate
+          inputType: { ...inputType, upfilteredKey: null },
+          publisher,
+          params,
+          data: value,
+        }),
+      )
+    : // If data is an object, shallow combine computedInput values with recursively transformed values provided by the user
+      Object.keys(data).reduce((transformedArgs, fieldName) => {
+        const field = inputType.fields.find(_ => _.name === fieldName)
+        if (!field) {
+          throw new Error(
+            `Couldn't find field ${fieldName} on input type ${
+              inputType.name
+            } which was expected based on your data (${data}). Found fields ${inputType.fields.map(
+              _ => _.name,
+            )}`,
+          )
+        }
+        const fieldValue =
+          field.inputType.kind === 'object'
+            ? deepTransformArgs({
+                inputType: publisher.getInputType(field.inputType.type),
+                publisher,
+                params,
+                data: data[fieldName],
+              })
+            : data[fieldName]
+        return {
+          ...transformedArgs,
+          [fieldName]: fieldValue,
+        }
+      }, shallowComputeInputs(inputType, params))
+  // Replace upfilterKey if there was one removed from the type
+  return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedArgData)
 }
 
 function addLocallyComputedInputs(

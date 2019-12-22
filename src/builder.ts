@@ -22,6 +22,7 @@ import {
   DmmfTypes,
   DmmfDocument,
 } from './dmmf'
+import { NexusArgDef } from 'nexus/dist/core'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -257,27 +258,21 @@ export class SchemaBuilder {
         const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
           (crud, mappedField) => {
             const fieldPublisher: FieldPublisher = givenConfig => {
-              const inputType = this.publisher.getInputType(
-                mappedField.field.args[0].inputType.type,
-              )
               const publisherConfig = this.buildPublisherConfig({
                 field: mappedField.field,
                 givenConfig: givenConfig ? givenConfig : {},
               })
-              let fieldConfig = this.buildFieldConfig({
+              const fieldConfig = this.buildFieldConfig({
                 field: mappedField.field,
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
                 resolve: (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  if (
-                    typeName === 'Mutation' &&
-                    (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
-                      !isEmptyObject(this.globallyComputedInputs))
-                  ) {
+                  const inputArg = fieldConfig.args!.data as NexusArgDef<string>
+                  if (typeName === 'Mutation') {
                     args = transformArgs({
-                      inputType,
+                      inputType: this.publisher.getInputType(inputArg.name),
                       publisher: this.publisher,
                       params: {
                         root,
@@ -459,7 +454,7 @@ export class SchemaBuilder {
   buildFieldConfig(
     config: FieldConfigData,
   ): Nexus.core.NexusOutputFieldConfig<any, string> {
-    const result = {
+    return {
       type: this.publisher.outputType(
         config.publisherConfig.type,
         config.field,
@@ -468,7 +463,6 @@ export class SchemaBuilder {
       args: this.buildArgsFromField(config),
       resolve: config.resolve,
     }
-    return result
   }
 
   buildArgsFromField(config: FieldConfigData) {
