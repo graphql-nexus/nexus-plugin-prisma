@@ -269,7 +269,7 @@ export class SchemaBuilder {
                 operation: mappedField.operation,
                 resolve: (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  const inputArg = fieldConfig.args!.data as NexusArgDef<string>
+                  const inputArg = fieldConfig.args!.data as NexusArgDef<any>
                   if (typeName === 'Mutation') {
                     args = transformArgs({
                       inputType: this.publisher.getInputType(inputArg.name),
