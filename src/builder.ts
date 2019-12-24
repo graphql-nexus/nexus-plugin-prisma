@@ -15,7 +15,12 @@ import {
 import { proxify } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, ComputedInputs, isEmptyObject } from './utils'
+import {
+  assertPhotonInContext,
+  LocalComputedInputs,
+  GlobalComputedInputs,
+  isEmptyObject,
+} from './utils'
 import {
   addComputedInputs,
   getTransformedDmmf,
@@ -29,7 +34,7 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-  computedInputs?: ComputedInputs
+  computedInputs?: LocalComputedInputs<any>
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
@@ -38,7 +43,7 @@ type ResolvedFieldPublisherConfig = Omit<
   WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
   'computedInputs'
   // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
-> & { locallyComputedInputs: ComputedInputs }
+> & { locallyComputedInputs: LocalComputedInputs<any> }
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -109,7 +114,7 @@ export interface Options {
      */
     typegen?: string
   }
-  computedInputs?: ComputedInputs
+  computedInputs?: GlobalComputedInputs
 }
 
 export interface InternalOptions extends Options {
@@ -182,7 +187,7 @@ export class SchemaBuilder {
   fieldNamingStrategy: FieldNamingStrategy
   getPhoton: PhotonFetcher
   publisher: Publisher
-  globallyComputedInputs: ComputedInputs
+  globallyComputedInputs: GlobalComputedInputs
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -265,7 +270,7 @@ export class SchemaBuilder {
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
-                resolve: (root, args, ctx) => {
+                resolve: (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
                   if (
                     typeName === 'Mutation' &&
@@ -276,7 +281,7 @@ export class SchemaBuilder {
                       inputType,
                       dmmf: this.dmmf,
                       params: {
-                        root,
+                        info,
                         args,
                         ctx,
                       },

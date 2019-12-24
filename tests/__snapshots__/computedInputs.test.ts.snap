@@ -14,6 +14,7 @@ type Nested {
 }
 
 input NestedCreateInput {
+  id: Int!
   name: String!
   user: UserCreateOneWithoutUserInput
 }
@@ -24,6 +25,7 @@ input NestedCreateManyWithoutNestedInput {
 }
 
 input NestedCreateWithoutUserInput {
+  id: Int!
   name: String!
 }
 
@@ -43,6 +45,7 @@ type User {
 }
 
 input UserCreateInput {
+  id: Int!
   name: String!
   nested: NestedCreateManyWithoutNestedInput
 }
@@ -53,6 +56,7 @@ input UserCreateOneWithoutUserInput {
 }
 
 input UserCreateWithoutNestedInput {
+  id: Int!
   name: String!
 }
 
@@ -62,6 +66,8 @@ input UserWhereUniqueInput {
 ",
   "typegen": "import * as photon from '@prisma/photon';
 import { core } from 'nexus';
+import { GraphQLResolveInfo } from 'graphql';
+
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
   ReturnType extends any
@@ -133,56 +139,58 @@ type GetNexusPrismaInput<
 
 /**
  *  Represents arguments required by Photon that will
- *  be derived from a request's input (root, args, and context)
+ *  be derived from a request's input (args, context, and info)
  *  and omitted from the GraphQL API. The object itself maps the
  *  names of these args to a function that takes an object representing
  *  the request's input and returns the value to pass to the photon
  *  arg of the same name.
  */
-type ComputedInputs<
-  MethodName extends MutationMethodName | null = null
-> = Record<string, (params: MutationResolverParams<MethodName>) => any>
+export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
 
-type MutationResolverParams<
-  MethodName extends MutationMethodName | null = null
-> = {
-  root: any
-  // 'args' will be typed according to its corresponding mutation's input type for resolver-level computedInputs.
-  // 'args' will be typed as 'any' for global computedInputs.
-  args: MethodName extends null
-    ? any
-    : MutationResolverArgsParam<
-        // Second conditional type is redundant but required due to a TS bug
-        MethodName extends null ? never : MethodName
-      >
+export type GlobalComputedInputs = Record<
+  string,
+  (params: GlobalMutationResolverParams) => unknown
+>
+
+type BaseMutationResolverParams = {
+  info: GraphQLResolveInfo
   ctx: Context
 }
 
-type MutationResolverArgsParam<
+export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+  args: Record<string, any> & { data: unknown }
+}
+
+export type LocalMutationResolverParams<
   MethodName extends MutationMethodName
-> = core.GetGen<'argTypes'>['Mutation'][MethodName]
+> = BaseMutationResolverParams & {
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+}
 
-type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 
-type Context = core.GetGen<'context'>
+export type Context = core.GetGen<'context'>
 
 type NexusPrismaRelationOpts<
   ModelName extends any,
   MethodName extends any,
   ReturnType extends any
 > = GetNexusPrismaInput<
-  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it. So just use \`alias\` and \`type\`
+  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
   ModelName,
   MethodName,
   'filtering'
 > extends never
   ? {
       alias?: string;
-      computedInputs?: ComputedInputs<MethodName>;
+      computedInputs?: LocalComputedInputs<MethodName>;
     } & DynamicRequiredType<ReturnType>
   : {
       alias?: string;
-      computedInputs?: ComputedInputs<MethodName>;
+      computedInputs?: LocalComputedInputs<MethodName>;
       filtering?:
         | boolean
         | Partial<
@@ -407,6 +415,7 @@ type User {
 }
 
 input UserCreateInput {
+  id: Int!
   name: String!
 }
 
@@ -416,6 +425,8 @@ input UserWhereUniqueInput {
 ",
   "typegen": "import * as photon from '@prisma/photon';
 import { core } from 'nexus';
+import { GraphQLResolveInfo } from 'graphql';
+
 // Types helpers
   type IsModelNameExistsInGraphQLTypes<
   ReturnType extends any
@@ -487,56 +498,58 @@ type GetNexusPrismaInput<
 
 /**
  *  Represents arguments required by Photon that will
- *  be derived from a request's input (root, args, and context)
+ *  be derived from a request's input (args, context, and info)
  *  and omitted from the GraphQL API. The object itself maps the
  *  names of these args to a function that takes an object representing
  *  the request's input and returns the value to pass to the photon
  *  arg of the same name.
  */
-type ComputedInputs<
-  MethodName extends MutationMethodName | null = null
-> = Record<string, (params: MutationResolverParams<MethodName>) => any>
+export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
 
-type MutationResolverParams<
-  MethodName extends MutationMethodName | null = null
-> = {
-  root: any
-  // 'args' will be typed according to its corresponding mutation's input type for resolver-level computedInputs.
-  // 'args' will be typed as 'any' for global computedInputs.
-  args: MethodName extends null
-    ? any
-    : MutationResolverArgsParam<
-        // Second conditional type is redundant but required due to a TS bug
-        MethodName extends null ? never : MethodName
-      >
+export type GlobalComputedInputs = Record<
+  string,
+  (params: GlobalMutationResolverParams) => unknown
+>
+
+type BaseMutationResolverParams = {
+  info: GraphQLResolveInfo
   ctx: Context
 }
 
-type MutationResolverArgsParam<
+export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+  args: Record<string, any> & { data: unknown }
+}
+
+export type LocalMutationResolverParams<
   MethodName extends MutationMethodName
-> = core.GetGen<'argTypes'>['Mutation'][MethodName]
+> = BaseMutationResolverParams & {
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+}
 
-type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 
-type Context = core.GetGen<'context'>
+export type Context = core.GetGen<'context'>
 
 type NexusPrismaRelationOpts<
   ModelName extends any,
   MethodName extends any,
   ReturnType extends any
 > = GetNexusPrismaInput<
-  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it. So just use \`alias\` and \`type\`
+  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
   ModelName,
   MethodName,
   'filtering'
 > extends never
   ? {
       alias?: string;
-      computedInputs?: ComputedInputs<MethodName>;
+      computedInputs?: LocalComputedInputs<MethodName>;
     } & DynamicRequiredType<ReturnType>
   : {
       alias?: string;
-      computedInputs?: ComputedInputs<MethodName>;
+      computedInputs?: LocalComputedInputs<MethodName>;
       filtering?:
         | boolean
         | Partial<

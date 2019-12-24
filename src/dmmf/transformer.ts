@@ -1,11 +1,15 @@
 import { DMMF } from '@prisma/photon/runtime'
-import { ComputedInputs, MutationResolverParams } from '../utils'
+import {
+  GlobalComputedInputs,
+  GlobalMutationResolverParams,
+  LocalComputedInputs,
+} from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
 
 export type TransformOptions = {
-  globallyComputedInputs?: ComputedInputs
+  globallyComputedInputs?: GlobalComputedInputs
 }
 
 export const getTransformedDmmf = (
@@ -96,9 +100,9 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
 
 type AddComputedInputParams = {
   inputType: DmmfTypes.InputType
-  params: MutationResolverParams
+  params: GlobalMutationResolverParams
   dmmf: DmmfDocument
-  locallyComputedInputs: ComputedInputs
+  locallyComputedInputs: LocalComputedInputs<any>
 }
 
 /** Resolver-level computed inputs aren't recursive so aren't
@@ -176,10 +180,10 @@ export function addComputedInputs({
         params,
         data: params.args.data,
       }),
-      ...Object.keys(locallyComputedInputs).reduce(
-        (args, key) => ({
+      ...Object.entries(locallyComputedInputs).reduce(
+        (args, [fieldName, computeFieldValue]) => ({
           ...args,
-          [key]: locallyComputedInputs[key](params),
+          [fieldName]: computeFieldValue(params),
         }),
         {} as Record<string, any>,
       ),
@@ -189,13 +193,13 @@ export function addComputedInputs({
 
 function transformInputType(
   inputType: DMMF.InputType,
-  globallyComputedInputs: ComputedInputs,
+  globallyComputedInputs: GlobalComputedInputs,
 ): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map(field => field.name)
   /**
    * Only global computed inputs are removed during schema transform.
    * Resolver level computed inputs are filtered as part of the
-   * publishing process. They are then passed to addComputedInputs
+   * projecting process. They are then passed to addComputedInputs
    * at runtime so their values can be inferred alongside the
    * global values.
    */
@@ -204,9 +208,9 @@ function transformInputType(
   ).reduce(
     (args, key) =>
       fieldNames.includes(key)
-        ? { ...args, [key]: globallyComputedInputs[key] }
+        ? Object.assign(args, { [key]: globallyComputedInputs[key] })
         : args,
-    {} as ComputedInputs,
+    {} as GlobalComputedInputs,
   )
   return {
     ...inputType,

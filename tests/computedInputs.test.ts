@@ -1,6 +1,8 @@
 import * as Nexus from 'nexus'
 import { getDmmf, generateSchemaAndTypes } from './__utils'
 
+// TODO: Split local and global computedInputs into their own suites
+
 const resolverTestData = {
   datamodel: `
   model User {
@@ -19,7 +21,7 @@ const resolverTestData = {
       t.crud.createOneUser({
         computedInputs: {
           createdWithBrowser: ({ ctx }) => ctx.browser,
-        } as ComputedInputs,
+        } as GlobalComputedInputs,
       })
     },
   }),
@@ -89,7 +91,7 @@ it('removes resolver-level computedInputs from the corresponding input type', as
 })
 
 import { addComputedInputs } from '../src/dmmf/transformer'
-import { ComputedInputs } from '../src/utils'
+import { GlobalComputedInputs } from '../src/utils'
 
 it('infers the value of resolver-level computedInputs at runtime', async () => {
   const { datamodel } = resolverTestData
@@ -97,7 +99,7 @@ it('infers the value of resolver-level computedInputs at runtime', async () => {
   expect(
     addComputedInputs({
       params: {
-        root: null,
+        info: {} as any,
         args: { data: { name: 'New User' } },
         ctx: { browser: 'firefox' },
       },
@@ -131,7 +133,7 @@ it('infers the value of global computedInputs at runtime', async () => {
   expect(
     addComputedInputs({
       params: {
-        root: null,
+        info: {} as any,
         args: {
           data: {
             name: 'New User',
@@ -164,7 +166,7 @@ it('handles arrays when recursing for computedInputs', async () => {
   expect(
     addComputedInputs({
       params: {
-        root: null,
+        info: {} as any,
         args: {
           data: {
             name: 'New User',
@@ -202,7 +204,7 @@ it('can combine resolver-level (shallow) and global (deep) computed inputs', asy
   expect(
     addComputedInputs({
       params: {
-        root: null,
+        info: {} as any,
         // name should be required when creating Nested since the computedInput providing
         // it is specific to UserCreateInput and therefore shallow
         args: { data: { nested: { create: { name: 'Nested Name' } } } },
@@ -224,27 +226,30 @@ it('can combine resolver-level (shallow) and global (deep) computed inputs', asy
   })
 })
 
-it('can use a combination of root, args, and context to compute values', async () => {
+it('can use a combination of args, context and info to compute values', async () => {
   const { datamodel } = globalTestData
-  // Nonsense example, but ensures root, args and ctx values are being passed everywhere :)
+  // Nonsense example, but ensures args, ctx and info values are being passed everywhere :)
   const dmmf = await getDmmf(datamodel, {
     globallyComputedInputs: {
-      createdWithBrowser: ({ root, args, ctx }) =>
-        `${ctx.browser.slice(1, 2)} ${root} ${args.data.nested.create.name}`,
+      createdWithBrowser: ({ args, ctx, info }) =>
+        `${ctx.browser.slice(1, 2)} ${info} ${
+          (args.data as any).nested.create.name
+        }`,
     },
   })
   expect(
     addComputedInputs({
       params: {
-        root: 'Yam',
+        // Normally this would be GraphQLResolveInfo but using a string for simplicity
+        info: 'Yam' as any,
         args: { data: { nested: { create: { name: 'Sam' } } } },
         ctx: { browser: 'firefox' },
       },
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       locallyComputedInputs: {
-        name: ({ root, args, ctx }) =>
-          `${args.data.nested.create.name} ${ctx.browser.slice(1, 2)} ${root}`,
+        name: ({ args, ctx, info }) =>
+          `${args.data.nested.create.name} ${ctx.browser.slice(1, 2)} ${info}`,
       },
     }),
   ).toStrictEqual({
