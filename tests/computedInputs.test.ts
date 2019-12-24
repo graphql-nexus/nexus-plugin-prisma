@@ -1,12 +1,14 @@
 import * as Nexus from 'nexus'
 import { getDmmf, generateSchemaAndTypes } from './__utils'
 import { transformArgs } from '../src/dmmf/transformer'
-import { ComputedInputs } from '../src/utils'
+import { GlobalComputedInputs, LocalComputedInputs } from '../src/utils'
 import { Publisher } from '../src/publisher'
 
 const fakeNexusBuilder: any = {
   hasType: (_: string) => false,
 }
+
+// TODO: Split local and global computedInputs into their own suites
 
 const getLocalTestData = async () => {
   const testData = {
@@ -28,7 +30,7 @@ const getLocalTestData = async () => {
           t.crud.createOneUser({
             computedInputs: {
               createdWithBrowser: ({ ctx }) => ctx.browser,
-            } as ComputedInputs,
+            } as GlobalComputedInputs,
           })
         },
       }),
@@ -50,7 +52,9 @@ const getLocalTestData = async () => {
   }
 }
 
-const getGlobalTestData = async (globallyComputedInputs: ComputedInputs) => {
+const getGlobalTestData = async (
+  globallyComputedInputs: GlobalComputedInputs,
+) => {
   const testData = {
     dataModel: `
   model User {
@@ -120,7 +124,7 @@ describe('locallyComputedInputs', () => {
     expect(
       transformArgs({
         params: {
-          root: null,
+          info: {} as any,
           args: { data: { name: 'New User' } },
           ctx: { browser: 'firefox' },
         },
@@ -128,7 +132,7 @@ describe('locallyComputedInputs', () => {
         publisher,
         locallyComputedInputs: {
           createdWithBrowser: ({ ctx }) => ctx.browser,
-        },
+        } as LocalComputedInputs<any>,
         globallyComputedInputs,
       }),
     ).toStrictEqual({
@@ -167,7 +171,7 @@ describe('globallyComputedInputs', () => {
     expect(
       transformArgs({
         params: {
-          root: null,
+          info: {} as any,
           args: {
             data: {
               name: 'New User',
@@ -203,7 +207,7 @@ describe('globallyComputedInputs', () => {
     expect(
       transformArgs({
         params: {
-          root: null,
+          info: {} as any,
           args: {
             data: {
               name: 'New User',
@@ -242,7 +246,7 @@ describe('combination of locallyComputedInputs and globallyComputedInputs', () =
     expect(
       transformArgs({
         params: {
-          root: null,
+          info: {} as any,
           // name should be required when creating Nested since the computedInput providing
           // it is specific to UserCreateInput and therefore shallow
           args: { data: { nested: { create: { name: 'Nested Name' } } } },
@@ -251,7 +255,9 @@ describe('combination of locallyComputedInputs and globallyComputedInputs', () =
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
         // These are applied only to UserCreateInput
-        locallyComputedInputs: { name: ({ ctx }) => ctx.name },
+        locallyComputedInputs: {
+          name: ({ ctx }) => ctx.name,
+        } as LocalComputedInputs<any>,
         globallyComputedInputs,
       }),
     ).toStrictEqual({
@@ -267,26 +273,29 @@ describe('combination of locallyComputedInputs and globallyComputedInputs', () =
 
   it('can use a combination of root, args, and context to compute values', async () => {
     const { globallyComputedInputs, publisher } = await getGlobalTestData({
-      // Nonsense example, but ensures root, args and ctx values are being passed everywhere :)
-      createdWithBrowser: ({ root, args, ctx }) =>
-        `${ctx.browser.slice(1, 2)} ${root} ${args.data.nested.create.name}`,
+      // Nonsense example, but ensures args, ctx and info values are being passed everywhere :)
+      createdWithBrowser: ({ args, ctx, info }) =>
+        `${ctx.browser.slice(1, 2)} ${info} ${
+          (args.data as any).nested.create.name
+        }`,
     })
     expect(
       transformArgs({
         params: {
-          root: 'Yam',
+          // Normally this would be GraphQLResolveInfo but using a string for simplicity
+          info: 'Yam' as any,
           args: { data: { nested: { create: { name: 'Sam' } } } },
           ctx: { browser: 'firefox' },
         },
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
         locallyComputedInputs: {
-          name: ({ root, args, ctx }) =>
+          name: ({ args, ctx, info }) =>
             `${args.data.nested.create.name} ${ctx.browser.slice(
               1,
               2,
-            )} ${root}`,
-        },
+            )} ${info}`,
+        } as LocalComputedInputs<any>,
         globallyComputedInputs,
       }),
     ).toStrictEqual({

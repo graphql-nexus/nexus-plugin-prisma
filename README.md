@@ -477,7 +477,7 @@ mutationType({
     */
     t.crud.createOneUser({
       computedInputs: {
-        createdByBrowser: ({ root, args, ctx }) => ctx.session.browser,
+        createdByBrowser: ({ args, ctx, info }) => ctx.session.browser,
       },
     })
   },
@@ -490,19 +490,57 @@ mutationType({
 nexusPrismaPlugin({
   ...other config...
   /*
-  Remove fields named "user" from all mutation input types. When resolving
+  Remove fields named "user" from all input types. When resolving
   a request whose data contains any of these types, the value is inferred
   from context and passed to Photon, even if it's nested. This is great for
   creating data associated with one user's account.
   */
   computedInputs: {
-    user: ({root, args, ctx}) => ({
+    user: ({ args, ctx, info }) => ({
       connect: {
         id: ctx.userId,
       },
     }),
   },
 })
+```
+
+```ts
+mutationType({
+  definition(t) {
+    t.crud.createOnePost()
+  },
+})
+```
+
+Without computedInputs:
+
+```gql
+mutation createOnePost {
+  createOnePost(
+    data: {
+      title: "Automatically generate clean APIs!"
+      image: {
+        url: "https://example.com/images/prancing-unicorns"
+        user: { connect: { id: 1 } }
+      }
+      user: { connect: { id: 1 } }
+    }
+  )
+}
+```
+
+With computedInputs:
+
+```gql
+mutation createOnePost {
+  createOnePost(
+    data: {
+      title: "Automatically generate clean APIs!"
+      image: { url: "https://example.com/images/prancing-unicorns" }
+    }
+  )
+}
 ```
 
 ### Publish Model Writes Along Side Photon-Resolved Fields
@@ -2374,10 +2412,10 @@ enum UserStatus {
 ### `computedInputs` (local)
 
 ```
-Record<string, ({root, args, ctx}: MutationResolverParams) => any> | undefined
+Record<string, ({ args, ctx, info }: MutationResolverParams) => unknown>
 ```
 
-Note: This is an abbreviated version of the ComputedInputs type. The most important thing to undertand each of the object's values will be a function that takes an object with "root", "args" and "ctx" keys that represent the runtime values of the corresponding parameters that are passed to your resolver. For the full type, see [ComputedInputs Type Details](#computedinputs-type-details).
+Note: This is an abbreviated version of the ComputedInputs type. The most important thing to undertand each of the object's values will be a function that takes an object with "args", "ctx", and "info" keys that represent the runtime values of the corresponding parameters that are passed to your resolver. For the full type, see [ComputedInputs Type Details](#computedinputs-type-details).
 
 **Applies To**
 
@@ -2385,10 +2423,9 @@ Note: This is an abbreviated version of the ComputedInputs type. The most import
 
 **About**
 
-Allow clients to omit fields from one mutation's corresponding input type and infer the value of those fields from the resolver's params (root, args, and context) at runtime when determining what to pass to Photon.
+Allow clients to omit fields from one mutation's corresponding input type and infer the value of those fields from the resolver's params (args, context, info) at runtime when determining what to pass to Photon.
 
-- `undefined` (default) Like `{}`; inputs are unchanged
-- `ComputedInputs` (`Record<string, ({root, args, ctx}: MutationResolverParams) => any> | undefined`) [(full type here)](#computedinputs-type-details).
+- `ComputedInputs` (`Record<string, ({ args, ctx, info }: MutationResolverParams) => unknown>`) [(full type here)](#computedinputs-type-details).
 
   Keys in the ComputedInputs object will be omitted from the mutation's corresponding input type. When resolving the mutation at runtime, each omitted key will be passed to Photon based on the return value of that key's corresponding function in the ComputedInputs object when passed that resolver's parameters at runtime.
 
@@ -2416,7 +2453,7 @@ mutationType({
   definition(t: any) {
     t.crud.createOneUser({
       computedInputs: {
-        createdWithBrowser: ({ root, args, ctx }) => ctx.browser,
+        createdWithBrowser: ({ args, ctx, info }) => ctx.browser,
       },
     })
   },
@@ -2470,10 +2507,10 @@ mutation createOneUser {
 ### `computedInputs` (global)
 
 ```
-Record<string, ({root, args, ctx}: MutationResolverParams) => any> | undefined
+Record<string, ({ args, ctx, info}: MutationResolverParams) => any>
 ```
 
-Note: This is an abbreviated version of the ComputedInputs type. The most important thing to undertand each of the object's values will be a function that takes an object with "root", "args" and "ctx" keys that represent the runtime values of the corresponding parameters that are passed to your resolver. For the full type, see [ComputedInputs Type Details](#computedinputs-type-details).
+Note: This is an abbreviated version of the ComputedInputs type. The most important thing to undertand each of the object's values will be a function that takes an object with "args", "ctx", and "info" keys that represent the runtime values of the corresponding parameters that are passed to your resolver. For the full type, see [ComputedInputs Type Details](#computedinputs-type-details).
 
 **Applies To**
 
@@ -2483,8 +2520,7 @@ Note: This is an abbreviated version of the ComputedInputs type. The most import
 
 Allow clients to omit fields with a given name across all of their GraphQL schema's inputs and infer the value of those fields from context when determining what to pass to Photon
 
-- `undefined` (default) Like `{}`; inputs are unchanged
-- `ComputedInputs` (`Record<string, ({root, args, ctx}: MutationResolverParams) => any> | undefined`) [(full type here)](#computedinputs-type-details).
+- `ComputedInputs` (`Record<string, ({ args, ctx, info }: MutationResolverParams) => any>`) [(full type here)](#computedinputs-type-details).
 
   Keys in the ComputedInputs object will be omitted from all input types. When resolving any mutation at runtime, that mutation's input type will be recursively searched for the omitted keys. Any time one of those keys would have appeared anywhere in the mutation's input type, a value will be passed to Photon based on the return value of that key's corresponding function in the ComputedInputs object when passed the resolver's parameters at runtime.
 
@@ -2550,7 +2586,7 @@ nexusPrismaPlugin({
   representing the browser from which the request was made.
   */
   computedInputs: {
-    createdWithBrowser: ({ root, args, ctx }) => ctx.browser,
+    createdWithBrowser: ({ args, ctx, info }) => ctx.browser,
   },
 })
 ```
@@ -2662,7 +2698,7 @@ mutation createOneNested {
 
 <br>
 
-### ComputedInputs Type Details
+### `ComputedInputs` Type Details
 
 ```ts
 /**
@@ -2673,32 +2709,34 @@ mutation createOneNested {
  *  the request's input and returns the value to pass to the photon
  *  arg of the same name.
  */
-type ComputedInputs<
-  MethodName extends MutationMethodName | null = null
-> = Record<string, (params: MutationResolverParams<MethodName>) => any>
+export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
 
-type MutationResolverParams<
-  MethodName extends MutationMethodName | null = null
-> = {
-  root: any
-  // 'args' will be typed according to its corresponding mutation's input type for resolver-level computedInputs.
-  // 'args' will be typed as 'any' for global computedInputs.
-  args: MethodName extends null
-    ? any
-    : MutationResolverArgsParam<
-        // Second conditional type is redundant but required due to a TS bug
-        MethodName extends null ? never : MethodName
-      >
+export type GlobalComputedInputs = Record<
+  string,
+  (params: GlobalMutationResolverParams) => unknown
+>
+
+type BaseMutationResolverParams = {
+  info: GraphQLResolveInfo
   ctx: Context
 }
 
-type MutationResolverArgsParam<
+export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+  args: Record<string, any> & { data: unknown }
+}
+
+export type LocalMutationResolverParams<
   MethodName extends MutationMethodName
-> = core.GetGen<'argTypes'>['Mutation'][MethodName]
+> = BaseMutationResolverParams & {
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+}
 
-type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 
-type Context = core.GetGen<'context'>
+export type Context = core.GetGen<'context'>
 ```
 
 ## GraphQL Schema Contributions

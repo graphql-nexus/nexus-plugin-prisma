@@ -1,12 +1,17 @@
 import { DMMF } from '@prisma/photon/runtime'
-import { ComputedInputs, MutationResolverParams, isEmptyObject } from '../utils'
+import {
+  GlobalComputedInputs,
+  GlobalMutationResolverParams,
+  LocalComputedInputs,
+  isEmptyObject,
+} from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
 import { Publisher } from '../publisher'
 
 export type TransformOptions = {
-  globallyComputedInputs?: ComputedInputs
+  globallyComputedInputs?: GlobalComputedInputs
 }
 
 export const getTransformedDmmf = (
@@ -97,20 +102,20 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
 
 type BaseTransformArgsParams = {
   inputType: DmmfTypes.InputType
-  params: MutationResolverParams
+  params: GlobalMutationResolverParams
   publisher: Publisher
 }
 
 type TransformArgsParams = BaseTransformArgsParams & {
-  locallyComputedInputs: ComputedInputs
-  globallyComputedInputs: ComputedInputs
+  locallyComputedInputs: LocalComputedInputs<any>
+  globallyComputedInputs: GlobalComputedInputs
 }
 
 type DeepTransformArgsParams = BaseTransformArgsParams & { data: any }
 
 function shallowComputeInputs(
   inputType: DmmfTypes.InputType,
-  params: MutationResolverParams,
+  params: GlobalMutationResolverParams,
 ) {
   return Object.keys(inputType.computedInputs).reduce(
     (values, key) => ({
@@ -180,17 +185,17 @@ function deepTransformArgs({
 }
 
 function addLocallyComputedInputs(
-  params: MutationResolverParams,
-  computedInputs: ComputedInputs,
+  params: GlobalMutationResolverParams,
+  computedInputs: LocalComputedInputs<any>,
 ) {
   return {
     ...params.args,
     data: {
-      ...params.args.data,
-      ...Object.keys(computedInputs).reduce(
-        (args, key) => ({
+      ...(params.args.data as object),
+      ...Object.entries(computedInputs).reduce(
+        (args, [fieldName, computeValue]) => ({
           ...args,
-          [key]: computedInputs[key](params),
+          [fieldName]: computeValue(params),
         }),
         {} as Record<string, any>,
       ),
@@ -225,13 +230,13 @@ export function transformArgs({
 
 function transformInputType(
   inputType: DMMF.InputType,
-  globallyComputedInputs: ComputedInputs,
+  globallyComputedInputs: GlobalComputedInputs,
 ): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map(field => field.name)
   /**
    * Only global computed inputs are removed during schema transform.
    * Resolver level computed inputs are filtered as part of the
-   * publishing process. They are then passed to addComputedInputs
+   * projecting process. They are then passed to addComputedInputs
    * at runtime so their values can be inferred alongside the
    * global values.
    */
@@ -240,9 +245,9 @@ function transformInputType(
   ).reduce(
     (args, key) =>
       fieldNames.includes(key)
-        ? { ...args, [key]: globallyComputedInputs[key] }
+        ? Object.assign(args, { [key]: globallyComputedInputs[key] })
         : args,
-    {} as ComputedInputs,
+    {} as GlobalComputedInputs,
   )
   return {
     ...inputType,

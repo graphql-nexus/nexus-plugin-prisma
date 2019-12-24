@@ -1,17 +1,8 @@
 import { makeSchema, queryType, mutationType, objectType } from 'nexus'
-import {
-  getDmmf,
-  generateSchemaAndTypes,
-  createNexusPrismaInternal,
-} from './__utils'
+import { getDmmf, createNexusPrismaInternal } from './__utils'
 import { printSchema } from 'graphql'
 import { transformArgs } from '../src/dmmf/transformer'
-import { Publisher } from '../src/publisher'
 import { SchemaBuilder } from '../src/builder'
-
-const fakeNexusBuilder: any = {
-  hasType: (_: string) => false,
-}
 
 const getTestData = async () => {
   const testData = {
@@ -94,7 +85,7 @@ describe('upfilteredKeys', () => {
     expect(
       transformArgs({
         params: {
-          root: null,
+          info: {} as any,
           args: {
             data: { name: 'New User', nested: [{ name: 'New Nested' }] },
           },

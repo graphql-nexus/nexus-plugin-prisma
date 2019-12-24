@@ -15,7 +15,12 @@ import {
 import { proxify } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, ComputedInputs, isEmptyObject } from './utils'
+import {
+  assertPhotonInContext,
+  LocalComputedInputs,
+  GlobalComputedInputs,
+  isEmptyObject,
+} from './utils'
 import {
   transformArgs,
   getTransformedDmmf,
@@ -30,7 +35,7 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-  computedInputs?: ComputedInputs
+  computedInputs?: LocalComputedInputs<any>
   upfilteredKey?: string
 }
 
@@ -40,7 +45,7 @@ type ResolvedFieldPublisherConfig = Omit<
   WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
   'computedInputs'
   // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
-> & { locallyComputedInputs: ComputedInputs }
+> & { locallyComputedInputs: LocalComputedInputs<any> }
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -111,7 +116,7 @@ export interface Options {
      */
     typegen?: string
   }
-  computedInputs?: ComputedInputs
+  computedInputs?: GlobalComputedInputs
 }
 
 export interface InternalOptions extends Options {
@@ -185,7 +190,7 @@ export class SchemaBuilder {
   fieldNamingStrategy: FieldNamingStrategy
   getPhoton: PhotonFetcher
   publisher: Publisher
-  globallyComputedInputs: ComputedInputs
+  globallyComputedInputs: GlobalComputedInputs
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -267,7 +272,7 @@ export class SchemaBuilder {
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
-                resolve: (root, args, ctx) => {
+                resolve: (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
                   const inputArg = fieldConfig.args!.data as NexusArgDef<any>
                   if (typeName === 'Mutation') {
@@ -275,7 +280,7 @@ export class SchemaBuilder {
                       inputType: this.publisher.getInputType(inputArg.name),
                       publisher: this.publisher,
                       params: {
-                        root,
+                        info,
                         args,
                         ctx,
                       },
