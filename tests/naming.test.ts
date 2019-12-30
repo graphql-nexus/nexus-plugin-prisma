@@ -4,7 +4,7 @@ import { generateSchemaAndTypes } from './__utils'
 it('generates publishers pluralized & camel-cased', async () => {
   const datamodel = `
   model ModelName {
-    id    Int @id
+    id    Int @id @default(autoincrement())
     name  String
   }
 `

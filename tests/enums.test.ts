@@ -4,7 +4,7 @@ import { objectType, enumType, inputObjectType } from 'nexus'
 it('publishes enum even as output type', async () => {
   const datamodel = `
     model User {
-      id  Int @id
+      id  Int @id @default(autoincrement())
       favouriteColor  Color
     }
 
@@ -32,7 +32,7 @@ it('publishes enum even as output type', async () => {
 it('does not publish enum twice (from input/output type)', async () => {
   const datamodel = `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     favouriteColor  Color
   }
 
@@ -70,7 +70,7 @@ it('does not publish enum twice (from input/output type)', async () => {
 it('does not automatically publish input/enum type if already created by user', async () => {
   const datamodel = `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     favouriteColor  Color
   }
 
