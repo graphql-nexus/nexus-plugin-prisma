@@ -1,5 +1,9 @@
+import { relative } from 'path'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { core } from 'nexus'
+import { isDeepStrictEqual } from 'util'
+import { GraphQLResolveInfo } from 'graphql'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -143,3 +147,46 @@ export function getImportPathRelativeToOutput(
  * a list of users indexed by email.
  */
 export type Index<T> = Record<string, T>
+
+/** TODO: Copy these types into computedInputs section of docs as part of
+ * docs build process. The same should be done for other areas where code
+ * has been copy pasted into our README.
+ **/
+/**
+ *  Represents arguments required by Photon that will
+ *  be derived from a request's input (args, context, and info)
+ *  and omitted from the GraphQL API. The object itself maps the
+ *  names of these args to a function that takes an object representing
+ *  the request's input and returns the value to pass to the photon
+ *  arg of the same name.
+ */
+export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
+
+export type GlobalComputedInputs = Record<
+  string,
+  (params: GlobalMutationResolverParams) => unknown
+>
+
+type BaseMutationResolverParams = {
+  info: GraphQLResolveInfo
+  ctx: Context
+}
+
+export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+  args: Record<string, any> & { data: unknown }
+}
+
+export type LocalMutationResolverParams<
+  MethodName extends MutationMethodName
+> = BaseMutationResolverParams & {
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+}
+
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+
+export type Context = core.GetGen<'context'>
+
+export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})

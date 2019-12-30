@@ -1,7 +1,8 @@
-import * as DMMF from './dmmf'
+import { DmmfTypes, DmmfDocument } from './dmmf'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { hardWriteFileSync, hardWriteFile } from './utils'
+import { getTransformedDmmf } from './dmmf/transformer'
 
 type Options = {
   photonPath: string
@@ -22,7 +23,7 @@ export function doGenerate(
   sync: boolean,
   options: Options,
 ): void | Promise<void> {
-  const dmmf = DMMF.get(options.photonPath)
+  const dmmf = getTransformedDmmf(options.photonPath)
   const tsDeclaration = render(dmmf, options.photonPath)
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
@@ -31,10 +32,12 @@ export function doGenerate(
   }
 }
 
-export function render(dmmf: DMMF.DMMF, photonPath: string) {
+export function render(dmmf: DmmfDocument, photonPath: string) {
   return `\
 import * as photon from '${photonPath}';
 import { core } from 'nexus';
+import { GraphQLResolveInfo } from 'graphql';
+
 // Types helpers
 ${renderStaticTypes()}
 
@@ -53,7 +56,7 @@ declare global {
   `
 }
 
-function renderModelTypes(dmmf: DMMF.DMMF) {
+function renderModelTypes(dmmf: DmmfDocument) {
   return `\
 interface ModelTypes {
 ${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
@@ -61,7 +64,7 @@ ${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
   `
 }
 
-function renderNexusPrismaTypes(dmmf: DMMF.DMMF) {
+function renderNexusPrismaTypes(dmmf: DmmfDocument) {
   const queriesByType = getCrudMappedFields('Query', dmmf).map(mappedfield => ({
     fieldName: mappedfield.field.name,
     returnType: mappedfield.field.outputType.type,
@@ -110,7 +113,7 @@ ${renderNexusPrismaType(fields)}
 `
 }
 
-function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
+function renderNexusPrismaInputs(dmmf: DmmfDocument) {
   const queriesFields = getCrudMappedFields('Query', dmmf)
     .filter(
       mappedField =>
@@ -144,8 +147,8 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
         string,
         {
           fieldName: string
-          filtering: DMMF.Data.InputType
-          ordering: DMMF.Data.InputType
+          filtering: DmmfTypes.InputType
+          ordering: DmmfTypes.InputType
         }[]
       >
     >((acc, type) => {
@@ -176,8 +179,8 @@ function renderNexusPrismaInputs(dmmf: DMMF.DMMF) {
   const renderNexusPrismaInput = (
     input: {
       fieldName: string
-      filtering: DMMF.Data.InputType
-      ordering: DMMF.Data.InputType
+      filtering: DmmfTypes.InputType
+      ordering: DmmfTypes.InputType
     }[],
   ): string => `\
 ${input
@@ -204,7 +207,7 @@ ${renderNexusPrismaInput(fields)}
 `
 }
 
-function renderNexusPrismaMethods(dmmf: DMMF.DMMF) {
+function renderNexusPrismaMethods(dmmf: DmmfDocument) {
   return `\
 interface NexusPrismaMethods {
 ${dmmf.datamodel.models
@@ -286,21 +289,60 @@ type GetNexusPrismaInput<
     : never
   : never;
 
+/**
+ *  Represents arguments required by Photon that will
+ *  be derived from a request's input (args, context, and info)
+ *  and omitted from the GraphQL API. The object itself maps the
+ *  names of these args to a function that takes an object representing
+ *  the request's input and returns the value to pass to the photon
+ *  arg of the same name.
+ */
+export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
+
+export type GlobalComputedInputs = Record<
+  string,
+  (params: GlobalMutationResolverParams) => unknown
+>
+
+type BaseMutationResolverParams = {
+  info: GraphQLResolveInfo
+  ctx: Context
+}
+
+export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+  args: Record<string, any> & { data: unknown }
+}
+
+export type LocalMutationResolverParams<
+  MethodName extends MutationMethodName
+> = BaseMutationResolverParams & {
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+}
+
+export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+
+export type Context = core.GetGen<'context'>
+
 type NexusPrismaRelationOpts<
   ModelName extends any,
   MethodName extends any,
   ReturnType extends any
 > = GetNexusPrismaInput<
-  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it. So just use \`alias\` and \`type\`
+  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
   ModelName,
   MethodName,
   'filtering'
 > extends never
   ? {
       alias?: string;
+      computedInputs?: LocalComputedInputs<MethodName>;
     } & DynamicRequiredType<ReturnType>
   : {
       alias?: string;
+      computedInputs?: LocalComputedInputs<MethodName>;
       filtering?:
         | boolean
         | Partial<
