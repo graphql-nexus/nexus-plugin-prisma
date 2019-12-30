@@ -40,7 +40,10 @@ export function nexusPrismaPlugin(options?: Options) {
     name: 'nexus-prisma',
     onInstall: nexusBuilder => {
       return {
-        types: buildNexusPrismaTypes({ ...options, nexusBuilder }),
+        types: buildNexusPrismaTypes({
+          ...options,
+          nexusBuilder,
+        }),
       }
     },
   })

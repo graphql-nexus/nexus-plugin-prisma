@@ -7,7 +7,8 @@ import {
   OnUnknownArgName,
   OnUnknownFieldName,
   OnUnknownFieldType,
-  registerHook,
+  OnUnknownPrismaModelName,
+  raiseErrorOrTriggerHook,
 } from './hooks'
 import { getCrudMappedFields } from './mapping'
 import {
@@ -16,10 +17,10 @@ import {
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
 } from './naming-strategies'
-import { proxify } from './proxifier'
+import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext } from './utils'
+import { assertPhotonInContext, Index } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -92,11 +93,13 @@ export interface InternalOptions extends Options {
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
-  onUnknownArgName?: OnUnknownArgName
+  onUnknownArgName?: OnUnknownArgName // For pumpkins
+  onUnknownPrismaModelName?: OnUnknownPrismaModelName // For pumpkins
 }
 
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
+
   return builder.build()
 }
 
@@ -154,10 +157,11 @@ export interface CustomInputArg {
 
 export class SchemaBuilder {
   readonly dmmf: DMMF.DMMF
-  argsNamingStrategy: ArgsNamingStrategy
-  fieldNamingStrategy: FieldNamingStrategy
-  getPhoton: any
-  publisher: Publisher
+  protected argsNamingStrategy: ArgsNamingStrategy
+  protected fieldNamingStrategy: FieldNamingStrategy
+  protected getPhoton: any
+  protected publisher: Publisher
+  protected unknownFieldsByModel: Index<string[]>
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -168,6 +172,7 @@ export class SchemaBuilder {
     }
     this.dmmf = options.dmmf || DMMF.get(config.inputs.photon)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
+    this.unknownFieldsByModel = {}
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
@@ -190,7 +195,7 @@ export class SchemaBuilder {
   /**
    * Build `t.crud` dynamic output property
    */
-  buildCRUD(): DynamicOutputPropertyDef<'crud'> {
+  protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
@@ -272,7 +277,7 @@ export class SchemaBuilder {
           return crud
         }, {})
 
-        return proxify(
+        return proxifyPublishers(
           publishers,
           typeName,
           stage,
@@ -285,7 +290,7 @@ export class SchemaBuilder {
   /**
    * Build the `t.model` dynamic output property.
    */
-  buildModel() {
+  protected buildModel() {
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
@@ -333,15 +338,27 @@ export class SchemaBuilder {
        *    })
        *
        */
-      factory: ({ typeDef, typeName, stage }) =>
-        this.dmmf.hasModel(typeName)
-          ? this.internalBuildModel(typeName, typeDef, stage)
-          : (modelName: string) =>
-              this.internalBuildModel(modelName, typeDef, stage),
+      factory: ({ typeDef, typeName, stage }) => {
+        const hasPrismaModel = this.dmmf.hasModel(typeName)
+        if (hasPrismaModel) {
+          return this.internalBuildModel(typeName, typeDef, stage)
+        } else {
+          const accessor = (modelName: string) =>
+            this.internalBuildModel(modelName, typeDef, stage)
+
+          return proxifyModelFunction(
+            accessor,
+            typeName,
+            stage,
+            this.options.onUnknownPrismaModelName,
+            this.unknownFieldsByModel,
+          )
+        }
+      },
     })
   }
 
-  internalBuildModel(
+  protected internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
     stage: Nexus.core.OutputFactoryConfig<any>['stage'],
@@ -415,10 +432,15 @@ export class SchemaBuilder {
       {},
     )
 
-    return proxify(publishers, typeName, stage, this.options.onUnknownFieldName)
+    return proxifyPublishers(
+      publishers,
+      typeName,
+      stage,
+      this.options.onUnknownFieldName,
+    )
   }
 
-  buildArgsFromField(
+  protected buildArgsFromField(
     typeName: string,
     operationName: keyof DMMF.Data.Mapping | null,
     field: DMMF.Data.SchemaField,
@@ -442,7 +464,7 @@ export class SchemaBuilder {
     }, {})
   }
 
-  argsFromQueryOrModelField(
+  protected argsFromQueryOrModelField(
     typeName: string,
     dmmfField: DMMF.Data.SchemaField,
     resolvedConfig: FieldPublisherConfig,
@@ -546,7 +568,7 @@ export class SchemaBuilder {
    * ...
    * ```
    */
-  handleInputObjectCustomization(
+  protected handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
@@ -579,7 +601,7 @@ export class SchemaBuilder {
     }
   }
 
-  assertOutputTypeIsDefined(
+  protected assertOutputTypeIsDefined(
     typeName: string,
     fieldName: string,
     outputType: string,
@@ -595,16 +617,14 @@ export class SchemaBuilder {
 
     const message = `Your GraphQL \`${typeName}\` object definition is projecting a field \`${fieldName}\` with \`${outputType}\` as output type, but \`${outputType}\` is not defined in your GraphQL Schema`
 
-    registerHook(
+    raiseErrorOrTriggerHook(
       this.options.onUnknownFieldType,
-      [
-        {
-          unknownFieldType: outputType,
-          typeName,
-          fieldName,
-          error: new Error(message),
-        },
-      ],
+      {
+        unknownFieldType: outputType,
+        typeName,
+        fieldName,
+        error: new Error(message),
+      },
       message,
       stage,
     )
@@ -612,7 +632,7 @@ export class SchemaBuilder {
     return false
   }
 
-  assertArgNameExists(
+  protected assertArgNameExists(
     parentTypeName: string,
     prismaOutputTypeName: string,
     fieldName: string,
@@ -645,16 +665,14 @@ export class SchemaBuilder {
       .map(argName => renderMessage(argName))
       .join('\n')
 
-    registerHook(
+    raiseErrorOrTriggerHook(
       this.options.onUnknownArgName,
-      [
-        {
-          unknownArgNames: wrongArgNames,
-          typeName: prismaOutputTypeName,
-          fieldName,
-          error: new Error(message),
-        },
-      ],
+      {
+        unknownArgNames: wrongArgNames,
+        typeName: prismaOutputTypeName,
+        fieldName,
+        error: new Error(message),
+      },
       message,
       stage,
     )
@@ -662,7 +680,7 @@ export class SchemaBuilder {
     return { wrongArgNames }
   }
 
-  assertFilteringOrOrderingArgNameExists(
+  protected assertFilteringOrOrderingArgNameExists(
     parentTypeName: string,
     prismaOutputTypeName: string,
     fieldName: string,
