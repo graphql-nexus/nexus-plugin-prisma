@@ -1,20 +1,20 @@
-import { ExternalDMMF as DMMF } from './transformer'
+import { DmmfTypes } from './DmmfTypes'
 import { indexBy, Index } from '../utils'
 
-export class DMMFClass implements DMMF.Document {
-  public datamodel: DMMF.Datamodel
-  public schema: DMMF.Schema
-  public mappings: DMMF.Mapping[]
+export class DmmfDocument implements DmmfTypes.Document {
+  public datamodel: DmmfTypes.Datamodel
+  public schema: DmmfTypes.Schema
+  public mappings: DmmfTypes.Mapping[]
   public queryObject: OutputType
   public mutationObject: OutputType
-  public outputTypesIndex: Index<DMMF.OutputType> = {}
-  public inputTypesIndex: Index<DMMF.InputType>
-  public mappingsIndex: Index<DMMF.Mapping>
-  public enumsIndex: Index<DMMF.Enum>
-  public modelsIndex: Index<DMMF.Model>
+  public outputTypesIndex: Index<DmmfTypes.OutputType> = {}
+  public inputTypesIndex: Index<DmmfTypes.InputType>
+  public mappingsIndex: Index<DmmfTypes.Mapping>
+  public enumsIndex: Index<DmmfTypes.Enum>
+  public modelsIndex: Index<DmmfTypes.Model>
 
-  constructor({ datamodel, schema, mappings }: DMMF.Document) {
-    // DMMF
+  constructor({ datamodel, schema, mappings }: DmmfTypes.Document) {
+    // ExternalDMMF
     this.datamodel = datamodel
     this.schema = schema
     this.mappings = mappings
@@ -114,10 +114,10 @@ export class DMMFClass implements DMMF.Document {
 
 export class OutputType {
   public name: string
-  public fields: DMMF.SchemaField[]
+  public fields: DmmfTypes.SchemaField[]
   public isEmbedded?: boolean
 
-  constructor(protected outputType: DMMF.OutputType) {
+  constructor(protected outputType: DmmfTypes.OutputType) {
     this.name = outputType.name
     this.fields = outputType.fields
     this.isEmbedded = outputType.isEmbedded

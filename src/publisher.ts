@@ -1,13 +1,13 @@
 import * as Nexus from 'nexus'
 import { CustomInputArg } from './builder'
-import * as DMMF from './dmmf'
+import { DmmfTypes, DmmfDocument } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
   constructor(
-    public dmmf: DMMF.DMMF,
+    public dmmf: DmmfDocument,
     public nexusBuilder: Nexus.PluginBuilderLens,
   ) {}
 
@@ -39,13 +39,13 @@ export class Publisher {
       return this.publishEnum(customArg.type.name)
     }
 
-    const inputType = customArg.type as DMMF.Data.InputType
+    const inputType = customArg.type as DmmfTypes.InputType
 
     return this.publishInputObjectType(inputType)
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  public outputType(outputTypeName: string, field: DMMF.Data.SchemaField): any {
+  public outputType(outputTypeName: string, field: DmmfTypes.SchemaField): any {
     /**
      * Rules:
      * - If outputTypeName is already published
@@ -116,7 +116,7 @@ export class Publisher {
     })
   }
 
-  publishInputObjectType(inputType: DMMF.Data.InputType) {
+  publishInputObjectType(inputType: DmmfTypes.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
@@ -143,7 +143,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DMMF.Data.SchemaArg): CustomInputArg['type'] {
+  protected getTypeFromArg(arg: DmmfTypes.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: typeName,

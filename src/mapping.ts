@@ -1,4 +1,4 @@
-import * as DMMF from './dmmf'
+import { DmmfDocument, DmmfTypes } from './dmmf'
 import {
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
@@ -14,11 +14,11 @@ interface BaseMappedField {
 }
 
 export interface MappedField extends Omit<BaseMappedField, 'field'> {
-  field: DMMF.Data.SchemaField
+  field: DmmfTypes.SchemaField
 }
 
 const buildField = (
-  mapping: DMMF.Data.Mapping,
+  mapping: DmmfTypes.Mapping,
   operation: OperationName,
 ): BaseMappedField => ({
   operation,
@@ -29,7 +29,7 @@ const buildField = (
 
 const CRUD_MAPPED_FIELDS: Record<
   string,
-  (m: DMMF.Data.Mapping) => BaseMappedField[]
+  (m: DmmfTypes.Mapping) => BaseMappedField[]
 > = {
   Query: m => [buildField(m, 'findOne'), buildField(m, 'findMany')],
   Mutation: m => [
@@ -44,7 +44,7 @@ const CRUD_MAPPED_FIELDS: Record<
 
 export const getCrudMappedFields = (
   typeName: 'Query' | 'Mutation',
-  dmmf: DMMF.DMMF,
+  dmmf: DmmfDocument,
   namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy,
 ): MappedField[] =>
   flatMap(dmmf.mappings, m => CRUD_MAPPED_FIELDS[typeName](m)).map(
