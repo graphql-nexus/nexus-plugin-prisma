@@ -22,22 +22,28 @@ export type OnUnknownArgName = (info: {
   fieldName: string
 }) => void
 
+export type OnUnknownPrismaModelName = (info: {
+  unknownPrismaModelName: string
+  error: Error
+}) => void
+
 type Hooks =
   | OnUnknownFieldType
   | OnUnknownFieldName
   | OnUnknownArgName
+  | OnUnknownPrismaModelName
   | undefined
 
-export function registerHook<T extends Hooks>(
+export function raiseErrorOrTriggerHook<T extends Hooks>(
   hook: T,
-  params: Parameters<Exclude<T, undefined>>,
+  params: Parameters<Exclude<T, undefined>>[0],
   message: string,
   stage: 'build' | 'walk',
 ) {
   if (stage === 'build') {
     if (isDevMode()) {
       if (hook) {
-        ;(hook as any)(...params)
+        ;(hook as any)(params)
       } else {
         const formattedMessage = message
           .split('\n')

@@ -21,7 +21,6 @@ type ModelName {
 }
 
 input ModelNameCreateInput {
-  id: Int!
   name: String!
 }
 

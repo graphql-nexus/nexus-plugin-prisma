@@ -56,14 +56,18 @@ it('integrates together', async () => {
     },
   })
 
-  await nexusBuilder.generateSchema({
-    types,
-    plugins: [nexusPrisma],
-    shouldGenerateArtifacts: true,
-    outputs: {
-      typegen: projectPath(`/generated/nexus-typegen.d.ts`),
-      schema: projectPath(`/generated/schema.graphql`),
-    },
+  process.env.NODE_ENV = 'development'
+
+  const { $output } = await mockConsoleLog(async () => {
+    await nexusBuilder.generateSchema({
+      types,
+      plugins: [nexusPrisma],
+      shouldGenerateArtifacts: true,
+      outputs: {
+        typegen: projectPath(`/generated/nexus-typegen.d.ts`),
+        schema: projectPath(`/generated/schema.graphql`),
+      },
+    })
   })
 
   // Snapshot generated files for manual correctness tracking.
@@ -97,6 +101,7 @@ it('integrates together', async () => {
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
   expect(require('@prisma/photon').dmmf).toMatchSnapshot('photon dmmf')
+  expect($output).toMatchSnapshot('console.log output')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.

@@ -4,7 +4,7 @@ import { generateSchemaAndTypes } from './__utils'
 it('only publishes output types that do not map to prisma models', async () => {
   const datamodel = `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     name String
   }
 `
@@ -34,7 +34,7 @@ it('only publishes output types that do not map to prisma models', async () => {
 it('publishes scalars from input types', async () => {
   const datamodel = `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     date DateTime
   }
   `
