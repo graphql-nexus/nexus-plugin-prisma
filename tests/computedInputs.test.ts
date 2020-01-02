@@ -6,7 +6,7 @@ import { getDmmf, generateSchemaAndTypes } from './__utils'
 const resolverTestData = {
   datamodel: `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     name String
     createdWithBrowser String
   }
@@ -38,7 +38,7 @@ const resolverTestData = {
 const globalTestData = {
   datamodel: `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     name String
     nested Nested[]
     createdWithBrowser String

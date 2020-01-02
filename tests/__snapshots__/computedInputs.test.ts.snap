@@ -45,7 +45,6 @@ type User {
 }
 
 input UserCreateInput {
-  id: Int!
   name: String!
   nested: NestedCreateManyWithoutNestedInput
 }
@@ -56,7 +55,6 @@ input UserCreateOneWithoutUserInput {
 }
 
 input UserCreateWithoutNestedInput {
-  id: Int!
   name: String!
 }
 
@@ -415,7 +413,6 @@ type User {
 }
 
 input UserCreateInput {
-  id: Int!
   name: String!
 }
 
