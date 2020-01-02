@@ -1,6 +1,12 @@
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
+import {
+  addComputedInputs,
+  DmmfDocument,
+  DmmfTypes,
+  getTransformedDmmf,
+} from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -22,17 +28,11 @@ import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
   assertPhotonInContext,
-  LocalComputedInputs,
   GlobalComputedInputs,
+  Index,
   isEmptyObject,
-  Index
+  LocalComputedInputs,
 } from './utils'
-import {
-  addComputedInputs,
-  getTransformedDmmf,
-  DmmfTypes,
-  DmmfDocument,
-} from './dmmf'
 
 interface FieldPublisherConfig {
   alias?: string
