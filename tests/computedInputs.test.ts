@@ -45,7 +45,7 @@ const globalTestData = {
   }
 
   model Nested {
-    id Int @id
+    id Int @id @default(autoincrement())
     name String
     createdWithBrowser String
   }
