@@ -2,9 +2,10 @@ import * as Photon from '@prisma/photon/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
-import * as DMMF from '../src/dmmf'
+import { DmmfDocument } from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
 import stripAnsi from 'strip-ansi'
+import { TransformOptions, transform } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -16,8 +17,18 @@ export const createNexusPrismaInternal = (
     }),
   })
 
-export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+export async function getDmmf(datamodel: string, options?: TransformOptions) {
+  return new DmmfDocument(
+    transform(await Photon.getDMMF({ datamodel }), options),
+  )
+}
+
+export async function generateSchemaAndTypes(
+  datamodel: string,
+  types: any[],
+  options?: TransformOptions,
+) {
+  const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
   })
@@ -35,9 +46,10 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
 
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
-  types: any,
+  types: any[],
+  options?: TransformOptions,
 ) {
-  const dmmf = DMMF.fromPhotonDMMF(await Photon.getDMMF({ datamodel }))
+  const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
     nexusBuilder: {
       addType: () => false,
@@ -61,16 +73,21 @@ export async function generateSchemaAndTypesWithoutThrowing(
   }
 }
 
-export async function mockConsoleLog(
-  func: (...args: any) => any | Promise<any>,
-) {
+type UnPromisify<T> = T extends Promise<infer U> ? U : T
+
+export async function mockConsoleLog<T extends (...args: any) => any>(
+  func: T,
+): Promise<{ $output: string } & UnPromisify<ReturnType<T>>> {
   const oldLog = console.log
   let outputData = ''
   const storeLog = (inputs: string) => (outputData += '\n' + inputs)
 
   console.log = jest.fn(storeLog)
-  await func()
+  const ret = await func()
   console.log = oldLog
 
-  return stripAnsi(outputData)
+  return {
+    ...ret,
+    $output: stripAnsi(outputData),
+  }
 }

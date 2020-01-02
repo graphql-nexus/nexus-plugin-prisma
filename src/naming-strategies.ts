@@ -1,5 +1,5 @@
 import pluralize from 'pluralize'
-import * as DMMF from './dmmf'
+import { DmmfTypes } from './dmmf'
 import { upperFirst } from './utils'
 import camelCase from 'camelcase'
 
@@ -21,7 +21,7 @@ export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
   },
 }
 
-export type OperationName = Exclude<keyof DMMF.Data.Mapping, 'model' | 'plural'>
+export type OperationName = Exclude<keyof DmmfTypes.Mapping, 'model' | 'plural'>
 
 export type FieldNamingStrategy = Record<
   OperationName,

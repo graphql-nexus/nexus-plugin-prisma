@@ -58,7 +58,7 @@ it('integrates together', async () => {
 
   process.env.NODE_ENV = 'development'
 
-  const outputData = await mockConsoleLog(async () => {
+  const { $output } = await mockConsoleLog(async () => {
     await nexusBuilder.generateSchema({
       types,
       plugins: [nexusPrisma],
@@ -101,7 +101,7 @@ it('integrates together', async () => {
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
   expect(require('@prisma/photon').dmmf).toMatchSnapshot('photon dmmf')
-  expect(outputData).toMatchSnapshot('console.log output')
+  expect($output).toMatchSnapshot('console.log output')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.

@@ -53,3 +53,5 @@ export const Bubble = objectType({
     })
   },
 })
+
+export const allTypes = [Query, Mutation, User, Post, Bubble]

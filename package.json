@@ -1,6 +1,6 @@
 {
   "name": "nexus-prisma",
-  "version": "0.6.2-next.2",
+  "version": "0.6.2-next.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -27,7 +27,8 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/photon": "^2.0.0-alpha.351"
+    "@prisma/photon": "^2.0.0-alpha.351",
+    "graphql": "^14.5.0"
   },
   "devDependencies": {
     "@prisma/fetch-engine": "^0.3.30",
