@@ -26,11 +26,11 @@ it('in dev stage, warns when wrong projected field or crud', async () => {
     },
   })
 
-  const outputData = await mockConsoleLog(async () => {
+  const { $output } = await mockConsoleLog(async () => {
     await generateSchemaAndTypes(datamodel, [Query, User])
   })
 
-  expect(outputData).toMatchInlineSnapshot(`
+  expect($output).toMatchInlineSnapshot(`
     "
     Warning: Your GraphQL \`Query\` object definition is attempting to expose a Prisma model field called \`userss\`, but your Prisma model \`Query\` has no such field
 
@@ -64,11 +64,11 @@ it('in undefined stages, warns when wrong projected field or crud', async () => 
     },
   })
 
-  const outputData = await mockConsoleLog(async () => {
+  const { $output } = await mockConsoleLog(async () => {
     await generateSchemaAndTypes(datamodel, [Query, User])
   })
 
-  expect(outputData).toMatchInlineSnapshot(`
+  expect($output).toMatchInlineSnapshot(`
     "
     Warning: Your GraphQL \`Query\` object definition is attempting to expose a Prisma model field called \`userss\`, but your Prisma model \`Query\` has no such field
 
@@ -167,11 +167,11 @@ it('in dev stage, warns if a wrong arg named is passed to filtering', async () =
     },
   })
 
-  const outputData = await mockConsoleLog(async () => {
+  const { $output } = await mockConsoleLog(async () => {
     await generateSchemaAndTypes(datamodel, [Query, User])
   })
 
-  expect(outputData).toMatchInlineSnapshot(`
+  expect($output).toMatchInlineSnapshot(`
     "
     Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`
     "
@@ -234,11 +234,11 @@ it('in dev stage, warns if a wrong arg named is passed to ordering', async () =>
     },
   })
 
-  const outputData = await mockConsoleLog(async () => {
+  const { $output } = await mockConsoleLog(async () => {
     await generateSchemaAndTypes(datamodel, [Query, User])
   })
 
-  expect(outputData).toMatchInlineSnapshot(`
+  expect($output).toMatchInlineSnapshot(`
     "
     Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`
     "

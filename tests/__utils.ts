@@ -73,16 +73,21 @@ export async function generateSchemaAndTypesWithoutThrowing(
   }
 }
 
-export async function mockConsoleLog(
-  func: (...args: any) => any | Promise<any>,
-) {
+type UnPromisify<T> = T extends Promise<infer U> ? U : T
+
+export async function mockConsoleLog<T extends (...args: any) => any>(
+  func: T,
+): Promise<{ $output: string } & UnPromisify<ReturnType<T>>> {
   const oldLog = console.log
   let outputData = ''
   const storeLog = (inputs: string) => (outputData += '\n' + inputs)
 
   console.log = jest.fn(storeLog)
-  await func()
+  const ret = await func()
   console.log = oldLog
 
-  return stripAnsi(outputData)
+  return {
+    ...ret,
+    $output: stripAnsi(outputData),
+  }
 }

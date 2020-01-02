@@ -550,15 +550,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: whereArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.filtering,
-          inputObjectTypeDefName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.filtering,
+        inputObjectTypeDefName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: whereArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.ordering) {
@@ -573,15 +577,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: orderByArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.ordering,
-          orderByTypeName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.ordering,
+        orderByTypeName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: orderByArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.pagination) {
@@ -743,6 +751,9 @@ export class SchemaBuilder {
     return { wrongArgNames }
   }
 
+  /**
+   * Assert arg name passed to `t.crud|model.field({ filtering|ordering: { argName: ... } })` is an arg that exists
+   */
   assertFilteringOrOrderingArgNameExists(
     parentTypeName: string,
     prismaOutputTypeName: string,
