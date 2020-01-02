@@ -2,8 +2,12 @@ import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as GraphQL from './graphql'
-import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
-import { isDevMode } from './is-dev-mode'
+import {
+  OnUnknownArgName,
+  OnUnknownFieldName,
+  OnUnknownFieldType,
+  registerHook,
+} from './hooks'
 import { getCrudMappedFields } from './mapping'
 import {
   ArgsNamingStrategy,
@@ -122,6 +126,7 @@ export interface InternalOptions extends Options {
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
+  onUnknownArgName?: OnUnknownArgName
 }
 
 export function build(options: InternalOptions) {
@@ -305,6 +310,14 @@ export class SchemaBuilder {
                 t.field(publisherConfig.alias, fieldConfig)
               }
 
+              this.assertFilteringOrOrderingArgNameExists(
+                typeName,
+                mappedField.field.outputType.type,
+                mappedField.field.name,
+                publisherConfig,
+                stage,
+              )
+
               return crud
             }
 
@@ -319,7 +332,6 @@ export class SchemaBuilder {
           publishers,
           typeName,
           stage,
-          'crud',
           this.options.onUnknownFieldName,
         )
       },
@@ -397,7 +409,7 @@ export class SchemaBuilder {
       const fieldPublisher: FieldPublisher = givenConfig => {
         const publisherConfig = this.buildPublisherConfig({
           field,
-          givenConfig: givenConfig ? givenConfig : {},
+          givenConfig: givenConfig ?? {},
         })
         if (
           !this.assertOutputTypeIsDefined(
@@ -409,6 +421,13 @@ export class SchemaBuilder {
         ) {
           return acc
         }
+        this.assertFilteringOrOrderingArgNameExists(
+          typeName,
+          field.outputType.type,
+          publisherConfig.alias,
+          publisherConfig,
+          stage,
+        )
         const fieldConfig = this.buildFieldConfig({
           field,
           publisherConfig,
@@ -434,13 +453,7 @@ export class SchemaBuilder {
       return acc
     }, {} as PublisherMethods)
 
-    return proxify(
-      publishers,
-      typeName,
-      stage,
-      'model',
-      this.options.onUnknownFieldName,
-    )
+    return proxify(publishers, typeName, stage, this.options.onUnknownFieldName)
   }
 
   buildPublisherConfig({
@@ -537,15 +550,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: whereArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.filtering,
-          inputObjectTypeDefName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.filtering,
+        inputObjectTypeDefName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: whereArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.ordering) {
@@ -560,15 +577,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: orderByArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.ordering,
-          orderByTypeName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.ordering,
+        orderByTypeName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: orderByArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.pagination) {
@@ -660,25 +681,101 @@ export class SchemaBuilder {
       return true
     }
 
-    const message = `${typeName}.${fieldName} is referencing a type "${outputType}" that is not defined in your GraphQL schema.`
+    const message = `Your GraphQL \`${typeName}\` object definition is projecting a field \`${fieldName}\` with \`${outputType}\` as output type, but \`${outputType}\` is not defined in your GraphQL Schema`
 
-    if (stage === 'build') {
-      if (isDevMode()) {
-        if (this.options.onUnknownFieldType) {
-          this.options.onUnknownFieldType({
-            unknownFieldType: outputType,
-            typeName,
-            fieldName,
-            error: new Error(message),
-          })
-        } else {
-          console.log(`Warning: ${message}`)
-        }
-      } else {
-        throw new Error(message)
-      }
-    }
+    registerHook(
+      this.options.onUnknownFieldType,
+      [
+        {
+          unknownFieldType: outputType,
+          typeName,
+          fieldName,
+          error: new Error(message),
+        },
+      ],
+      message,
+      stage,
+    )
 
     return false
+  }
+
+  assertArgNameExists(
+    parentTypeName: string,
+    prismaOutputTypeName: string,
+    fieldName: string,
+    config: FieldPublisherConfig,
+    stage: 'build' | 'walk',
+    configProperty: 'filtering' | 'ordering',
+  ): { wrongArgNames: string[] } | true {
+    if (!config[configProperty] || config[configProperty] === true) {
+      return true
+    }
+
+    const argNames = Object.keys(
+      config[configProperty] as Record<string, boolean>,
+    )
+    const typeNameFieldNames = this.dmmf
+      .getModelOrThrow(prismaOutputTypeName)
+      .fields.map(f => f.name)
+    const wrongArgNames = argNames.filter(
+      filteringFieldName => !typeNameFieldNames.includes(filteringFieldName),
+    )
+
+    if (wrongArgNames.length === 0) {
+      return true
+    }
+
+    const actionWord = configProperty === 'filtering' ? 'filter' : 'order'
+    const renderMessage = (argName: string) =>
+      `Your GraphQL \`${parentTypeName}\` object definition is projecting a relational field \`${fieldName}\`. On it, you are declaring that clients be able to ${actionWord} by Prisma \`${prismaOutputTypeName}\` model field \`${argName}\`. However, your Prisma model \`${prismaOutputTypeName}\` model has no such field \`${argName}\``
+
+    const message = wrongArgNames
+      .map(argName => renderMessage(argName))
+      .join('\n')
+
+    registerHook(
+      this.options.onUnknownArgName,
+      [
+        {
+          unknownArgNames: wrongArgNames,
+          typeName: prismaOutputTypeName,
+          fieldName,
+          error: new Error(message),
+        },
+      ],
+      message,
+      stage,
+    )
+
+    return { wrongArgNames }
+  }
+
+  /**
+   * Assert arg name passed to `t.crud|model.field({ filtering|ordering: { argName: ... } })` is an arg that exists
+   */
+  assertFilteringOrOrderingArgNameExists(
+    parentTypeName: string,
+    prismaOutputTypeName: string,
+    fieldName: string,
+    config: FieldPublisherConfig,
+    stage: 'build' | 'walk',
+  ): void {
+    this.assertArgNameExists(
+      parentTypeName,
+      prismaOutputTypeName,
+      fieldName,
+      config,
+      stage,
+      'filtering',
+    )
+    this.assertArgNameExists(
+      parentTypeName,
+      prismaOutputTypeName,
+      fieldName,
+      config,
+      stage,
+      'ordering',
+    )
   }
 }

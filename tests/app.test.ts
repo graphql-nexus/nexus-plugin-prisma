@@ -4,6 +4,7 @@ import * as nexusBuilder from 'nexus/dist/builder'
 import * as NexusPrisma from '../src'
 import * as fs from 'fs-extra'
 import * as types from './__app/main'
+import { mockConsoleLog } from './__utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of photon import failing
@@ -79,9 +80,9 @@ it('integrates together', async () => {
   const photonTSD = await projectReadFile(
     '../../node_modules/@prisma/photon/index.d.ts',
   )
-  const photonSource = (await projectReadFile(
-    '../../node_modules/@prisma/photon/index.js',
-  ))
+  const photonSource = (
+    await projectReadFile('../../node_modules/@prisma/photon/index.js')
+  )
     .replace(
       /(path\.join\(__dirname, 'runtime\/).*('\);)/,
       '$1__NON_DETERMINISTIC_CONTENT__$2',

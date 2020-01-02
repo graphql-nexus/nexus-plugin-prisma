@@ -121,7 +121,7 @@ export function getImportPathRelativeToOutput(
     return trimIfInNodeModules(to)
   }
 
-  let relativePath = relative(from, to)
+  let relativePath = path.relative(from, to)
 
   if (!relativePath.startsWith('.')) {
     relativePath = './' + relativePath
