@@ -198,9 +198,9 @@ export class SchemaBuilder {
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: PhotonFetcher
-  protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
+  publisher: Publisher
 
   constructor(public options: InternalOptions) {
     const config = {
