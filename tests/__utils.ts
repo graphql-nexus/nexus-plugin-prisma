@@ -4,6 +4,7 @@ import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { render as renderTypegen } from '../src/typegen'
+import stripAnsi from 'strip-ansi'
 import { TransformOptions, transform } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
@@ -69,5 +70,24 @@ export async function generateSchemaAndTypesWithoutThrowing(
     schema: GQL.printSchema(schemaAndMissingTypes.schema),
     missingTypes: schemaAndMissingTypes.missingTypes,
     typegen,
+  }
+}
+
+type UnPromisify<T> = T extends Promise<infer U> ? U : T
+
+export async function mockConsoleLog<T extends (...args: any) => any>(
+  func: T,
+): Promise<{ $output: string } & UnPromisify<ReturnType<T>>> {
+  const oldLog = console.log
+  let outputData = ''
+  const storeLog = (inputs: string) => (outputData += '\n' + inputs)
+
+  console.log = jest.fn(storeLog)
+  const ret = await func()
+  console.log = oldLog
+
+  return {
+    ...ret,
+    $output: stripAnsi(outputData),
   }
 }

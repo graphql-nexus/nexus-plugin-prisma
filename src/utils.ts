@@ -1,6 +1,12 @@
-import { relative } from 'path'
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import {
+  unlink,
+  mkdirp,
+  writeFile,
+  mkdirpSync,
+  unlinkSync,
+  writeFileSync,
+} from 'fs-extra'
+import { dirname, relative } from 'path'
 import { core } from 'nexus'
 import { isDeepStrictEqual } from 'util'
 import { GraphQLResolveInfo } from 'graphql'
@@ -15,13 +21,12 @@ import { GraphQLResolveInfo } from 'graphql'
  * https://github.com/prisma-labs/nexus-prisma/issues/453.
  */
 export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
-  fs
-    .unlink(filePath)
+  unlink(filePath)
     .catch(error => {
       return error.code === 'ENOENT' ? Promise.resolve() : Promise.reject(error)
     })
-    .then(() => fs.mkdirp(path.dirname(filePath)))
-    .then(() => fs.writeFile(filePath, data))
+    .then(() => mkdirp(dirname(filePath)))
+    .then(() => writeFile(filePath, data))
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -33,13 +38,13 @@ export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
  * https://github.com/prisma-labs/nexus-prisma/issues/453.
  */
 export const hardWriteFileSync = (filePath: string, data: string): void => {
-  fs.mkdirpSync(path.dirname(filePath))
+  mkdirpSync(dirname(filePath))
   try {
-    fs.unlinkSync(filePath)
+    unlinkSync(filePath)
   } catch (error) {
     if (error.code !== 'ENOENT') throw error
   }
-  fs.writeFileSync(filePath, data)
+  writeFileSync(filePath, data)
 }
 
 // TODO `any` should be `unknown` but there is a bug (?)

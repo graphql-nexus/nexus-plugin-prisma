@@ -339,10 +339,7 @@ type NexusPrismaRelationOpts<
   ? {
       alias?: string;
       computedInputs?: LocalComputedInputs<MethodName>;
-      upfilteredKey?: string;
-    } & DynamicRequiredType<ReturnType>
-  : {
-      alias?: string;
+    } & DynamicRequiredType<ReturnType> : {
       computedInputs?: LocalComputedInputs<MethodName>;
       upfilteredKey?: string;
       filtering?:

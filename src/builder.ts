@@ -2,8 +2,13 @@ import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as GraphQL from './graphql'
-import { OnUnknownFieldName, OnUnknownFieldType } from './hooks'
-import { isDevMode } from './is-dev-mode'
+import {
+  OnUnknownArgName,
+  OnUnknownFieldName,
+  OnUnknownFieldType,
+  OnUnknownPrismaModelName,
+  raiseErrorOrTriggerHook,
+} from './hooks'
 import { getCrudMappedFields } from './mapping'
 import {
   ArgsNamingStrategy,
@@ -12,7 +17,7 @@ import {
   FieldNamingStrategy,
   OperationName,
 } from './naming-strategies'
-import { proxify } from './proxifier'
+import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
@@ -20,6 +25,7 @@ import {
   LocalComputedInputs,
   GlobalComputedInputs,
   isEmptyObject,
+  Index,
 } from './utils'
 import {
   transformArgs,
@@ -125,10 +131,13 @@ export interface InternalOptions extends Options {
   nexusBuilder: Nexus.PluginBuilderLens
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
+  onUnknownArgName?: OnUnknownArgName // For pumpkins
+  onUnknownPrismaModelName?: OnUnknownPrismaModelName // For pumpkins
 }
 
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
+
   return builder.build()
 }
 
@@ -186,11 +195,12 @@ export interface CustomInputArg {
 
 export class SchemaBuilder {
   readonly dmmf: DmmfDocument
-  argsNamingStrategy: ArgsNamingStrategy
-  fieldNamingStrategy: FieldNamingStrategy
-  getPhoton: PhotonFetcher
-  publisher: Publisher
-  globallyComputedInputs: GlobalComputedInputs
+  protected argsNamingStrategy: ArgsNamingStrategy
+  protected fieldNamingStrategy: FieldNamingStrategy
+  protected getPhoton: PhotonFetcher
+  protected publisher: Publisher
+  protected globallyComputedInputs: GlobalComputedInputs
+  protected unknownFieldsByModel: Index<string[]>
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -212,6 +222,8 @@ export class SchemaBuilder {
     if (config.builderHook) {
       config.builderHook.builder = this
     }
+    this.unknownFieldsByModel = {}
+
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
 
@@ -238,7 +250,7 @@ export class SchemaBuilder {
   /**
    * Build `t.crud` dynamic output property
    */
-  buildCRUD(): DynamicOutputPropertyDef<'crud'> {
+  protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
@@ -315,11 +327,10 @@ export class SchemaBuilder {
           {} as PublisherMethods,
         )
 
-        return proxify(
+        return proxifyPublishers(
           publishers,
           typeName,
           stage,
-          'crud',
           this.options.onUnknownFieldName,
         )
       },
@@ -329,7 +340,7 @@ export class SchemaBuilder {
   /**
    * Build the `t.model` dynamic output property.
    */
-  buildModel() {
+  protected buildModel() {
     return Nexus.dynamicOutputProperty({
       name: 'model',
       typeDefinition: `: NexusPrisma<TypeName, 'model'>`,
@@ -377,15 +388,27 @@ export class SchemaBuilder {
        *    })
        *
        */
-      factory: ({ typeDef, typeName, stage }) =>
-        this.dmmf.hasModel(typeName)
-          ? this.internalBuildModel(typeName, typeDef, stage)
-          : (modelName: string) =>
-              this.internalBuildModel(modelName, typeDef, stage),
+      factory: ({ typeDef, typeName, stage }) => {
+        const hasPrismaModel = this.dmmf.hasModel(typeName)
+        if (hasPrismaModel) {
+          return this.internalBuildModel(typeName, typeDef, stage)
+        } else {
+          const accessor = (modelName: string) =>
+            this.internalBuildModel(modelName, typeDef, stage)
+
+          return proxifyModelFunction(
+            accessor,
+            typeName,
+            stage,
+            this.options.onUnknownPrismaModelName,
+            this.unknownFieldsByModel,
+          )
+        }
+      },
     })
   }
 
-  internalBuildModel(
+  protected internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
     stage: Nexus.core.OutputFactoryConfig<any>['stage'],
@@ -397,7 +420,7 @@ export class SchemaBuilder {
       const fieldPublisher: FieldPublisher = givenConfig => {
         const publisherConfig = this.buildPublisherConfig({
           field,
-          givenConfig: givenConfig ? givenConfig : {},
+          givenConfig: givenConfig ?? {},
         })
         if (
           !this.assertOutputTypeIsDefined(
@@ -409,6 +432,13 @@ export class SchemaBuilder {
         ) {
           return acc
         }
+        this.assertFilteringOrOrderingArgNameExists(
+          typeName,
+          field.outputType.type,
+          publisherConfig.alias,
+          publisherConfig,
+          stage,
+        )
         const fieldConfig = this.buildFieldConfig({
           field,
           publisherConfig,
@@ -434,11 +464,10 @@ export class SchemaBuilder {
       return acc
     }, {} as PublisherMethods)
 
-    return proxify(
+    return proxifyPublishers(
       publishers,
       typeName,
       stage,
-      'model',
       this.options.onUnknownFieldName,
     )
   }
@@ -624,15 +653,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: whereArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.filtering,
-          inputObjectTypeDefName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.filtering,
+        inputObjectTypeDefName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: whereArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.ordering) {
@@ -647,15 +680,19 @@ export class SchemaBuilder {
         )
       }
 
-      args.push({
-        arg: orderByArg,
-        type: this.handleInputObjectCustomization(
-          publisherConfig.ordering,
-          orderByTypeName,
-          field.name,
-          typeName,
-        ),
-      })
+      const inputType = this.handleInputObjectCustomization(
+        publisherConfig.ordering,
+        orderByTypeName,
+        field.name,
+        typeName,
+      )
+
+      if (inputType.fields.length > 0) {
+        args.push({
+          arg: orderByArg,
+          type: inputType,
+        })
+      }
     }
 
     if (publisherConfig.pagination) {
@@ -700,13 +737,13 @@ export class SchemaBuilder {
    * ...
    * ```
    */
-  handleInputObjectCustomization(
+  protected handleInputObjectCustomization(
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
     graphQLTypeName: string,
   ): DmmfTypes.InputType {
-    const photonObject = this.publisher.getInputType(inputTypeName)
+    const photonObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
@@ -733,7 +770,7 @@ export class SchemaBuilder {
     }
   }
 
-  assertOutputTypeIsDefined(
+  protected assertOutputTypeIsDefined(
     typeName: string,
     fieldName: string,
     outputType: string,
@@ -747,25 +784,94 @@ export class SchemaBuilder {
       return true
     }
 
-    const message = `${typeName}.${fieldName} is referencing a type "${outputType}" that is not defined in your GraphQL schema.`
+    const message = `Your GraphQL \`${typeName}\` object definition is projecting a field \`${fieldName}\` with \`${outputType}\` as output type, but \`${outputType}\` is not defined in your GraphQL Schema`
 
-    if (stage === 'build') {
-      if (isDevMode()) {
-        if (this.options.onUnknownFieldType) {
-          this.options.onUnknownFieldType({
-            unknownFieldType: outputType,
-            typeName,
-            fieldName,
-            error: new Error(message),
-          })
-        } else {
-          console.log(`Warning: ${message}`)
-        }
-      } else {
-        throw new Error(message)
-      }
-    }
+    raiseErrorOrTriggerHook(
+      this.options.onUnknownFieldType,
+      {
+        unknownFieldType: outputType,
+        typeName,
+        fieldName,
+        error: new Error(message),
+      },
+      message,
+      stage,
+    )
 
     return false
+  }
+
+  protected assertArgNameExists(
+    parentTypeName: string,
+    prismaOutputTypeName: string,
+    fieldName: string,
+    config: FieldPublisherConfig,
+    stage: 'build' | 'walk',
+    configProperty: 'filtering' | 'ordering',
+  ): { wrongArgNames: string[] } | true {
+    if (!config[configProperty] || config[configProperty] === true) {
+      return true
+    }
+
+    const argNames = Object.keys(
+      config[configProperty] as Record<string, boolean>,
+    )
+    const typeNameFieldNames = this.dmmf
+      .getModelOrThrow(prismaOutputTypeName)
+      .fields.map(f => f.name)
+    const wrongArgNames = argNames.filter(
+      filteringFieldName => !typeNameFieldNames.includes(filteringFieldName),
+    )
+
+    if (wrongArgNames.length === 0) {
+      return true
+    }
+
+    const actionWord = configProperty === 'filtering' ? 'filter' : 'order'
+    const renderMessage = (argName: string) =>
+      `Your GraphQL \`${parentTypeName}\` object definition is projecting a relational field \`${fieldName}\`. On it, you are declaring that clients be able to ${actionWord} by Prisma \`${prismaOutputTypeName}\` model field \`${argName}\`. However, your Prisma model \`${prismaOutputTypeName}\` model has no such field \`${argName}\``
+
+    const message = wrongArgNames
+      .map(argName => renderMessage(argName))
+      .join('\n')
+
+    raiseErrorOrTriggerHook(
+      this.options.onUnknownArgName,
+      {
+        unknownArgNames: wrongArgNames,
+        typeName: prismaOutputTypeName,
+        fieldName,
+        error: new Error(message),
+      },
+      message,
+      stage,
+    )
+
+    return { wrongArgNames }
+  }
+
+  protected assertFilteringOrOrderingArgNameExists(
+    parentTypeName: string,
+    prismaOutputTypeName: string,
+    fieldName: string,
+    config: FieldPublisherConfig,
+    stage: 'build' | 'walk',
+  ): void {
+    this.assertArgNameExists(
+      parentTypeName,
+      prismaOutputTypeName,
+      fieldName,
+      config,
+      stage,
+      'filtering',
+    )
+    this.assertArgNameExists(
+      parentTypeName,
+      prismaOutputTypeName,
+      fieldName,
+      config,
+      stage,
+      'ordering',
+    )
   }
 }

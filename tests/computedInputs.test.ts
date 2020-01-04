@@ -14,7 +14,7 @@ const getLocalTestData = async () => {
   const testData = {
     dataModel: `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     name String
     createdWithBrowser String
   }
@@ -58,14 +58,14 @@ const getGlobalTestData = async (
   const testData = {
     dataModel: `
   model User {
-    id  Int @id
+    id  Int @id @default(autoincrement())
     name String
     nested Nested[]
     createdWithBrowser String
   }
 
   model Nested {
-    id Int @id
+    id Int @id @default(autoincrement())
     name String
     createdWithBrowser String
   }
