@@ -120,6 +120,7 @@ type NexusPrismaRelationOpts<
 > extends never
   ? {
       alias?: string;
+      upfilteredKey?: string;
       computedInputs?: LocalComputedInputs<MethodName>;
     } & DynamicRequiredType<ReturnType> : {
       computedInputs?: LocalComputedInputs<MethodName>;
