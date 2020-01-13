@@ -8,7 +8,7 @@ generator photon {
 }
 
 model Blog {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
@@ -18,7 +18,7 @@ model Blog {
 }
 
 model User {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String?
@@ -34,9 +34,9 @@ enum UserRole {
 }
 
 model Post {
-  id     Int        @id
+  id     Int        @id @default(autoincrement())
   title  String
-  tags   String[]
+  tags   Tag[]
   blog   Blog
   status PostStatus
 }
@@ -44,4 +44,9 @@ model Post {
 enum PostStatus {
   DRAFT
   PUBLISHED
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  value String
 }
