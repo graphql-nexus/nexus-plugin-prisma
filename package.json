@@ -34,7 +34,6 @@
     "@prisma/fetch-engine": "^0.3.30",
     "@prisma/photon": "^2.0.0-alpha.351",
     "@types/fs-extra": "^8.0.0",
-    "@types/graphql": "^14.2.3",
     "@types/jest": "^24.0.18",
     "@types/node": "^13.1.6",
     "@types/pluralize": "^0.0.29",
