@@ -18,7 +18,7 @@ model User {
 }
 
 model Post {
-  id      Int        @id
+  id      Int        @id @default(autoincrement())
   authors User[]
   rating  Float
   status  PostStatus
