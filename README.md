@@ -8,7 +8,7 @@
 
 `nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and expose operations against them in your GraphQL API. Resolvers are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. Out-of-box features include pagination, filtering, and ordering. When you do need to drop down into custom resolvers a [`Photon`](https://photonjs.prisma.io) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself builds upon.
 
-If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [here](https://github.com/prisma-labs/nexus/blob/8cf2d6b3e22a9dec1f7c23f384bf33b7be5a25cc/docs/database-access-with-prisma.md).
+If you are still using `nexus-prisma@0.3` / Prisma 1 you can find the old docs [here](https://github.com/prisma-labs/nexus/blob/8cf2d6b3e22a9dec1f7c23f384bf33b7be5a25cc/docs/database-access-with-prisma.md). Please note that `nexus-prisma@0.3` is only compatible with `nexus` up to `0.12.0-beta.14` ([issue](https://github.com/prisma-labs/nexus-prisma/issues/520)). We do not currently have plans to update `nexus-prisma@0.3` to become compatible with versions of `nexus` newer than that.
 
 ### Contents <!-- omit in toc -->
 
@@ -2895,15 +2895,16 @@ You can use [`Create nexus types`](https://github.com/AhmedElywa/create-nexus-ty
 
 ```
 yarn add -D create-nexus-type
-or 
+or
 npm i create-nexus-type --save-dev
 ```
+
 **Command options for `cnt`**
 
 ```
   --schema To add schema file path if you not run command in root of project
   --outDir Created files output dir default src/types
-  -mq      add this option to create Queries and Mutations for models 
+  -mq      add this option to create Queries and Mutations for models
   -m       add this option to create Mutations
   -q       add this option to create Queries
   -f       add this option to add {filtering: true} option to Queries
@@ -2911,7 +2912,7 @@ npm i create-nexus-type --save-dev
 ```
 
 **Example**
-    
+
 ```prisma
 // schema.prisma
 
@@ -2932,7 +2933,7 @@ model Post {
 }
 ```
 
-run 
+run
 
 ```
 npx cnt
@@ -2976,7 +2977,7 @@ export * from './Post'
 
 **Create Queries and Mutations**
 
-run 
+run
 
 ```
 npx cnt --mq -f -o
@@ -3018,6 +3019,7 @@ export const userMutation = extendType({
   },
 })
 ```
+
 <br>
 
 # Development
