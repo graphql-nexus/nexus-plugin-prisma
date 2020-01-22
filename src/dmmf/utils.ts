@@ -1,4 +1,4 @@
-import { DMMF } from '@prisma/photon/runtime'
+import { DMMF } from '@prisma/client/runtime'
 
 export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   try {

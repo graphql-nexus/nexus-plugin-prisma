@@ -27,12 +27,12 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/photon": "^2.0.0-alpha.351",
+    "@prisma/client": "2.0.0-preview020",
     "graphql": "^14.5.0"
   },
   "devDependencies": {
+    "@prisma/client": "^2.0.0-preview020",
     "@prisma/fetch-engine": "^0.3.30",
-    "@prisma/photon": "^2.0.0-alpha.351",
     "@types/fs-extra": "^8.0.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^13.1.6",

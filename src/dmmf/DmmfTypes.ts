@@ -32,7 +32,7 @@ export declare namespace DmmfTypes {
     isUnique: boolean
     isId: boolean
     type: string
-    dbName: string | null
+    dbNames: string[] | null
     isGenerated: boolean
     relationToFields?: any[]
     relationOnDelete?: string

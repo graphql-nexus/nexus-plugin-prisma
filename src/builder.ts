@@ -155,15 +155,15 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
   )
 }
 
-// Note Default should be updated once resolved:
-// https://github.com/prisma/photonjs/issues/88
-let defaultPhotonPath: string
+let defaultClientPath: string
 if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
-  defaultPhotonPath = process.env.NEXUS_PRISMA_PHOTON_PATH
+  defaultClientPath = process.env.NEXUS_PRISMA_PHOTON_PATH
+} else if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
+  defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultPhotonPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
 } else {
-  defaultPhotonPath = '@prisma/photon'
+  defaultClientPath = '@prisma/client'
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
@@ -178,7 +178,7 @@ const defaultOptions = {
   shouldGenerateArtifacts,
   photon: (ctx: any) => ctx.photon,
   inputs: {
-    photon: defaultPhotonPath,
+    photon: defaultClientPath,
   },
   outputs: {
     typegen: defaultTypegenPath,
