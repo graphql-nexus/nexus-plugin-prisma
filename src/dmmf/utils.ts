@@ -12,6 +12,7 @@ export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   }
 }
 
+//TODO: Remove this code after a couple version. (Added on version `0.7.0-next.1`)
 export function fatalIfOldPhotonIsInstalled(photonPackagePath: string): boolean {
   try {
     require(photonPackagePath)
