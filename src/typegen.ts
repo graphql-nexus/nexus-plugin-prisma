@@ -5,7 +5,7 @@ import { hardWriteFileSync, hardWriteFile } from './utils'
 import { getTransformedDmmf } from './dmmf/transformer'
 
 type Options = {
-  photonPath: string
+  prismaClientPath: string
   typegenPath: string
 }
 
@@ -23,8 +23,8 @@ export function doGenerate(
   sync: boolean,
   options: Options,
 ): void | Promise<void> {
-  const dmmf = getTransformedDmmf(options.photonPath)
-  const tsDeclaration = render(dmmf, options.photonPath)
+  const dmmf = getTransformedDmmf(options.prismaClientPath)
+  const tsDeclaration = render(dmmf, options.prismaClientPath)
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {

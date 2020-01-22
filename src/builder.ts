@@ -86,7 +86,7 @@ const dmmfListFieldTypeToNexus = (
       }
 }
 
-type PhotonFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
+type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
 
 export interface Options {
   // TODO return type should be Photon
@@ -96,7 +96,7 @@ export interface Options {
    * be available on the context to support your custom resolvers. Therefore the
    * default getter returns `ctx.prisma`.
    */
-  prismaClient?: PhotonFetcher
+  prismaClient?: PrismaClientFetcher
   /**
    * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
    * and permits the same environment variables. This configuration will completely
@@ -105,10 +105,10 @@ export interface Options {
   shouldGenerateArtifacts?: boolean
   inputs?: {
     /**
-     * Where can nexus-prisma find the Photon.js package? By default looks in
+     * Where can nexus-prisma find the Prisma Client JS package? By default looks in
      * `node_modules/@prisma/client`. This is needed because nexus-prisma
-     * gets your Prisma schema AST and Photon.js crud info from the generated
-     * Photon.js package.
+     * gets your Prisma schema AST and Prisma Client JS crud info from the generated
+     * Prisma Client JS package.
      */
     prismaClient?: string
   }
@@ -157,9 +157,8 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
 }
 
 let defaultClientPath: string
-if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
-  defaultClientPath = process.env.NEXUS_PRISMA_PHOTON_PATH
-} else if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
+
+if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
   defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
@@ -204,7 +203,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
-  protected getPhoton: PhotonFetcher
+  protected getPhoton: PrismaClientFetcher
   protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
@@ -238,7 +237,7 @@ export class SchemaBuilder {
     }
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
-        photonPath: config.inputs.prismaClient,
+        prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
       })
     }
