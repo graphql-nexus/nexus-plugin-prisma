@@ -1,11 +1,12 @@
 import * as Prisma from '@prisma/client/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
+import * as Path from 'path'
+import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
+import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
-import stripAnsi from 'strip-ansi'
-import { TransformOptions, transform } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -19,7 +20,17 @@ export const createNexusPrismaInternal = (
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
   return new DmmfDocument(
-    transform(await Prisma.getDMMF({ datamodel }), options),
+    transform(
+      await Prisma.getDMMF({
+        datamodel,
+        // TODO: We should need to override prismaPath to find the engine...
+        prismaPath: Path.join(
+          __dirname,
+          '../node_modules/@prisma/client/runtime/query-engine-darwin',
+        ),
+      }),
+      options,
+    ),
   )
 }
 
