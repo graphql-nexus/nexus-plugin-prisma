@@ -32,9 +32,9 @@ export function doGenerate(
   }
 }
 
-export function render(dmmf: DmmfDocument, photonPath: string) {
+export function render(dmmf: DmmfDocument, prismaClientPath: string) {
   return `\
-import * as photon from '${photonPath}';
+import * as prisma from '${prismaClientPath}';
 import { core } from 'nexus';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -59,7 +59,7 @@ declare global {
 function renderModelTypes(dmmf: DmmfDocument) {
   return `\
 interface ModelTypes {
-${dmmf.datamodel.models.map(m => `  ${m.name}: photon.${m.name}`).join('\n')}
+${dmmf.datamodel.models.map(m => `  ${m.name}: prisma.${m.name}`).join('\n')}
 }
   `
 }
@@ -290,11 +290,11 @@ type GetNexusPrismaInput<
   : never;
 
 /**
- *  Represents arguments required by Photon that will
+ *  Represents arguments required by Prisma Client JS that will
  *  be derived from a request's input (args, context, and info)
  *  and omitted from the GraphQL API. The object itself maps the
  *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the photon
+ *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
 export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<

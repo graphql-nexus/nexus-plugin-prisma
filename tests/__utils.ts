@@ -1,4 +1,4 @@
-import * as Photon from '@prisma/photon/runtime'
+import * as Prisma from '@prisma/client/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import * as NexusPrismaBuilder from '../src/builder'
@@ -19,7 +19,7 @@ export const createNexusPrismaInternal = (
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
   return new DmmfDocument(
-    transform(await Photon.getDMMF({ datamodel }), options),
+    transform(await Prisma.getDMMF({ datamodel }), options),
   )
 }
 
@@ -40,7 +40,7 @@ export async function generateSchemaAndTypes(
 
   return {
     schema: GQL.printSchema(schema),
-    typegen: renderTypegen(dmmf, '@prisma/photon'),
+    typegen: renderTypegen(dmmf, '@prisma/client'),
   }
 }
 
@@ -64,7 +64,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
     types: [types, nexusPrisma],
     outputs: false,
   })
-  const typegen = renderTypegen(dmmf, '@prisma/photon')
+  const typegen = renderTypegen(dmmf, '@prisma/client')
 
   return {
     schema: GQL.printSchema(schemaAndMissingTypes.schema),

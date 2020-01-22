@@ -96,9 +96,9 @@ export function dmmfFieldToNexusFieldConfig(param: {
   }
 }
 
-export function assertPhotonInContext(photon: any) {
-  if (!photon) {
-    throw new Error('Could not find photon in context')
+export function assertPhotonInContext(prismaClient: any) {
+  if (!prismaClient) {
+    throw new Error('Could not find Prisma Client JS in context (ctx.prisma)')
   }
 }
 
@@ -152,11 +152,11 @@ export type Index<T> = Record<string, T>
  * has been copy pasted into our README.
  **/
 /**
- *  Represents arguments required by Photon that will
+ *  Represents arguments required by Prisma Client JS that will
  *  be derived from a request's input (args, context, and info)
  *  and omitted from the GraphQL API. The object itself maps the
  *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the photon
+ *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
 export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<

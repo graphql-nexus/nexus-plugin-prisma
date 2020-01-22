@@ -25,7 +25,7 @@ import { build as buildNexusPrismaTypes, Options } from './builder'
  * })
  * ```
  *
- * You must ensure the photon client has been generated prior as it provides a
+ * You must ensure the Prisma Client JS has been generated prior as it provides a
  * data representation of the available models and CRUD operations against them.
  *
  * Like Nexus, NexusPrisma has its own Typegen. By default It will be generated

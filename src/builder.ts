@@ -70,7 +70,7 @@ type FieldConfigData = {
  * When dealing with list types we rely on the list type zero value (empty-list)
  * to represet the idea of null.
  *
- * For Photon's part, it will never return null for list type fields nor will it
+ * For Prisma Client JS' part, it will never return null for list type fields nor will it
  * ever return null value list members.
  */
 const dmmfListFieldTypeToNexus = (
