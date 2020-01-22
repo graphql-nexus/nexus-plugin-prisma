@@ -6,6 +6,7 @@ import {
   DmmfDocument,
   DmmfTypes,
   getTransformedDmmf,
+  warnIfOldPhotonIsUsed,
 } from './dmmf'
 import * as GraphQL from './graphql'
 import {
@@ -161,9 +162,17 @@ if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
 } else if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
+  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+
+  if (!warnIfOldPhotonIsUsed()) {
+    defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+  }
 } else {
-  defaultClientPath = '@prisma/client'
+  defaultClientPath = '@prisma/photon'
+
+  if (!warnIfOldPhotonIsUsed()) {
+    defaultClientPath = '@prisma/client'
+  }
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
