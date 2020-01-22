@@ -23,11 +23,6 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
     transform(
       await Prisma.getDMMF({
         datamodel,
-        // TODO: We should need to override prismaPath to find the engine...
-        prismaPath: Path.join(
-          __dirname,
-          '../node_modules/@prisma/client/runtime/query-engine-darwin',
-        ),
       }),
       options,
     ),
