@@ -1,10 +1,10 @@
-import { Photon } from '@prisma/photon'
+import { PrismaClient } from '@prisma/client'
 import { name } from 'faker'
 
 main()
 
 async function main() {
-  const photon = new Photon()
+  const photon = new PrismaClient()
   const author = await photon.users.create({
     data: {
       name: name.firstName(),

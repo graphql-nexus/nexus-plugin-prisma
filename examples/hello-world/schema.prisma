@@ -3,7 +3,7 @@ datasource db {
   url      = "sqlite:./dev.db"
 }
 
-generator photonjs {
+generator prisma_client {
   provider = "prisma-client-js"
 }
 

@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@prisma/photon@^2.0.0-alpha.351":
-  version "2.0.0-preview019"
-  resolved "https://registry.yarnpkg.com/@prisma/photon/-/photon-2.0.0-preview019.tgz#cd083628f668fbdc4ab8f7d15cd8a33b83a997a3"
-  integrity sha512-fAqVbg2nxzk2B5h6Z6BgsApD3iRbWGMDKTsa8WDtH3fsrZc07HbGGc9HM5kNYUAPAKYSWJCr7no2W+c8Q87sRQ==
+"@prisma/client@^2.0.0-preview020":
+  version "2.0.0-preview020"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview020.tgz#fb95640f5f2a44ac68a35c14d9a04e8da192c647"
+  integrity sha512-hClPxTg9W/AEvDyGuQ4UUBELOehAnGvu8dfjJ/WCuOVmeM00/KpcXD9Pco0RtoUezlyEIAU47GKDVkBbvP2hyA==
 
 "@types/aws-lambda@8.10.13":
   version "8.10.13"
@@ -101,10 +101,10 @@
   resolved "https://registry.yarnpkg.com/@types/strip-json-comments/-/strip-json-comments-0.0.30.tgz#9aa30c04db212a9a0649d6ae6fd50accc40748a1"
   integrity sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==
 
-"@types/ws@^6.0.3":
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-6.0.4.tgz#7797707c8acce8f76d8c34b370d4645b70421ff1"
-  integrity sha512-PpPrX7SZW9re6+Ha8ojZG4Se8AZXgf0GK6zmfqEuCsY49LFDNXO3SByp44X3dFEqtB73lkCDAdUazhAjVPiNwg==
+"@types/ws@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.2.0.tgz#ed94695be01a77efd590244fc17c3b730e75d88a"
+  integrity sha512-HnqczxiZ828df9FUh9OyY7vSOelpQNaj+SLEnDvU74rYijp61ggV7dhmDlMky0oYXKLdVuIG4KvExk8DEqzJgQ==
   dependencies:
     "@types/node" "*"
 
@@ -931,17 +931,15 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-prisma@^0.7.0-next.1:
-  version "0.7.0-next.1"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.7.0-next.1.tgz#4fe7eeeda64a1fcc07efa589881ee1e082c2ef82"
-  integrity sha512-3eJ3eujx/x1fTU6aSK8rZTlgKTsT4M4VDnRSHYTZoQrWxM/3NKF4WIVX61Oen36s3HYPmL3cF7idYjkpvL/gvw==
+"nexus-prisma@file:.yalc/nexus-prisma":
+  version "0.7.0-next.1-bc38b6ce"
   dependencies:
     camelcase "^5.3.1"
     fs-extra "^8.1.0"
-    nexus "^0.12.0-rc.4"
+    nexus "^0.12.0-rc.5"
     pluralize "^8.0.0"
 
-nexus@^0.12.0-beta.14, nexus@^0.12.0-rc.4:
+nexus@^0.12.0-beta.14, nexus@^0.12.0-rc.5:
   version "0.12.0-rc.5"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-rc.5.tgz#98232f4ced045353892bfc9e06a0ff383143ba22"
   integrity sha512-eDZVVwjndggBbcMtqniSXnPhcz605zYS7jwcYb7LIq2uCUPa5vKE/mQ/LQIfaCN0aLqYtch1UnRq0nf41V1FDg==
@@ -1069,10 +1067,10 @@ prettier@^1.18.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
 
-prisma2@2.0.0-preview019:
-  version "2.0.0-preview019"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview019.tgz#d0d2bafad041071fa59400eb04e41b21de68aac6"
-  integrity sha512-G/+3ZqcEfO0Sn93Z8BoErIXLhMI7xKMOhfbLeNjso7/n3o4MiRmjO5sS3dFkxHc/VBlyTjJFtNyMOsgAkiP6ng==
+prisma2@2.0.0-preview020:
+  version "2.0.0-preview020"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview020.tgz#46dd8c0cac58ddfab8ed8e0c2a52c960d79c8e11"
+  integrity sha512-yndRjoAqedc4SWe7OjjE6FkEs0YBnOEFLk70n0EK+Bee6yEDsYV2OX/zi07XCr2BfnoJnw62NA84Fh8KtsUYfQ==
 
 proxy-addr@~2.0.5:
   version "2.0.5"
@@ -1390,10 +1388,10 @@ type-is@~1.6.17, type-is@~1.6.18:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
-typescript@^3.7:
-  version "3.7.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.4.tgz#1743a5ec5fef6a1fa9f3e4708e33c81c73876c19"
-  integrity sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
+typescript@^3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
+  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
 
 universalify@^0.1.0:
   version "0.1.2"
