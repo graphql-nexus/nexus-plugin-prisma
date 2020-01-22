@@ -23,6 +23,10 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
     transform(
       await Prisma.getDMMF({
         datamodel,
+        // prismaPath: Path.join(
+        //   __dirname,
+        //   '../node_modules/@prisma/client/runtime/query-engine-darwin',
+        // ),
       }),
       options,
     ),
