@@ -3,10 +3,6 @@ import { colors } from '../colors'
 
 export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   try {
-    if (packagePath.includes('@prisma/photon')) {
-      errorIfOldPhotonIsUsed()
-    }
-
     return require(packagePath).dmmf
   } catch (error) {
     throw new Error(
@@ -16,13 +12,13 @@ export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   }
 }
 
-export function errorIfOldPhotonIsUsed(): boolean {
+export function fatalIfOldPhotonIsInstalled(photonPackagePath: string): boolean {
   try {
-    require('@prisma/photon')
+    require(photonPackagePath)
 
     console.log(
       colors.red(
-        'Error: `@prisma/photon` was renamed to `@prisma/client`. Please use `@prisma/client` instead',
+        'Error: `@prisma/photon` was renamed to `@prisma/client`. Please uninstall `@prisma/photon` and install `@prisma/client` instead',
       ),
     )
     console.log(
@@ -30,7 +26,7 @@ export function errorIfOldPhotonIsUsed(): boolean {
         'Error: More information at https://github.com/prisma/prisma2/releases/tag/2.0.0-preview020',
       ),
     )
-    return true
+    process.exit(1)
   } catch {
     return false
   }
