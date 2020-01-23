@@ -25,7 +25,7 @@ export interface NexusGenInputs {
   }
   BubbleCreateWithoutMembersInput: { // input type
     createdAt?: any | null; // DateTime
-    id?: string | null; // String
+    id?: any | null; // UUID
   }
   BubbleMembersOrderByInput: { // input type
     firstName?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
@@ -42,7 +42,7 @@ export interface NexusGenInputs {
     OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
   }
   BubbleWhereUniqueInput: { // input type
-    id?: string | null; // String
+    id?: any | null; // UUID
   }
   DateTimeFilter: { // input type
     equals?: any | null; // DateTime
@@ -136,7 +136,7 @@ export interface NexusGenInputs {
   UserCreateWithoutPostsInput: { // input type
     bubble?: NexusGenInputs['BubbleCreateOneWithoutBubbleInput'] | null; // BubbleCreateOneWithoutBubbleInput
     firstName: string; // String!
-    id?: string | null; // String
+    id?: string | null; // ID
     lastName: string; // String!
   }
   UserFilter: { // input type
@@ -155,7 +155,7 @@ export interface NexusGenInputs {
     posts?: NexusGenInputs['PostFilter'] | null; // PostFilter
   }
   UserWhereUniqueInput: { // input type
-    id?: string | null; // String
+    id?: string | null; // ID
   }
 }
 
@@ -170,7 +170,7 @@ export interface NexusGenRootTypes {
   }
   Bubble: { // root type
     createdAt: any; // DateTime!
-    id: string; // String!
+    id: any; // UUID!
   }
   Mutation: {};
   Post: { // root type
@@ -179,7 +179,7 @@ export interface NexusGenRootTypes {
   Query: {};
   User: { // root type
     firstName: string; // String!
-    id: string; // String!
+    id: string; // ID!
   }
   String: string;
   Int: number;
@@ -222,7 +222,7 @@ export interface NexusGenFieldTypes {
   }
   Bubble: { // field return type
     createdAt: any; // DateTime!
-    id: string; // String!
+    id: any; // UUID!
     members: NexusGenRootTypes['User'][]; // [User!]!
   }
   Mutation: { // field return type
@@ -239,7 +239,7 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     firstName: string; // String!
-    id: string; // String!
+    id: string; // ID!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
   }
 }
@@ -266,8 +266,8 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
     }
     users: { // args
-      after?: string | null; // String
-      before?: string | null; // String
+      after?: string | null; // ID
+      before?: string | null; // ID
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
