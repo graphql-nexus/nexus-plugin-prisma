@@ -15,10 +15,10 @@ type Nested {
 
 input NestedCreateInput {
   name: String!
-  user: UserCreateOneWithoutUserInput
+  user: UserCreateOneWithoutNestedInput
 }
 
-input NestedCreateManyWithoutNestedInput {
+input NestedCreateManyWithoutUserInput {
   create: [NestedCreateWithoutUserInput!]
   connect: [NestedWhereUniqueInput!]
 }
@@ -44,10 +44,10 @@ type User {
 
 input UserCreateInput {
   name: String!
-  nested: NestedCreateManyWithoutNestedInput
+  nested: NestedCreateManyWithoutUserInput
 }
 
-input UserCreateOneWithoutUserInput {
+input UserCreateOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
   connect: UserWhereUniqueInput
 }
