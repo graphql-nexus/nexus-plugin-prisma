@@ -404,9 +404,9 @@
     fastq "^1.6.0"
 
 "@prisma/client@^2.0.0-preview020":
-  version "2.0.0-preview020"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview020.tgz#fb95640f5f2a44ac68a35c14d9a04e8da192c647"
-  integrity sha512-hClPxTg9W/AEvDyGuQ4UUBELOehAnGvu8dfjJ/WCuOVmeM00/KpcXD9Pco0RtoUezlyEIAU47GKDVkBbvP2hyA==
+  version "2.0.0-preview020.2"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview020.2.tgz#7f1d3b92ab964659f6d434a2c72415dd685ba0f5"
+  integrity sha512-+rpFBlNzN8SD7XACFXnLv48lHtLZExiK3QAfNJXTDtaYJ5VUjC3/AMBY/M3UrIysF9oOYwUyFEU6bGGmXFPEPQ==
 
 "@prisma/fetch-engine@^0.3.52":
   version "0.3.52"
@@ -3282,9 +3282,9 @@ pretty-format@^24.9.0:
     react-is "^16.8.4"
 
 prisma2@^2.0.0-preview020:
-  version "2.0.0-preview020"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview020.tgz#46dd8c0cac58ddfab8ed8e0c2a52c960d79c8e11"
-  integrity sha512-yndRjoAqedc4SWe7OjjE6FkEs0YBnOEFLk70n0EK+Bee6yEDsYV2OX/zi07XCr2BfnoJnw62NA84Fh8KtsUYfQ==
+  version "2.0.0-preview020.2"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview020.2.tgz#8707cb0c9f7666a9be54ded1279908932bb1efee"
+  integrity sha512-okvQ1tdxq6yjsfGgoMdx8PVEQ1HfrQbmIqkMyDCsd0/4oEGIkI9kMqfKbci0XmJVaxJtkQ3WhwUuvyzHD3WR7Q==
 
 process-nextick-args@~2.0.0:
   version "2.0.1"
