@@ -1,24 +1,24 @@
 datasource db {
   provider = "sqlite"
-  url      = "file:dev.db"
+  url = "***"
 }
 
-generator photon {
-  provider = "photonjs"
+generator prisma_client {
+  provider = "prisma-client-js"
 }
 
 model Blog {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
-  viewCount Int
+  viewCount Int      @default(0)
   posts     Post[]
   authors   User[]
 }
 
 model User {
-  id        Int      @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String?
@@ -34,9 +34,9 @@ enum UserRole {
 }
 
 model Post {
-  id     Int        @id
+  id     Int        @id @default(autoincrement())
   title  String
-  tags   String[]
+  tags   Tag[]
   blog   Blog
   status PostStatus
 }
@@ -44,4 +44,9 @@ model Post {
 enum PostStatus {
   DRAFT
   PUBLISHED
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  value String
 }

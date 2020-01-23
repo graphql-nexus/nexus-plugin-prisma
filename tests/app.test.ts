@@ -7,7 +7,7 @@ import * as types from './__app/main'
 import { mockConsoleLog } from './__utils'
 
 // IDEA Future tests?
-// - show we gracefully handle case of photon import failing
+// - show we gracefully handle case of Prisma Client JS import failing
 
 it('integrates together', async () => {
   // Setup file system vars & helpers
@@ -33,7 +33,7 @@ it('integrates together', async () => {
   ])
 
   // Run Prisma generation:
-  // - Photon JS Client
+  // - Prisma Client JS
   //
   cp.execSync('../../node_modules/.bin/prisma2 generate', {
     cwd: projectRoot,
@@ -82,10 +82,10 @@ it('integrates together', async () => {
     '/generated/nexus-typegen.d.ts',
   )
   const photonTSD = await projectReadFile(
-    '../../node_modules/@prisma/photon/index.d.ts',
+    '../../node_modules/@prisma/client/index.d.ts',
   )
   const photonSource = (
-    await projectReadFile('../../node_modules/@prisma/photon/index.js')
+    await projectReadFile('../../node_modules/@prisma/client/index.js')
   )
     .replace(
       /(path\.join\(__dirname, 'runtime\/).*('\);)/,
@@ -100,7 +100,7 @@ it('integrates together', async () => {
   expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
   expect(photonTSD).toMatchSnapshot('photon typescript declaration')
   expect(photonSource).toMatchSnapshot('photon source code')
-  expect(require('@prisma/photon').dmmf).toMatchSnapshot('photon dmmf')
+  expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
   expect($output).toMatchSnapshot('console.log output')
 
   // Assert the app type checks. In effect this is testing that our

@@ -1,11 +1,11 @@
-import { Photon } from '@prisma/photon'
+import { PrismaClient } from '@prisma/client'
 
-const photon = new Photon()
+const prisma = new PrismaClient()
 
 export type Context = {
-  photon: Photon
+  prisma: PrismaClient
 }
 
 export const createContext = (): Context => ({
-  photon,
+  prisma,
 })

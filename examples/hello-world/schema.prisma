@@ -1,15 +1,20 @@
-generator photonjs {
-  provider = "photonjs"
+datasource db {
+  provider = "sqlite"
+  url      = "sqlite:./dev.db"
+}
+
+generator prisma_client {
+  provider = "prisma-client-js"
 }
 
 model User {
-  id        String   @id @unique @default(cuid())
+  id        String   @id @default(cuid())
   email     String   @unique
   birthDate DateTime
   posts     Post[]
 }
 
 model Post {
-  id     String @id @unique @default(cuid())
+  id     String @id @default(cuid())
   author User[]
 }
