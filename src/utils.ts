@@ -10,6 +10,7 @@ import { dirname, relative } from 'path'
 import { core } from 'nexus'
 import { isDeepStrictEqual } from 'util'
 import { GraphQLResolveInfo } from 'graphql'
+import { type } from 'os'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -195,3 +196,20 @@ export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 export type Context = core.GetGen<'context'>
 
 export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
+
+type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
+
+export type InputFieldName = NestedKeys<core.GetGen<'inputTypes'>>
+
+//On a related note, this type determines which fields are always 'created' or always 'connected'
+export type RelatedFields<
+  IllegalKeys extends string | number | symbol | null = null
+> = Record<Exclude<InputFieldName, IllegalKeys>, boolean> | boolean
+
+export type RelatedFieldConfig<
+  CreatedFields extends RelatedFields,
+  ConnectedFields extends RelatedFields<keyof CreatedFields>
+> = {
+  created: CreatedFields
+  connected: ConnectedFields
+}

@@ -32,6 +32,7 @@ import {
   LocalComputedInputs,
   GlobalComputedInputs,
   Index,
+  RelatedFields,
 } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
 
@@ -43,6 +44,8 @@ interface FieldPublisherConfig {
   ordering?: boolean | Record<string, boolean>
   computedInputs?: LocalComputedInputs<any>
   upfilteredKey?: string
+  created?: RelatedFields
+  connected?: RelatedFields
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
@@ -565,6 +568,83 @@ export class SchemaBuilder {
           field => !(field.name in publisherConfig.locallyComputedInputs),
         )
       : fields
+  }
+
+  filterRelated(
+    args: DmmfTypes.SchemaArg[],
+    publisherConfig: ResolvedFieldPublisherConfig,
+  ): CustomInputArg[] {
+    const getSuffix = (relation: 'Create' | 'Connect') => {
+      const configKey = relation === 'Create' ? 'created' : 'connected'
+      const configValue = publisherConfig[configKey]
+      return configValue
+        ? configValue === true
+          ? `${relation}All`
+          : `${relation}${Object.keys(configValue).join('And')}`
+        : ''
+    }
+    const typeSuffix = `${getSuffix('Create')}${getSuffix('Connect')}Input`
+    const getCustomArg = (
+      inputType: DmmfTypes.InputType,
+      arg: DmmfTypes.SchemaArg,
+      key: string,
+      upfilteredKey: string | null,
+    ): CustomInputArg => {
+      const name = arg.inputType.type.replace('Input', '') + typeSuffix
+      return {
+        arg: {
+          ...arg,
+          name: key,
+          inputType: {
+            ...arg.inputType,
+            type: name,
+          },
+        },
+        type: {
+          ...inputType,
+          name,
+          /** If the key was actually removed, the value of upfilteredKey will be that key as a string
+           *   Otherwise, upfilteredKey will be null, but its presence on the inputType dinstinguishes it
+           *   from types without any upfiltered keys in their hierarchy.
+           **/
+          upfilteredKey,
+          fields: this.filterLocallyComputedInputs(
+            this.createUpfilteredTypes(inputType.fields, publisherConfig).map(
+              _ => _.arg,
+            ),
+            publisherConfig,
+          ),
+        },
+      }
+    }
+    return args.map(arg => {
+      const inputType = this.publisher.getTypeFromArg(
+        arg,
+      ) as DmmfTypes.InputType
+      if (arg.inputType.kind !== 'object') {
+        return {
+          arg,
+          type: inputType,
+        }
+      }
+      const filteredField = inputType.fields.find(
+        _ => _.name === publisherConfig.upfilteredKey,
+      )
+      const customArg = filteredField
+        ? getCustomArg(
+            this.publisher.getInputType(filteredField!.inputType.type),
+            filteredField,
+            arg.name,
+            publisherConfig.upfilteredKey!,
+          )
+        : getCustomArg(inputType, arg, arg.name, null)
+      if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
+        this.publisher.nexusBuilder.addType(
+          this.publisher.inputType(customArg) as any,
+        )
+      }
+      return customArg
+    })
   }
 
   createUpfilteredTypes(
