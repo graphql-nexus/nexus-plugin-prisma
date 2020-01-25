@@ -1,4 +1,4 @@
-import { queryType, idArg, intArg, stringArg } from 'nexus'
+import { queryType, intArg, stringArg } from 'nexus'
 
 export const Query = queryType({
   definition(t) {
@@ -18,7 +18,7 @@ export const Query = queryType({
         id: intArg({ required: true }),
       },
       resolve(_root, args, ctx) {
-        return ctx.photon.blogs
+        return ctx.prisma.blogs
           .findOne({
             where: {
               id: args.id,
@@ -41,7 +41,7 @@ export const Query = queryType({
         viewCount: intArg(),
       },
       resolve(_root, args, ctx) {
-        return ctx.photon.blogs.findMany({
+        return ctx.prisma.blogs.findMany({
           where: {
             name: args.name,
             viewCount: args.viewCount,

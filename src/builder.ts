@@ -1,6 +1,13 @@
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
+import {
+  DmmfDocument,
+  DmmfTypes,
+  getTransformedDmmf,
+  fatalIfOldPhotonIsInstalled,
+  transformArgs,
+} from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -24,15 +31,8 @@ import {
   assertPhotonInContext,
   LocalComputedInputs,
   GlobalComputedInputs,
-  isEmptyObject,
   Index,
 } from './utils'
-import {
-  transformArgs,
-  getTransformedDmmf,
-  DmmfTypes,
-  DmmfDocument,
-} from './dmmf'
 import { NexusArgDef } from 'nexus/dist/core'
 
 interface FieldPublisherConfig {
@@ -71,7 +71,7 @@ type FieldConfigData = {
  * When dealing with list types we rely on the list type zero value (empty-list)
  * to represet the idea of null.
  *
- * For Photon's part, it will never return null for list type fields nor will it
+ * For Prisma Client JS' part, it will never return null for list type fields nor will it
  * ever return null value list members.
  */
 const dmmfListFieldTypeToNexus = (
@@ -87,17 +87,17 @@ const dmmfListFieldTypeToNexus = (
       }
 }
 
-type PhotonFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
+type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
 
 export interface Options {
   // TODO return type should be Photon
   /**
-   * nexus-prisma will call this to get a reference to an instance of Photon.
+   * nexus-prisma will call this to get a reference to an instance of the Prisma Client.
    * The function is passed the context object. Typically a Photon instance will
    * be available on the context to support your custom resolvers. Therefore the
-   * default getter returns `ctx.photon`.
+   * default getter returns `ctx.prisma`.
    */
-  photon?: PhotonFetcher
+  prismaClient?: PrismaClientFetcher
   /**
    * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
    * and permits the same environment variables. This configuration will completely
@@ -106,12 +106,12 @@ export interface Options {
   shouldGenerateArtifacts?: boolean
   inputs?: {
     /**
-     * Where can nexus-prisma find the Photon.js package? By default looks in
-     * `node_modules/@prisma/photon`. This is needed because nexus-prisma
-     * gets your Prisma schema AST and Photon.js crud info from the generated
-     * Photon.js package.
+     * Where can nexus-prisma find the Prisma Client JS package? By default looks in
+     * `node_modules/@prisma/client`. This is needed because nexus-prisma
+     * gets your Prisma schema AST and Prisma Client JS crud info from the generated
+     * Prisma Client JS package.
      */
-    photon?: string
+    prismaClient?: string
   }
   outputs?: {
     /**
@@ -158,15 +158,22 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
   )
 }
 
-// Note Default should be updated once resolved:
-// https://github.com/prisma/photonjs/issues/88
-let defaultPhotonPath: string
-if (process.env.NEXUS_PRISMA_PHOTON_PATH) {
-  defaultPhotonPath = process.env.NEXUS_PRISMA_PHOTON_PATH
+let defaultClientPath: string
+
+if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
+  defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultPhotonPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+
+  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
+    defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
+  }
 } else {
-  defaultPhotonPath = '@prisma/photon'
+  defaultClientPath = '@prisma/photon'
+
+  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
+    defaultClientPath = '@prisma/client'
+  }
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
@@ -179,13 +186,14 @@ const shouldGenerateArtifacts =
 
 const defaultOptions = {
   shouldGenerateArtifacts,
-  photon: (ctx: any) => ctx.photon,
+  prismaClient: (ctx: any) => ctx.prisma,
   inputs: {
-    photon: defaultPhotonPath,
+    prismaClient: defaultClientPath,
   },
   outputs: {
     typegen: defaultTypegenPath,
   },
+  computedInputs: {},
 }
 
 export interface CustomInputArg {
@@ -197,7 +205,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
-  protected getPhoton: PhotonFetcher
+  protected getPhoton: PrismaClientFetcher
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
   publisher: Publisher
@@ -215,7 +223,7 @@ export class SchemaBuilder {
       : {}
     this.dmmf =
       options.dmmf ||
-      getTransformedDmmf(config.inputs.photon, {
+      getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
       })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
@@ -228,13 +236,13 @@ export class SchemaBuilder {
     this.fieldNamingStrategy = defaultFieldNamingStrategy
 
     this.getPhoton = (ctx: any) => {
-      const photon = config.photon(ctx)
+      const photon = config.prismaClient(ctx)
       assertPhotonInContext(photon)
       return photon
     }
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
-        photonPath: config.inputs.photon,
+        prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
       })
     }

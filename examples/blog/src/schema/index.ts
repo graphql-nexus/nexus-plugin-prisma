@@ -4,11 +4,12 @@ import * as Query from './Query'
 import * as Mutation from './Mutation'
 import * as Blog from './Blog'
 import * as Post from './Post'
+import * as Tag from './Tag'
 import * as User from './User'
 import * as path from 'path'
 
 export default Nexus.makeSchema({
-  types: [Query, Mutation, Blog, Post, User],
+  types: [Query, Mutation, Blog, Post, User, Tag],
   plugins: [nexusPrismaPlugin()],
   outputs: {
     typegen: path.join(
@@ -20,8 +21,8 @@ export default Nexus.makeSchema({
     contextType: 'Context.Context',
     sources: [
       {
-        source: '@prisma/photon',
-        alias: 'photon',
+        source: '@prisma/client',
+        alias: 'prisma',
       },
       {
         source: require.resolve('../context'),

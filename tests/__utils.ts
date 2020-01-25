@@ -1,11 +1,12 @@
-import * as Photon from '@prisma/photon/runtime'
+import * as Prisma from '@prisma/client/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
+import * as Path from 'path'
+import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
+import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
-import stripAnsi from 'strip-ansi'
-import { TransformOptions, transform } from '../src/dmmf/transformer'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -19,7 +20,16 @@ export const createNexusPrismaInternal = (
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
   return new DmmfDocument(
-    transform(await Photon.getDMMF({ datamodel }), options),
+    transform(
+      await Prisma.getDMMF({
+        datamodel,
+        // prismaPath: Path.join(
+        //   __dirname,
+        //   '../node_modules/@prisma/client/runtime/query-engine-darwin',
+        // ),
+      }),
+      options,
+    ),
   )
 }
 
@@ -40,7 +50,7 @@ export async function generateSchemaAndTypes(
 
   return {
     schema: GQL.printSchema(schema),
-    typegen: renderTypegen(dmmf, '@prisma/photon'),
+    typegen: renderTypegen(dmmf, '@prisma/client'),
   }
 }
 
@@ -64,7 +74,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
     types: [types, nexusPrisma],
     outputs: false,
   })
-  const typegen = renderTypegen(dmmf, '@prisma/photon')
+  const typegen = renderTypegen(dmmf, '@prisma/client')
 
   return {
     schema: GQL.printSchema(schemaAndMissingTypes.schema),

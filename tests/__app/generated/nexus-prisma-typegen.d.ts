@@ -1,4 +1,4 @@
-import * as photon from '@prisma/photon';
+import * as prisma from '@prisma/client';
 import { core } from 'nexus';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -72,11 +72,11 @@ type GetNexusPrismaInput<
   : never;
 
 /**
- *  Represents arguments required by Photon that will
+ *  Represents arguments required by Prisma Client JS that will
  *  be derived from a request's input (args, context, and info)
  *  and omitted from the GraphQL API. The object itself maps the
  *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the photon
+ *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
 export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
@@ -248,9 +248,9 @@ type GetNexusPrisma<
 
 // Generated
 interface ModelTypes {
-  Bubble: photon.Bubble
-  User: photon.User
-  Post: photon.Post
+  Bubble: prisma.Bubble
+  User: prisma.User
+  Post: prisma.Post
 }
   
 interface NexusPrismaInputs {

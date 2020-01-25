@@ -1,6 +1,6 @@
-generator photonjs {
-  provider = "photonjs"
-  output   = "../../node_modules/@prisma/photon"
+generator prisma_client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/client"
 }
 
 model Bubble {
@@ -18,7 +18,7 @@ model User {
 }
 
 model Post {
-  id      Int        @id
+  id      Int        @id @default(autoincrement())
   authors User[]
   rating  Float
   status  PostStatus

@@ -1,11 +1,11 @@
-import { Photon } from '@prisma/photon'
+import { PrismaClient } from '@prisma/client'
 import { name } from 'faker'
 
 main()
 
 async function main() {
-  const photon = new Photon()
-  const author = await photon.users.create({
+  const prisma = new PrismaClient()
+  const author = await prisma.users.create({
     data: {
       name: name.firstName(),
       blog: {},
@@ -13,7 +13,7 @@ async function main() {
       role: 'AUTHOR',
     },
   })
-  const blog = await photon.blogs.create({
+  const blog = await prisma.blogs.create({
     data: {
       name: name.title(),
       authors: {
@@ -25,5 +25,5 @@ async function main() {
   })
   console.log('added author:\n', author)
   console.log('added blog:\n', blog)
-  await photon.disconnect()
+  await prisma.disconnect()
 }

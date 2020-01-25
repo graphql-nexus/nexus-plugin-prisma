@@ -1,17 +1,17 @@
 import { GraphQLServer } from 'graphql-yoga'
 import { makeSchema, queryType, mutationType, objectType } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import { Photon } from '@prisma/photon'
+import { PrismaClient } from '@prisma/client'
 import * as path from 'path'
 
-const photon = new Photon()
+const prisma = new PrismaClient({ debug: true })
 
 new GraphQLServer({
-  context: () => ({ photon }),
+  context: () => ({ prisma }),
   schema: makeSchema({
     typegenAutoConfig: {
-      contextType: '{ photon: Photon.Photon }',
-      sources: [{ source: '@prisma/photon', alias: 'Photon' }],
+      contextType: '{ prisma: PrismaClient.PrismaClient }',
+      sources: [{ source: '@prisma/client', alias: 'PrismaClient' }],
     },
     outputs: {
       typegen: path.join(
