@@ -1,5 +1,5 @@
 import { core } from 'nexus'
-import { GlobalComputedInputs } from '../utils'
+import { ComputedInputs } from '../utils'
 
 export declare namespace DmmfTypes {
   interface Document {
@@ -81,7 +81,7 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
-    computedInputs: GlobalComputedInputs
+    computedInputs: ComputedInputs
     upfilteredKey?: string | null
     relation?: boolean | string
   }

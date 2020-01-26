@@ -1,10 +1,9 @@
 import { DMMF } from '@prisma/client/runtime'
 import { isEmpty } from '@re-do/utils'
 import {
-  GlobalComputedInputs,
-  GlobalMutationResolverParams,
-  LocalComputedInputs,
-  RelationsConfig,
+  MutationResolverParams,
+  ComputedInputs,
+  ResolvedRelationsConfig,
 } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
@@ -12,7 +11,7 @@ import { DmmfTypes } from './DmmfTypes'
 import { Publisher } from '../publisher'
 
 export type TransformOptions = {
-  globallyComputedInputs?: GlobalComputedInputs
+  computedInputs?: ComputedInputs
 }
 
 export const getTransformedDmmf = (
@@ -24,7 +23,7 @@ export const getTransformedDmmf = (
 const addDefaultOptions = (
   givenOptions?: TransformOptions,
 ): Required<TransformOptions> => ({
-  globallyComputedInputs: {},
+  computedInputs: {},
   ...givenOptions,
 })
 
@@ -54,12 +53,12 @@ function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
 
 function transformSchema(
   schema: DMMF.Schema,
-  { globallyComputedInputs }: Required<TransformOptions>,
+  { computedInputs }: Required<TransformOptions>,
 ): DmmfTypes.Schema {
   return {
     enums: schema.enums,
     inputTypes: schema.inputTypes.map(_ =>
-      transformInputType(_, globallyComputedInputs),
+      transformInputType(_, computedInputs),
     ),
     outputTypes: schema.outputTypes.map(o => ({
       ...o,
@@ -101,133 +100,134 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   }
 }
 
-type BaseTransformArgsParams = {
-  inputType: DmmfTypes.InputType
-  params: GlobalMutationResolverParams
-  publisher: Publisher
-}
-
-type TransformArgsParams = BaseTransformArgsParams & {
-  computedInputs: LocalComputedInputs<any>
-  relations: RelationsConfig
-}
-
-type DeepTransformArgsParams = BaseTransformArgsParams & { data: any }
-
-function shallowComputeInputs(
-  inputType: DmmfTypes.InputType,
-  params: GlobalMutationResolverParams,
-) {
-  return Object.keys(inputType.computedInputs).reduce(
-    (values, key) => ({
-      ...values,
-      [key]: inputType.computedInputs[key](params),
-    }),
-    {} as Record<string, any>,
+const computeInputs = (
+  computedInputs: ComputedInputs,
+  params: MutationResolverParams,
+) =>
+  Object.fromEntries(
+    Object.entries(computedInputs).map(([key, computeValue]) => [
+      key,
+      computeValue(params),
+    ]),
   )
+
+type TransformArgsParams = {
+  inputType: DmmfTypes.InputType
+  params: MutationResolverParams
+  publisher: Publisher
+  computedInputs: ComputedInputs
+  relations: ResolvedRelationsConfig
 }
 
-function shallowReplaceUpfilteredKeys(
-  inputType: DmmfTypes.InputType,
-  data: any,
+function shallowTransform(
+  { inputType, params }: TransformArgsParams,
+  data: unknown,
 ) {
-  return inputType.upfilteredKey ? { [inputType.upfilteredKey]: data } : data
-}
-
-/**
- * Recursively transforms args by:
- *   - Finding and populating values for inputs from globallyComputedInputs
- *   - Replacing upfiltered keys that were removed from corresponding types
- */
-function deepTransformArgs({
-  inputType,
-  params,
-  publisher,
-  data,
-}: DeepTransformArgsParams): Record<string, any> {
-  const deeplyTransformedArgData = Array.isArray(data)
-    ? data.map(value =>
-        deepTransformArgs({
-          // If the type has an upfilteredKey, we're adding it after recursing and don't want to duplicate
-          inputType: { ...inputType, upfilteredKey: null },
-          publisher,
-          params,
-          data: value,
-        }),
-      )
-    : // If data is an object, shallow combine computedInput values with recursively transformed values provided by the user
-      Object.keys(data).reduce((transformedArgs, fieldName) => {
-        const field = inputType.fields.find(_ => _.name === fieldName)
-        if (!field) {
-          throw new Error(
-            `Couldn't find field ${fieldName} on input type ${
-              inputType.name
-            } which was expected based on your data (${data}). Found fields ${inputType.fields.map(
-              _ => _.name,
-            )}`,
-          )
-        }
-        const fieldValue =
-          field.inputType.kind === 'object'
-            ? deepTransformArgs({
-                inputType: publisher.getInputType(field.inputType.type),
-                publisher,
-                params,
-                data: data[fieldName],
-              })
-            : data[fieldName]
-        return {
-          ...transformedArgs,
-          [fieldName]: fieldValue,
-        }
-      }, shallowComputeInputs(inputType, params))
-  // Replace upfilterKey if there was one removed from the type
-  return shallowReplaceUpfilteredKeys(inputType, deeplyTransformedArgData)
-}
-
-function addLocallyComputedInputs(
-  params: GlobalMutationResolverParams,
-  computedInputs: LocalComputedInputs<any>,
-) {
-  return {
-    ...params.args,
-    data: {
-      ...(params.args.data as object),
-      ...Object.entries(computedInputs).reduce(
-        (args, [fieldName, computeValue]) => ({
-          ...args,
-          [fieldName]: computeValue(params),
-        }),
-        {} as Record<string, any>,
-      ),
-    },
-  }
-}
-
-export function transformArgs({
-  inputType,
-  params,
-  publisher,
-  locallyComputedInputs,
-  globallyComputedInputs,
-}: TransformArgsParams) {
-  let transformedParams = params
-  if (locallyComputedInputs) {
-    transformedParams.args = addLocallyComputedInputs(
-      transformedParams,
-      locallyComputedInputs,
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error(
+      `Unexpectedly received non-object with value ${data} in shallowTransform.`,
     )
   }
-  if (!isEmpty(globallyComputedInputs) || 'upfilteredKey' in inputType) {
-    transformedParams.args.data = deepTransformArgs({
-      inputType,
-      publisher,
-      params: transformedParams,
-      data: transformedParams.args.data,
-    })
+  let transformedData = data
+  const transformFieldValue = (value: any) => {
+    let transformedValue = value
+    if (typeof inputType.relation === 'string') {
+      transformedValue = { [inputType.relation]: value }
+    }
+    return transformedValue
   }
-  return transformedParams.args
+  // shallowTransform individual field values
+  transformedData = Object.fromEntries(
+    Object.entries(transformedData!).map(([key, value]) => [
+      key,
+      transformFieldValue(value),
+    ]),
+  )
+  // Add computedInputs that were previously removed
+  transformedData = {
+    ...transformedData,
+    ...computeInputs(inputType.computedInputs, params),
+  }
+  return transformedData
 }
+
+function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
+  const { inputType, publisher } = params
+  if (!data || typeof data !== 'object') {
+    return data
+  }
+  if (Array.isArray(data)) {
+    return data.map(value =>
+      deepTransformArgData(
+        {
+          ...params,
+        },
+        value,
+      ),
+    )
+  } else if (data && typeof data === 'object') {
+    return Object.keys(data).reduce((transformedArgs, fieldName) => {
+      const field = inputType.fields.find(_ => _.name === fieldName)
+      if (!field) {
+        throw new Error(
+          `Couldn't find field ${fieldName} on input type ${
+            inputType.name
+          } which was expected based on your data (${data}). Found fields ${inputType.fields.map(
+            _ => _.name,
+          )}`,
+        )
+      }
+      const fieldValue = deepTransformArgData(
+        {
+          ...params,
+          inputType: publisher.getInputType(field.inputType.type),
+        },
+        (data as Record<string, any>)[fieldName],
+      )
+      return {
+        ...transformedArgs,
+        [fieldName]: fieldValue,
+      }
+    }, shallowTransform(params, data))
+  }
+}
+
+type IsTransformRequiredArgs = {
+  relations: ResolvedRelationsConfig
+  computedInputs: ComputedInputs
+}
+
+export const isTransformRequired = ({
+  relations,
+  computedInputs,
+}: IsTransformRequiredArgs) =>
+  !isEmpty(computedInputs) ||
+  !isEmpty(relations.connect) ||
+  !isEmpty(relations.create) ||
+  relations.defaultRelation
+
+export const transformArgs = ({
+  inputType,
+  params,
+  publisher,
+  relations,
+  computedInputs,
+}: TransformArgsParams) =>
+  isTransformRequired({ relations, computedInputs })
+    ? {
+        ...params.args,
+        data: deepTransformArgData(
+          {
+            inputType,
+            publisher,
+            params,
+            relations,
+            computedInputs,
+          },
+          params.args.data,
+        ),
+      }
+    : params.args
 
 const isRelationType = (inputType: DMMF.InputType) =>
   inputType.fields.length === 2 &&
@@ -237,29 +237,27 @@ const isRelationType = (inputType: DMMF.InputType) =>
 
 function transformInputType(
   inputType: DMMF.InputType,
-  globallyComputedInputs: GlobalComputedInputs,
+  computedInputs: ComputedInputs,
 ): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map(field => field.name)
   /**
-   * Only global computed inputs are removed during schema transform.
+   * Only plugin-level computed inputs are removed during schema transform.
    * Resolver level computed inputs are filtered as part of the
    * projecting process. They are then passed to addComputedInputs
    * at runtime so their values can be inferred alongside the
    * global values.
    */
-  const globallyComputedInputsInType = Object.keys(
-    globallyComputedInputs,
-  ).reduce(
+  const globallyComputedInputsInType = Object.keys(computedInputs).reduce(
     (args, key) =>
       fieldNames.includes(key)
-        ? Object.assign(args, { [key]: globallyComputedInputs[key] })
+        ? Object.assign(args, { [key]: computedInputs[key] })
         : args,
-    {} as GlobalComputedInputs,
+    {} as ComputedInputs,
   )
   return {
     ...inputType,
     fields: inputType.fields
-      .filter(field => !(field.name in globallyComputedInputs))
+      .filter(field => !(field.name in computedInputs))
       .map(transformArg),
     computedInputs: globallyComputedInputsInType,
     relation: isRelationType(inputType),

@@ -1,7 +1,7 @@
 import * as Nexus from 'nexus'
 import { getDmmf, generateSchemaAndTypes } from './__utils'
 import { transformArgs } from '../src/dmmf/transformer'
-import { GlobalComputedInputs, LocalComputedInputs } from '../src/utils'
+import { ComputedInputs } from '../src/utils'
 import { Publisher } from '../src/publisher'
 
 const fakeNexusBuilder: any = {
@@ -30,7 +30,7 @@ const getLocalTestData = async () => {
           t.crud.createOneUser({
             computedInputs: {
               createdWithBrowser: ({ ctx }) => ctx.browser,
-            } as GlobalComputedInputs,
+            } as ComputedInputs,
           })
         },
       }),
@@ -48,13 +48,16 @@ const getLocalTestData = async () => {
   return {
     ...testData,
     publisher: new Publisher(dmmf, fakeNexusBuilder),
-    globallyComputedInputs: {},
+    computedInputs: {},
+    relations: {
+      create: {},
+      connect: {},
+      defaultRelation: 'unset',
+    },
   }
 }
 
-const getGlobalTestData = async (
-  globallyComputedInputs: GlobalComputedInputs,
-) => {
+const getGlobalTestData = async (pluginLevelComputedInputs: ComputedInputs) => {
   const testData = {
     dataModel: `
   model User {
@@ -101,18 +104,24 @@ const getGlobalTestData = async (
       }),
     },
   }
-  const dmmf = await getDmmf(testData.dataModel, { globallyComputedInputs })
+  const dmmf = await getDmmf(testData.dataModel, {
+    computedInputs: pluginLevelComputedInputs,
+  })
   return {
     ...testData,
     publisher: new Publisher(dmmf, fakeNexusBuilder),
-    locallyComputedInputs: {},
-    globallyComputedInputs,
+    computedInputs: {},
+    relations: {
+      create: {},
+      connect: {},
+      defaultRelation: 'unset',
+    },
   }
 }
 
 describe('locallyComputedInputs', () => {
   it('are removed from their corresponding input type', async () => {
-    const { dataModel, resolvers } = await getLocalTestData()
+    const { dataModel, resolvers, relations } = await getLocalTestData()
     const result = await generateSchemaAndTypes(
       dataModel,
       Object.values(resolvers),
@@ -120,7 +129,7 @@ describe('locallyComputedInputs', () => {
     expect(result).toMatchSnapshot('locallyComputedInputs')
   })
   it('values are inferred at runtime', async () => {
-    const { publisher, globallyComputedInputs } = await getLocalTestData()
+    const { publisher, relations } = await getLocalTestData()
     expect(
       transformArgs({
         params: {
@@ -130,10 +139,10 @@ describe('locallyComputedInputs', () => {
         },
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
-        locallyComputedInputs: {
+        computedInputs: {
           createdWithBrowser: ({ ctx }) => ctx.browser,
-        } as LocalComputedInputs<any>,
-        globallyComputedInputs,
+        },
+        relations,
       }),
     ).toStrictEqual({
       data: { name: 'New User', createdWithBrowser: 'firefox' },
@@ -255,9 +264,9 @@ describe('combination of locallyComputedInputs and globallyComputedInputs', () =
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
         // These are applied only to UserCreateInput
-        locallyComputedInputs: {
+        locallyComputedInputs: ({
           name: ({ ctx }) => ctx.name,
-        } as LocalComputedInputs<any>,
+        } as LocalComputedInputs) as ComputedInputs<any>,
         globallyComputedInputs,
       }),
     ).toStrictEqual({
@@ -289,13 +298,13 @@ describe('combination of locallyComputedInputs and globallyComputedInputs', () =
         },
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
-        locallyComputedInputs: {
+        locallyComputedInputs: ({
           name: ({ args, ctx, info }) =>
             `${args.data.nested.create.name} ${ctx.browser.slice(
               1,
               2,
             )} ${info}`,
-        } as LocalComputedInputs<any>,
+        } as LocalComputedInputs) as ComputedInputs<any>,
         globallyComputedInputs,
       }),
     ).toStrictEqual({

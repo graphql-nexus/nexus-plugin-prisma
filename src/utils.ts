@@ -11,6 +11,7 @@ import { core } from 'nexus'
 import { isDeepStrictEqual } from 'util'
 import { GraphQLResolveInfo } from 'graphql'
 import { type } from 'os'
+import { WithRequiredKeys } from '@re-do/utils'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -166,32 +167,22 @@ export type Index<T> = Record<string, T>
  *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
-export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
-  string,
-  (params: LocalMutationResolverParams<MethodName>) => unknown
->
+export type ComputedInputs<
+  MethodName extends MutationMethodName = string
+> = Record<string, (params: MutationResolverParams<MethodName>) => unknown>
 
-export type GlobalComputedInputs = Record<
-  string,
-  (params: GlobalMutationResolverParams) => unknown
->
-
-type BaseMutationResolverParams = {
+export type MutationResolverParams<
+  MethodName extends MutationMethodName = string
+> = {
   info: GraphQLResolveInfo
   ctx: Context
-}
-
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
-  args: Record<string, any> & { data: unknown }
-}
-
-export type LocalMutationResolverParams<
-  MethodName extends MutationMethodName
-> = BaseMutationResolverParams & {
   args: core.GetGen<'argTypes'>['Mutation'][MethodName]
 }
 
-export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
+export type MutationMethodName = Extract<
+  keyof core.GetGen<'argTypes'>['Mutation'],
+  string
+>
 
 export type Context = core.GetGen<'context'>
 
@@ -214,5 +205,7 @@ export type RelatedFields<IllegalKeys extends string | null = null> = Record<
 export type RelationsConfig = {
   create?: RelatedFields
   connect?: RelatedFields
-  default?: 'create' | 'connect' | undefined
+  defaultRelation?: 'create' | 'connect' | 'unset'
 }
+
+export type ResolvedRelationsConfig = Required<RelationsConfig>

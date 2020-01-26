@@ -7,6 +7,7 @@ import {
   getTransformedDmmf,
   fatalIfOldPhotonIsInstalled,
   transformArgs,
+  isTransformRequired,
 } from './dmmf'
 import * as GraphQL from './graphql'
 import {
@@ -29,10 +30,10 @@ import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
   assertPhotonInContext,
-  LocalComputedInputs,
-  GlobalComputedInputs,
+  ComputedInputs,
   Index,
   RelationsConfig,
+  ResolvedRelationsConfig,
 } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
@@ -43,8 +44,7 @@ interface FieldPublisherConfig {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-  computedInputs?: LocalComputedInputs<any>
-  upfilteredKey?: string
+  computedInputs?: ComputedInputs
   relations?: RelationsConfig
 }
 
@@ -56,16 +56,11 @@ type ResolvedFieldPublisherConfig = WithRequiredKeys<
   relations: ResolvedRelationsConfig
 }
 
-type ResolvedRelationsConfig = WithRequiredKeys<
-  RelationsConfig,
-  'create' | 'connect'
->
-
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
 type PublisherConfigData = {
   field: DmmfTypes.SchemaField
-  givenConfig?: FieldPublisherConfig
+  givenOptions?: FieldPublisherConfig
 }
 type FieldConfigData = {
   field: DmmfTypes.SchemaField
@@ -130,7 +125,8 @@ export interface Options {
      */
     typegen?: string
   }
-  computedInputs?: GlobalComputedInputs
+  computedInputs?: ComputedInputs
+  relations?: RelationsConfig
 }
 
 export interface InternalOptions extends Options {
@@ -209,12 +205,22 @@ export interface CustomInputArg {
   type: DmmfTypes.InputType | DmmfTypes.Enum | { name: string } // scalar
 }
 
+const addDefaultsToRelationsConfig = (
+  givenOptions: RelationsConfig = {},
+): ResolvedRelationsConfig => ({
+  create: {},
+  connect: {},
+  defaultRelation: 'unset',
+  ...givenOptions,
+})
+
 export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: PrismaClientFetcher
-  protected globallyComputedInputs: GlobalComputedInputs
+  protected computedInputs: ComputedInputs
+  protected relations: ResolvedRelationsConfig
   protected unknownFieldsByModel: Index<string[]>
   publisher: Publisher
 
@@ -225,14 +231,12 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    // Internally rename the 'computedInputs' plugin option to clarify scope
-    this.globallyComputedInputs = config.computedInputs
-      ? config.computedInputs
-      : {}
+    this.computedInputs = config.computedInputs ? config.computedInputs : {}
+    this.relations = addDefaultsToRelationsConfig(config.relations)
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
-        globallyComputedInputs: this.globallyComputedInputs,
+        computedInputs: this.computedInputs,
       })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     if (config.builderHook) {
@@ -290,10 +294,10 @@ export class SchemaBuilder {
         }
         const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
           (crud, mappedField) => {
-            const fieldPublisher: FieldPublisher = givenConfig => {
+            const fieldPublisher: FieldPublisher = givenOptions => {
               const publisherConfig = this.addDefaultsToPublisherConfig({
                 field: mappedField.field,
-                givenConfig: givenConfig ? givenConfig : {},
+                givenOptions: givenOptions ? givenOptions : {},
               })
               const fieldConfig = this.buildFieldConfig({
                 field: mappedField.field,
@@ -312,9 +316,8 @@ export class SchemaBuilder {
                         args,
                         ctx,
                       },
-                      locallyComputedInputs:
-                        publisherConfig.locallyComputedInputs,
-                      globallyComputedInputs: this.globallyComputedInputs,
+                      computedInputs: publisherConfig.computedInputs,
+                      relations: publisherConfig.relations,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -433,10 +436,10 @@ export class SchemaBuilder {
     const outputType = this.dmmf.getOutputType(model.name)
 
     const publishers = outputType.fields.reduce((acc, field) => {
-      const fieldPublisher: FieldPublisher = givenConfig => {
+      const fieldPublisher: FieldPublisher = givenOptions => {
         const publisherConfig = this.addDefaultsToPublisherConfig({
           field,
-          givenConfig: givenConfig ?? {},
+          givenOptions: givenOptions ?? {},
         })
         if (
           !this.assertOutputTypeIsDefined(
@@ -490,19 +493,14 @@ export class SchemaBuilder {
 
   addDefaultsToPublisherConfig({
     field,
-    givenConfig: { relations: givenRelations, ...givenRest },
+    givenOptions: { relations: givenRelations, ...givenRest },
   }: Required<PublisherConfigData>): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
       computedInputs: {},
-      relations: {
-        create: {},
-        connect: {},
-        default: undefined,
-        ...givenRelations,
-      },
+      relations: addDefaultsToRelationsConfig(givenRelations),
       ...givenRest,
     }
   }
@@ -549,12 +547,13 @@ export class SchemaBuilder {
     field,
   }: FieldConfigData): CustomInputArg[] {
     if (
-      !isEmpty(publisherConfig.relations.connect) ||
-      !isEmpty(publisherConfig.relations.connect) ||
-      !isEmpty(publisherConfig.computedInputs) ||
-      publisherConfig.relations.default
+      // TODO: Can't just chekc publisher config, need overrides
+      isTransformRequired({
+        relations: publisherConfig.relations,
+        computedInputs: publisherConfig.computedInputs,
+      })
     ) {
-      return this.deepTransformInput(field.args, publisherConfig)
+      return this.deepTransformInputTypes(field.args, publisherConfig)
     }
     return field.args.map(arg => {
       const photonInputType = this.publisher.getInputType(arg.inputType.type)
@@ -586,18 +585,18 @@ export class SchemaBuilder {
     return createdField ?? connectedField
   }
 
-  deepTransformInput(
+  deepTransformInputTypes(
     args: DmmfTypes.SchemaArg[],
     config: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
     // TODO: Real overrides
     const computedInputs = {
-      ...this.globallyComputedInputs,
+      ...this.computedInputs,
       ...config.computedInputs,
     }
     const created = { ...config.relations.create }
     const connected = { ...config.relations.connect }
-    const defaultRelation = config.relations.default ?? undefined
+    const defaultRelation = config.relations.defaultRelation
     return args
       .filter(arg => !(arg.name in computedInputs))
       .map(arg => {
@@ -641,7 +640,7 @@ export class SchemaBuilder {
     const prefix = arg.inputType.type.replace('Input', '')
     const getRelationSuffix = (relation: 'create' | 'connect') => {
       const configValue = config.relations[relation]
-      if (config.relations.default === relation) {
+      if (config.relations.defaultRelation === relation) {
         return `${capitalize(relation)}All`
       } else if (isEmpty(configValue)) {
         return `${capitalize(relation)}${Object.keys(configValue).join('And')}`
@@ -670,7 +669,7 @@ export class SchemaBuilder {
         ...inputType,
         name,
         relation: relationType,
-        fields: this.deepTransformInput(inputType.fields, config).map(
+        fields: this.deepTransformInputTypes(inputType.fields, config).map(
           _ => _.arg,
         ),
       },
