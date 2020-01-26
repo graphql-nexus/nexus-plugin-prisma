@@ -83,6 +83,7 @@ export declare namespace DmmfTypes {
     fields: SchemaArg[]
     computedInputs: GlobalComputedInputs
     upfilteredKey?: string | null
+    relation?: boolean | string
   }
   interface Mapping {
     model: string

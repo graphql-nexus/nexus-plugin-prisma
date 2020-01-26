@@ -4,6 +4,7 @@ import {
   GlobalMutationResolverParams,
   LocalComputedInputs,
   isEmptyObject,
+  RelatedFields,
 } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
@@ -109,6 +110,10 @@ type BaseTransformArgsParams = {
 type TransformArgsParams = BaseTransformArgsParams & {
   locallyComputedInputs: LocalComputedInputs<any>
   globallyComputedInputs: GlobalComputedInputs
+} & {
+  computedInputs: LocalComputedInputs<any>
+  created: RelatedFields
+  connected: RelatedFields
 }
 
 type DeepTransformArgsParams = BaseTransformArgsParams & { data: any }
@@ -228,6 +233,12 @@ export function transformArgs({
   return transformedParams.args
 }
 
+const isRelationType = (inputType: DMMF.InputType) =>
+  inputType.fields.length === 2 &&
+  inputType.fields.every(
+    field => field.name === 'create' || field.name === 'connect',
+  )
+
 function transformInputType(
   inputType: DMMF.InputType,
   globallyComputedInputs: GlobalComputedInputs,
@@ -255,6 +266,7 @@ function transformInputType(
       .filter(field => !(field.name in globallyComputedInputs))
       .map(transformArg),
     computedInputs: globallyComputedInputsInType,
+    relation: isRelationType(inputType),
   }
 }
 

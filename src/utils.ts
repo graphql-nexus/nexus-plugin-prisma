@@ -199,16 +199,22 @@ export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
 
 type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
 
-export type InputFieldName = NestedKeys<core.GetGen<'inputTypes'>>
+export type InputFieldName = NestedKeys<
+  core.GetGen<'inputTypes'>
+> extends string
+  ? NestedKeys<core.GetGen<'inputTypes'>>
+  : string
 
 //On a related note, this type determines which fields are always 'created' or always 'connected'
-export type RelatedFields<
-  IllegalKeys extends string | number | symbol | null = null
-> = Record<Exclude<InputFieldName, IllegalKeys>, boolean> | boolean
+export type RelatedFields<IllegalKeys extends string | null = null> = Record<
+  Exclude<InputFieldName, IllegalKeys>,
+  boolean
+>
 
 export type RelatedFieldConfig<
   CreatedFields extends RelatedFields,
-  ConnectedFields extends RelatedFields<keyof CreatedFields>
+  CreatedFieldName extends Extract<keyof CreatedFields, string>,
+  ConnectedFields extends RelatedFields<CreatedFieldName>
 > = {
   created: CreatedFields
   connected: ConnectedFields
