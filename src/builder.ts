@@ -32,10 +32,10 @@ import {
   LocalComputedInputs,
   GlobalComputedInputs,
   Index,
-  RelatedFields,
+  RelationsConfig,
 } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
-import { WithRequiredKeys } from '@re-do/utils'
+import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -48,19 +48,18 @@ interface FieldPublisherConfig {
   relations?: RelationsConfig
 }
 
-type RelationsConfig = {
-  create?: RelatedFields
-  connect?: RelatedFields
-  default?: 'create' | 'connect' | undefined
-}
-
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
   'alias' | 'type' | 'computedInputs'
 > & {
-  relations: WithRequiredKeys<RelationsConfig, 'create' | 'connect'>
+  relations: ResolvedRelationsConfig
 }
+
+type ResolvedRelationsConfig = WithRequiredKeys<
+  RelationsConfig,
+  'create' | 'connect'
+>
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -549,52 +548,31 @@ export class SchemaBuilder {
     publisherConfig,
     field,
   }: FieldConfigData): CustomInputArg[] {
-    if (publisherConfig.upfilteredKey) {
-      return this.createUpfilteredTypes(field.args, publisherConfig)
+    if (
+      !isEmpty(publisherConfig.relations.connect) ||
+      !isEmpty(publisherConfig.relations.connect) ||
+      !isEmpty(publisherConfig.computedInputs) ||
+      publisherConfig.relations.default
+    ) {
+      return this.deepTransformInput(field.args, publisherConfig)
     }
     return field.args.map(arg => {
       const photonInputType = this.publisher.getInputType(arg.inputType.type)
-      /*
-      Since globallyComputedInputs were already filtered during schema transformation,
-      at this point we just need to filter at the resolver-level.
-      */
       return {
         arg,
-        type: {
-          ...photonInputType,
-          fields: this.filterLocallyComputedInputs(
-            photonInputType.fields,
-            publisherConfig,
-          ),
-        },
+        type: photonInputType,
       }
     })
-  }
-
-  filterLocallyComputedInputs(
-    fields: DmmfTypes.SchemaArg[],
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ) {
-    return publisherConfig.locallyComputedInputs
-      ? fields.filter(
-          field => !(field.name in publisherConfig.locallyComputedInputs),
-        )
-      : fields
   }
 
   /*
      If there is one, returns a 'create' or 'connect' field that is 'created' or 'connected' based on config
      Otherwise, returns undefined
   */
-  getRelationField(
-    arg: DmmfTypes.SchemaArg,
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ) {
+  getRelationField(arg: DmmfTypes.SchemaArg, config: ResolvedRelationsConfig) {
     const inputType = this.publisher.getTypeFromArg(arg) as DmmfTypes.InputType
     const getRelatedField = (relation: 'create' | 'connect') => {
-      const config =
-        relation === 'create' ? publisherConfig.create : publisherConfig.connect
-      if (config === true || Object.keys(config ?? {}).includes(arg.name)) {
+      if (Object.keys(config[relation]).includes(arg.name)) {
         return inputType.fields.find(field => field.name === relation)
       }
     }
@@ -602,12 +580,7 @@ export class SchemaBuilder {
     const connectedField = getRelatedField('connect')
     if (createdField && connectedField) {
       throw new Error(
-        `Your config illegally specifies that field '${
-          arg.name
-        }' should be both created and connected: ${{
-          created: publisherConfig.created,
-          connected: publisherConfig.connected,
-        }}`,
+        `Your config illegally specifies that field '${arg.name}' should be both created and connected: ${config}`,
       )
     }
     return createdField ?? connectedField
@@ -615,17 +588,16 @@ export class SchemaBuilder {
 
   deepTransformInput(
     args: DmmfTypes.SchemaArg[],
-    publisherConfig: ResolvedFieldPublisherConfig,
+    config: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
-    // TODO: Add a way to override computedInputs
+    // TODO: Real overrides
     const computedInputs = {
       ...this.globallyComputedInputs,
-      ...publisherConfig.locallyComputedInputs,
+      ...config.computedInputs,
     }
-    const createdDefault = false
-    const created = { ...publisherConfig.created }
-    const connectedDefault = false
-    const connected = { ...publisherConfig.connected }
+    const created = { ...config.relations.create }
+    const connected = { ...config.relations.connect }
+    const defaultRelation = config.relations.default ?? undefined
     return args
       .filter(arg => !(arg.name in computedInputs))
       .map(arg => {
@@ -638,7 +610,7 @@ export class SchemaBuilder {
             type: inputType,
           }
         }
-        const relatedField = this.getRelationField(arg, publisherConfig)
+        const relatedField = this.getRelationField(arg, config.relations)
         const customArg = relatedField
           ? this.getTransformedArg(
               this.publisher.getTypeFromArg(
@@ -646,16 +618,10 @@ export class SchemaBuilder {
               ) as DmmfTypes.InputType,
               relatedField,
               arg.name,
-              publisherConfig,
+              config,
               relatedField.name as 'create' | 'connect',
             )
-          : this.getTransformedArg(
-              inputType,
-              arg,
-              arg.name,
-              publisherConfig,
-              false,
-            )
+          : this.getTransformedArg(inputType, arg, arg.name, config, false)
         if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
           this.publisher.nexusBuilder.addType(
             this.publisher.inputType(customArg) as any,
@@ -669,23 +635,28 @@ export class SchemaBuilder {
     inputType: DmmfTypes.InputType,
     arg: DmmfTypes.SchemaArg,
     key: string,
-    publisherConfig: ResolvedFieldPublisherConfig,
+    config: ResolvedFieldPublisherConfig,
     relationType: 'create' | 'connect' | false,
   ): CustomInputArg => {
-    const getPrefix = (arg: DmmfTypes.SchemaArg) =>
-      arg.inputType.type.replace('Input', '')
-    const getRelatedSuffix = (relation: 'Create' | 'Connect') => {
-      const configKey = relation === 'Create' ? 'created' : 'connected'
-      const configValue = publisherConfig[configKey]
-      return configValue
-        ? configValue === true
-          ? `${relation}All`
-          : `${relation}${Object.keys(configValue).join('And')}`
-        : ''
+    const prefix = arg.inputType.type.replace('Input', '')
+    const getRelationSuffix = (relation: 'create' | 'connect') => {
+      const configValue = config.relations[relation]
+      if (config.relations.default === relation) {
+        return `${capitalize(relation)}All`
+      } else if (isEmpty(configValue)) {
+        return `${capitalize(relation)}${Object.keys(configValue).join('And')}`
+      } else {
+        return ''
+      }
     }
-    const name = `${getPrefix(arg)}${getRelatedSuffix(
-      'Create',
-    )}${getRelatedSuffix('Connect')}Input`
+    const computedInputsSuffix = isEmpty(config.computedInputs)
+      ? ''
+      : `Without${Object.keys(config.computedInputs)
+          .map(name => capitalize(name))
+          .join('Or')}`
+    const name = `${prefix}${getRelationSuffix('create')}${getRelationSuffix(
+      'connect',
+    )}${computedInputsSuffix}Input`
     return {
       arg: {
         ...arg,
@@ -699,88 +670,11 @@ export class SchemaBuilder {
         ...inputType,
         name,
         relation: relationType,
-        fields: this.filterLocallyComputedInputs(
-          this.deepTransformInput(inputType.fields, publisherConfig).map(
-            _ => _.arg,
-          ),
-          publisherConfig,
+        fields: this.deepTransformInput(inputType.fields, config).map(
+          _ => _.arg,
         ),
       },
     }
-  }
-
-  createUpfilteredTypes(
-    args: DmmfTypes.SchemaArg[],
-    publisherConfig: ResolvedFieldPublisherConfig,
-  ): CustomInputArg[] {
-    // E.g. CreateUserInput -> CreateUserCreateOnlyInput
-    const upfilteredKeyTypeName = `${publisherConfig
-      .upfilteredKey!.charAt(0)
-      .toUpperCase()}${publisherConfig
-      .upfilteredKey!.slice(1)
-      .toLowerCase()}OnlyInput`
-    const getCustomArg = (
-      inputType: DmmfTypes.InputType,
-      arg: DmmfTypes.SchemaArg,
-      key: string,
-      upfilteredKey: string | null,
-    ): CustomInputArg => {
-      const name =
-        arg.inputType.type.replace('Input', '') + upfilteredKeyTypeName
-      return {
-        arg: {
-          ...arg,
-          name: key,
-          inputType: {
-            ...arg.inputType,
-            type: name,
-          },
-        },
-        type: {
-          ...inputType,
-          name,
-          /** If the key was actually removed, the value of upfilteredKey will be that key as a string
-           *   Otherwise, upfilteredKey will be null, but its presence on the inputType dinstinguishes it
-           *   from types without any upfiltered keys in their hierarchy.
-           **/
-          upfilteredKey,
-          fields: this.filterLocallyComputedInputs(
-            this.createUpfilteredTypes(inputType.fields, publisherConfig).map(
-              _ => _.arg,
-            ),
-            publisherConfig,
-          ),
-        },
-      }
-    }
-    return args.map(arg => {
-      const inputType = this.publisher.getTypeFromArg(
-        arg,
-      ) as DmmfTypes.InputType
-      if (arg.inputType.kind !== 'object') {
-        return {
-          arg,
-          type: inputType,
-        }
-      }
-      const filteredField = inputType.fields.find(
-        _ => _.name === publisherConfig.upfilteredKey,
-      )
-      const customArg = filteredField
-        ? getCustomArg(
-            this.publisher.getInputType(filteredField!.inputType.type),
-            filteredField,
-            arg.name,
-            publisherConfig.upfilteredKey!,
-          )
-        : getCustomArg(inputType, arg, arg.name, null)
-      if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
-        this.publisher.nexusBuilder.addType(
-          this.publisher.inputType(customArg) as any,
-        )
-      }
-      return customArg
-    })
   }
 
   argsFromQueryOrModelField({

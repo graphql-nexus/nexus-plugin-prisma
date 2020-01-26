@@ -211,11 +211,8 @@ export type RelatedFields<IllegalKeys extends string | null = null> = Record<
   boolean
 >
 
-export type RelatedFieldConfig<
-  CreatedFields extends RelatedFields,
-  CreatedFieldName extends Extract<keyof CreatedFields, string>,
-  ConnectedFields extends RelatedFields<CreatedFieldName>
-> = {
-  created: CreatedFields
-  connected: ConnectedFields
+export type RelationsConfig = {
+  create?: RelatedFields
+  connect?: RelatedFields
+  default?: 'create' | 'connect' | undefined
 }

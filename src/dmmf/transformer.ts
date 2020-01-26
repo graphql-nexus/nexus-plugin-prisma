@@ -1,10 +1,10 @@
 import { DMMF } from '@prisma/client/runtime'
+import { isEmpty } from '@re-do/utils'
 import {
   GlobalComputedInputs,
   GlobalMutationResolverParams,
   LocalComputedInputs,
-  isEmptyObject,
-  RelatedFields,
+  RelationsConfig,
 } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
@@ -108,12 +108,8 @@ type BaseTransformArgsParams = {
 }
 
 type TransformArgsParams = BaseTransformArgsParams & {
-  locallyComputedInputs: LocalComputedInputs<any>
-  globallyComputedInputs: GlobalComputedInputs
-} & {
   computedInputs: LocalComputedInputs<any>
-  created: RelatedFields
-  connected: RelatedFields
+  relations: RelationsConfig
 }
 
 type DeepTransformArgsParams = BaseTransformArgsParams & { data: any }
@@ -222,7 +218,7 @@ export function transformArgs({
       locallyComputedInputs,
     )
   }
-  if (!isEmptyObject(globallyComputedInputs) || 'upfilteredKey' in inputType) {
+  if (!isEmpty(globallyComputedInputs) || 'upfilteredKey' in inputType) {
     transformedParams.args.data = deepTransformArgs({
       inputType,
       publisher,
