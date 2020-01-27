@@ -10,6 +10,8 @@
     "src"
   ],
   "scripts": {
+    "publish:preview": "dripip preview",
+    "publish:stable": "dripip stable",
     "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
@@ -39,6 +41,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/tmp": "^0.1.0",
     "doctoc": "^1.4.0",
+    "dripip": "^0.5.0",
     "graphql": "^14.5.4",
     "jest": "^24.9.0",
     "jest-watch-typeahead": "^0.4.0",
