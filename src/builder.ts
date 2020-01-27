@@ -515,7 +515,7 @@ export class SchemaBuilder {
     }
   }
 
-  buildArgsFromField(config: FieldConfigData) {
+  buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
     return this.determineArgs(config).reduce(
       (acc, customArg) => ({
         ...acc,
