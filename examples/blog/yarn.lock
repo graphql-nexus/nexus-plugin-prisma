@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@prisma/client@^2.0.0-preview020":
-  version "2.0.0-preview020.2"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview020.2.tgz#7f1d3b92ab964659f6d434a2c72415dd685ba0f5"
-  integrity sha512-+rpFBlNzN8SD7XACFXnLv48lHtLZExiK3QAfNJXTDtaYJ5VUjC3/AMBY/M3UrIysF9oOYwUyFEU6bGGmXFPEPQ==
+"@prisma/client@^2.0.0-preview020.3":
+  version "2.0.0-preview020.3"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview020.3.tgz#c1042cba540b580d8068f32654bb1e9519fc81a7"
+  integrity sha512-W+CXyj8Z1UFpWXDMMUTql2QdtxfDrNKYa2F7jdU/Qb5PKBankmQeDlUSWfBNWAoTHUREQ5Q+gGOFRVoHfMvaow==
 
 "@types/aws-lambda@8.10.13":
   version "8.10.13"
@@ -931,25 +931,17 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-prisma@^0.7.0-next.1:
-  version "0.7.0-next.2"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.7.0-next.2.tgz#17c63a589c84c643c0af754ca510b8aeddeade18"
-  integrity sha512-JTDoL8BJTUy+gLr2nhWBWC64pBXDpfVO9gVIHZUiPpYXwq32BkuaX6X6xVC2pXQJ7kdszdBU+lGTP/hYXgsPaw==
+nexus-prisma@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.7.0.tgz#245ebe074ce7ff4068f064c33aeaa0fad46522c2"
+  integrity sha512-HRH7IhokSI7ZcyZOblCDhyKOIDiF5N6+cH0ZaO8faABxTf3ifUWn2VbGnmlghUVsvqJF1TKuEdtCfONSQSstzA==
   dependencies:
     camelcase "^5.3.1"
     fs-extra "^8.1.0"
     nexus "^0.12.0-rc.5"
     pluralize "^8.0.0"
 
-nexus@^0.12.0-beta.14:
-  version "0.12.0-rc.5"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-rc.5.tgz#98232f4ced045353892bfc9e06a0ff383143ba22"
-  integrity sha512-eDZVVwjndggBbcMtqniSXnPhcz605zYS7jwcYb7LIq2uCUPa5vKE/mQ/LQIfaCN0aLqYtch1UnRq0nf41V1FDg==
-  dependencies:
-    iterall "^1.2.2"
-    tslib "^1.9.3"
-
-nexus@^0.12.0-rc.5:
+nexus@^0.12.0-rc.5, nexus@^0.12.0-rc.9:
   version "0.12.0-rc.9"
   resolved "https://registry.yarnpkg.com/nexus/-/nexus-0.12.0-rc.9.tgz#b97a9d23ebcad5349bb42035d7d02d0da55a9c6c"
   integrity sha512-YiWCQJ9y6p9QPzmI/fQ0/+xfpXOo6S+gKD58dxSrDDO5TD01VqoN8HzGvgIGoLstmO/U5ecNdl02Dwj/RiKVsQ==
@@ -1077,10 +1069,10 @@ prettier@^1.18.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
 
-prisma2@^2.0.0-preview020:
-  version "2.0.0-preview020.2"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview020.2.tgz#8707cb0c9f7666a9be54ded1279908932bb1efee"
-  integrity sha512-okvQ1tdxq6yjsfGgoMdx8PVEQ1HfrQbmIqkMyDCsd0/4oEGIkI9kMqfKbci0XmJVaxJtkQ3WhwUuvyzHD3WR7Q==
+prisma2@^2.0.0-preview020.3:
+  version "2.0.0-preview020.3"
+  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview020.3.tgz#2f9d839af0ec9d45c52540301ea0cb5302787064"
+  integrity sha512-jQrN+wNxz0fn0XDIUYo3gnQ9n28YwY1r9zuSlWY+3Lb74Uj50O3rBU7AA926hukXRQBm5Aorb4Mp5t5MDLP4Lg==
 
 proxy-addr@~2.0.5:
   version "2.0.5"
