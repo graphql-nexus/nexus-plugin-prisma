@@ -10,8 +10,8 @@
     "src"
   ],
   "scripts": {
-    "publish:preview": "dripip preview",
-    "publish:stable": "dripip stable",
+    "release:preview": "dripip preview",
+    "release:stable": "dripip stable",
     "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
     "build": "yarn -s clean && tsc",
