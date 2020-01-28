@@ -196,17 +196,36 @@ export type InputFieldName = NestedKeys<
   ? NestedKeys<core.GetGen<'inputTypes'>>
   : string
 
+// type InputFieldName = 'a' | 'b' | 'c'
+
 //On a related note, this type determines which fields are always 'created' or always 'connected'
 export type RelatedFields<IllegalKeys extends string | null = null> = Record<
   Exclude<InputFieldName, IllegalKeys>,
   boolean
 >
 
-export type RelationsConfig = {
-  create?: RelatedFields
-  connect?: RelatedFields
+export type RelationsConfig<
+  CreateFields extends { [K in InputFieldName]?: boolean },
+  ConnectFields extends {
+    [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
+  }
+> = {
+  create?: CreateFields
+  connect?: ConnectFields
   defaultRelation?: 'create' | 'connect' | 'unset'
 }
+
+const createRelation = <
+  CreateFields extends { [K in InputFieldName]?: CreateFields[K] },
+  ConnectFields extends {
+    [K in Exclude<InputFieldName, keyof CreateFields>]?: ConnectFields[K]
+  }
+>(
+  a: CreateFields,
+  b: ConnectFields,
+) => {}
+
+createRelation({ a: true, b: true }, { b: true })
 
 export type ResolvedRelationsConfig = Required<RelationsConfig>
 
