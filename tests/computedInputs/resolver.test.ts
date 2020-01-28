@@ -1,14 +1,12 @@
 import * as Nexus from 'nexus'
-import { getDmmf, generateSchemaAndTypes } from './__utils'
-import { transformArgs } from '../src/dmmf/transformer'
-import { ComputedInputs } from '../src/utils'
-import { Publisher } from '../src/publisher'
+import { getDmmf, generateSchemaAndTypes } from '../__utils'
+import { transformArgs } from '../../src/dmmf/transformer'
+import { ComputedInputs } from '../../src/utils'
+import { Publisher } from '../../src/publisher'
 
 const fakeNexusBuilder: any = {
   hasType: (_: string) => false,
 }
-
-// TODO: Split local and global computedInputs into their own suites
 
 const getLocalTestData = async () => {
   const testData = {
@@ -119,9 +117,9 @@ const getGlobalTestData = async (pluginLevelComputedInputs: ComputedInputs) => {
   }
 }
 
-describe('locallyComputedInputs', () => {
+describe('resolverComputedInputs', () => {
   it('are removed from their corresponding input type', async () => {
-    const { dataModel, resolvers, relations } = await getLocalTestData()
+    const { dataModel, resolvers } = await getLocalTestData()
     const result = await generateSchemaAndTypes(
       dataModel,
       Object.values(resolvers),
@@ -150,13 +148,9 @@ describe('locallyComputedInputs', () => {
   })
 })
 
-describe('globallyComputedInputs', () => {
+describe('pluginComputedInputs', () => {
   it('removes global computedInputs from all input types', async () => {
-    const {
-      dataModel,
-      resolvers,
-      globallyComputedInputs,
-    } = await getGlobalTestData({
+    const { dataModel, resolvers } = await getGlobalTestData({
       createdWithBrowser: ({ ctx }) => ctx.browser,
     })
     const result = await generateSchemaAndTypes(
@@ -247,7 +241,7 @@ describe('globallyComputedInputs', () => {
   })
 })
 
-describe('combination of locallyComputedInputs and globallyComputedInputs', () => {
+describe('globalComputedInputs', () => {
   it('can combine resolver-level (shallow) and global (deep) computed inputs', async () => {
     const { globallyComputedInputs, publisher } = await getGlobalTestData({
       createdWithBrowser: ({ ctx }) => ctx.browser,

@@ -1,5 +1,5 @@
 import { DMMF } from '@prisma/client/runtime'
-import { isEmpty } from '@re-do/utils'
+import { isEmpty, fromEntries } from '@re-do/utils'
 import {
   MutationResolverParams,
   ComputedInputs,

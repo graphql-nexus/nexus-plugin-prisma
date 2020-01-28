@@ -34,27 +34,26 @@ import {
   Index,
   RelationsConfig,
   ResolvedRelationsConfig,
+  ScopableConfig,
+  ResolvedScopableConfig,
 } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
 
-interface FieldPublisherConfig {
+type FieldPublisherConfig = {
   alias?: string
   type?: Nexus.core.AllOutputTypes
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-  computedInputs?: ComputedInputs
-  relations?: RelationsConfig
-}
+} & ScopableConfig
 
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
-  'alias' | 'type' | 'computedInputs'
-> & {
-  relations: ResolvedRelationsConfig
-}
+  'alias' | 'type'
+> &
+  ResolvedScopableConfig
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>

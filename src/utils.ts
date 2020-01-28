@@ -209,3 +209,13 @@ export type RelationsConfig = {
 }
 
 export type ResolvedRelationsConfig = Required<RelationsConfig>
+
+export type ScopableConfig = {
+  computedInputs?: ComputedInputs
+  relations?: RelationsConfig
+}
+
+export type ResolvedScopableConfig = {
+  computedInputs: ComputedInputs
+  relations: ResolvedRelationsConfig
+}
