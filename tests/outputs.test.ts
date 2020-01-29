@@ -53,7 +53,7 @@ it('publishes scalars from input types', async () => {
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
     Query,
     User,
   ])
