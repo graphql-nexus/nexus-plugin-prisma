@@ -190,13 +190,13 @@ export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
 
 type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
 
-export type InputFieldName = NestedKeys<
-  core.GetGen<'inputTypes'>
-> extends string
-  ? NestedKeys<core.GetGen<'inputTypes'>>
-  : string
+// export type InputFieldName = NestedKeys<
+//   core.GetGen<'inputTypes'>
+// > extends string
+//   ? NestedKeys<core.GetGen<'inputTypes'>>
+//   : string
 
-// type InputFieldName = 'a' | 'b' | 'c'
+type InputFieldName = 'a' | 'b' | 'c'
 
 //On a related note, this type determines which fields are always 'created' or always 'connected'
 export type RelatedFields<IllegalKeys extends string | null = null> = Record<
@@ -205,36 +205,44 @@ export type RelatedFields<IllegalKeys extends string | null = null> = Record<
 >
 
 export type RelationsConfig<
-  CreateFields extends { [K in InputFieldName]?: boolean },
-  ConnectFields extends {
-    [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
-  }
+  CreateFields extends string extends InputFieldName
+    ? Record<string, boolean>
+    : { [K in InputFieldName]?: boolean },
+  ConnectFields extends string extends InputFieldName
+    ? Record<string, boolean>
+    : {
+        [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
+      }
 > = {
   create?: CreateFields
   connect?: ConnectFields
   defaultRelation?: 'create' | 'connect' | 'unset'
 }
 
-const createRelation = <
-  CreateFields extends { [K in InputFieldName]?: CreateFields[K] },
-  ConnectFields extends {
-    [K in Exclude<InputFieldName, keyof CreateFields>]?: ConnectFields[K]
-  }
+const createConfig = <
+  CreateFields extends string extends InputFieldName
+    ? Record<string, boolean>
+    : { [K in InputFieldName]?: boolean },
+  ConnectFields extends string extends InputFieldName
+    ? Record<string, boolean>
+    : {
+        [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
+      }
 >(
-  a: CreateFields,
-  b: ConnectFields,
+  create: CreateFields,
+  connect: ConnectFields,
 ) => {}
 
-createRelation({ a: true, b: true }, { b: true })
+createConfig({ a: true }, { b: true, a: true })
 
-export type ResolvedRelationsConfig = Required<RelationsConfig>
+// export type ResolvedRelationsConfig = Required<RelationsConfig>
 
-export type ScopableConfig = {
-  computedInputs?: ComputedInputs
-  relations?: RelationsConfig
-}
+// export type ScopableConfig = {
+//   computedInputs?: ComputedInputs
+//   relations?: RelationsConfig
+// }
 
-export type ResolvedScopableConfig = {
-  computedInputs: ComputedInputs
-  relations: ResolvedRelationsConfig
-}
+// export type ResolvedScopableConfig = {
+//   computedInputs: ComputedInputs
+//   relations: ResolvedRelationsConfig
+// }
