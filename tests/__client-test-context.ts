@@ -53,7 +53,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 
         return {
           dbClient: prismaClient.client,
-          graphqlClient: serverAndClient.client
+          graphqlClient: serverAndClient.client,
         }
       } catch (e) {
         await teardownCtx()

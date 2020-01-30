@@ -43,7 +43,7 @@ it('supports @id fields with custom name', async () => {
     types: [Query, User, Post],
   })
 
-  await dbClient.users.create({
+  await dbClient.user.create({
     data: {
       posts: {
         create: [

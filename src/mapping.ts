@@ -24,7 +24,7 @@ const buildField = (
   operation,
   field: mapping[operation],
   model: mapping.model,
-  photonAccessor: mapping.plural,
+  photonAccessor: mapping.model.toLowerCase(),
 })
 
 const CRUD_MAPPED_FIELDS: Record<

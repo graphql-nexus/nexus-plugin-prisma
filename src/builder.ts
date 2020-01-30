@@ -5,8 +5,8 @@ import {
   addComputedInputs,
   DmmfDocument,
   DmmfTypes,
-  getTransformedDmmf,
   fatalIfOldPhotonIsInstalled,
+  getTransformedDmmf,
 } from './dmmf'
 import * as GraphQL from './graphql'
 import {
@@ -474,7 +474,7 @@ export class SchemaBuilder {
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  return photon[mapping.plural!]
+                  return photon[mapping.model.toLowerCase()!]
                     ['findOne']({
                       where: { [idField.name]: root[idField.name] },
                     })
