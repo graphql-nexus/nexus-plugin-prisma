@@ -23,7 +23,7 @@ it('publishes enum even as output type', async () => {
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [User])
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [User])
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')
@@ -58,7 +58,7 @@ it('does not publish enum twice (from input/output type)', async () => {
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
     Query,
     User,
   ])
@@ -108,7 +108,7 @@ it('does not automatically publish input/enum type if already created by user', 
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
     Query,
     User,
     Color,

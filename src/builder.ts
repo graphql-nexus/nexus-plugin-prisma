@@ -191,7 +191,7 @@ const defaultOptions = {
   outputs: {
     typegen: defaultTypegenPath,
   },
-  computedInputs: {}
+  computedInputs: {},
 }
 
 export interface CustomInputArg {
@@ -455,6 +455,17 @@ export class SchemaBuilder {
           publisherConfig,
           stage,
         )
+        const mapping = this.dmmf.getMapping(typeName)
+        const idField = this.dmmf
+          .getModelOrThrow(typeName)
+          .fields.find(f => f.isId)
+
+        if (!idField) {
+          throw new Error(
+            `Your Prisma Model ${typeName} does not have an @id field. It's required for nexus-prisma to work.`,
+          )
+        }
+
         const fieldConfig = this.buildFieldConfig({
           field,
           publisherConfig,
@@ -463,9 +474,10 @@ export class SchemaBuilder {
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  const mapping = this.dmmf.getMapping(typeName)
                   return photon[mapping.plural!]
-                    ['findOne']({ where: { id: root.id } })
+                    ['findOne']({
+                      where: { [idField.name]: root[idField.name] },
+                    })
                     [field.name](args)
                 }
               : undefined,

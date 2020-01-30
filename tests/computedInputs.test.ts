@@ -87,7 +87,10 @@ it('removes resolver-level computedInputs from the corresponding input type', as
     Object.values(resolvers),
   )
 
-  expect(result).toMatchSnapshot('locallyComputedInputs')
+  expect({
+    schema: result.schemaString,
+    typegen: result.typegen,
+  }).toMatchSnapshot('locallyComputedInputs')
 })
 
 import { addComputedInputs } from '../src/dmmf/transformer'
@@ -122,7 +125,10 @@ it('removes global computedInputs from all input types', async () => {
     },
   )
 
-  expect(result).toMatchSnapshot('globallyComputedInputs')
+  expect({
+    schema: result.schemaString,
+    typegen: result.typegen,
+  }).toMatchSnapshot('globallyComputedInputs')
 })
 
 it('infers the value of global computedInputs at runtime', async () => {

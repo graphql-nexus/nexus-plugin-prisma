@@ -34,7 +34,7 @@ it('generates publishers pluralized & camel-cased', async () => {
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
     Query,
     Mutation,
     ModelName,
