@@ -230,13 +230,9 @@ export class SchemaBuilder {
       inputs: { ...defaultOptions.inputs, ...options.inputs },
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
-    this.computedInputs = config.computedInputs ? config.computedInputs : {}
+    this.computedInputs = config.computedInputs ?? {}
     this.relations = addDefaultsToRelationsConfig(config.relations)
-    this.dmmf =
-      options.dmmf ||
-      getTransformedDmmf(config.inputs.prismaClient, {
-        computedInputs: this.computedInputs,
-      })
+    this.dmmf = options.dmmf ?? getTransformedDmmf(config.inputs.prismaClient)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     if (config.builderHook) {
       config.builderHook.builder = this

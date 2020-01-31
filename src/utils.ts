@@ -10,8 +10,6 @@ import { dirname, relative } from 'path'
 import { core } from 'nexus'
 import { isDeepStrictEqual } from 'util'
 import { GraphQLResolveInfo } from 'graphql'
-import { type } from 'os'
-import { WithRequiredKeys } from '@re-do/utils'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -188,61 +186,40 @@ export type Context = core.GetGen<'context'>
 
 export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
 
-type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
+export type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
 
-// export type InputFieldName = NestedKeys<
-//   core.GetGen<'inputTypes'>
-// > extends string
-//   ? NestedKeys<core.GetGen<'inputTypes'>>
-//   : string
-
-type InputFieldName = 'a' | 'b' | 'c'
+export type InputFieldName = NestedKeys<
+  core.GetGen<'inputTypes'>
+> extends string
+  ? NestedKeys<core.GetGen<'inputTypes'>>
+  : string
 
 //On a related note, this type determines which fields are always 'created' or always 'connected'
-export type RelatedFields<IllegalKeys extends string | null = null> = Record<
-  Exclude<InputFieldName, IllegalKeys>,
-  boolean
->
-
 export type RelationsConfig<
-  CreateFields extends string extends InputFieldName
-    ? Record<string, boolean>
-    : { [K in InputFieldName]?: boolean },
-  ConnectFields extends string extends InputFieldName
-    ? Record<string, boolean>
-    : {
-        [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
-      }
+  CreateKey extends InputFieldName = InputFieldName,
+  ConnectKey extends InputFieldName = InputFieldName
 > = {
-  create?: CreateFields
-  connect?: ConnectFields
+  create?: Record<CreateKey, boolean>
+  connect?: Record<Exclude<ConnectKey, CreateKey>, boolean>
   defaultRelation?: 'create' | 'connect' | 'unset'
 }
 
 const createConfig = <
-  CreateFields extends string extends InputFieldName
-    ? Record<string, boolean>
-    : { [K in InputFieldName]?: boolean },
-  ConnectFields extends string extends InputFieldName
-    ? Record<string, boolean>
-    : {
-        [K in Exclude<InputFieldName, keyof CreateFields>]?: boolean
-      }
+  CreateKey extends InputFieldName = InputFieldName,
+  ConnectKey extends InputFieldName = InputFieldName
 >(
-  create: CreateFields,
-  connect: ConnectFields,
+  create: Record<CreateKey, boolean>,
+  connect: Record<Exclude<ConnectKey, CreateKey>, boolean>,
 ) => {}
 
-createConfig({ a: true }, { b: true, a: true })
+export type ResolvedRelationsConfig = Required<RelationsConfig>
 
-// export type ResolvedRelationsConfig = Required<RelationsConfig>
+export type ScopableConfig = {
+  computedInputs?: ComputedInputs
+  relations?: RelationsConfig
+}
 
-// export type ScopableConfig = {
-//   computedInputs?: ComputedInputs
-//   relations?: RelationsConfig
-// }
-
-// export type ResolvedScopableConfig = {
-//   computedInputs: ComputedInputs
-//   relations: ResolvedRelationsConfig
-// }
+export type ResolvedScopableConfig = {
+  computedInputs: ComputedInputs
+  relations: ResolvedRelationsConfig
+}

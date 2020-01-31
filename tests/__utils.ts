@@ -1,11 +1,10 @@
 import * as Prisma from '@prisma/client/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
-import * as Path from 'path'
 import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
-import { transform, TransformOptions } from '../src/dmmf/transformer'
+import { transform } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
 
 export const createNexusPrismaInternal = (
@@ -18,7 +17,7 @@ export const createNexusPrismaInternal = (
     }),
   })
 
-export async function getDmmf(datamodel: string, options?: TransformOptions) {
+export async function getDmmf(datamodel: string) {
   return new DmmfDocument(
     transform(
       await Prisma.getDMMF({
@@ -28,17 +27,12 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
         //   '../node_modules/@prisma/client/runtime/query-engine-darwin',
         // ),
       }),
-      options,
     ),
   )
 }
 
-export async function generateSchemaAndTypes(
-  datamodel: string,
-  types: any[],
-  transformOptions?: TransformOptions,
-) {
-  const dmmf = await getDmmf(datamodel, transformOptions)
+export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
+  const dmmf = await getDmmf(datamodel)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
   })
@@ -57,9 +51,8 @@ export async function generateSchemaAndTypes(
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
   types: any[],
-  options?: TransformOptions,
 ) {
-  const dmmf = await getDmmf(datamodel, options)
+  const dmmf = await getDmmf(datamodel)
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
     nexusBuilder: {
       addType: () => false,

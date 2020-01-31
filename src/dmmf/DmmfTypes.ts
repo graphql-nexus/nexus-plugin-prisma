@@ -81,8 +81,6 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
-    computedInputs: ComputedInputs
-    upfilteredKey?: string | null
     relation?: boolean | string
   }
   interface Mapping {

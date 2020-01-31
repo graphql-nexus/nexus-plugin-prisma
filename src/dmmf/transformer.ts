@@ -10,31 +10,16 @@ import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
 import { Publisher } from '../publisher'
 
-export type TransformOptions = {
-  computedInputs?: ComputedInputs
-}
-
 export const getTransformedDmmf = (
   photonClientPackagePath: string,
-  options?: TransformOptions,
 ): DmmfDocument =>
-  new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath), options))
+  new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath)))
 
-const addDefaultOptions = (
-  givenOptions?: TransformOptions,
-): Required<TransformOptions> => ({
-  computedInputs: {},
-  ...givenOptions,
-})
-
-export function transform(
-  document: DMMF.Document,
-  options?: TransformOptions,
-): DmmfTypes.Document {
+export function transform(document: DMMF.Document): DmmfTypes.Document {
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as DmmfTypes.Mapping[],
-    schema: transformSchema(document.schema, addDefaultOptions(options)),
+    schema: transformSchema(document.schema),
   }
 }
 
@@ -51,15 +36,10 @@ function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
   }
 }
 
-function transformSchema(
-  schema: DMMF.Schema,
-  { computedInputs }: Required<TransformOptions>,
-): DmmfTypes.Schema {
+function transformSchema(schema: DMMF.Schema): DmmfTypes.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map(_ =>
-      transformInputType(_, computedInputs),
-    ),
+    inputTypes: schema.inputTypes.map(transformInputType),
     outputTypes: schema.outputTypes.map(o => ({
       ...o,
       fields: o.fields.map(f => ({
@@ -104,7 +84,7 @@ const computeInputs = (
   computedInputs: ComputedInputs,
   params: MutationResolverParams,
 ) =>
-  Object.fromEntries(
+  fromEntries(
     Object.entries(computedInputs).map(([key, computeValue]) => [
       key,
       computeValue(params),
@@ -120,7 +100,7 @@ type TransformArgsParams = {
 }
 
 function shallowTransform(
-  { inputType, params }: TransformArgsParams,
+  { inputType, params, computedInputs }: TransformArgsParams,
   data: unknown,
 ) {
   if (!data || typeof data !== 'object' || Array.isArray(data)) {
@@ -137,7 +117,7 @@ function shallowTransform(
     return transformedValue
   }
   // shallowTransform individual field values
-  transformedData = Object.fromEntries(
+  transformedData = fromEntries(
     Object.entries(transformedData!).map(([key, value]) => [
       key,
       transformFieldValue(value),
@@ -146,7 +126,7 @@ function shallowTransform(
   // Add computedInputs that were previously removed
   transformedData = {
     ...transformedData,
-    ...computeInputs(inputType.computedInputs, params),
+    ...computeInputs(computedInputs, params),
   }
   return transformedData
 }
@@ -177,16 +157,20 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
           )}`,
         )
       }
-      const fieldValue = deepTransformArgData(
-        {
-          ...params,
-          inputType: publisher.getInputType(field.inputType.type),
-        },
-        (data as Record<string, any>)[fieldName],
-      )
+      const originalValue = (data as Record<string, any>)[fieldName]
+      const transformedValue =
+        field.inputType.kind === 'object'
+          ? deepTransformArgData(
+              {
+                ...params,
+                inputType: publisher.getInputType(field.inputType.type),
+              },
+              originalValue,
+            )
+          : originalValue
       return {
         ...transformedArgs,
-        [fieldName]: fieldValue,
+        [fieldName]: transformedValue,
       }
     }, shallowTransform(params, data))
   }
@@ -235,31 +219,10 @@ const isRelationType = (inputType: DMMF.InputType) =>
     field => field.name === 'create' || field.name === 'connect',
   )
 
-function transformInputType(
-  inputType: DMMF.InputType,
-  computedInputs: ComputedInputs,
-): DmmfTypes.InputType {
-  const fieldNames = inputType.fields.map(field => field.name)
-  /**
-   * Only plugin-level computed inputs are removed during schema transform.
-   * Resolver level computed inputs are filtered as part of the
-   * projecting process. They are then passed to addComputedInputs
-   * at runtime so their values can be inferred alongside the
-   * global values.
-   */
-  const globallyComputedInputsInType = Object.keys(computedInputs).reduce(
-    (args, key) =>
-      fieldNames.includes(key)
-        ? Object.assign(args, { [key]: computedInputs[key] })
-        : args,
-    {} as ComputedInputs,
-  )
+function transformInputType(inputType: DMMF.InputType): DmmfTypes.InputType {
   return {
     ...inputType,
-    fields: inputType.fields
-      .filter(field => !(field.name in computedInputs))
-      .map(transformArg),
-    computedInputs: globallyComputedInputsInType,
+    fields: inputType.fields.map(transformArg),
     relation: isRelationType(inputType),
   }
 }
