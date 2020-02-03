@@ -1,7 +1,7 @@
-import { GraphQLServer } from 'graphql-yoga'
-import { makeSchema, queryType, mutationType, objectType } from 'nexus'
-import { nexusPrismaPlugin } from 'nexus-prisma'
 import { PrismaClient } from '@prisma/client'
+import { GraphQLServer } from 'graphql-yoga'
+import { makeSchema, mutationType, objectType, queryType } from 'nexus'
+import { nexusPrismaPlugin } from 'nexus-prisma'
 import * as path from 'path'
 
 const prisma = new PrismaClient({ debug: true })
@@ -23,6 +23,7 @@ new GraphQLServer({
     types: [
       queryType({
         definition(t) {
+          t.crud.fooBars()
           t.crud.user()
           t.crud.users({ ordering: true })
           t.crud.post()
@@ -35,6 +36,12 @@ new GraphQLServer({
           t.crud.createOnePost()
           t.crud.deleteOneUser()
           t.crud.deleteOnePost()
+        },
+      }),
+      objectType({
+        name: 'FooBar',
+        definition(t) {
+          t.model.id()
         },
       }),
       objectType({

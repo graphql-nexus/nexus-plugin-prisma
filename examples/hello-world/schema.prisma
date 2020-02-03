@@ -18,3 +18,7 @@ model Post {
   id     String @id @default(cuid())
   author User[]
 }
+
+model FooBar {
+  id String @id @default(cuid())
+}
