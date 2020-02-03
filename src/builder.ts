@@ -33,6 +33,7 @@ import {
   Index,
   isEmptyObject,
   LocalComputedInputs,
+  lowerFirst,
 } from './utils'
 
 interface FieldPublisherConfig {
@@ -474,7 +475,7 @@ export class SchemaBuilder {
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  return photon[mapping.model.toLowerCase()!]
+                  return photon[lowerFirst(mapping.model)]
                     ['findOne']({
                       where: { [idField.name]: root[idField.name] },
                     })

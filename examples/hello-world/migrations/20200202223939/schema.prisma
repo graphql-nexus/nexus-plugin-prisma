@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = "sqlite:./dev.db"
+  url = "***"
 }
 
 generator prisma_client {
