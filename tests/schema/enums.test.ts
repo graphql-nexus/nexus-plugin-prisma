@@ -1,4 +1,4 @@
-import { generateSchemaAndTypes } from './__utils'
+import { generateSchemaAndTypes } from '../__utils'
 import { objectType, enumType, inputObjectType } from 'nexus'
 
 it('publishes enum even as output type', async () => {

@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { generateSchemaAndTypes } from './__utils'
+import { generateSchemaAndTypes } from '../__utils'
 
 it('only publishes output types that do not map to prisma models', async () => {
   const datamodel = `

@@ -1,5 +1,5 @@
 import { objectType } from 'nexus'
-import { generateSchemaAndTypes, mockConsoleLog } from './__utils'
+import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error', async () => {
   process.env.NODE_ENV = 'development'
