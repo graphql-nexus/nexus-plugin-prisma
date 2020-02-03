@@ -18,7 +18,7 @@ export const Query = queryType({
         id: intArg({ required: true }),
       },
       resolve(_root, args, ctx) {
-        return ctx.prisma.blogs
+        return ctx.prisma.blog
           .findOne({
             where: {
               id: args.id,
@@ -41,7 +41,7 @@ export const Query = queryType({
         viewCount: intArg(),
       },
       resolve(_root, args, ctx) {
-        return ctx.prisma.blogs.findMany({
+        return ctx.prisma.blog.findMany({
           where: {
             name: args.name,
             viewCount: args.viewCount,

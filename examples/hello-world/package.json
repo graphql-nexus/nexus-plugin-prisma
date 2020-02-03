@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node --transpile-only app"
+    "dev": "ts-node --transpile-only app",
+    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c"
   },
   "dependencies": {
     "@prisma/client": "^2.0.0-preview020.3",
     "graphql-yoga": "^1.18.3",
     "nexus": "^0.12.0-rc.9",
-    "nexus-prisma": "^0.9.0"
+    "nexus-prisma": "^0.9.1-next.1"
   },
   "devDependencies": {
     "@types/ws": "^7.2.0",
