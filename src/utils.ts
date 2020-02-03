@@ -1,8 +1,8 @@
 import * as fs from 'fs-extra'
-import * as path from 'path'
-import { core } from 'nexus'
-import { isDeepStrictEqual } from 'util'
 import { GraphQLResolveInfo } from 'graphql'
+import { core } from 'nexus'
+import * as path from 'path'
+import { isDeepStrictEqual } from 'util'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -71,6 +71,11 @@ export const indexBy = <X extends Record<string, any>>(
 
 export const upperFirst = (s: string): string => {
   return s.replace(/^\w/, c => c.toUpperCase())
+}
+
+export function lowerFirst(s: string): string {
+  if (s.length === 0) return s
+  return s[0].toLowerCase() + s.slice(1)
 }
 
 export function flatMap<T, U>(
