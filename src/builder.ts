@@ -589,9 +589,18 @@ export class SchemaBuilder {
       ...this.computedInputs,
       ...config.computedInputs,
     }
-    const created = { ...config.relations.create }
-    const connected = { ...config.relations.connect }
-    const defaultRelation = config.relations.defaultRelation
+    const relations = {
+      create: {
+        ...this.computedInputs.create,
+        ...config.relations.create,
+      },
+      connect: {
+        ...this.computedInputs.connect,
+        ...config.relations.connect,
+      },
+      defaultRelation:
+        config.relations.defaultRelation ?? this.relations.defaultRelation,
+    }
     return args
       .filter(arg => !(arg.name in computedInputs))
       .map(arg => {
@@ -604,7 +613,7 @@ export class SchemaBuilder {
             type: inputType,
           }
         }
-        const relatedField = this.getRelationField(arg, config.relations)
+        const relatedField = this.getRelationField(arg, relations)
         const customArg = relatedField
           ? this.getTransformedArg(
               this.publisher.getTypeFromArg(
