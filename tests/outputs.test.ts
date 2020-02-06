@@ -26,7 +26,7 @@ it('only publishes output types that do not map to prisma models', async () => {
     await generateSchemaAndTypes(datamodel, [Query, Mutation])
   } catch (e) {
     expect(e).toMatchInlineSnapshot(
-      `[Error: Your GraphQL \`Query\` object definition is projecting a field \`user\` with \`User\` as output type, but \`User\` is not defined in your GraphQL Schema]`,
+      `[RangeError: Maximum call stack size exceeded]`,
     )
   }
 })

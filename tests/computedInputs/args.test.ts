@@ -1,75 +1,10 @@
-import { queryType, mutationType, objectType } from 'nexus'
-import { getDmmf, generateSchemaAndTypes } from '../__utils'
 import { transformArgs } from '../../src/dmmf/transformer'
 import { ComputedInputs } from '../../src/utils'
-import { Publisher } from '../../src/publisher'
-
-const dataModel = `
-model User {
-  id  Int @id @default(autoincrement())
-  name String
-  nested Nested[]
-  createdWithBrowser String
-}
-
-model Nested {
-  id Int @id @default(autoincrement())
-  name String
-  createdWithBrowser String
-}
-`
-
-const resolvers = {
-  query: queryType({
-    definition(t: any) {
-      t.crud.user()
-    },
-  }),
-  mutation: mutationType({
-    definition(t: any) {
-      t.crud.createOneUser()
-      t.crud.createOneNested()
-    },
-  }),
-  user: objectType({
-    name: 'User',
-    definition: (t: any) => {
-      t.model.id()
-      t.model.name()
-      t.model.nested()
-      t.model.createdWithBrowser()
-    },
-  }),
-  nested: objectType({
-    name: 'Nested',
-    definition: (t: any) => {
-      t.model.id()
-      t.model.createdWithBrowser()
-      t.model.name()
-    },
-  }),
-}
-
-const fakeNexusBuilder: any = {
-  hasType: (_: string) => false,
-}
-
-const getTestData = async (pluginLevelComputedInputs?: ComputedInputs) => {
-  const dmmf = await getDmmf(dataModel)
-  return {
-    publisher: new Publisher(dmmf, fakeNexusBuilder),
-    computedInputs: {},
-    relations: {
-      create: {},
-      connect: {},
-      defaultRelation: 'unset' as const,
-    },
-  }
-}
+import { getTestData, defaultRelationsConfig } from '../__utils'
 
 describe('computedInputs args', () => {
   it('values are inferred', async () => {
-    const { publisher, relations } = await getTestData()
+    const { publisher } = await getTestData()
     expect(
       transformArgs({
         params: {
@@ -87,7 +22,7 @@ describe('computedInputs args', () => {
         computedInputs: {
           createdWithBrowser: ({ ctx }) => ctx.browser,
         },
-        relations,
+        relations: defaultRelationsConfig,
       }),
     ).toStrictEqual({
       data: {
@@ -100,7 +35,7 @@ describe('computedInputs args', () => {
     })
   }),
     it('array values are inferred', async () => {
-      const { publisher, relations } = await getTestData()
+      const { publisher } = await getTestData()
       expect(
         transformArgs({
           params: {
@@ -120,7 +55,7 @@ describe('computedInputs args', () => {
           computedInputs: {
             createdWithBrowser: ({ ctx }) => ctx.browser,
           },
-          relations,
+          relations: defaultRelationsConfig,
         }),
       ).toStrictEqual({
         data: {
@@ -136,7 +71,7 @@ describe('computedInputs args', () => {
       })
     }),
     it('values are inferred from root, args, and context', async () => {
-      const { publisher, relations } = await getTestData()
+      const { publisher } = await getTestData()
       expect(
         transformArgs({
           params: {
@@ -147,7 +82,7 @@ describe('computedInputs args', () => {
           },
           inputType: publisher.getInputType('UserCreateInput'),
           publisher,
-          relations,
+          relations: defaultRelationsConfig,
           computedInputs: {
             // Nonsense example, but ensures args, ctx and info values are being passed everywhere :)
             name: ({ args, ctx, info }) =>

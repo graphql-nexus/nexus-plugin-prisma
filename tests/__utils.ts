@@ -6,9 +6,16 @@ import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
+import { queryType, mutationType, objectType } from 'nexus'
+import { Publisher } from '../src/publisher'
+
+type CreateNexusPrismaInternalOptions = Omit<
+  NexusPrismaBuilder.InternalOptions,
+  'nexusBuilder'
+>
 
 export const createNexusPrismaInternal = (
-  options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
+  options: CreateNexusPrismaInternalOptions,
 ) =>
   Nexus.createPlugin({
     name: 'nexus-prisma-internal',
@@ -31,10 +38,15 @@ export async function getDmmf(datamodel: string) {
   )
 }
 
-export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
+export async function generateSchemaAndTypes(
+  datamodel: string,
+  types: any[],
+  options?: CreateNexusPrismaInternalOptions,
+) {
   const dmmf = await getDmmf(datamodel)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
+    ...options,
   })
   const schema = Nexus.makeSchema({
     types,
@@ -43,8 +55,10 @@ export async function generateSchemaAndTypes(datamodel: string, types: any[]) {
   })
 
   return {
+    dmmf,
     schema: GQL.printSchema(schema),
-    typegen: renderTypegen(dmmf, '@prisma/client'),
+    // Only check generated portion of types to prevent tests from breaking on unrelated changes
+    typegen: renderTypegen(dmmf, '@prisma/client').split('// Generated')[1],
   }
 }
 
@@ -93,4 +107,87 @@ export async function mockConsoleLog<T extends (...args: any) => any>(
     ...ret,
     $output: stripAnsi(outputData),
   }
+}
+
+export const defaultDataModel = `
+model User {
+  id  Int @id @default(autoincrement())
+  name String
+  nested Nested[]
+  createdWithBrowser String
+}
+
+model Nested {
+  id Int @id @default(autoincrement())
+  name String
+  createdWithBrowser String
+}
+`
+
+export const defaultDefinitions = {
+  query: queryType({
+    definition(t: any) {
+      t.crud.user()
+    },
+  }),
+  mutation: mutationType({
+    definition(t: any) {
+      t.crud.createOneUser()
+      t.crud.createOneNested()
+    },
+  }),
+  user: objectType({
+    name: 'User',
+    definition: (t: any) => {
+      t.model.id()
+      t.model.name()
+      t.model.nested()
+      t.model.createdWithBrowser()
+    },
+  }),
+  nested: objectType({
+    name: 'Nested',
+    definition: (t: any) => {
+      t.model.id()
+      t.model.createdWithBrowser()
+      t.model.name()
+    },
+  }),
+}
+
+export const defaultDefinitionValues = Object.values(defaultDefinitions)
+
+const fakeNexusBuilder: any = {
+  hasType: (_: string) => false,
+}
+
+type GetTestDataOptions = {
+  dataModel?: string
+  definitions?: Record<string, any>
+  pluginOptions?: CreateNexusPrismaInternalOptions
+}
+
+export const getTestData = async (options?: GetTestDataOptions) => {
+  const {
+    dataModel = defaultDataModel,
+    definitions = defaultDefinitions,
+    pluginOptions,
+  } = options ?? {}
+  const { dmmf, schema, typegen } = await generateSchemaAndTypes(
+    dataModel,
+    Object.values(definitions),
+    pluginOptions,
+  )
+  return {
+    dmmf,
+    schema,
+    typegen,
+    publisher: new Publisher(dmmf, fakeNexusBuilder),
+  }
+}
+
+export const defaultRelationsConfig = {
+  create: {},
+  connect: {},
+  defaultRelation: 'unset' as const,
 }

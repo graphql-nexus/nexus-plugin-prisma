@@ -2,7 +2,7 @@
 
 exports[`upfilteredKeys generates new types without upfilteredKeys: upfilteredKeys 1`] = `
 "type Mutation {
-  createOneUser(data: UserCreateCreateOnlyInput!): User!
+  createOneUser(data: UserCreateInput!): User!
 }
 
 type Nested {
@@ -10,9 +10,18 @@ type Nested {
   name: String!
 }
 
-input NestedCreateWithoutUserCreateOnlyInput {
+input NestedCreateManyWithoutUserInput {
+  create: [NestedCreateWithoutUserInput!]
+  connect: [NestedWhereUniqueInput!]
+}
+
+input NestedCreateWithoutUserInput {
   id: Int!
   name: String!
+}
+
+input NestedWhereUniqueInput {
+  id: Int
 }
 
 type Query {
@@ -25,10 +34,10 @@ type User {
   nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
 }
 
-input UserCreateCreateOnlyInput {
+input UserCreateInput {
   id: Int!
   name: String!
-  nested: [NestedCreateWithoutUserCreateOnlyInput!]
+  nested: NestedCreateManyWithoutUserInput
 }
 
 input UserWhereUniqueInput {
