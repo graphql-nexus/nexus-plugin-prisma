@@ -160,9 +160,8 @@ describe('computedInputs args', () => {
       ).toStrictEqual({
         data: {
           name: 'Sam i Yam',
-          createdWithBrowser: 'i Yam Sam',
           nested: {
-            create: { createdWithBrowser: 'i Yam Sam', name: 'Sam' },
+            create: { name: 'Sam i Yam' },
           },
         },
       })

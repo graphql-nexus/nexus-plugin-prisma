@@ -83,13 +83,19 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
 const computeInputs = (
   computedInputs: ComputedInputs,
   params: MutationResolverParams,
-) =>
-  fromEntries(
-    Object.entries(computedInputs).map(([key, computeValue]) => [
-      key,
-      computeValue(params),
-    ]),
+  // If passed, computedInput result will be filtered to include only those fields that exist in inputType
+  inputType?: DmmfTypes.InputType,
+) => {
+  let computedEntries = Object.entries(computedInputs)
+  if (inputType) {
+    computedEntries = computedEntries.filter(([key]) =>
+      inputType.fields.find(({ name }) => name === key),
+    )
+  }
+  return fromEntries(
+    computedEntries.map(([key, computeValue]) => [key, computeValue(params)]),
   )
+}
 
 type TransformArgsParams = {
   inputType: DmmfTypes.InputType
@@ -123,12 +129,11 @@ function shallowTransform(
       transformFieldValue(value),
     ]),
   )
-  // Add computedInputs that were previously removed
-  transformedData = {
+  // Add computedInputs that were not passed as data but that exist as fields on inputType
+  return {
     ...transformedData,
-    ...computeInputs(computedInputs, params),
+    ...computeInputs(computedInputs, params, inputType),
   }
-  return transformedData
 }
 
 function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
@@ -145,34 +150,37 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
         value,
       ),
     )
-  } else if (data && typeof data === 'object') {
-    return Object.keys(data).reduce((transformedArgs, fieldName) => {
-      const field = inputType.fields.find(_ => _.name === fieldName)
-      if (!field) {
-        throw new Error(
-          `Couldn't find field ${fieldName} on input type ${
-            inputType.name
-          } which was expected based on your data (${data}). Found fields ${inputType.fields.map(
-            _ => _.name,
-          )}`,
-        )
-      }
-      const originalValue = (data as Record<string, any>)[fieldName]
-      const transformedValue =
-        field.inputType.kind === 'object'
-          ? deepTransformArgData(
-              {
-                ...params,
-                inputType: publisher.getInputType(field.inputType.type),
-              },
-              originalValue,
+  } else if (typeof data === 'object') {
+    const shallowTransformedData = shallowTransform(params, data)
+    return fromEntries(
+      Object.entries(shallowTransformedData).map(
+        ([fieldName, shallowTransformedFieldValue]) => {
+          const field = inputType.fields.find(_ => _.name === fieldName)
+          if (!field) {
+            throw new Error(
+              `Couldn't find field '${fieldName}' on input type '${
+                inputType.name
+              }' which was expected based on your data (${JSON.stringify(
+                shallowTransformedData,
+                null,
+                4,
+              )}). Found fields ${inputType.fields.map(_ => _.name)}`,
             )
-          : originalValue
-      return {
-        ...transformedArgs,
-        [fieldName]: transformedValue,
-      }
-    }, shallowTransform(params, data))
+          }
+          const deepTransformedFieldValue =
+            field.inputType.kind === 'object'
+              ? deepTransformArgData(
+                  {
+                    ...params,
+                    inputType: publisher.getInputType(field.inputType.type),
+                  },
+                  shallowTransformedFieldValue,
+                )
+              : shallowTransformedFieldValue
+          return [fieldName, deepTransformedFieldValue]
+        },
+      ),
+    )
   }
 }
 
