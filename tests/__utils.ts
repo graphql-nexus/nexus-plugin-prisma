@@ -7,7 +7,6 @@ import { DmmfDocument } from '../src/dmmf'
 import { transform } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
 import { queryType, mutationType, objectType } from 'nexus'
-import { Publisher } from '../src/publisher'
 
 type CreateNexusPrismaInternalOptions = Omit<
   NexusPrismaBuilder.InternalOptions,
@@ -157,10 +156,6 @@ export const defaultDefinitions = {
 
 export const defaultDefinitionValues = Object.values(defaultDefinitions)
 
-const fakeNexusBuilder: any = {
-  hasType: (_: string) => false,
-}
-
 type GetTestDataOptions = {
   dataModel?: string
   definitions?: Record<string, any>
@@ -173,16 +168,18 @@ export const getTestData = async (options?: GetTestDataOptions) => {
     definitions = defaultDefinitions,
     pluginOptions,
   } = options ?? {}
+  const builderHook = {} as { builder: NexusPrismaBuilder.SchemaBuilder }
   const { dmmf, schema, typegen } = await generateSchemaAndTypes(
     dataModel,
     Object.values(definitions),
-    pluginOptions,
+    { builderHook, ...pluginOptions },
   )
+  const { publisher } = builderHook.builder
   return {
     dmmf,
     schema,
     typegen,
-    publisher: new Publisher(dmmf, fakeNexusBuilder),
+    publisher,
   }
 }
 

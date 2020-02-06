@@ -647,7 +647,9 @@ export class SchemaBuilder {
       if (config.relations.defaultRelation === relation) {
         return `${capitalize(relation)}All`
       } else if (!isEmpty(configValue)) {
-        return `${capitalize(relation)}${Object.keys(configValue).join('And')}`
+        return `${capitalize(relation)}${Object.keys(configValue)
+          .map(key => capitalize(key))
+          .join('And')}`
       } else {
         return ''
       }

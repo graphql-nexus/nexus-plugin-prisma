@@ -105,83 +105,64 @@ type TransformArgsParams = {
   relations: ResolvedRelationsConfig
 }
 
-function shallowTransform(
-  { inputType, params, computedInputs }: TransformArgsParams,
-  data: unknown,
-) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    throw new Error(
-      `Unexpectedly received non-object with value ${data} in shallowTransform.`,
-    )
-  }
-  let transformedData = data
-  const transformFieldValue = (value: any) => {
-    let transformedValue = value
-    if (typeof inputType.relation === 'string') {
-      transformedValue = { [inputType.relation]: value }
-    }
-    return transformedValue
-  }
-  // shallowTransform individual field values
-  transformedData = fromEntries(
-    Object.entries(transformedData!).map(([key, value]) => [
-      key,
-      transformFieldValue(value),
-    ]),
-  )
-  // Add computedInputs that were not passed as data but that exist as fields on inputType
-  return {
-    ...transformedData,
-    ...computeInputs(computedInputs, params, inputType),
-  }
-}
-
 function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   const { inputType, publisher } = params
   if (!data || typeof data !== 'object') {
     return data
   }
+  let transformedData = data
   if (Array.isArray(data)) {
-    return data.map(value =>
+    transformedData = data.map(value =>
       deepTransformArgData(
         {
           ...params,
+          // A relation key will be injected at the end of this function call
+          // if the inputType required one, so this avoids duplicating it
+          inputType: { ...inputType, relation: false },
         },
         value,
       ),
     )
-  } else if (typeof data === 'object') {
-    const shallowTransformedData = shallowTransform(params, data)
-    return fromEntries(
-      Object.entries(shallowTransformedData).map(
-        ([fieldName, shallowTransformedFieldValue]) => {
-          const field = inputType.fields.find(_ => _.name === fieldName)
-          if (!field) {
-            throw new Error(
-              `Couldn't find field '${fieldName}' on input type '${
-                inputType.name
-              }' which was expected based on your data (${JSON.stringify(
-                shallowTransformedData,
-                null,
-                4,
-              )}). Found fields ${inputType.fields.map(_ => _.name)}`,
-            )
-          }
-          const deepTransformedFieldValue =
-            field.inputType.kind === 'object'
-              ? deepTransformArgData(
-                  {
-                    ...params,
-                    inputType: publisher.getInputType(field.inputType.type),
-                  },
-                  shallowTransformedFieldValue,
-                )
-              : shallowTransformedFieldValue
-          return [fieldName, deepTransformedFieldValue]
-        },
-      ),
+  } else if (data && typeof data === 'object') {
+    // Recurse to handle nested inputTypes
+    transformedData = fromEntries(
+      Object.entries(data).map(([fieldName, fieldData]) => {
+        const field = inputType.fields.find(_ => _.name === fieldName)
+        if (!field) {
+          throw new Error(
+            `Couldn't find field '${fieldName}' on input type '${
+              inputType.name
+            }' which was expected based on your data (${JSON.stringify(
+              data,
+              null,
+              4,
+            )}). Found fields ${inputType.fields.map(_ => _.name)}`,
+          )
+        }
+        const deepTransformedFieldValue =
+          field.inputType.kind === 'object'
+            ? deepTransformArgData(
+                {
+                  ...params,
+                  inputType: publisher.getInputType(field.inputType.type),
+                },
+                fieldData,
+              )
+            : fieldData
+        return [fieldName, deepTransformedFieldValue]
+      }),
     )
+    // Add computedInputs to data
+    transformedData = {
+      ...transformedData,
+      ...computeInputs(params.computedInputs, params.params, inputType),
+    }
   }
+  if (typeof inputType.relation === 'string') {
+    // Inject relation key into data if one was omitted based on the inputType
+    transformedData = { [inputType.relation]: transformedData }
+  }
+  return transformedData
 }
 
 type IsTransformRequiredArgs = {
