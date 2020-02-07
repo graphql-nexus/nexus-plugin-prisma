@@ -28,15 +28,7 @@ import {
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import {
-  assertPhotonInContext,
-  ComputedInputs,
-  Index,
-  RelationsConfig,
-  ResolvedRelationsConfig,
-  ScopableConfig,
-  ResolvedFieldConfig,
-} from './utils'
+import { assertPhotonInContext, Index, InputsConfig } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
 
@@ -46,14 +38,14 @@ type FieldPublisherConfig = {
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
-} & ScopableConfig
+  inputs?: InputsConfig
+}
 
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
-  'alias' | 'type'
-> &
-  ResolvedFieldConfig
+  'alias' | 'type' | 'inputs'
+>
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -106,7 +98,7 @@ export interface Options {
    * go away once Nexus has typeGen plugin support.
    */
   shouldGenerateArtifacts?: boolean
-  inputs?: {
+  paths?: {
     /**
      * Where can nexus-prisma find the Prisma Client JS package? By default looks in
      * `node_modules/@prisma/client`. This is needed because nexus-prisma
@@ -114,8 +106,6 @@ export interface Options {
      * Prisma Client JS package.
      */
     prismaClient?: string
-  }
-  outputs?: {
     /**
      * Where should nexus-prisma put its typegen on disk? By default matches the
      * default approach of Nexus typegen which is to emit into `node_modules/@types`.
@@ -124,8 +114,7 @@ export interface Options {
      */
     typegen?: string
   }
-  computedInputs?: ComputedInputs
-  relations?: RelationsConfig
+  inputs?: InputsConfig
 }
 
 export interface InternalOptions extends Options {
@@ -187,52 +176,34 @@ const shouldGenerateArtifacts =
     ? false
     : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
 
-const defaultOptions = {
-  shouldGenerateArtifacts,
-  prismaClient: (ctx: any) => ctx.prisma,
-  inputs: {
-    prismaClient: defaultClientPath,
-  },
-  outputs: {
-    typegen: defaultTypegenPath,
-  },
-  computedInputs: {},
-}
-
 export interface CustomInputArg {
   arg: DmmfTypes.SchemaArg
   type: DmmfTypes.InputType | DmmfTypes.Enum | { name: string } // scalar
 }
-
-const addDefaultsToRelationsConfig = (
-  givenOptions: RelationsConfig = {},
-): ResolvedRelationsConfig => ({
-  create: {},
-  connect: {},
-  defaultRelation: 'unset',
-  ...givenOptions,
-})
 
 export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: PrismaClientFetcher
-  protected computedInputs: ComputedInputs
-  protected relations: ResolvedRelationsConfig
+  protected inputs: InputsConfig
   protected unknownFieldsByModel: Index<string[]>
   publisher: Publisher
 
   constructor(public options: InternalOptions) {
+    const { paths, ...rest } = options
     const config = {
-      ...defaultOptions,
-      ...options,
-      inputs: { ...defaultOptions.inputs, ...options.inputs },
-      outputs: { ...defaultOptions.outputs, ...options.outputs },
+      shouldGenerateArtifacts,
+      prismaClient: (ctx: any) => ctx.prisma,
+      paths: {
+        prismaClient: paths?.prismaClient ?? defaultClientPath,
+        typegen: paths?.typegen ?? defaultTypegenPath,
+      },
+      inputs: {},
+      ...rest,
     }
-    this.computedInputs = config.computedInputs ?? {}
-    this.relations = addDefaultsToRelationsConfig(config.relations)
-    this.dmmf = options.dmmf ?? getTransformedDmmf(config.inputs.prismaClient)
+    this.inputs = config.inputs
+    this.dmmf = options.dmmf ?? getTransformedDmmf(config.paths.prismaClient)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     if (config.builderHook) {
       config.builderHook.builder = this
@@ -249,8 +220,8 @@ export class SchemaBuilder {
     }
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
-        prismaClientPath: config.inputs.prismaClient,
-        typegenPath: config.outputs.typegen,
+        prismaClientPath: config.paths.prismaClient,
+        typegenPath: config.paths.typegen,
       })
     }
   }
@@ -311,8 +282,7 @@ export class SchemaBuilder {
                         args,
                         ctx,
                       },
-                      computedInputs: publisherConfig.computedInputs,
-                      relations: publisherConfig.relations,
+                      inputs: publisherConfig.inputs,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -488,15 +458,14 @@ export class SchemaBuilder {
 
   addDefaultsToPublisherConfig({
     field,
-    givenOptions: { relations: givenRelations, ...givenRest },
+    givenOptions,
   }: Required<PublisherConfigData>): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
-      computedInputs: {},
-      relations: addDefaultsToRelationsConfig(givenRelations),
-      ...givenRest,
+      inputs: {},
+      ...givenOptions,
     }
   }
 

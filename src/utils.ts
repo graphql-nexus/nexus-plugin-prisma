@@ -165,6 +165,10 @@ export type ComputeInput<MethodName extends MutationMethodName = string> = (
   params: MutationResolverParams<MethodName>,
 ) => unknown
 
+export type ComputedInputs<
+  MethodName extends MutationMethodName = string
+> = Record<string, ComputeInput<MethodName>>
+
 export type MutationResolverParams<
   MethodName extends MutationMethodName = string
 > = {
@@ -190,16 +194,26 @@ export type InputFieldName = NestedKeys<
   ? NestedKeys<core.GetGen<'inputTypes'>>
   : string
 
+export const relationKeys: RelateByValue[] = ['create', 'connect']
+
+export type RelateByValue =
+  | 'default'
+  | 'create'
+  | 'connect'
+  | 'compute'
+  | undefined
+
 export type TypeOnlyInputConfig = {
-  type?: 'default' | 'created' | 'connected'
+  relateBy?: 'default' | 'create' | 'connect'
 }
 
 export type ComputedInputConfig<
   MethodName extends MutationMethodName = string
 > = {
-  type: 'computed'
-  from: ComputeInput<MethodName>
+  computeFrom: ComputeInput<MethodName>
 }
+
+export type InputConfig = TypeOnlyInputConfig | ComputedInputConfig
 
 export type InputsConfig<MethodName extends MutationMethodName = string> = {
   [Name in InputFieldName]?:

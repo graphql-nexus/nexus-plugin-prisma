@@ -2,8 +2,11 @@ import { DMMF } from '@prisma/client/runtime'
 import { isEmpty, fromEntries } from '@re-do/utils'
 import {
   MutationResolverParams,
+  InputsConfig,
+  ComputeInput,
   ComputedInputs,
-  ResolvedRelationsConfig,
+  relationKeys,
+  ComputedInputConfig,
 } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
@@ -75,35 +78,23 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
       ...inputType,
       type: getReturnTypeName(inputType.type),
     },
-    // FIXME Why?
-    isRelationFilter: undefined,
   }
-}
-
-const computeInputs = (
-  computedInputs: ComputedInputs,
-  params: MutationResolverParams,
-  // If passed, computedInput result will be filtered to include only those fields that exist in inputType
-  inputType?: DmmfTypes.InputType,
-) => {
-  let computedEntries = Object.entries(computedInputs)
-  if (inputType) {
-    computedEntries = computedEntries.filter(([key]) =>
-      inputType.fields.find(({ name }) => name === key),
-    )
-  }
-  return fromEntries(
-    computedEntries.map(([key, computeValue]) => [key, computeValue(params)]),
-  )
 }
 
 type TransformArgsParams = {
   inputType: DmmfTypes.InputType
   params: MutationResolverParams
   publisher: Publisher
-  computedInputs: ComputedInputs
-  relations: ResolvedRelationsConfig
+  inputs: InputsConfig
 }
+
+const computeInputs = (
+  inputType: DmmfTypes.InputType,
+  params: MutationResolverParams,
+) =>
+  inputType.fields
+    .filter(field => 'computeFrom' in field)
+    .map(field => (field as DmmfTypes.ComputedSchemaArg).computeFrom(params))
 
 function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   const { inputType, publisher } = params
@@ -112,13 +103,19 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   }
   let transformedData = data
   if (Array.isArray(data)) {
+    const { relateBy, ...otherInputConfig } = inputType.inputs
     transformedData = data.map(value =>
       deepTransformArgData(
         {
           ...params,
-          // A relation key will be injected at the end of this function call
-          // if the inputType required one, so this avoids duplicating it
-          inputType: { ...inputType, relation: false },
+          inputType: {
+            ...inputType,
+            // A relation key will be injected at the end of this function call
+            // if the inputType required one, so this avoids duplicating it
+            config: relationKeys.includes(relateBy)
+              ? otherInputConfig
+              : inputType.config,
+          },
         },
         value,
       ),
@@ -152,41 +149,35 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
         return [fieldName, deepTransformedFieldValue]
       }),
     )
-    // Add computedInputs to data
-    transformedData = {
-      ...transformedData,
-      ...computeInputs(params.computedInputs, params.params, inputType),
-    }
   }
-  if (typeof inputType.relation === 'string') {
+  if (inputType.config.relateBy === 'compute') {
+    transformedData = { ...transformedData }
+  }
+  if (
+    inputType.config.relateBy &&
+    relationKeys.includes(inputType.config.relateBy)
+  ) {
     // Inject relation key into data if one was omitted based on the inputType
-    transformedData = { [inputType.relation]: transformedData }
+    transformedData = { [inputType.config.relateBy]: transformedData }
   }
   return transformedData
 }
 
-type IsTransformRequiredArgs = {
-  relations: ResolvedRelationsConfig
-  computedInputs: ComputedInputs
-}
-
-export const isTransformRequired = ({
-  relations,
-  computedInputs,
-}: IsTransformRequiredArgs) =>
-  !isEmpty(computedInputs) ||
-  !isEmpty(relations.connect) ||
-  !isEmpty(relations.create) ||
-  relations.defaultRelation
+export const isTransformRequired = (inputs: InputsConfig) =>
+  Object.values(inputs).find(
+    inputConfig =>
+      inputConfig &&
+      !isEmpty(inputConfig) &&
+      inputConfig.relateBy !== 'default',
+  )
 
 export const transformArgs = ({
   inputType,
   params,
   publisher,
-  relations,
-  computedInputs,
+  inputs,
 }: TransformArgsParams) =>
-  isTransformRequired({ relations, computedInputs })
+  isTransformRequired(inputs)
     ? {
         ...params.args,
         data: deepTransformArgData(
@@ -194,8 +185,7 @@ export const transformArgs = ({
             inputType,
             publisher,
             params,
-            relations,
-            computedInputs,
+            inputs,
           },
           params.args.data,
         ),
@@ -212,7 +202,8 @@ function transformInputType(inputType: DMMF.InputType): DmmfTypes.InputType {
   return {
     ...inputType,
     fields: inputType.fields.map(transformArg),
-    relation: isRelationType(inputType),
+    isRelation: isRelationType(inputType),
+    inputs: {},
   }
 }
 
