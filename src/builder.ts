@@ -35,7 +35,7 @@ import {
   RelationsConfig,
   ResolvedRelationsConfig,
   ScopableConfig,
-  ResolvedScopableConfig,
+  ResolvedFieldConfig,
 } from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
@@ -53,7 +53,7 @@ type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
   'alias' | 'type'
 > &
-  ResolvedScopableConfig
+  ResolvedFieldConfig
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>

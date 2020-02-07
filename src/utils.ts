@@ -158,16 +158,12 @@ export type Index<T> = Record<string, T>
  * has been copy pasted into our README.
  **/
 /**
- *  Represents arguments required by Prisma Client JS that will
- *  be derived from a request's input (args, context, and info)
- *  and omitted from the GraphQL API. The object itself maps the
- *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the prisma
- *  arg of the same name.
+ * A function that takes an object representing the request's input
+ * (args, context, and info) and returns the value to pass to the Prisma JS Client.
  */
-export type ComputedInputs<
-  MethodName extends MutationMethodName = string
-> = Record<string, (params: MutationResolverParams<MethodName>) => unknown>
+export type ComputeInput<MethodName extends MutationMethodName = string> = (
+  params: MutationResolverParams<MethodName>,
+) => unknown
 
 export type MutationResolverParams<
   MethodName extends MutationMethodName = string
@@ -194,32 +190,19 @@ export type InputFieldName = NestedKeys<
   ? NestedKeys<core.GetGen<'inputTypes'>>
   : string
 
-//On a related note, this type determines which fields are always 'created' or always 'connected'
-export type RelationsConfig<
-  CreateKey extends InputFieldName = InputFieldName,
-  ConnectKey extends InputFieldName = InputFieldName
+export type TypeOnlyInputConfig = {
+  type?: 'default' | 'created' | 'connected'
+}
+
+export type ComputedInputConfig<
+  MethodName extends MutationMethodName = string
 > = {
-  create?: Record<CreateKey, boolean>
-  connect?: Record<Exclude<ConnectKey, CreateKey>, boolean>
-  defaultRelation?: 'create' | 'connect' | 'unset'
+  type: 'computed'
+  from: ComputeInput<MethodName>
 }
 
-const createConfig = <
-  CreateKey extends InputFieldName = InputFieldName,
-  ConnectKey extends InputFieldName = InputFieldName
->(
-  create: Record<CreateKey, boolean>,
-  connect: Record<Exclude<ConnectKey, CreateKey>, boolean>,
-) => {}
-
-export type ResolvedRelationsConfig = Required<RelationsConfig>
-
-export type ScopableConfig = {
-  computedInputs?: ComputedInputs
-  relations?: RelationsConfig
-}
-
-export type ResolvedScopableConfig = {
-  computedInputs: ComputedInputs
-  relations: ResolvedRelationsConfig
+export type InputsConfig<MethodName extends MutationMethodName = string> = {
+  [Name in InputFieldName]?:
+    | TypeOnlyInputConfig
+    | ComputedInputConfig<MethodName>
 }
