@@ -196,27 +196,21 @@ export type InputFieldName = NestedKeys<
 
 export const relationKeys: RelateByValue[] = ['create', 'connect']
 
-export type RelateByValue =
-  | 'default'
-  | 'create'
-  | 'connect'
-  | 'compute'
-  | undefined
+export type RelateByValue = 'any' | 'create' | 'connect' | undefined
 
-export type TypeOnlyInputConfig = {
-  relateBy?: 'default' | 'create' | 'connect'
+export type BaseInputConfig = {
+  relateBy?: RelateByValue
 }
 
 export type ComputedInputConfig<
   MethodName extends MutationMethodName = string
 > = {
+  relateBy?: 'any' | undefined
   computeFrom: ComputeInput<MethodName>
 }
 
-export type InputConfig = TypeOnlyInputConfig | ComputedInputConfig
+export type InputConfig = BaseInputConfig | ComputedInputConfig
 
 export type InputsConfig<MethodName extends MutationMethodName = string> = {
-  [Name in InputFieldName]?:
-    | TypeOnlyInputConfig
-    | ComputedInputConfig<MethodName>
+  [Name in InputFieldName]?: BaseInputConfig | ComputedInputConfig<MethodName>
 }

@@ -101,55 +101,40 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   if (!data || typeof data !== 'object') {
     return data
   }
-  let transformedData = data
-  if (Array.isArray(data)) {
-    const { relateBy, ...otherInputConfig } = inputType.inputs
-    transformedData = data.map(value =>
-      deepTransformArgData(
-        {
-          ...params,
-          inputType: {
-            ...inputType,
-            // A relation key will be injected at the end of this function call
-            // if the inputType required one, so this avoids duplicating it
-            config: relationKeys.includes(relateBy)
-              ? otherInputConfig
-              : inputType.config,
-          },
-        },
-        value,
-      ),
-    )
-  } else if (data && typeof data === 'object') {
-    // Recurse to handle nested inputTypes
-    transformedData = fromEntries(
-      Object.entries(data).map(([fieldName, fieldData]) => {
-        const field = inputType.fields.find(_ => _.name === fieldName)
-        if (!field) {
-          throw new Error(
-            `Couldn't find field '${fieldName}' on input type '${
-              inputType.name
-            }' which was expected based on your data (${JSON.stringify(
-              data,
-              null,
-              4,
-            )}). Found fields ${inputType.fields.map(_ => _.name)}`,
-          )
-        }
-        const deepTransformedFieldValue =
-          field.inputType.kind === 'object'
-            ? deepTransformArgData(
-                {
-                  ...params,
-                  inputType: publisher.getInputType(field.inputType.type),
-                },
-                fieldData,
-              )
-            : fieldData
-        return [fieldName, deepTransformedFieldValue]
-      }),
-    )
-  }
+  let transformedData = data as Record<string, any>
+  // Recurse to handle nested inputTypes
+  transformedData = fromEntries(
+    Object.entries(transformedData).map(([fieldName, fieldData]) => {
+      if (Array.isArray(data)) {
+        return fieldData.map((value: any) =>
+          deepTransformArgData(params, value),
+        )
+      }
+      const field = inputType.fields.find(_ => _.name === fieldName)
+      if (!field) {
+        throw new Error(
+          `Couldn't find field '${fieldName}' on input type '${
+            inputType.name
+          }' which was expected based on your data (${JSON.stringify(
+            data,
+            null,
+            4,
+          )}). Found fields ${inputType.fields.map(_ => _.name)}`,
+        )
+      }
+      const deepTransformedFieldValue =
+        field.inputType.kind === 'object'
+          ? deepTransformArgData(
+              {
+                ...params,
+                inputType: publisher.getInputType(field.inputType.type),
+              },
+              fieldData,
+            )
+          : fieldData
+      return [fieldName, deepTransformedFieldValue]
+    }),
+  )
   if (inputType.config.relateBy === 'compute') {
     transformedData = { ...transformedData }
   }
