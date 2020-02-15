@@ -55,7 +55,8 @@ export async function generateSchemaAndTypes(
 
   return {
     dmmf,
-    schema: GQL.printSchema(schema),
+    schema,
+    schemaString: GQL.printSchema(schema),
     // Only check generated portion of types to prevent tests from breaking on unrelated changes
     typegen: renderTypegen(dmmf, '@prisma/client').split('// Generated')[1],
   }

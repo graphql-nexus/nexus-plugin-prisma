@@ -8,24 +8,25 @@
     "build": "yarn -s clean && yarn -s generate && tsc",
     "style": "prettier --write 'src/**/*'",
     "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
+    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma2 generate",
     "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
     "data:inject": "ts-node prisma/fake-data.ts"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-preview020",
+    "@prisma/client": "^2.0.0-preview020.3",
     "graphql": "^14.3.1",
     "graphql-yoga": "^1.18.2",
-    "nexus": "^0.12.0-beta.14",
-    "nexus-prisma": "^0.7.0-next.1"
+    "nexus": "^0.12.0-rc.9",
+    "nexus-prisma": "^0.9.1-next.1"
   },
   "devDependencies": {
     "@types/faker": "^4.1.5",
     "@types/ws": "^7.2.0",
     "faker": "^4.1.0",
     "prettier": "^1.18.2",
-    "prisma2": "^2.0.0-preview020",
+    "prisma2": "^2.0.0-preview020.3",
     "ts-node": "^8.3.0",
     "ts-node-dev": "^1.0.0-pre.41",
     "typescript": "^3.7.5"

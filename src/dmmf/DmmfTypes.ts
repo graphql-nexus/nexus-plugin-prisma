@@ -95,7 +95,7 @@ export declare namespace DmmfTypes {
   }
   interface Mapping {
     model: string
-    plural: string
+    // plural: string
     findOne: string
     findMany: string
     create: string

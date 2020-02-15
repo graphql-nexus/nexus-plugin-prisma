@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { generateSchemaAndTypes } from './__utils'
+import { generateSchemaAndTypes } from '../__utils'
 
 it('generates publishers pluralized & camel-cased', async () => {
   const datamodel = `
@@ -34,7 +34,7 @@ it('generates publishers pluralized & camel-cased', async () => {
     },
   })
 
-  const { schema, typegen } = await generateSchemaAndTypes(datamodel, [
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
     Query,
     Mutation,
     ModelName,

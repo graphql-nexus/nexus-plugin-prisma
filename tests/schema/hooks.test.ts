@@ -1,5 +1,5 @@
 import { objectType } from 'nexus'
-import { generateSchemaAndTypes, mockConsoleLog } from './__utils'
+import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, warns when wrong projected field or crud', async () => {
   process.env.NODE_ENV = 'development'
@@ -257,7 +257,7 @@ it('in dev stage, warns if a graphql typename does not map to a prisma name but 
     },
   })
 
-  const { schema, $output } = await mockConsoleLog(() =>
+  const { schemaString: schema, $output } = await mockConsoleLog(() =>
     generateSchemaAndTypes(datamodel, [User]),
   )
 
@@ -299,7 +299,7 @@ it('in prod stage, throw error if a graphql typename does not map to a prisma na
   })
 
   try {
-    const { schema } = await generateSchemaAndTypes(datamodel, [User])
+    const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [User])
 
     expect(schema).toMatchInlineSnapshot()
   } catch (e) {

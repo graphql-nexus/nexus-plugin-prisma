@@ -5,8 +5,8 @@ import * as GraphQL from './graphql'
 import {
   DmmfDocument,
   DmmfTypes,
-  getTransformedDmmf,
   fatalIfOldPhotonIsInstalled,
+  getTransformedDmmf,
 } from './dmmf'
 import {
   transformArgs,
@@ -36,8 +36,8 @@ import {
   Index,
   InputsConfig,
   relationKeys,
-  InputConfig,
   RelateByValue,
+  lowerFirst
 } from './utils'
 import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty, merge } from '@re-do/utils'
@@ -187,6 +187,7 @@ const shouldGenerateArtifacts =
     : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
     ? false
     : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+
 
 export interface CustomInputArg {
   arg: DmmfTypes.SchemaArg
@@ -438,6 +439,17 @@ export class SchemaBuilder {
           publisherConfig,
           stage,
         )
+        const mapping = this.dmmf.getMapping(typeName)
+        const idField = this.dmmf
+          .getModelOrThrow(typeName)
+          .fields.find(f => f.isId)
+
+        if (!idField) {
+          throw new Error(
+            `Your Prisma Model ${typeName} does not have an @id field. It's required for nexus-prisma to work.`,
+          )
+        }
+
         const fieldConfig = this.buildFieldConfig({
           field,
           publisherConfig,
@@ -446,9 +458,10 @@ export class SchemaBuilder {
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
                   const photon = this.getPhoton(ctx)
-                  const mapping = this.dmmf.getMapping(typeName)
-                  return photon[mapping.plural!]
-                    ['findOne']({ where: { id: root.id } })
+                  return photon[lowerFirst(mapping.model)]
+                    ['findOne']({
+                      where: { [idField.name]: root[idField.name] },
+                    })
                     [field.name](args)
                 }
               : undefined,
@@ -499,7 +512,7 @@ export class SchemaBuilder {
     }
   }
 
-  buildArgsFromField(config: FieldConfigData) {
+  buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
     return this.determineArgs(config).reduce(
       (acc, customArg) => ({
         ...acc,
