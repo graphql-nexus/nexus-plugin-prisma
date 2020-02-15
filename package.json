@@ -25,7 +25,7 @@
     "fs-extra": "^8.1.0",
     "nexus": "^0.12.0-rc.5",
     "pluralize": "^8.0.0",
-    "@re-do/utils": "0.0.3"
+    "@re-do/utils": "0.0.5"
   },
   "peerDependencies": {
     "@prisma/client": "2.0.0-preview020",

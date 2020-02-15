@@ -442,14 +442,15 @@
   dependencies:
     debug "^4.1.1"
 
-"@re-do/utils@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@re-do/utils/-/utils-0.0.3.tgz#56ff63261f41487ea731c308843f6b518f2ab1ed"
-  integrity sha512-lQ4+4k2z9Bqdfz/1lYnOfeAFBkUY3w/69YyhABlzQGW1gPPogjdpMNY551TB0ck0FKyUW+9heNxvtbBLEpZAJg==
+"@re-do/utils@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@re-do/utils/-/utils-0.0.5.tgz#bd1bb86d3f7394fa757ae10c22329cc5295071ab"
+  integrity sha512-NsC46P4WX77uFL5jifr10ch327Op/GHLgoVtP25/IX01OmovSIMo8KLTPOJlVmwEMZNVMWOPDYe3h9JTtiYuBQ==
   dependencies:
     "@babel/runtime-corejs3" "7.6.3"
     class-transformer "0.2.3"
     core-js "3.6.1"
+    deepmerge "4.2.2"
     execa "4.0.0"
     fs-extra "8.1.0"
     moize "5.4.4"
@@ -1241,6 +1242,11 @@ deep-is@~0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
+
+deepmerge@4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
+  integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
 
 define-properties@^1.1.2, define-properties@^1.1.3:
   version "1.1.3"

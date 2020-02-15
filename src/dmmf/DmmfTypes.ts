@@ -49,7 +49,7 @@ export declare namespace DmmfTypes {
     isList: boolean
   }
   type ArgType = string
-  type SchemaArg = {
+  type BaseSchemaArg = {
     name: string
     inputType: {
       isRequired: boolean
@@ -57,12 +57,18 @@ export declare namespace DmmfTypes {
       type: ArgType
       kind: FieldKind
     }
+  }
+
+  type StandardSchemaArg = BaseSchemaArg & {
     relateBy?: RelateByValue
   }
-  type ComputedSchemaArg = SchemaArg & {
-    relateBy?: 'any' | undefined
+
+  type ComputedSchemaArg = BaseSchemaArg & {
+    relateBy?: 'any'
     computeFrom: ComputeInput
   }
+
+  type SchemaArg = StandardSchemaArg | ComputedSchemaArg
 
   interface OutputType {
     name: string
@@ -86,7 +92,6 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
-    isRelation: boolean
   }
   interface Mapping {
     model: string

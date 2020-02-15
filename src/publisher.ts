@@ -123,6 +123,7 @@ export class Publisher {
       name: inputType.name,
       definition: t => {
         inputType.fields
+          .filter(field => !('computedFrom' in field))
           .map(field => ({
             ...field,
             inputType: {

@@ -1,15 +1,18 @@
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
+import * as GraphQL from './graphql'
 import {
   DmmfDocument,
   DmmfTypes,
   getTransformedDmmf,
   fatalIfOldPhotonIsInstalled,
+} from './dmmf'
+import {
   transformArgs,
   isTransformRequired,
-} from './dmmf'
-import * as GraphQL from './graphql'
+  isRelationType,
+} from './transformArgs'
 import {
   OnUnknownArgName,
   OnUnknownFieldName,
@@ -28,9 +31,16 @@ import {
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
-import { assertPhotonInContext, Index, InputsConfig } from './utils'
+import {
+  assertPhotonInContext,
+  Index,
+  InputsConfig,
+  relationKeys,
+  InputConfig,
+  RelateByValue,
+} from './utils'
 import { NexusArgDef } from 'nexus/dist/core'
-import { WithRequiredKeys, capitalize, isEmpty } from '@re-do/utils'
+import { WithRequiredKeys, capitalize, isEmpty, merge } from '@re-do/utils'
 
 type FieldPublisherConfig = {
   alias?: string
@@ -39,12 +49,13 @@ type FieldPublisherConfig = {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   inputs?: InputsConfig
+  relateBy?: RelateByValue
 }
 
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
-  'alias' | 'type' | 'inputs'
+  'alias' | 'type' | 'inputs' | 'relateBy'
 >
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
@@ -83,7 +94,7 @@ const dmmfListFieldTypeToNexus = (
 
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
 
-export interface Options {
+export type Options = {
   // TODO return type should be Photon
   /**
    * nexus-prisma will call this to get a reference to an instance of the Prisma Client.
@@ -115,9 +126,10 @@ export interface Options {
     typegen?: string
   }
   inputs?: InputsConfig
+  relateBy?: RelateByValue
 }
 
-export interface InternalOptions extends Options {
+export type InternalOptions = Options & {
   dmmf?: DmmfDocument // For testing
   builderHook?: any // For testing
   nexusBuilder: Nexus.PluginBuilderLens
@@ -187,6 +199,7 @@ export class SchemaBuilder {
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: PrismaClientFetcher
   protected inputs: InputsConfig
+  protected relateBy: RelateByValue
   protected unknownFieldsByModel: Index<string[]>
   publisher: Publisher
 
@@ -203,6 +216,7 @@ export class SchemaBuilder {
       ...rest,
     }
     this.inputs = config.inputs
+    this.relateBy = options.relateBy ?? 'any'
     this.dmmf = options.dmmf ?? getTransformedDmmf(config.paths.prismaClient)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     if (config.builderHook) {
@@ -283,6 +297,7 @@ export class SchemaBuilder {
                         ctx,
                       },
                       inputs: publisherConfig.inputs,
+                      relateBy: publisherConfig.relateBy,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -458,14 +473,15 @@ export class SchemaBuilder {
 
   addDefaultsToPublisherConfig({
     field,
-    givenOptions,
+    givenOptions: { inputs, ...otherGivenOptions },
   }: Required<PublisherConfigData>): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
-      inputs: {},
-      ...givenOptions,
+      relateBy: this.relateBy,
+      inputs: merge(this.inputs, inputs ?? {}),
+      ...otherGivenOptions,
     }
   }
 
@@ -510,13 +526,7 @@ export class SchemaBuilder {
     publisherConfig,
     field,
   }: FieldConfigData): CustomInputArg[] {
-    if (
-      // TODO: Can't just chekc publisher config, need overrides
-      isTransformRequired({
-        relations: publisherConfig.relations,
-        computedInputs: publisherConfig.computedInputs,
-      })
-    ) {
+    if (isTransformRequired(publisherConfig.inputs, publisherConfig.relateBy)) {
       return this.deepTransformInputTypes(field.args, publisherConfig)
     }
     return field.args.map(arg => {
@@ -528,127 +538,95 @@ export class SchemaBuilder {
     })
   }
 
-  /*
-     If there is one, returns a 'create' or 'connect' field that is 'created' or 'connected' based on config
-     Otherwise, returns undefined
-  */
-  getRelationField(arg: DmmfTypes.SchemaArg, config: ResolvedRelationsConfig) {
-    const inputType = this.publisher.getTypeFromArg(arg) as DmmfTypes.InputType
-    const getRelatedField = (relation: 'create' | 'connect') => {
-      if (Object.keys(config[relation]).includes(arg.name)) {
-        return inputType.fields.find(field => field.name === relation)
-      }
-    }
-    const createdField = getRelatedField('create')
-    const connectedField = getRelatedField('connect')
-    if (createdField && connectedField) {
-      throw new Error(
-        `Your config illegally specifies that field '${arg.name}' should be both created and connected: ${config}`,
-      )
-    }
-    return createdField ?? connectedField
-  }
-
   deepTransformInputTypes(
     args: DmmfTypes.SchemaArg[],
     config: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
-    // TODO: Real overrides
-    const computedInputs = {
-      ...this.computedInputs,
-      ...config.computedInputs,
-    }
-    const relations = {
-      create: {
-        ...this.computedInputs.create,
-        ...config.relations.create,
-      },
-      connect: {
-        ...this.computedInputs.connect,
-        ...config.relations.connect,
-      },
-      defaultRelation:
-        config.relations.defaultRelation ?? this.relations.defaultRelation,
-    }
-    return args
-      .filter(arg => !(arg.name in computedInputs))
-      .map(arg => {
-        const inputType = this.publisher.getTypeFromArg(
+    return args.map(arg => {
+      let transformedInputType = this.publisher.getTypeFromArg(
+        arg,
+      ) as DmmfTypes.InputType
+      if (arg.inputType.kind !== 'object') {
+        return {
           arg,
+          type: transformedInputType,
+        }
+      }
+      const name = this.getTransformedTypeName(arg, config)
+      const argConfig = config.inputs?.[arg.name] ?? {}
+      let transformedArg = arg
+      if (
+        isRelationType(transformedInputType) &&
+        argConfig.relateBy &&
+        relationKeys.includes(argConfig.relateBy)
+      ) {
+        transformedArg = transformedInputType.fields.find(
+          ({ name }) => name === argConfig.relateBy,
+        )!
+        transformedInputType = this.publisher.getTypeFromArg(
+          transformedArg,
         ) as DmmfTypes.InputType
-        if (arg.inputType.kind !== 'object') {
-          return {
-            arg,
-            type: inputType,
-          }
-        }
-        const relatedField = this.getRelationField(arg, relations)
-        const customArg = relatedField
-          ? this.getTransformedArg(
-              this.publisher.getTypeFromArg(
-                relatedField,
-              ) as DmmfTypes.InputType,
-              relatedField,
-              arg.name,
-              config,
-              relatedField.name as 'create' | 'connect',
-            )
-          : this.getTransformedArg(inputType, arg, arg.name, config, false)
-        if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
-          this.publisher.nexusBuilder.addType(
-            this.publisher.inputType(customArg) as any,
-          )
-        }
-        return customArg
-      })
+      }
+      const customArg: CustomInputArg = {
+        arg: {
+          ...transformedArg,
+          name: arg.name,
+          inputType: {
+            ...transformedArg.inputType,
+            type: name,
+          },
+          relateBy: 'any',
+        },
+        type: {
+          ...transformedInputType,
+          name: this.getTransformedTypeName(arg, config),
+          fields: this.deepTransformInputTypes(
+            transformedInputType.fields,
+            config,
+          ).map(_ => _.arg),
+        },
+      }
+      if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
+        this.publisher.nexusBuilder.addType(
+          this.publisher.inputType(customArg) as any,
+        )
+      }
+      return customArg
+    })
   }
 
-  getTransformedArg = (
-    inputType: DmmfTypes.InputType,
+  getTransformedTypeName = (
     arg: DmmfTypes.SchemaArg,
-    key: string,
     config: ResolvedFieldPublisherConfig,
-    relationType: 'create' | 'connect' | false,
-  ): CustomInputArg => {
+  ) => {
     const prefix = arg.inputType.type.replace('Input', '')
     const getRelationSuffix = (relation: 'create' | 'connect') => {
-      const configValue = config.relations[relation]
-      if (config.relations.defaultRelation === relation) {
+      if (config.relateBy === relation) {
         return `${capitalize(relation)}All`
-      } else if (!isEmpty(configValue)) {
-        return `${capitalize(relation)}${Object.keys(configValue)
-          .map(key => capitalize(key))
-          .join('And')}`
-      } else {
-        return ''
       }
+      const affectedInputs = Object.entries(config.inputs).filter(
+        ([fieldName, fieldValue]) => fieldValue?.relateBy === relation,
+      )
+      if (!isEmpty(affectedInputs)) {
+        return `${capitalize(
+          relation,
+        )}${affectedInputs
+          .map(([fieldName, fieldValue]) => capitalize(fieldName))
+          .join('And')}`
+      }
+      return ''
     }
-    const computedInputsSuffix = isEmpty(config.computedInputs)
+    const computedInputEntries = Object.entries(config.inputs).filter(
+      ([fieldName, fieldValue]) => fieldValue && 'computeFrom' in fieldValue,
+    )
+    const computedInputsSuffix = isEmpty(computedInputEntries)
       ? ''
-      : `Without${Object.keys(config.computedInputs)
-          .map(name => capitalize(name))
+      : `Without${computedInputEntries
+          .map(([fieldName]) => capitalize(fieldName))
           .join('Or')}`
-    const name = `${prefix}${getRelationSuffix('create')}${getRelationSuffix(
+    return `${prefix}${getRelationSuffix('create')}${getRelationSuffix(
       'connect',
     )}${computedInputsSuffix}Input`
-    return {
-      arg: {
-        ...arg,
-        name: key,
-        inputType: {
-          ...arg.inputType,
-          type: name,
-        },
-      },
-      type: {
-        ...inputType,
-        name,
-        relation: relationType,
-        fields: this.deepTransformInputTypes(inputType.fields, config).map(
-          _ => _.arg,
-        ),
-      },
-    }
   }
 
   argsFromQueryOrModelField({

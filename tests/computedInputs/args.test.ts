@@ -1,4 +1,4 @@
-import { transformArgs } from '../../src/dmmf/transformer'
+import { transformArgs } from '../../src/transformArgs'
 import { ComputedInputs } from '../../src/utils'
 import { getTestData, defaultRelationsConfig } from '../__utils'
 
