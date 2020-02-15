@@ -1,5 +1,5 @@
 import * as Nexus from 'nexus'
-import { getDmmf, generateSchemaAndTypes } from './__utils'
+import { getDmmf, generateSchemaAndTypes } from '../__utils'
 
 // TODO: Split local and global computedInputs into their own suites
 
@@ -87,11 +87,14 @@ it('removes resolver-level computedInputs from the corresponding input type', as
     Object.values(resolvers),
   )
 
-  expect(result).toMatchSnapshot('locallyComputedInputs')
+  expect({
+    schema: result.schemaString,
+    typegen: result.typegen,
+  }).toMatchSnapshot('locallyComputedInputs')
 })
 
-import { addComputedInputs } from '../src/dmmf/transformer'
-import { GlobalComputedInputs } from '../src/utils'
+import { addComputedInputs } from '../../src/dmmf/transformer'
+import { GlobalComputedInputs } from '../../src/utils'
 
 it('infers the value of resolver-level computedInputs at runtime', async () => {
   const { datamodel } = resolverTestData
@@ -122,7 +125,10 @@ it('removes global computedInputs from all input types', async () => {
     },
   )
 
-  expect(result).toMatchSnapshot('globallyComputedInputs')
+  expect({
+    schema: result.schemaString,
+    typegen: result.typegen,
+  }).toMatchSnapshot('globallyComputedInputs')
 })
 
 it('infers the value of global computedInputs at runtime', async () => {

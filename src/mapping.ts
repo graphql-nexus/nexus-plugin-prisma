@@ -4,7 +4,7 @@ import {
   FieldNamingStrategy,
   OperationName,
 } from './naming-strategies'
-import { flatMap } from './utils'
+import { flatMap, lowerFirst } from './utils'
 
 interface BaseMappedField {
   field: string
@@ -20,12 +20,14 @@ export interface MappedField extends Omit<BaseMappedField, 'field'> {
 const buildField = (
   mapping: DmmfTypes.Mapping,
   operation: OperationName,
-): BaseMappedField => ({
-  operation,
-  field: mapping[operation],
-  model: mapping.model,
-  photonAccessor: mapping.plural,
-})
+): BaseMappedField => {
+  return {
+    operation,
+    field: mapping[operation],
+    model: mapping.model,
+    photonAccessor: lowerFirst(mapping.model),
+  }
+}
 
 const CRUD_MAPPED_FIELDS: Record<
   string,
