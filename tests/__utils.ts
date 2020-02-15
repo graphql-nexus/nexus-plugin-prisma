@@ -182,9 +182,3 @@ export const getTestData = async (options?: GetTestDataOptions) => {
     publisher,
   }
 }
-
-export const defaultRelationsConfig = {
-  create: {},
-  connect: {},
-  defaultRelation: 'unset' as const,
-}

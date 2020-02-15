@@ -72,6 +72,8 @@ declare global {
   "
 `;
 
+exports[`in prod stage, throw error if no arg or wrong args are passed: output 1`] = `"Cannot read property 'filter' of undefined"`;
+
 exports[`in prod stage, throw error if no arg or wrong args are passed: schema 1`] = `
 "type Query {
   users(skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!

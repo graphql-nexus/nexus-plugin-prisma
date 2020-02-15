@@ -1,6 +1,6 @@
 import { transformArgs } from '../../src/transformArgs'
-import { ComputedInputs } from '../../src/utils'
-import { getTestData, defaultRelationsConfig } from '../__utils'
+import { InputsConfig } from '../../src/utils'
+import { getTestData } from '../__utils'
 
 describe('computedInputs args', () => {
   it('values are inferred', async () => {
@@ -13,16 +13,16 @@ describe('computedInputs args', () => {
             data: {
               name: 'New User',
               nested: { create: { name: 'Nested Name' } },
-            },
+            } as any,
           },
           ctx: { browser: 'firefox' },
         },
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
-        computedInputs: {
-          createdWithBrowser: ({ ctx }) => ctx.browser,
-        },
-        relations: defaultRelationsConfig,
+        inputs: {
+          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+        } as InputsConfig,
+        relateBy: 'any',
       }),
     ).toStrictEqual({
       data: {
@@ -46,16 +46,16 @@ describe('computedInputs args', () => {
                 nested: {
                   create: [{ name: 'Nested Name' }, { name: 'Nested Name' }],
                 },
-              },
+              } as any,
             },
             ctx: { browser: 'firefox' },
           },
           inputType: publisher.getInputType('UserCreateInput'),
           publisher,
-          computedInputs: {
-            createdWithBrowser: ({ ctx }) => ctx.browser,
-          },
-          relations: defaultRelationsConfig,
+          inputs: {
+            createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+          } as InputsConfig,
+          relateBy: 'any',
         }),
       ).toStrictEqual({
         data: {
@@ -79,18 +79,19 @@ describe('computedInputs args', () => {
             info: 'Yam' as any,
             args: { data: { nested: { create: { name: 'Sam' } } } },
             ctx: { browser: 'firefox' },
-          },
+          } as any,
           inputType: publisher.getInputType('UserCreateInput'),
           publisher,
-          relations: defaultRelationsConfig,
-          computedInputs: {
-            // Nonsense example, but ensures args, ctx and info values are being passed everywhere :)
-            name: ({ args, ctx, info }) =>
-              `${args.data.nested.create.name} ${ctx.browser.slice(
-                1,
-                2,
-              )} ${info}`,
-          } as ComputedInputs,
+          inputs: {
+            name: {
+              computeFrom: ({ args, ctx, info }: any) =>
+                `${args.data.nested.create.name} ${ctx.browser.slice(
+                  1,
+                  2,
+                )} ${info}`,
+            },
+          } as InputsConfig,
+          relateBy: 'any',
         }),
       ).toStrictEqual({
         data: {

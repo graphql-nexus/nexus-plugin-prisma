@@ -161,16 +161,12 @@ export type Index<T> = Record<string, T>
  * A function that takes an object representing the request's input
  * (args, context, and info) and returns the value to pass to the Prisma JS Client.
  */
-export type ComputeInput<MethodName extends MutationMethodName = string> = (
-  params: MutationResolverParams<MethodName>,
-) => unknown
-
-export type ComputedInputs<
-  MethodName extends MutationMethodName = string
-> = Record<string, ComputeInput<MethodName>>
+export type ComputeInput<
+  MethodName extends MutationMethodName = MutationMethodName
+> = (params: MutationResolverParams<MethodName>) => unknown
 
 export type MutationResolverParams<
-  MethodName extends MutationMethodName = string
+  MethodName extends MutationMethodName = MutationMethodName
 > = {
   info: GraphQLResolveInfo
   ctx: Context
@@ -203,7 +199,7 @@ export type StandardInputConfig = {
 }
 
 export type ComputedInputConfig<
-  MethodName extends MutationMethodName = string
+  MethodName extends MutationMethodName = MutationMethodName
 > = {
   relateBy?: 'any'
   computeFrom: ComputeInput<MethodName>
@@ -211,7 +207,9 @@ export type ComputedInputConfig<
 
 export type InputConfig = StandardInputConfig | ComputedInputConfig
 
-export type InputsConfig<MethodName extends MutationMethodName = string> = {
+export type InputsConfig<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
   [Name in InputFieldName]?:
     | StandardInputConfig
     | ComputedInputConfig<MethodName>

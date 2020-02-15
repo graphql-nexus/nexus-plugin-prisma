@@ -1,12 +1,14 @@
 import { getTestData, defaultDefinitions } from '../__utils'
 import { mutationType } from 'nexus'
-import { ComputedInputs } from '../../src/utils'
+import { InputsConfig } from '../../src/utils'
 
 describe('computedInputs typegen', () => {
   it('works at plugin-level', async () => {
     const { schema, typegen } = await getTestData({
       pluginOptions: {
-        computedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
+        inputs: {
+          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+        } as InputsConfig,
       },
     })
     expect(schema).toMatchSnapshot('plugin-level-schema')
@@ -19,9 +21,11 @@ describe('computedInputs typegen', () => {
         mutation: mutationType({
           definition(t: any) {
             t.crud.createOneUser({
-              computedInputs: {
-                createdWithBrowser: ({ ctx }) => ctx.browser,
-              } as ComputedInputs,
+              inputs: {
+                createdWithBrowser: {
+                  computeFrom: ({ ctx }: any) => ctx.browser,
+                },
+              },
             })
             t.crud.createOneNested()
           },

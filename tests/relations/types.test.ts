@@ -1,15 +1,16 @@
 import { mutationType } from 'nexus'
-import {
-  getTestData,
-  defaultDefinitions,
-  defaultRelationsConfig,
-} from '../__utils'
+import { getTestData, defaultDefinitions } from '../__utils'
+import { InputsConfig } from '../../src/utils'
 
 describe('relations typegen', () => {
   it('works at plugin-level', async () => {
     const { schema, typegen } = await getTestData({
       pluginOptions: {
-        relations: { ...defaultRelationsConfig, create: { nested: true } },
+        inputs: {
+          nested: {
+            relateBy: 'create',
+          },
+        } as InputsConfig,
       },
     })
     expect(schema).toMatchSnapshot('plugin-level-schema')
@@ -22,10 +23,11 @@ describe('relations typegen', () => {
         mutation: mutationType({
           definition(t: any) {
             t.crud.createOneUser({
-              relations: {
-                ...defaultRelationsConfig,
-                create: { nested: true },
-              },
+              inputs: {
+                nested: {
+                  relateBy: 'create',
+                },
+              } as InputsConfig,
             })
             t.crud.createOneNested()
           },

@@ -118,12 +118,14 @@ export class Publisher {
 
   publishInputObjectType(inputType: DmmfTypes.InputType) {
     this.markTypeAsPublished(inputType.name)
-
+    if (!inputType.fields) {
+      console.log('here')
+    }
     return Nexus.inputObjectType({
       name: inputType.name,
       definition: t => {
         inputType.fields
-          .filter(field => !('computedFrom' in field))
+          .filter(field => !('computeFrom' in field))
           .map(field => ({
             ...field,
             inputType: {

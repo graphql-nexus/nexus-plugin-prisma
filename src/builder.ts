@@ -39,7 +39,7 @@ import {
   InputConfig,
   RelateByValue,
 } from './utils'
-import { NexusArgDef } from 'nexus/dist/core'
+import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
 import { WithRequiredKeys, capitalize, isEmpty, merge } from '@re-do/utils'
 
 type FieldPublisherConfig = {
@@ -588,7 +588,7 @@ export class SchemaBuilder {
       }
       if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
         this.publisher.nexusBuilder.addType(
-          this.publisher.inputType(customArg) as any,
+          this.publisher.inputType(customArg) as NexusInputObjectTypeDef<any>,
         )
       }
       return customArg

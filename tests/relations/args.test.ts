@@ -1,18 +1,13 @@
 import { mutationType } from 'nexus'
-import { transformArgs } from '../../src/dmmf/transformer'
-import {
-  getTestData,
-  defaultDefinitions,
-  defaultRelationsConfig,
-} from '../__utils'
+import { transformArgs } from '../../src/transformArgs'
+import { getTestData, defaultDefinitions } from '../__utils'
+import { InputsConfig } from '../../src/utils'
 
 describe('relations', () => {
   it('injects relation keys specified by a default relation', async () => {
     const { publisher } = await getTestData({
       pluginOptions: {
-        relations: {
-          defaultRelation: 'connect',
-        },
+        relateBy: 'connect',
       },
     })
     expect(
@@ -21,16 +16,13 @@ describe('relations', () => {
           info: {} as any,
           args: {
             data: { name: 'New User', nested: [{ id: 1 }] },
-          },
+          } as any,
           ctx: {},
         },
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
-        computedInputs: {},
-        relations: {
-          ...defaultRelationsConfig,
-          defaultRelation: 'connect',
-        },
+        inputs: {},
+        relateBy: 'connect',
       }),
     ).toStrictEqual({
       data: {
@@ -46,9 +38,9 @@ describe('relations', () => {
           mutation: mutationType({
             definition(t: any) {
               t.crud.createOneUser({
-                relations: {
-                  create: {
-                    nested: true,
+                inputs: {
+                  nested: {
+                    relateBy: 'create',
                   },
                 },
               })
@@ -62,18 +54,17 @@ describe('relations', () => {
             info: {} as any,
             args: {
               data: { name: 'New User', nested: [{ name: 'New Nested' }] },
-            },
+            } as any,
             ctx: {},
           },
           inputType: publisher.getInputType('UserCreateCreateNestedInput'),
           publisher,
-          computedInputs: {},
-          relations: {
-            ...defaultRelationsConfig,
-            create: {
-              nested: true,
+          inputs: {
+            nested: {
+              relateBy: 'create',
             },
-          },
+          } as InputsConfig,
+          relateBy: 'any',
         }),
       ).toStrictEqual({
         data: {
