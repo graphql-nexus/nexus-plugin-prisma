@@ -1,4 +1,3 @@
-import { getGenerator, getDMMF, dmmfToDml } from '@prisma/sdk'
 import * as Prisma from '@prisma/client/runtime'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
@@ -7,9 +6,6 @@ import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
-import * as os from 'os'
-import * as path from 'path'
-import * as fs from 'fs'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
