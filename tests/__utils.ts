@@ -1,4 +1,4 @@
-import * as Prisma from '@prisma/client/runtime'
+import * as PrismaClientGenerator from '@prisma/client/generator-build'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'
@@ -20,7 +20,7 @@ export const createNexusPrismaInternal = (
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
   return new DmmfDocument(
     transform(
-      await Prisma.getDMMF({
+      await PrismaClientGenerator.getDMMF({
         datamodel,
         // prismaPath: Path.join(
         //   __dirname,

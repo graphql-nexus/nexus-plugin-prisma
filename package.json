@@ -35,9 +35,9 @@
   "devDependencies": {
     "@prisma/cli": "^0.1.31",
     "@prisma/client": "^2.0.0-preview021",
-    "@prisma/fetch-engine": "^0.3.52",
+    "@prisma/fetch-engine": "^0.3.57",
     "@prisma/lift": "^0.3.384",
-    "@prisma/sdk": "^0.0.208",
+    "@prisma/sdk": "^0.0.213",
     "@types/fs-extra": "^8.0.0",
     "@types/jest": "^25.1.1",
     "@types/node": "^13.5.2",
