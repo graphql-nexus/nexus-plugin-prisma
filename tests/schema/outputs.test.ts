@@ -31,12 +31,12 @@ it('only publishes output types that do not map to prisma models', async () => {
   }
 })
 
-it('publishes scalars from input types', async () => {
+it.only('publishes scalars from input types', async () => {
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    date DateTime
-  }
+    model User {
+      id  Int @id @default(autoincrement())
+      date DateTime
+    }
   `
 
   const User = Nexus.objectType({
@@ -53,10 +53,10 @@ it('publishes scalars from input types', async () => {
     },
   })
 
-  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
-    Query,
-    User,
-  ])
+  const {
+    schemaString: schema,
+    typegen,
+  } = await generateSchemaAndTypes(datamodel, [Query, User])
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')

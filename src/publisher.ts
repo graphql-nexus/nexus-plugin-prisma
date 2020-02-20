@@ -1,8 +1,17 @@
 import * as Nexus from 'nexus'
 import { CustomInputArg } from './builder'
-import { DmmfTypes, DmmfDocument } from './dmmf'
+import { DmmfDocument, DmmfTypes } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
+import Debug from 'debug'
+const debug = Debug('nexus-prisma:publisher')
+
+// type InputTypeReturn =
+//   | string
+//   | Nexus.core.NexusInputObjectTypeDef<string>
+//   | Nexus.core.NexusEnumTypeDef<string>
+//   | Nexus.core.NexusScalarTypeDef<string>
+//   | Nexus.core.NexusArgDef<any>
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
@@ -11,18 +20,12 @@ export class Publisher {
     public nexusBuilder: Nexus.PluginBuilderLens,
   ) {}
 
-  inputType(
-    customArg: CustomInputArg,
-  ):
-    | string
-    | Nexus.core.NexusInputObjectTypeDef<string>
-    | Nexus.core.NexusEnumTypeDef<string>
-    | Nexus.core.NexusScalarTypeDef<string>
-    | Nexus.core.NexusArgDef<any> {
+  inputType(customArg: CustomInputArg): any {
     const typeName = customArg.type.name
 
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
+      debug('input type already published', typeName)
       return Nexus.arg(
         dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
@@ -117,8 +120,8 @@ export class Publisher {
   }
 
   publishInputObjectType(inputType: DmmfTypes.InputType) {
+    debug('input object %s', inputType.name)
     this.markTypeAsPublished(inputType.name)
-
     return Nexus.inputObjectType({
       name: inputType.name,
       definition: t => {

@@ -1,4 +1,4 @@
-import * as PrismaClientGenerator from '@prisma/client/generator-build'
+const PrismaClientGenerator = require('@prisma/client/generator-build')
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'

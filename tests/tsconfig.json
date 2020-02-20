@@ -3,6 +3,8 @@
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,
+    "sourceMap": true,
+    "declarationMap": true,
     "strict": true,
     "rootDir": "../"
   }

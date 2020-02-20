@@ -4,9 +4,9 @@ import {
   GlobalMutationResolverParams,
   LocalComputedInputs,
 } from '../utils'
-import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
+import { getPhotonDmmf } from './utils'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
@@ -144,7 +144,10 @@ function addGloballyComputedInputs({
   // Combine computedInputValues with values provided by the user, recursing to add
   // global computedInputs to nested types
   return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
-    const field = inputType.fields.find(_ => _.name === fieldName)!
+    const field = inputType.fields.find(_ => _.name === fieldName)
+    if (!field) {
+      return deeplyComputedData
+    }
     const fieldValue =
       field.inputType.kind === 'object'
         ? addGloballyComputedInputs({
