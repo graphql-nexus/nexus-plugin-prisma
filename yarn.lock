@@ -579,25 +579,10 @@
     chalk "^3.0.0"
     strip-indent "^3.0.0"
 
-"@prisma/client@^2.0.0-preview021":
-  version "2.0.0-preview022"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview022.tgz#89c95b2ba17d151edb5891f0a114a2b000ed4e02"
-  integrity sha512-VVjwodKA7f/xIw704ZP5aAmaVXbcOa0g69E0RWDsMc/mSJlQyBjUtAnQy1QPvjaEA2V8+x+A85zW5JwrIs6qQg==
-
-"@prisma/engine-core@2.0.115":
-  version "2.0.115"
-  resolved "https://registry.yarnpkg.com/@prisma/engine-core/-/engine-core-2.0.115.tgz#f3ba78719755150a3a48843c45ae7b0861e86db5"
-  integrity sha512-MpSNFEuP+4oxx+mq1WG8a85VPYUHypcF2m006IOKsNy8H+t4KsHoMtq+lAF816dWMSVPLk+BU86EJKD2qR/gww==
-  dependencies:
-    "@prisma/generator-helper" "0.0.40"
-    "@prisma/get-platform" "0.1.23"
-    bent "^7.0.6"
-    camelcase "^5.3.1"
-    chalk "^3.0.0"
-    cross-fetch "^3.0.4"
-    debug "^4.1.1"
-    got "^9.6.0"
-    indent-string "^4.0.0"
+"@prisma/client@^2.0.0-alpha.818":
+  version "2.0.0-alpha.818"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-alpha.818.tgz#7976c7e8b422a7805e8a57fa6eed3b3d5f05ac92"
+  integrity sha512-uxPIU7F8OsObbx6LPac7r5ziYM6h6HEQXBQxTaEI4yOi1DU7qE971/8pV4DXjnf9493jbvACLKIXS2xGOIc0Fw==
 
 "@prisma/engine-core@2.0.41":
   version "2.0.41"
@@ -629,10 +614,10 @@
     p-retry "^4.2.0"
     progress "^2.0.3"
 
-"@prisma/fetch-engine@0.3.57", "@prisma/fetch-engine@^0.3.57":
-  version "0.3.57"
-  resolved "https://registry.yarnpkg.com/@prisma/fetch-engine/-/fetch-engine-0.3.57.tgz#8959afcdcf4dffaa5d648e2129708ad9617d29fe"
-  integrity sha512-t9cWKyazP18IKY2AA7VPG8CZuQ/pNJRP0N/uIRX8g5Vjrsny/bmJha0QLJopD7BxRfahYWtVkdURwlQajTzZhQ==
+"@prisma/fetch-engine@^0.3.57":
+  version "0.3.58"
+  resolved "https://registry.yarnpkg.com/@prisma/fetch-engine/-/fetch-engine-0.3.58.tgz#56f1de10847381166339bd9ca1b30c82999057a6"
+  integrity sha512-9Mii35lWyzk3mK+ltm7O7rP45a4okzIMYZWtzy+O5afD40hXgtn230gPbwrqDqe8WBMPRSQur4JYS/KaU7CSKg==
   dependencies:
     "@prisma/get-platform" "0.1.23"
     chalk "^3.0.0"
@@ -742,14 +727,14 @@
     supports-hyperlinks "2.0.0"
     tmp "^0.1.0"
 
-"@prisma/sdk@^0.0.213":
-  version "0.0.213"
-  resolved "https://registry.yarnpkg.com/@prisma/sdk/-/sdk-0.0.213.tgz#98945cd3e136908565f859ec86aff4f986c38f9f"
-  integrity sha512-4q6DG2kuj/PPLxWUsoO7edGQA1T7czyt3+YxirAiAzLtuJE/1iCW28Sc8tvXTgj651nQTUW253KsjY7jjMtlkg==
+"@prisma/sdk@^0.0.216":
+  version "0.0.216"
+  resolved "https://registry.yarnpkg.com/@prisma/sdk/-/sdk-0.0.216.tgz#52f7c5d02706fcd85c139817ad0eaab000749add"
+  integrity sha512-Hc5NiEv7YL9bOr4Mj0S/HXuCZhwW0TbgMy/VeugGNtv6q/DidthbET7AbghaWZ97gT1BGln9mV8BLSRAqXZ04g==
   dependencies:
     "@apexearth/copy" "^1.4.4"
-    "@prisma/engine-core" "2.0.115"
-    "@prisma/fetch-engine" "0.3.57"
+    "@prisma/engine-core" "2.0.41"
+    "@prisma/fetch-engine" "0.3.34"
     "@prisma/generator-helper" "0.0.40"
     "@prisma/get-platform" "0.1.23"
     archiver "3.0.0"
@@ -1850,15 +1835,6 @@ before-after-hook@^2.0.0:
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-2.1.0.tgz#b6c03487f44e24200dd30ca5e6a1979c5d2fb635"
   integrity sha512-IWIbu7pMqyw3EAJHzzHbWa85b6oud/yfKYg5rqB5hNE8CeMi3nX+2C2sj0HswfblST86hpVEOAb9x34NZd6P7A==
 
-bent@^7.0.6:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/bent/-/bent-7.1.0.tgz#4d1ee379259e40ef39e4a8f80fc97ab07f43185b"
-  integrity sha512-oTkDz8lBsk+HQjJPVeHHejkse/PDaTFwTFVasoR1V3XEQw23KKdfNvRln3M9++qipIBObqVyhsvSGuquFebDvQ==
-  dependencies:
-    bytesish "^0.4.1"
-    caseless "~0.12.0"
-    is-stream "^2.0.0"
-
 bignumber.js@9.0.0:
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
@@ -2057,11 +2033,6 @@ bytes@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
-
-bytesish@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/bytesish/-/bytesish-0.4.1.tgz#5fe19b076037ffdfb63e083a53495b1d1c063f6f"
-  integrity sha512-j3l5QmnAbpOfcN/Z2Jcv4poQYfefs8rDdcbc6iEKm+OolvUXAE2APodpWj+DOzqX6Bl5Ys1cQkcIV2/doGvQxg==
 
 cache-base@^1.0.1:
   version "1.0.1"
@@ -3547,7 +3518,7 @@ globby@^9.2.0:
     pify "^4.0.1"
     slash "^2.0.0"
 
-got@9.6.0, got@^9.6.0:
+got@9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
   integrity sha512-R7eWptXuGYxwijs0eV+v3o6+XH1IqVK8dJOEecQfTmkncw9AV4dcw/Dhxi8MdlqPthxxpZyizMzyg8RTmEsG+Q==
