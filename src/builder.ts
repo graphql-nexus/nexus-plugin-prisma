@@ -1,4 +1,3 @@
-import Debug from 'debug'
 import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
@@ -36,8 +35,6 @@ import {
   LocalComputedInputs,
   lowerFirst,
 } from './utils'
-
-const debug = Debug('nexus-prisma:builder')
 
 interface FieldPublisherConfig {
   alias?: string
@@ -200,7 +197,7 @@ const defaultOptions = {
 
 export interface CustomInputArg {
   arg: DmmfTypes.SchemaArg
-  type: DmmfTypes.InputType | DmmfTypes.Enum | { type: string; kind: 'scalar' }
+  type: DmmfTypes.InputType | DmmfTypes.Enum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
@@ -258,7 +255,6 @@ export class SchemaBuilder {
    * Build `t.crud` dynamic output property
    */
   protected buildCRUD(): DynamicOutputPropertyDef<'crud'> {
-    debug('buildCRUD')
     return Nexus.dynamicOutputProperty({
       name: 'crud',
       typeDefinition: `: NexusPrisma<TypeName, 'crud'>`,
@@ -282,7 +278,7 @@ export class SchemaBuilder {
         }
         const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
           (crud, mappedField) => {
-            crud[mappedField.field.name] = givenConfig => {
+            const fieldPublisher: FieldPublisher = givenConfig => {
               const inputType = this.dmmf.getInputType(
                 mappedField.field.args[0].inputType.type,
               )
@@ -292,8 +288,8 @@ export class SchemaBuilder {
               })
               let fieldConfig = this.buildFieldConfig({
                 field: mappedField.field,
-                publisherConfig: publisherConfig,
-                typeName: typeName,
+                publisherConfig,
+                typeName,
                 operation: mappedField.operation,
                 resolve: (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
@@ -327,7 +323,6 @@ export class SchemaBuilder {
                   stage,
                 )
               ) {
-                debug('t.field for %s', publisherConfig.alias)
                 t.field(publisherConfig.alias, fieldConfig)
               }
 
@@ -341,6 +336,8 @@ export class SchemaBuilder {
 
               return crud
             }
+
+            crud[mappedField.field.name] = fieldPublisher
 
             return crud
           },
@@ -520,12 +517,11 @@ export class SchemaBuilder {
   buildFieldConfig(
     config: FieldConfigData,
   ): Nexus.core.NexusOutputFieldConfig<any, string> {
-    const type = this.publisher.outputType(
-      config.publisherConfig.type,
-      config.field,
-    )
     return {
-      type,
+      type: this.publisher.outputType(
+        config.publisherConfig.type,
+        config.field,
+      ),
       ...dmmfListFieldTypeToNexus(config.field.outputType),
       args: this.buildArgsFromField(config),
       resolve: config.resolve,
@@ -533,13 +529,13 @@ export class SchemaBuilder {
   }
 
   buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
-    return this.determineArgs(config).reduce((acc, customArg) => {
-      debug('arg', customArg.arg.name)
-      return {
+    return this.determineArgs(config).reduce(
+      (acc, customArg) => ({
         ...acc,
         [customArg.arg.name]: this.publisher.inputType(customArg) as any,
-      }
-    }, {} as Nexus.core.ArgsRecord)
+      }),
+      {} as Nexus.core.ArgsRecord,
+    )
   }
 
   determineArgs(config: FieldConfigData): CustomInputArg[] {
@@ -584,11 +580,6 @@ export class SchemaBuilder {
     field,
     publisherConfig,
   }: FieldConfigData) {
-    debug(
-      'build nexus schema args for field %j on object type %j',
-      field.name,
-      typeName,
-    )
     let args: CustomInputArg[] = []
 
     if (publisherConfig.filtering) {
@@ -611,7 +602,7 @@ export class SchemaBuilder {
         typeName,
       )
 
-      if (inputType.fields && inputType.fields.length > 0) {
+      if (inputType.fields.length > 0) {
         args.push({
           arg: whereArg,
           type: inputType,
@@ -638,7 +629,7 @@ export class SchemaBuilder {
         typeName,
       )
 
-      if (inputType.fields && inputType.fields.length > 0) {
+      if (inputType.fields.length > 0) {
         args.push({
           arg: orderByArg,
           type: inputType,
@@ -647,25 +638,20 @@ export class SchemaBuilder {
     }
 
     if (publisherConfig.pagination) {
-      debug('-> field has pagination args')
       const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
-      // The various pagination args to enable on the field is optionally controllable by the user.
-      const paginationArgs =
+      const paginationsArgs =
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))
           : field.args.filter(
               arg => (publisherConfig.pagination as any)[arg.name] === true,
             )
-      // debug('-> built pagination args %O', paginationArgs)
-      // args.push(...paginationArgs)
-      const paginationArgsForNexusSchema = paginationArgs.map(a => {
-        console.log(require('util').inspect(a, { depth: null }))
-        return {
+
+      args.push(
+        ...paginationsArgs.map(a => ({
           arg: a,
-          type: a.inputType,
-        }
-      })
-      args.push(...paginationArgsForNexusSchema)
+          type: { name: a.inputType.type },
+        })),
+      )
     }
 
     return args

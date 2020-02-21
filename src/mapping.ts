@@ -22,7 +22,7 @@ const buildField = (
   operation: OperationName,
 ): BaseMappedField => {
   return {
-    operation: operation,
+    operation,
     field: mapping[operation],
     model: mapping.model,
     photonAccessor: lowerFirst(mapping.model),
@@ -48,11 +48,9 @@ export const getCrudMappedFields = (
   typeName: 'Query' | 'Mutation',
   dmmf: DmmfDocument,
   namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy,
-): MappedField[] => {
-  return flatMap(dmmf.mappings, m => {
-    return CRUD_MAPPED_FIELDS[typeName](m)
-  }).map(mappedField => {
-    return {
+): MappedField[] =>
+  flatMap(dmmf.mappings, m => CRUD_MAPPED_FIELDS[typeName](m)).map(
+    mappedField => ({
       ...mappedField,
       field: {
         ...dmmf.getOutputType(typeName).getField(mappedField.field),
@@ -61,6 +59,5 @@ export const getCrudMappedFields = (
           mappedField.model,
         ),
       },
-    }
-  })
-}
+    }),
+  )
