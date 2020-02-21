@@ -2727,10 +2727,10 @@ dotenv@^4.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-4.0.0.tgz#864ef1379aced55ce6f95debecdce179f7a0cd1d"
   integrity sha1-hk7xN5rO1Vzm+V3r7NzhefegzR0=
 
-dripip@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/dripip/-/dripip-0.6.0.tgz#349d2f343cb5fbf74fe2d8acc5f860170e08efe8"
-  integrity sha512-Nn3KOjofoen3rL5EWvoVPcDF+pdh6Va7/uplsi7/8mjLDehdPKkiuoXCcoFsQz/b4SZhXhjiownpCevr33+7qw==
+dripip@0.5.x:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/dripip/-/dripip-0.5.0.tgz#5e9ea4aa37f72d0dba42652dc776617d9f23e0d7"
+  integrity sha512-QD89R/zaoj4JcZMHlEANnFHOXsACI19cYi8F76RM0ExUG/16KrIsneCOj6ZH6tbzMM2lykGoPPudO1cSn7eIYQ==
   dependencies:
     "@oclif/command" "^1.5.19"
     "@oclif/config" "^1.13.3"
@@ -2738,7 +2738,6 @@ dripip@^0.6.0:
     "@octokit/rest" "^16.35.2"
     "@types/parse-git-config" "^3.0.0"
     "@types/parse-github-url" "^1.0.0"
-    chalk "^3.0.0"
     common-tags "^1.8.0"
     fs-jetpack "^2.2.3"
     globby "^10.0.1"
