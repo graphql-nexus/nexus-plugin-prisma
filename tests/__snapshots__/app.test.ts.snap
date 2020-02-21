@@ -1190,7 +1190,7 @@ class PrismaClient {
       datamodelPath: path.resolve(__dirname, 'schema.prisma'),
       prismaPath: engineConfig.binaryPath || undefined,
       datasources,
-      generator: {\\"name\\":\\"prisma_client\\",\\"provider\\":\\"prisma-client-js\\",\\"output\\":\\"/Users/jasonkuhrt/projects/prisma-labs/nexus-prisma/node_modules/@prisma/client\\",\\"binaryTargets\\":[],\\"config\\":{}},
+      generator: {__NON_DETERMINISTIC_CONTENT__:true}
       showColors: this.errorFormat === 'pretty',
       logLevel: options.log && getLogLevel(options.log),
       logQueries: options.log && Boolean(options.log.find(o => typeof o === 'string' ? o === 'query' : o.level === 'query')),
