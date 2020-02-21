@@ -132,9 +132,13 @@ input PostWhereInput {
   status: PostStatus
 }
 
+input PostWhereUniqueInput {
+  id: Int
+}
+
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(after: String, before: String, first: Int, last: Int, skip: Int): [User!]!
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, skip: Int): [User!]!
 }
 
 input StringFilter {
@@ -154,7 +158,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(after: Int, before: Int, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {
