@@ -2116,12 +2116,23 @@ input M_WhereUniquInout {
 **Example**
 
 ```gql
-query batchRead {
+query batchReadAfter {
+  users(after: { id: 1234 }, first: 50) {
+    id
+    name
+  }
+}
+
+# or
+
+query batchReadSkip {
   users(skip: 50, first: 50) {
     id
     name
   }
 }
+
+# or
 
 query batchReadRelation {
   user(where: { id: 1643 }) {
