@@ -28,7 +28,7 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/client": "^2.0.0-preview020",
+    "@prisma/client": "^2.0.0-preview022",
     "graphql": "^14.5.0",
     "nexus": "^0.12.0-rc"
   },
@@ -57,7 +57,7 @@
     "nexus": "^0.12.0-rc.9",
     "node-fetch": "^2.6.0",
     "prettier": "^1.17.1",
-    "prisma2": "^2.0.0-preview021",
+    "prisma2": "^2.0.0-preview022",
     "react": "^16.12.0",
     "rimraf": "^3.0.1",
     "strip-ansi": "^6.0.0",

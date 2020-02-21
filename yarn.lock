@@ -6054,7 +6054,7 @@ prisma-yml@^1.0.88:
     scuid "^1.0.2"
     yaml-ast-parser "^0.0.40"
 
-prisma2@^2.0.0-preview021:
+prisma2@^2.0.0-preview022:
   version "2.0.0-preview022"
   resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview022.tgz#959770a89696004411785cfb27a76ebc3eb889aa"
   integrity sha512-esfFlVwGr/q5AoZFT+mf5FF+4bKYLIoqgfTNsrsodKzWnYR/JoTme2rO7FjM1U1jp80rCiX8RbcAvl6o/TG5zg==
