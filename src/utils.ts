@@ -201,6 +201,7 @@ export type RelateByValue = 'any' | 'create' | 'connect'
 
 export type StandardInputConfig = {
   relateBy?: RelateByValue
+  computeFrom?: undefined
 }
 
 export type ComputedInputConfig<

@@ -33,10 +33,11 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   // Recurse to handle nested inputTypes
   transformedData = fromEntries(
     Object.entries(transformedData).map(([fieldName, fieldData]) => {
-      if (Array.isArray(data)) {
-        return fieldData.map((value: any) =>
-          deepTransformArgData(params, value),
-        )
+      if (Array.isArray(fieldData)) {
+        return [
+          fieldName,
+          fieldData.map(value => deepTransformArgData(params, value)),
+        ]
       }
       const field = inputType.fields.find(_ => _.name === fieldName)
       if (!field) {
@@ -70,9 +71,10 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
       return [fieldName, deepTransformedFieldValue]
     }),
   )
+  const computedInputs = computeInputs(inputType, params.params)
   transformedData = {
     ...transformedData,
-    ...computeInputs(inputType, params.params),
+    ...computedInputs,
   }
   return transformedData
 }

@@ -37,10 +37,19 @@ import {
   InputsConfig,
   relationKeys,
   RelateByValue,
-  lowerFirst
+  lowerFirst,
+  InputConfig,
+  ComputedInputConfig,
+  InputFieldName,
 } from './utils'
 import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
-import { WithRequiredKeys, capitalize, isEmpty, merge } from '@re-do/utils'
+import {
+  WithRequiredKeys,
+  capitalize,
+  isEmpty,
+  merge,
+  split,
+} from '@re-do/utils'
 
 type FieldPublisherConfig = {
   alias?: string
@@ -187,7 +196,6 @@ const shouldGenerateArtifacts =
     : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
     ? false
     : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
-
 
 export interface CustomInputArg {
   arg: DmmfTypes.SchemaArg
@@ -559,6 +567,8 @@ export class SchemaBuilder {
       let transformedInputType = this.publisher.getTypeFromArg(
         arg,
       ) as DmmfTypes.InputType
+      const argConfig: InputConfig =
+        config.inputs?.[arg.name as InputFieldName] ?? {}
       if (arg.inputType.kind !== 'object') {
         return {
           arg,
@@ -566,7 +576,6 @@ export class SchemaBuilder {
         }
       }
       const name = this.getTransformedTypeName(arg, config)
-      const argConfig = config.inputs?.[arg.name] ?? {}
       let transformedArg = arg
       if (
         isRelationType(transformedInputType) &&
@@ -580,6 +589,10 @@ export class SchemaBuilder {
           transformedArg,
         ) as DmmfTypes.InputType
       }
+      const computedFields = split(
+        transformedInputType.fields,
+        field => config[field.name],
+      )
       const customArg: CustomInputArg = {
         arg: {
           ...transformedArg,
@@ -588,7 +601,9 @@ export class SchemaBuilder {
             ...transformedArg.inputType,
             type: name,
           },
+          // TODO: Fix
           relateBy: 'any',
+          computeFrom: argConfig.computeFrom,
         },
         type: {
           ...transformedInputType,

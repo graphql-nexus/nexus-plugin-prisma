@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`publishes enum even as output type: schema 1`] = `
+"enum Color {
+  Red
+  Green
+  Blue
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  favouriteColor: Color!
+}
+"
+`;
+
+exports[`publishes enum even as output type: typegen 1`] = `
+"
+interface ModelTypes {
+  User: prisma.User
+}
+  
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+  filtering: 'id' | 'favouriteColor' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'favouriteColor'
+}
+
+  },
+    User: {
+
+
+  }
+}
+
+interface NexusPrismaTypes {
+  Query: {
+    user: 'User'
+    users: 'User'
+
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+
+  },
+  User: {
+    id: 'Int'
+    favouriteColor: 'Color'
+
+}
+}
+
+interface NexusPrismaMethods {
+  User: NexusPrismaFields<'User'>
+  Query: NexusPrismaFields<'Query'>
+  Mutation: NexusPrismaFields<'Mutation'>
+}
+  
+
+declare global {
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

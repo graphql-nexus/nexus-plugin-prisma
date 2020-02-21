@@ -92,6 +92,7 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
+    computedFields: SchemaArg[]
   }
   interface Mapping {
     model: string

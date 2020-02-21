@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`in prod stage, throw error if no arg or wrong args are passed: output 1`] = `"Cannot read property 'filter' of undefined"`;

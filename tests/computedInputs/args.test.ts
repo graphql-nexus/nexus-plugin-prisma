@@ -4,7 +4,13 @@ import { getTestData } from '../__utils'
 
 describe('computedInputs args', () => {
   it('values are inferred', async () => {
-    const { publisher } = await getTestData()
+    const { publisher } = await getTestData({
+      pluginOptions: {
+        inputs: {
+          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+        } as InputsConfig,
+      },
+    })
     expect(
       transformArgs({
         params: {
