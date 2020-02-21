@@ -17,7 +17,7 @@
     "build": "ts-node scripts/sync-prisma-version && yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
     "dev": "tsc --watch",
-    "dev:test": "jest --watch",
+    "dev:test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
     "test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest"
