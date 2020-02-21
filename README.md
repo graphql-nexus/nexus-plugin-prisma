@@ -1074,7 +1074,7 @@ input RM_CreateManyWithout_M {
 }
 
 input RM_WhereUniqueInput {
-  RMF@unique: S
+  MRF@unique: S
 }
 
 input RM_CreateWithout_M_Input = RM_CreateInput - RMRF: M
@@ -2086,10 +2086,10 @@ undefined | true | false
 # t.crud.<BatchRead>
 Ms(
   # The starting object for the list (typically ID or other unique value).
-  after: String
+  after: M_WhereUniquInout
 
   # The last object for the list (typically ID or other unique value)
-  before: String
+  before: M_WhereUniquInout
 
   # How many elements, forwards from `after` otherwise head
   first: Int
@@ -2105,7 +2105,11 @@ Ms(
 
 # t.model.<ListRelation>
 type M {
-  RF(after: String, before: String, first: Int, last: Int, skip: Int)
+  MRF(after: M_WhereUniquInout, before: M_WhereUniquInout, first: Int, last: Int, skip: Int)
+}
+
+input M_WhereUniquInout {
+  MSF@unique: S
 }
 ```
 
