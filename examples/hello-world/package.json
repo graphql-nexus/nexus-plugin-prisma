@@ -7,15 +7,16 @@
     "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-preview020.3",
+    "@prisma/client": "^2.0.0-preview022",
+    "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.3",
-    "nexus": "^0.12.0-rc.9",
-    "nexus-prisma": "^0.9.1-next.1"
+    "nexus": "^0.12.0-rc.13",
+    "nexus-prisma": "^0.10.0-next.1"
   },
   "devDependencies": {
     "@types/ws": "^7.2.0",
-    "prisma2": "2.0.0-preview021",
+    "prisma2": "2.0.0-preview022",
     "ts-node": "^8.6.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.2"
   }
 }
