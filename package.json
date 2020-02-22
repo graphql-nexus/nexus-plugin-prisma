@@ -14,13 +14,13 @@
     "release:stable": "dripip stable",
     "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
-    "build": "yarn -s clean && tsc",
+    "build": "ts-node scripts/sync-prisma-version && yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
     "dev": "tsc --watch",
-    "dev:test": "jest --watch",
+    "dev:test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "ts-node tests/__ensure-engine.ts && jest"
+    "test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest"
   },
   "dependencies": {
     "camelcase": "^5.3.1",
@@ -28,33 +28,36 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/client": "^2.0.0-preview020",
+    "@prisma/client": "^2.0.0-preview022",
     "graphql": "^14.5.0",
-    "nexus": "^0.12.0-rc"
+    "nexus": "^0.12.0-rc.13"
   },
   "devDependencies": {
     "@prisma/cli": "^0.1.31",
-    "@prisma/client": "^2.0.0-preview021",
-    "@prisma/fetch-engine": "^0.3.52",
+    "@prisma/client": "^2.0.0-alpha.818",
+    "@prisma/fetch-engine": "^0.3.57",
     "@prisma/lift": "^0.3.384",
-    "@prisma/sdk": "^0.0.180",
+    "@prisma/sdk": "^0.0.216",
     "@types/fs-extra": "^8.0.0",
     "@types/jest": "^25.1.1",
     "@types/node": "^13.5.2",
+    "@types/node-fetch": "^2.5.4",
     "@types/pluralize": "^0.0.29",
+    "@types/prettier": "^1.19.0",
     "@types/rimraf": "^2.0.3",
     "@types/tmp": "^0.1.0",
     "doctoc": "^1.4.0",
-    "dripip": "^0.5.0",
+    "dripip": "0.5.x",
     "get-port": "^5.1.1",
     "graphql": "^14.5.4",
     "graphql-request": "^1.8.2",
     "graphql-yoga": "^1.18.3",
     "jest": "^25.1.0",
     "jest-watch-typeahead": "^0.4.0",
-    "nexus": "^0.12.0-rc.9",
+    "nexus": "^0.12.0-rc.13",
+    "node-fetch": "^2.6.0",
     "prettier": "^1.17.1",
-    "prisma2": "^2.0.0-preview021",
+    "prisma2": "^2.0.0-preview022",
     "react": "^16.12.0",
     "rimraf": "^3.0.1",
     "strip-ansi": "^6.0.0",
@@ -68,5 +71,8 @@
     "semi": false,
     "singleQuote": true,
     "trailingComma": "all"
+  },
+  "prisma": {
+    "version": "f608db3b9e4f50f9a384356e532357b0a525969a"
   }
 }

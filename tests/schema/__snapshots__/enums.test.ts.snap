@@ -7,7 +7,7 @@ exports[`does not automatically publish input/enum type if already created by us
 }
 
 type Query {
-  users(where: UserWhereInput, skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!
+  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 type User {
@@ -17,6 +17,10 @@ type User {
 
 input UserWhereInput {
   customField: String
+}
+
+input UserWhereUniqueInput {
+  id: Int
 }
 "
 `;
@@ -346,7 +350,7 @@ input IntFilter {
 }
 
 type Query {
-  users(where: UserWhereInput, skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!
+  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 type User {
@@ -360,6 +364,10 @@ input UserWhereInput {
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+}
+
+input UserWhereUniqueInput {
+  id: Int
 }
 "
 `;

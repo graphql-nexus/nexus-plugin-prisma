@@ -10,12 +10,16 @@ Warning: Your GraphQL \`Query\` object definition is projecting a relational fie
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: schema 1`] = `
 "type Query {
-  users(skip: Int, after: Int, before: Int, first: Int, last: Int): [User!]!
+  users(skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 type User {
   id: Int!
   name: String!
+}
+
+input UserWhereUniqueInput {
+  id: Int
 }
 "
 `;
