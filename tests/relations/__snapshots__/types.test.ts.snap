@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`relations typegen works at plugin-level: plugin-level-schema 1`] = `
-"type Mutation {
+"input IdCompoundUniqueInput {
+  id: Int!
+}
+
+type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
@@ -18,19 +22,12 @@ input NestedCreateInput {
   user: UserCreateOneWithoutNestedInput
 }
 
-input NestedCreateManyWithoutUserInput {
-  create: [NestedCreateWithoutUserInput!]
-  connect: [NestedWhereUniqueInput!]
-}
-
 input NestedCreateWithoutUserInput {
   name: String!
   createdWithBrowser: String!
 }
 
-input NestedWhereUniqueInput {
-  id: Int
-}
+input NestedWhereUniqueInput
 
 type Query {
   user(where: UserWhereUniqueInput!): User
@@ -39,14 +36,14 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
+  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
 input UserCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: NestedCreateManyWithoutUserInput
+  nested: [NestedCreateWithoutUserInput!]
 }
 
 input UserCreateOneWithoutNestedInput {
@@ -60,7 +57,7 @@ input UserCreateWithoutNestedInput {
 }
 
 input UserWhereUniqueInput {
-  id: Int
+  id: IdCompoundUniqueInput
 }
 "
 `;
@@ -152,7 +149,11 @@ declare global {
 `;
 
 exports[`relations typegen works at resolver-level: resolver-level-schema 1`] = `
-"type Mutation {
+"input IdCompoundUniqueInput {
+  id: Int!
+}
+
+type Mutation {
   createOneUser(data: UserCreateCreateNestedInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
@@ -174,6 +175,8 @@ input NestedCreateWithoutUserCreateNestedInput {
   createdWithBrowser: String!
 }
 
+input NestedWhereUniqueInput
+
 type Query {
   user(where: UserWhereUniqueInput!): User
 }
@@ -181,7 +184,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
+  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
@@ -202,7 +205,7 @@ input UserCreateWithoutNestedInput {
 }
 
 input UserWhereUniqueInput {
-  id: Int
+  id: IdCompoundUniqueInput
 }
 "
 `;

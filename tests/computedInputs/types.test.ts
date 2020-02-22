@@ -1,17 +1,20 @@
 import { getTestData, defaultDefinitions } from '../__utils'
 import { mutationType } from 'nexus'
 import { InputsConfig } from '../../src/utils'
+import { printSchema } from 'graphql'
+
+const inputsConfig = {
+  createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+} as InputsConfig
 
 describe('computedInputs typegen', () => {
   it('works at plugin-level', async () => {
     const { schema, typegen } = await getTestData({
       pluginOptions: {
-        inputs: {
-          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
-        } as InputsConfig,
+        inputs: inputsConfig,
       },
     })
-    expect(schema).toMatchSnapshot('plugin-level-schema')
+    expect(printSchema(schema)).toMatchSnapshot('plugin-level-schema')
     expect(typegen).toMatchSnapshot('plugin-level-typegen')
   })
   it('works at resolver-level', async () => {
@@ -21,18 +24,14 @@ describe('computedInputs typegen', () => {
         mutation: mutationType({
           definition(t: any) {
             t.crud.createOneUser({
-              inputs: {
-                createdWithBrowser: {
-                  computeFrom: ({ ctx }: any) => ctx.browser,
-                },
-              },
+              inputs: inputsConfig,
             })
             t.crud.createOneNested()
           },
         }),
       },
     })
-    expect(schema).toMatchSnapshot('resolver-level-schema')
+    expect(printSchema(schema)).toMatchSnapshot('resolver-level-schema')
     expect(typegen).toMatchSnapshot('resolver-level-typegen')
   })
 })

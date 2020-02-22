@@ -2,14 +2,16 @@ import { transformArgs } from '../../src/transformArgs'
 import { InputsConfig } from '../../src/utils'
 import { getTestData } from '../__utils'
 
+const inputsConfig = {
+  createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+} as InputsConfig
+
+const userCreateInputTypeName = 'UserCreateInput'
+
 describe('computedInputs args', () => {
   it('values are inferred', async () => {
     const { publisher } = await getTestData({
-      pluginOptions: {
-        inputs: {
-          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
-        } as InputsConfig,
-      },
+      pluginOptions: { inputs: inputsConfig },
     })
     expect(
       transformArgs({
@@ -23,11 +25,9 @@ describe('computedInputs args', () => {
           },
           ctx: { browser: 'firefox' },
         },
-        inputType: publisher.getInputType('UserCreateInput'),
+        inputType: publisher.getInputType(userCreateInputTypeName),
         publisher,
-        inputs: {
-          createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
-        } as InputsConfig,
+        inputs: inputsConfig,
         relateBy: 'any',
       }),
     ).toStrictEqual({
@@ -41,7 +41,9 @@ describe('computedInputs args', () => {
     })
   }),
     it('array values are inferred', async () => {
-      const { publisher } = await getTestData()
+      const { publisher } = await getTestData({
+        pluginOptions: { inputs: inputsConfig },
+      })
       expect(
         transformArgs({
           params: {
@@ -56,11 +58,9 @@ describe('computedInputs args', () => {
             },
             ctx: { browser: 'firefox' },
           },
-          inputType: publisher.getInputType('UserCreateInput'),
+          inputType: publisher.getInputType(userCreateInputTypeName),
           publisher,
-          inputs: {
-            createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
-          } as InputsConfig,
+          inputs: inputsConfig,
           relateBy: 'any',
         }),
       ).toStrictEqual({
@@ -77,7 +77,18 @@ describe('computedInputs args', () => {
       })
     }),
     it('values are inferred from root, args, and context', async () => {
-      const { publisher } = await getTestData()
+      const complexInputsConfig = {
+        name: {
+          computeFrom: ({ args, ctx, info }: any) =>
+            `${args.data.nested.create.name} ${ctx.browser.slice(
+              1,
+              2,
+            )} ${info}`,
+        },
+      } as InputsConfig
+      const { publisher } = await getTestData({
+        pluginOptions: { inputs: complexInputsConfig },
+      })
       expect(
         transformArgs({
           params: {
@@ -86,17 +97,9 @@ describe('computedInputs args', () => {
             args: { data: { nested: { create: { name: 'Sam' } } } },
             ctx: { browser: 'firefox' },
           } as any,
-          inputType: publisher.getInputType('UserCreateInput'),
+          inputType: publisher.getInputType(userCreateInputTypeName),
           publisher,
-          inputs: {
-            name: {
-              computeFrom: ({ args, ctx, info }: any) =>
-                `${args.data.nested.create.name} ${ctx.browser.slice(
-                  1,
-                  2,
-                )} ${info}`,
-            },
-          } as InputsConfig,
+          inputs: complexInputsConfig,
           relateBy: 'any',
         }),
       ).toStrictEqual({

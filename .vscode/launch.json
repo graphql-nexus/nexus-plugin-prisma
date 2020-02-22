@@ -19,7 +19,23 @@
       "args": [
         "--inspect-brk",
         "${workspaceRoot}/node_modules/jest/bin/jest.js",
-        "${fileBasenameNoExtension}",
+        "${relativeFile}",
+        "--config",
+        "${workspaceRoot}/jest.config.js",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Highlighted Test",
+      "args": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/jest/bin/jest.js",
+        "${relativeFile}",
+        "--testNamePattern",
+        "${selectedText}",
         "--config",
         "${workspaceRoot}/jest.config.js",
         "--runInBand"

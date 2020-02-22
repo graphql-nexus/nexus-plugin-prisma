@@ -185,8 +185,6 @@ export type MutationMethodName = Extract<
 
 export type Context = core.GetGen<'context'>
 
-export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
-
 export type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
 
 export type InputFieldName = NestedKeys<
@@ -195,12 +193,18 @@ export type InputFieldName = NestedKeys<
   ? NestedKeys<core.GetGen<'inputTypes'>>
   : string
 
-export const relationKeys: RelateByValue[] = ['create', 'connect']
+export const relationKeys = ['create', 'connect'] as const
 
-export type RelateByValue = 'any' | 'create' | 'connect'
+export const isRelationKey = (value: any) => relationKeys.includes(value)
+
+export type RelationKey = typeof relationKeys[number]
+
+export type RelatedByValue = RelationKey | undefined
+
+export type RelateByValue = RelatedByValue | 'any'
 
 export type StandardInputConfig = {
-  relateBy?: RelateByValue
+  relateBy?: RelatedByValue
   computeFrom?: undefined
 }
 
@@ -219,4 +223,10 @@ export type InputsConfig<
   [Name in InputFieldName]?:
     | StandardInputConfig
     | ComputedInputConfig<MethodName>
+}
+
+export type ComputedFields<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  [Name in InputFieldName]?: ComputeInput<MethodName>
 }

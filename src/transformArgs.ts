@@ -4,6 +4,7 @@ import {
   InputsConfig,
   relationKeys,
   RelateByValue,
+  isRelationKey,
 } from './utils'
 import { DmmfTypes } from './dmmf/DmmfTypes'
 import { Publisher } from './publisher'
@@ -20,24 +21,22 @@ const computeInputs = (
   inputType: DmmfTypes.InputType,
   params: MutationResolverParams,
 ) =>
-  inputType.fields
-    .filter(field => 'computeFrom' in field)
-    .map(field => (field as DmmfTypes.ComputedSchemaArg).computeFrom(params))
+  inputType.computedFields
+    ? fromEntries(
+        Object.entries(
+          inputType.computedFields,
+        ).map(([fieldName, computeFrom]) => [fieldName, computeFrom!(params)]),
+      )
+    : {}
 
 function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
   const { inputType, publisher } = params
-  if (!data || typeof data !== 'object') {
-    return data
-  }
-  let transformedData = data as Record<string, any>
+  let transformedData = data as Record<string, any> | any[]
   // Recurse to handle nested inputTypes
   transformedData = fromEntries(
     Object.entries(transformedData).map(([fieldName, fieldData]) => {
-      if (Array.isArray(fieldData)) {
-        return [
-          fieldName,
-          fieldData.map(value => deepTransformArgData(params, value)),
-        ]
+      if (!fieldData || typeof fieldData !== 'object') {
+        return [fieldName, fieldData]
       }
       const field = inputType.fields.find(_ => _.name === fieldName)
       if (!field) {
@@ -51,21 +50,23 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
           )}). Found fields ${inputType.fields.map(_ => _.name)}`,
         )
       }
-      let deepTransformedFieldValue =
-        field.inputType.kind === 'object'
-          ? deepTransformArgData(
-              {
-                ...params,
-                inputType: publisher.getInputType(field.inputType.type),
-              },
-              fieldData,
-            )
-          : fieldData
-      const relateBy = field.relateBy ?? params.relateBy
-      if (relationKeys.includes(relateBy)) {
+      const fieldInputType = publisher.getInputType(field.inputType.type)
+      const fieldParams = {
+        ...params,
+        inputType: fieldInputType,
+      }
+      let deepTransformedFieldValue = fieldData
+      if (Array.isArray(fieldData)) {
+        deepTransformedFieldValue = fieldData.map(value =>
+          deepTransformArgData(fieldParams, value),
+        )
+      } else if (field.inputType.kind === 'object') {
+        deepTransformedFieldValue = deepTransformArgData(fieldParams, fieldData)
+      }
+      if (isRelationKey(fieldInputType.relatedBy)) {
         // Inject relation key into data if one was omitted based on the field type
         deepTransformedFieldValue = {
-          [relateBy]: deepTransformedFieldValue,
+          [fieldInputType.relatedBy!]: deepTransformedFieldValue,
         }
       }
       return [fieldName, deepTransformedFieldValue]
@@ -80,13 +81,17 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
 }
 
 export const isTransformRequired = (
-  inputs: InputsConfig,
-  relateBy: RelateByValue,
+  inputs: InputsConfig | undefined,
+  relateBy: RelateByValue | undefined,
 ) =>
-  relationKeys.includes(relateBy) ||
-  Object.values(inputs).find(
-    inputConfig =>
-      inputConfig && !isEmpty(inputConfig) && inputConfig.relateBy !== 'any',
+  !!(
+    (relateBy && isRelationKey(relateBy)) ||
+    (inputs &&
+      Object.values(inputs).find(
+        inputConfig =>
+          inputConfig &&
+          (isRelationKey(inputConfig.relateBy) || inputConfig.computeFrom),
+      ))
   )
 
 export const transformArgs = ({

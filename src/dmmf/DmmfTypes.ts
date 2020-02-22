@@ -1,5 +1,5 @@
 import { core } from 'nexus'
-import { ComputeInput, RelateByValue } from '../utils'
+import { ComputeInput, RelatedByValue, ComputedFields } from '../utils'
 
 export declare namespace DmmfTypes {
   interface Document {
@@ -49,7 +49,7 @@ export declare namespace DmmfTypes {
     isList: boolean
   }
   type ArgType = string
-  type BaseSchemaArg = {
+  type SchemaArg = {
     name: string
     inputType: {
       isRequired: boolean
@@ -58,17 +58,6 @@ export declare namespace DmmfTypes {
       kind: FieldKind
     }
   }
-
-  type StandardSchemaArg = BaseSchemaArg & {
-    relateBy?: RelateByValue
-  }
-
-  type ComputedSchemaArg = BaseSchemaArg & {
-    relateBy?: 'any'
-    computeFrom: ComputeInput
-  }
-
-  type SchemaArg = StandardSchemaArg | ComputedSchemaArg
 
   interface OutputType {
     name: string
@@ -92,7 +81,8 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
-    computedFields: SchemaArg[]
+    computedFields: ComputedFields
+    relatedBy: RelatedByValue
   }
   interface Mapping {
     model: string

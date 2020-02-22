@@ -27,22 +27,23 @@ describe('relations', () => {
     ).toStrictEqual({
       data: {
         name: 'New User',
-        nested: { connect: [{ name: 'New Nested' }] },
+        nested: { connect: [{ id: 1 }] },
       },
     })
   }),
     it('injects relation keys specified by an object', async () => {
+      const inputs = {
+        nested: {
+          relateBy: 'create',
+        },
+      } as InputsConfig
       const { publisher } = await getTestData({
         definitions: {
           ...defaultDefinitions,
           mutation: mutationType({
             definition(t: any) {
               t.crud.createOneUser({
-                inputs: {
-                  nested: {
-                    relateBy: 'create',
-                  },
-                },
+                inputs,
               })
             },
           }),
@@ -59,11 +60,7 @@ describe('relations', () => {
           },
           inputType: publisher.getInputType('UserCreateCreateNestedInput'),
           publisher,
-          inputs: {
-            nested: {
-              relateBy: 'create',
-            },
-          } as InputsConfig,
+          inputs,
           relateBy: 'any',
         }),
       ).toStrictEqual({

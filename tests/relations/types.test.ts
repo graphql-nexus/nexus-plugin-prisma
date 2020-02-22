@@ -1,4 +1,5 @@
 import { mutationType } from 'nexus'
+import { printSchema } from 'graphql'
 import { getTestData, defaultDefinitions } from '../__utils'
 import { InputsConfig } from '../../src/utils'
 
@@ -13,7 +14,7 @@ describe('relations typegen', () => {
         } as InputsConfig,
       },
     })
-    expect(schema).toMatchSnapshot('plugin-level-schema')
+    expect(printSchema(schema)).toMatchSnapshot('plugin-level-schema')
     expect(typegen).toMatchSnapshot('plugin-level-typegen')
   })
   it('works at resolver-level', async () => {
@@ -34,7 +35,7 @@ describe('relations typegen', () => {
         }),
       },
     })
-    expect(schema).toMatchSnapshot('resolver-level-schema')
+    expect(printSchema(schema)).toMatchSnapshot('resolver-level-schema')
     expect(typegen).toMatchSnapshot('resolver-level-typegen')
   })
 })

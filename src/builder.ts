@@ -36,11 +36,13 @@ import {
   Index,
   InputsConfig,
   relationKeys,
+  RelatedByValue,
   RelateByValue,
   lowerFirst,
   InputConfig,
-  ComputedInputConfig,
   InputFieldName,
+  RelationKey,
+  isRelationKey,
 } from './utils'
 import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
 import {
@@ -49,6 +51,7 @@ import {
   isEmpty,
   merge,
   split,
+  fromEntries,
 } from '@re-do/utils'
 
 type FieldPublisherConfig = {
@@ -64,8 +67,10 @@ type FieldPublisherConfig = {
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = WithRequiredKeys<
   FieldPublisherConfig,
-  'alias' | 'type' | 'inputs' | 'relateBy'
->
+  'alias' | 'type' | 'inputs'
+> & {
+  customNameRequired: boolean
+}
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -503,6 +508,11 @@ export class SchemaBuilder {
       relateBy: this.relateBy,
       inputs: merge(this.inputs, inputs ?? {}),
       ...otherGivenOptions,
+      // If args will be transformed based only on global config, no need to rename
+      customNameRequired: isTransformRequired(
+        inputs,
+        otherGivenOptions.relateBy,
+      ),
     }
   }
 
@@ -575,23 +585,29 @@ export class SchemaBuilder {
           type: transformedInputType,
         }
       }
-      const name = this.getTransformedTypeName(arg, config)
+      const relateByConfig = argConfig.relateBy ?? config.relateBy
       let transformedArg = arg
+      let transformedTypeName = this.getTransformedTypeName(arg, config)
+      let relatedBy: RelatedByValue
       if (
         isRelationType(transformedInputType) &&
-        argConfig.relateBy &&
-        relationKeys.includes(argConfig.relateBy)
+        isRelationKey(relateByConfig)
       ) {
         transformedArg = transformedInputType.fields.find(
-          ({ name }) => name === argConfig.relateBy,
+          ({ name }) => name === relateByConfig,
         )!
         transformedInputType = this.publisher.getTypeFromArg(
           transformedArg,
         ) as DmmfTypes.InputType
+        transformedTypeName = this.getTransformedTypeName(
+          transformedArg,
+          config,
+        )
+        relatedBy = relateByConfig as RelationKey
       }
-      const computedFields = split(
+      const [computedFields, nonComputedFields] = split(
         transformedInputType.fields,
-        field => config[field.name],
+        ({ name }) => !!config.inputs[name as InputFieldName]?.computeFrom,
       )
       const customArg: CustomInputArg = {
         arg: {
@@ -599,19 +615,22 @@ export class SchemaBuilder {
           name: arg.name,
           inputType: {
             ...transformedArg.inputType,
-            type: name,
+            type: transformedTypeName,
           },
-          // TODO: Fix
-          relateBy: 'any',
-          computeFrom: argConfig.computeFrom,
         },
         type: {
           ...transformedInputType,
-          name: this.getTransformedTypeName(arg, config),
-          fields: this.deepTransformInputTypes(
-            transformedInputType.fields,
-            config,
-          ).map(_ => _.arg),
+          name: transformedTypeName,
+          fields: this.deepTransformInputTypes(nonComputedFields, config).map(
+            field => field.arg,
+          ),
+          computedFields: fromEntries(
+            computedFields.map(({ name }) => [
+              name,
+              config.inputs[name as InputFieldName]?.computeFrom,
+            ]),
+          ),
+          relatedBy,
         },
       }
       if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
@@ -627,6 +646,9 @@ export class SchemaBuilder {
     arg: DmmfTypes.SchemaArg,
     config: ResolvedFieldPublisherConfig,
   ) => {
+    if (!config.customNameRequired) {
+      return arg.inputType.type
+    }
     const prefix = arg.inputType.type.replace('Input', '')
     const getRelationSuffix = (relation: 'create' | 'connect') => {
       if (config.relateBy === relation) {

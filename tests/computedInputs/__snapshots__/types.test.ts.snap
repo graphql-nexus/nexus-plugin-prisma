@@ -1,7 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`computedInputs typegen works at plugin-level: plugin-level-schema 1`] = `
-"type Mutation {
+"input IdCompoundUniqueInput {
+  id: Int!
+}
+
+type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
@@ -27,7 +31,7 @@ input NestedCreateWithoutUserInput {
 }
 
 input NestedWhereUniqueInput {
-  id: Int
+  id: IdCompoundUniqueInput
 }
 
 type Query {
@@ -37,7 +41,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
+  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
@@ -56,7 +60,7 @@ input UserCreateWithoutNestedInput {
 }
 
 input UserWhereUniqueInput {
-  id: Int
+  id: IdCompoundUniqueInput
 }
 "
 `;
@@ -148,7 +152,15 @@ declare global {
 `;
 
 exports[`computedInputs typegen works at resolver-level: resolver-level-schema 1`] = `
-"type Mutation {
+"input IdCompoundUniqueInput {
+  id: Int!
+}
+
+input IdCompoundUniqueWithoutCreatedWithBrowserInput {
+  id: Int!
+}
+
+type Mutation {
   createOneUser(data: UserCreateWithoutCreatedWithBrowserInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
@@ -174,8 +186,10 @@ input NestedCreateWithoutUserWithoutCreatedWithBrowserInput {
   name: String!
 }
 
+input NestedWhereUniqueInput
+
 input NestedWhereUniqueWithoutCreatedWithBrowserInput {
-  id: Int
+  id: IdCompoundUniqueWithoutCreatedWithBrowserInput
 }
 
 type Query {
@@ -185,7 +199,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: Int, before: Int, first: Int, last: Int): [Nested!]!
+  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
@@ -205,7 +219,7 @@ input UserCreateWithoutNestedInput {
 }
 
 input UserWhereUniqueInput {
-  id: Int
+  id: IdCompoundUniqueInput
 }
 "
 `;
