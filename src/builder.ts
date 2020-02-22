@@ -751,10 +751,19 @@ export class SchemaBuilder {
             )
 
       args.push(
-        ...paginationsArgs.map(a => ({
-          arg: a,
-          type: { name: a.inputType.type },
-        })),
+        ...paginationsArgs.map(a => {
+          if (a.inputType.kind === 'scalar' || a.inputType.kind === 'enum') {
+            return {
+              arg: a,
+              type: { name: a.inputType.type },
+            }
+          } else {
+            return {
+              arg: a,
+              type: this.dmmf.inputTypesIndex[a.inputType.type],
+            }
+          }
+        }),
       )
     }
 

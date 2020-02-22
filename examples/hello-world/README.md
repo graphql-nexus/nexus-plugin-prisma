@@ -3,5 +3,5 @@
 ### Try It
 
 ```
-yarn && yarn start
+yarn && yarn dev
 ```

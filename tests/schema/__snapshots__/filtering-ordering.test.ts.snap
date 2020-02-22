@@ -12,7 +12,9 @@ type User {
   name: String!
 }
 
-input UserWhereUniqueInput
+input UserWhereUniqueInput {
+  id: Int
+}
 "
 `;
 
@@ -73,6 +75,8 @@ declare global {
 }
   "
 `;
+
+exports[`in prod stage, throw error if no arg or wrong args are passed: output 1`] = `"PrismaClientGenerator.getDMMF is not a function"`;
 
 exports[`in prod stage, throw error if no arg or wrong args are passed: schema 1`] = `
 "type Query {

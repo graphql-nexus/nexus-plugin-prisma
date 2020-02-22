@@ -1,8 +1,8 @@
 import * as cp from 'child_process'
-import * as path from 'path'
-import * as nexusBuilder from 'nexus/dist/builder'
-import * as NexusPrisma from '../src'
 import * as fs from 'fs-extra'
+import * as nexusBuilder from 'nexus/dist/builder'
+import * as path from 'path'
+import * as NexusPrisma from '../src'
 import * as types from './__app/main'
 import { mockConsoleLog } from './__utils'
 
@@ -51,7 +51,7 @@ it('integrates together', async () => {
   //
   const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
     shouldGenerateArtifacts: true,
-    outputs: {
+    paths: {
       typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
     },
   })
@@ -92,6 +92,10 @@ it('integrates together', async () => {
       '$1__NON_DETERMINISTIC_CONTENT__$2',
     )
     .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
+    .replace(
+      /generator: {.*},/,
+      'generator: {__NON_DETERMINISTIC_CONTENT__:true}',
+    )
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')

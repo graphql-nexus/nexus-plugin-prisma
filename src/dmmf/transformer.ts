@@ -75,6 +75,8 @@ function transformInputType(inputType: DMMF.InputType): DmmfTypes.InputType {
   return {
     ...inputType,
     fields: inputType.fields.map(transformArg),
+    relatedBy: undefined,
+    computedFields: {},
   }
 }
 
