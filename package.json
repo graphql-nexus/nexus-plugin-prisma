@@ -28,7 +28,7 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/client": "^2.0.0-preview022",
+    "@prisma/client": "2.0.0-preview022",
     "graphql": "^14.5.0",
     "nexus": "^0.12.0-rc.13"
   },
