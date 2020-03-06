@@ -1,5 +1,6 @@
 import { LiftEngine } from '@prisma/lift'
 import { dmmfToDml, getDMMF, getGenerator } from '@prisma/sdk'
+import { getPlatform } from '@prisma/get-platform'
 import * as fs from 'fs'
 import getPort from 'get-port'
 import { GraphQLClient } from 'graphql-request'
@@ -82,6 +83,17 @@ async function getGraphQLServerAndClient(
   return { client, httpServer }
 }
 
+async function getQueryEnginePath() {
+  const platform = await getPlatform()
+  const extension = platform === 'windows' ? '.exe' : ''
+  const binaryName = `query-engine-${platform}${extension}`
+
+  return path.join(
+    path.dirname(require.resolve('prisma2/package.json')),
+    binaryName,
+  )
+}
+
 async function generateClientFromDatamodel(datamodelString: string) {
   const uniqId = Math.random()
     .toString()
@@ -90,34 +102,42 @@ async function generateClientFromDatamodel(datamodelString: string) {
 
   fs.mkdirSync(tmpDir, { recursive: true })
 
-  const dmmf = await getDMMF({ datamodel: datamodelString })
+  const queryEnginePath = await getQueryEnginePath()
+
+  const dmmf = await getDMMF({
+    datamodel: datamodelString,
+    prismaPath: queryEnginePath,
+  })
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
-  const datamodel = await dmmfToDml({
-    dmmf: dmmf.datamodel,
-    config: {
-      datasources: [
-        {
-          name: 'db',
-          connectorType: 'sqlite',
-          url: {
-            value: `file:${tmpDir}/dev.db`,
-            fromEnvVar: null,
+  const datamodel = await dmmfToDml(
+    {
+      dmmf: dmmf.datamodel,
+      config: {
+        datasources: [
+          {
+            name: 'db',
+            connectorType: 'sqlite',
+            url: {
+              value: `file:${tmpDir}/dev.db`,
+              fromEnvVar: null,
+            },
+            config: {},
           },
-          config: {},
-        },
-      ],
-      generators: [
-        {
-          binaryTargets: [],
-          config: {},
-          name: 'client',
-          output: clientDir,
-          provider: 'prisma-client-js',
-        },
-      ],
+        ],
+        generators: [
+          {
+            binaryTargets: [],
+            config: {},
+            name: 'client',
+            output: clientDir,
+            provider: 'prisma-client-js',
+          },
+        ],
+      },
     },
-  })
+    queryEnginePath,
+  )
   const schemaPath = path.join(tmpDir, 'schema.prisma')
 
   fs.writeFileSync(schemaPath, datamodel)
@@ -133,6 +153,7 @@ async function generateClientFromDatamodel(datamodelString: string) {
     schemaPath,
     printDownloadProgress: false,
     baseDir: tmpDir,
+    version: require('prisma2/package.json').prisma.version,
   })
 
   await generator.generate()
