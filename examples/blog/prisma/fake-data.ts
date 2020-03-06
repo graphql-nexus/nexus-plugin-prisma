@@ -5,25 +5,21 @@ main()
 
 async function main() {
   const prisma = new PrismaClient()
-  const author = await prisma.users.create({
-    data: {
-      name: name.firstName(),
-      blog: {},
-      rating: 0.5,
-      role: 'AUTHOR',
-    },
-  })
-  const blog = await prisma.blogs.create({
+  const blogWithAuthor = await prisma.blog.create({
     data: {
       name: name.title(),
       authors: {
-        connect: {
-          id: author.id,
+        create: {
+          name: name.firstName(),
+          rating: 0.5,
+          role: 'AUTHOR',
         },
       },
     },
+    include: {
+      authors: true,
+    },
   })
-  console.log('added author:\n', author)
-  console.log('added blog:\n', blog)
+  console.log('added blog with author:\n', blogWithAuthor)
   await prisma.disconnect()
 }
