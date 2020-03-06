@@ -1,4 +1,5 @@
 const PrismaClientGenerator = require('@prisma/client/generator-build')
+import * as SDK from '@prisma/sdk'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'
@@ -6,6 +7,7 @@ import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
+import { getQueryEnginePath } from './__ensure-engine'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -20,16 +22,24 @@ export const createNexusPrismaInternal = (
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
   return new DmmfDocument(
     transform(
-      await PrismaClientGenerator.getDMMF({
-        datamodel,
-        // prismaPath: Path.join(
-        //   __dirname,
-        //   '../node_modules/@prisma/client/runtime/query-engine-darwin',
-        // ),
-      }),
+      (await PrismaClientGenerator.getDMMF({ datamodel })) as any,
       options,
     ),
   )
+}
+
+export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {
+  return SDK.getDMMF({
+    datamodelPath,
+    prismaPath: await getQueryEnginePath(),
+  })
+}
+
+export async function getPinnedDmmfFromSchema(datamodel: string) {
+  return SDK.getDMMF({
+    datamodel,
+    prismaPath: await getQueryEnginePath(),
+  })
 }
 
 export async function generateSchemaAndTypes(
