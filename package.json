@@ -14,13 +14,13 @@
     "release:stable": "dripip stable",
     "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
     "clean": "rm -rf dist",
-    "build": "ts-node scripts/sync-prisma-version && yarn -s clean && tsc",
+    "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
     "dev": "tsc --watch",
-    "dev:test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest --watch",
+    "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine.ts && jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "ts-node scripts/sync-prisma-version && ts-node tests/__ensure-engine.ts && jest"
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine.ts && jest"
   },
   "dependencies": {
     "camelcase": "^5.3.1",
@@ -28,7 +28,7 @@
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
-    "@prisma/client": "^2.0.0-preview022",
+    "@prisma/client": "2.0.0-preview022",
     "graphql": "^14.5.0",
     "nexus": "^0.12.0-rc.13"
   },
@@ -58,7 +58,7 @@
     "nexus": "^0.12.0-rc.13",
     "node-fetch": "^2.6.0",
     "prettier": "^1.17.1",
-    "prisma2": "^2.0.0-preview022",
+    "prisma2": "2.0.0-preview022",
     "react": "^16.12.0",
     "rimraf": "^3.0.1",
     "strip-ansi": "^6.0.0",
@@ -72,8 +72,5 @@
     "semi": false,
     "singleQuote": true,
     "trailingComma": "all"
-  },
-  "prisma": {
-    "version": "d3b0ceed5d87544b9d2decb70e08664f9047bb73"
   }
 }
