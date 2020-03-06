@@ -3,10 +3,16 @@ import fs from 'fs'
 import Path from 'path'
 import { getPlatform } from '@prisma/get-platform'
 
-export async function getQueryEnginePath() {
+export async function getQueryEngineFileName() {
   const platform = await getPlatform()
   const extension = platform === 'windows' ? '.exe' : ''
   const binaryName = `query-engine-${platform}${extension}`
+
+  return binaryName
+}
+
+export async function getQueryEnginePath() {
+  const binaryName = await getQueryEngineFileName()
 
   return Path.join(
     Path.dirname(require.resolve('prisma2/package.json')),
@@ -19,12 +25,14 @@ export function getQueryEngineVersion() {
 }
 
 async function main() {
-  const enginePath = await getQueryEnginePath()
+  const cliEnginePath = await getQueryEnginePath()
+  const cliEngineDir = Path.dirname(cliEnginePath)
 
-  if (fs.existsSync(enginePath)) {
+  // Download binary in prisma2
+  if (fs.existsSync(cliEngineDir)) {
     download({
       binaries: {
-        'query-engine': Path.dirname(enginePath),
+        'query-engine': cliEngineDir,
       },
       version: getQueryEngineVersion(),
       showProgress: true,
