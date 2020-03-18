@@ -2,18 +2,30 @@ import { DMMF } from '@prisma/client/runtime'
 import { colors } from '../colors'
 
 export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
+  let dmmf: undefined | DMMF.Document = undefined
+
   try {
-    return require(packagePath).dmmf
+    dmmf = require(packagePath).dmmf
   } catch (error) {
     throw new Error(
       `Failed to import prisma client package at ${packagePath}. The following error occured while trying:
         ${error.stack}`,
     )
   }
+
+  if (!dmmf) {
+    throw new Error(`\
+You most likely forgot to initialize the Prisma Client. Please run \`prisma2 generate\` and try to run it again.
+If that does not solve your problem, please open an issue.`)
+  }
+
+  return dmmf
 }
 
 //TODO: Remove this code after a couple version. (Added on version `0.7.0-next.1`)
-export function fatalIfOldPhotonIsInstalled(photonPackagePath: string): boolean {
+export function fatalIfOldPhotonIsInstalled(
+  photonPackagePath: string,
+): boolean {
   try {
     require(photonPackagePath)
 

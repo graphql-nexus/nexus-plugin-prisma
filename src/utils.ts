@@ -164,7 +164,7 @@ export type Index<T> = Record<string, T>
  *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
-export type LocalComputedInputs<MethodName extends MutationMethodName> = Record<
+export type LocalComputedInputs<MethodName extends string> = Record<
   string,
   (params: LocalMutationResolverParams<MethodName>) => unknown
 >
@@ -184,12 +184,12 @@ export type GlobalMutationResolverParams = BaseMutationResolverParams & {
 }
 
 export type LocalMutationResolverParams<
-  MethodName extends MutationMethodName
+  MethodName extends string
 > = BaseMutationResolverParams & {
-  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+  args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
+    ? core.GetGen3<'argTypes', 'Mutation', MethodName>
+    : any
 }
-
-export type MutationMethodName = keyof core.GetGen<'argTypes'>['Mutation']
 
 export type Context = core.GetGen<'context'>
 
