@@ -118,13 +118,9 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
 }
 
-<<<<<<< HEAD
-input UserWhereUniqueInput
-=======
 input UserWhereUniqueInput {
   id: Int
 }
->>>>>>> master
 "
 `;
 

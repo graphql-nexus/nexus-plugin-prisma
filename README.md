@@ -90,13 +90,13 @@ generator prisma_client {
 }
 
 model User {
-  id        String   @id @unique @default(cuid())
+  id        String   @id @default(cuid())
   email     String   @unique
   birthDate DateTime
 }
 
 model Post {
-  id     String @id @unique @default(cuid())
+  id     String   @id @default(cuid())
   author User[]
 }
 

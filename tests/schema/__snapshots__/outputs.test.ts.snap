@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`publishes scalars from input types: schema 1`] = `
+"scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  not: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+}
+
+input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type Query {
+  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+type User {
+  id: Int!
+}
+
+input UserWhereInput {
+  id: IntFilter
+  date: DateTimeFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+"
+`;
+
+exports[`publishes scalars from input types: typegen 1`] = `
+"
+interface ModelTypes {
+  User: prisma.User
+}
+  
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+  filtering: 'id' | 'date' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'date'
+}
+
+  },
+    User: {
+
+
+  }
+}
+
+interface NexusPrismaTypes {
+  Query: {
+    user: 'User'
+    users: 'User'
+
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+
+  },
+  User: {
+    id: 'Int'
+    date: 'DateTime'
+
+}
+}
+
+interface NexusPrismaMethods {
+  User: NexusPrismaFields<'User'>
+  Query: NexusPrismaFields<'Query'>
+  Mutation: NexusPrismaFields<'Mutation'>
+}
+  
+
+declare global {
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

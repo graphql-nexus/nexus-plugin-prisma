@@ -9,7 +9,6 @@ import {
 import { dirname, relative } from 'path'
 import { GraphQLResolveInfo } from 'graphql'
 import { core } from 'nexus'
-import { isDeepStrictEqual } from 'util'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a

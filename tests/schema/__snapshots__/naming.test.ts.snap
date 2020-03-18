@@ -5,10 +5,6 @@ exports[`generates publishers pluralized & camel-cased: schema 1`] = `
   count: Int!
 }
 
-input IdCompoundUniqueInput {
-  id: Int!
-}
-
 input IntFilter {
   equals: Int
   not: Int
@@ -47,7 +43,7 @@ input ModelNameWhereInput {
 }
 
 input ModelNameWhereUniqueInput {
-  id: IdCompoundUniqueInput
+  id: Int
 }
 
 type Mutation {

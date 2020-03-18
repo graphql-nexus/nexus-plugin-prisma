@@ -1,16 +1,43 @@
 import { download } from '@prisma/fetch-engine'
 import fs from 'fs'
-import path from 'path'
-const manifest = require('../package.json')
+import Path from 'path'
+import { getPlatform } from '@prisma/get-platform'
 
-const runtimeDir = path.join(__dirname, '../node_modules/@prisma/client')
+export async function getQueryEngineFileName() {
+  const platform = await getPlatform()
+  const extension = platform === 'windows' ? '.exe' : ''
+  const binaryName = `query-engine-${platform}${extension}`
 
-if (fs.existsSync(runtimeDir)) {
-  download({
-    binaries: {
-      'query-engine': runtimeDir,
-    },
-    version: manifest.prisma.version,
-    showProgress: true,
-  })
+  return binaryName
 }
+
+export async function getQueryEnginePath() {
+  const binaryName = await getQueryEngineFileName()
+
+  return Path.join(
+    Path.dirname(require.resolve('prisma2/package.json')),
+    binaryName,
+  )
+}
+
+export function getQueryEngineVersion() {
+  return require('prisma2/package.json').prisma.version
+}
+
+async function main() {
+  const cliEnginePath = await getQueryEnginePath()
+  const cliEngineDir = Path.dirname(cliEnginePath)
+
+  // Download binary in prisma2
+  if (fs.existsSync(cliEngineDir)) {
+    download({
+      binaries: {
+        'query-engine': cliEngineDir,
+      },
+      version: getQueryEngineVersion(),
+      showProgress: true,
+    })
+  }
+}
+
+main()
