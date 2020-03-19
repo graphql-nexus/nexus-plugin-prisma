@@ -192,25 +192,17 @@ export type InputFieldName = NestedKeys<
   ? NestedKeys<core.GetGen<'inputTypes'>>
   : string
 
-export const relationKeys = ['create', 'connect'] as const
-
-export const isRelationKey = (value: any) => relationKeys.includes(value)
-
-export type RelationKey = typeof relationKeys[number]
-
-export type RelatedByValue = RelationKey | undefined
-
-export type RelateByValue = RelatedByValue | 'any'
+export type CollapseToValue = InputFieldName | null | undefined
 
 export type StandardInputConfig = {
-  relateBy?: RelatedByValue
-  computeFrom?: undefined
+  collapseTo?: CollapseToValue
+  computeFrom?: null
 }
 
 export type ComputedInputConfig<
   MethodName extends MutationMethodName = MutationMethodName
 > = {
-  relateBy?: 'any'
+  collapseTo?: null
   computeFrom: ComputeInput<MethodName>
 }
 

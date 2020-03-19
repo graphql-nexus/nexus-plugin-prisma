@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`relations typegen works at plugin-level: plugin-level-schema 1`] = `
+exports[`collapseTo typegen avoids collapsing required fields: avoid-required-schema 1`] = `
 "type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
@@ -16,6 +16,11 @@ input NestedCreateInput {
   name: String!
   createdWithBrowser: String!
   user: UserCreateOneWithoutNestedInput
+}
+
+input NestedCreateManyWithoutUserInput {
+  create: [NestedCreateWithoutUserInput!]
+  connect: [NestedWhereUniqueInput!]
 }
 
 input NestedCreateWithoutUserInput {
@@ -41,7 +46,7 @@ type User {
 input UserCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: [NestedCreateWithoutUserInput!]
+  nested: NestedCreateManyWithoutUserInput
 }
 
 input UserCreateOneWithoutNestedInput {
@@ -60,7 +65,7 @@ input UserWhereUniqueInput {
 "
 `;
 
-exports[`relations typegen works at plugin-level: plugin-level-typegen 1`] = `
+exports[`collapseTo typegen avoids collapsing required fields: avoid-required-typegen 1`] = `
 "
 interface ModelTypes {
   User: prisma.User
@@ -146,9 +151,9 @@ declare global {
   "
 `;
 
-exports[`relations typegen works at resolver-level: resolver-level-schema 1`] = `
+exports[`collapseTo typegen works at plugin-level: plugin-level-schema 1`] = `
 "type Mutation {
-  createOneUser(data: UserCreateCreateNestedInput!): User!
+  createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
 
@@ -164,7 +169,7 @@ input NestedCreateInput {
   user: UserCreateOneWithoutNestedInput
 }
 
-input NestedCreateWithoutUserCreateNestedInput {
+input NestedCreateWithoutUserInput {
   name: String!
   createdWithBrowser: String!
 }
@@ -184,10 +189,10 @@ type User {
   createdWithBrowser: String!
 }
 
-input UserCreateCreateNestedInput {
+input UserCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: [NestedCreateWithoutUserCreateNestedInput!]
+  nested: NestedCreateWithoutUserInput
 }
 
 input UserCreateOneWithoutNestedInput {
@@ -206,7 +211,153 @@ input UserWhereUniqueInput {
 "
 `;
 
-exports[`relations typegen works at resolver-level: resolver-level-typegen 1`] = `
+exports[`collapseTo typegen works at plugin-level: plugin-level-typegen 1`] = `
+"
+interface ModelTypes {
+  User: prisma.User
+  Nested: prisma.Nested
+}
+  
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+  filtering: 'id' | 'name' | 'nested' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'name' | 'createdWithBrowser'
+}
+    nesteds: {
+  filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name' | 'createdWithBrowser'
+}
+
+  },
+    User: {
+    nested: {
+  filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name' | 'createdWithBrowser'
+}
+
+  },  Nested: {
+
+
+  }
+}
+
+interface NexusPrismaTypes {
+  Query: {
+    user: 'User'
+    users: 'User'
+    nested: 'Nested'
+    nesteds: 'Nested'
+
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+    createOneNested: 'Nested'
+    updateOneNested: 'Nested'
+    updateManyNested: 'BatchPayload'
+    deleteOneNested: 'Nested'
+    deleteManyNested: 'BatchPayload'
+    upsertOneNested: 'Nested'
+
+  },
+  User: {
+    id: 'Int'
+    name: 'String'
+    nested: 'Nested'
+    createdWithBrowser: 'String'
+
+},  Nested: {
+    id: 'Int'
+    name: 'String'
+    createdWithBrowser: 'String'
+    user: 'User'
+
+}
+}
+
+interface NexusPrismaMethods {
+  User: NexusPrismaFields<'User'>
+  Nested: NexusPrismaFields<'Nested'>
+  Query: NexusPrismaFields<'Query'>
+  Mutation: NexusPrismaFields<'Mutation'>
+}
+  
+
+declare global {
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;
+
+exports[`collapseTo typegen works at resolver-level: resolver-level-schema 1`] = `
+"type Mutation {
+  createOneUser(data: UserCreateCollapseNestedToCreateInput!): User!
+  createOneNested(data: NestedCreateInput!): Nested!
+}
+
+type Nested {
+  id: Int!
+  createdWithBrowser: String!
+  name: String!
+}
+
+input NestedCreateInput {
+  name: String!
+  createdWithBrowser: String!
+  user: UserCreateOneWithoutNestedInput
+}
+
+input NestedCreateWithoutUserCollapseNestedToCreateInput {
+  name: String!
+  createdWithBrowser: String!
+}
+
+input NestedWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type User {
+  id: Int!
+  name: String!
+  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  createdWithBrowser: String!
+}
+
+input UserCreateCollapseNestedToCreateInput {
+  name: String!
+  createdWithBrowser: String!
+  nested: NestedCreateWithoutUserCollapseNestedToCreateInput
+}
+
+input UserCreateOneWithoutNestedInput {
+  create: UserCreateWithoutNestedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutNestedInput {
+  name: String!
+  createdWithBrowser: String!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+"
+`;
+
+exports[`collapseTo typegen works at resolver-level: resolver-level-typegen 1`] = `
 "
 interface ModelTypes {
   User: prisma.User

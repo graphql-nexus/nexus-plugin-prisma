@@ -3,11 +3,11 @@ import { transformArgs } from '../../src/transformArgs'
 import { getTestData, defaultDefinitions } from '../__utils'
 import { InputsConfig } from '../../src/utils'
 
-describe('relations', () => {
-  it('injects relation keys specified by a default relation', async () => {
+describe('collapseTo', () => {
+  it('injects collapsed keys specified by a default value', async () => {
     const { publisher } = await getTestData({
       pluginOptions: {
-        relateBy: 'connect',
+        collapseTo: 'connect',
       },
     })
     expect(
@@ -22,7 +22,7 @@ describe('relations', () => {
         inputType: publisher.getInputType('UserCreateInput'),
         publisher,
         inputs: {},
-        relateBy: 'connect',
+        collapseTo: 'connect',
       }),
     ).toStrictEqual({
       data: {
@@ -34,7 +34,7 @@ describe('relations', () => {
     it('injects relation keys specified by an object', async () => {
       const inputs = {
         nested: {
-          relateBy: 'create',
+          collapseTo: 'create',
         },
       } as InputsConfig
       const { publisher } = await getTestData({
@@ -58,10 +58,12 @@ describe('relations', () => {
             } as any,
             ctx: {},
           },
-          inputType: publisher.getInputType('UserCreateCreateNestedInput'),
+          inputType: publisher.getInputType(
+            'UserCreateCollapseNestedToCreateInput',
+          ),
           publisher,
           inputs,
-          relateBy: 'any',
+          collapseTo: null,
         }),
       ).toStrictEqual({
         data: {

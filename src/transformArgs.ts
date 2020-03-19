@@ -1,10 +1,5 @@
 import { fromEntries } from '@re-do/utils'
-import {
-  MutationResolverParams,
-  InputsConfig,
-  RelateByValue,
-  isRelationKey,
-} from './utils'
+import { MutationResolverParams, InputsConfig, CollapseToValue } from './utils'
 import { DmmfTypes } from './dmmf/DmmfTypes'
 import { Publisher } from './publisher'
 
@@ -13,7 +8,7 @@ type TransformArgsParams = {
   params: MutationResolverParams
   publisher: Publisher
   inputs: InputsConfig
-  relateBy: RelateByValue
+  collapseTo: CollapseToValue
 }
 
 const computeInputs = (
@@ -62,10 +57,10 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
       } else if (field.inputType.kind === 'object') {
         deepTransformedFieldValue = deepTransformArgData(fieldParams, fieldData)
       }
-      if (isRelationKey(fieldInputType.relatedBy)) {
+      if (fieldInputType.collapsedTo) {
         // Inject relation key into data if one was omitted based on the field type
         deepTransformedFieldValue = {
-          [fieldInputType.relatedBy!]: deepTransformedFieldValue,
+          [fieldInputType.collapsedTo]: deepTransformedFieldValue,
         }
       }
       return [fieldName, deepTransformedFieldValue]
@@ -81,15 +76,13 @@ function deepTransformArgData(params: TransformArgsParams, data: unknown): any {
 
 export const isTransformRequired = (
   inputs: InputsConfig | undefined,
-  relateBy: RelateByValue | undefined,
+  collapseTo: CollapseToValue,
 ) =>
   !!(
-    (relateBy && isRelationKey(relateBy)) ||
+    collapseTo ||
     (inputs &&
       Object.values(inputs).find(
-        inputConfig =>
-          inputConfig &&
-          (isRelationKey(inputConfig.relateBy) || inputConfig.computeFrom),
+        inputConfig => inputConfig?.collapseTo || inputConfig?.computeFrom,
       ))
   )
 
@@ -98,9 +91,9 @@ export const transformArgs = ({
   params,
   publisher,
   inputs,
-  relateBy,
+  collapseTo,
 }: TransformArgsParams) =>
-  isTransformRequired(inputs, relateBy)
+  isTransformRequired(inputs, collapseTo)
     ? {
         ...params.args,
         data: deepTransformArgData(
@@ -109,15 +102,9 @@ export const transformArgs = ({
             publisher,
             params,
             inputs,
-            relateBy,
+            collapseTo,
           },
           params.args.data,
         ),
       }
     : params.args
-
-export const isRelationType = (inputType: DmmfTypes.InputType) =>
-  inputType.fields.length === 2 &&
-  inputType.fields.every(
-    field => field.name === 'create' || field.name === 'connect',
-  )

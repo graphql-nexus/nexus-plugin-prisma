@@ -1,5 +1,5 @@
 import { core } from 'nexus'
-import { ComputeInput, RelatedByValue, ComputedFields } from '../utils'
+import { ComputedFields, CollapseToValue } from '../utils'
 
 export declare namespace DmmfTypes {
   interface Document {
@@ -82,7 +82,7 @@ export declare namespace DmmfTypes {
     atMostOne?: boolean
     fields: SchemaArg[]
     computedFields: ComputedFields
-    relatedBy: RelatedByValue
+    collapsedTo: CollapseToValue
   }
   interface Mapping {
     model: string

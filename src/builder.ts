@@ -8,11 +8,7 @@ import {
   fatalIfOldPhotonIsInstalled,
   getTransformedDmmf,
 } from './dmmf'
-import {
-  transformArgs,
-  isTransformRequired,
-  isRelationType,
-} from './transformArgs'
+import { transformArgs, isTransformRequired } from './transformArgs'
 import {
   OnUnknownArgName,
   OnUnknownFieldName,
@@ -35,13 +31,10 @@ import {
   assertPhotonInContext,
   Index,
   InputsConfig,
-  RelatedByValue,
-  RelateByValue,
   lowerFirst,
   InputConfig,
   InputFieldName,
-  RelationKey,
-  isRelationKey,
+  CollapseToValue,
 } from './utils'
 import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
 import {
@@ -60,7 +53,7 @@ type FieldPublisherConfig = {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   inputs?: InputsConfig
-  relateBy?: RelateByValue
+  collapseTo?: CollapseToValue
 }
 
 // Config options that are populated with defaults will not be undefined
@@ -139,7 +132,7 @@ export type Options = {
     typegen?: string
   }
   inputs?: InputsConfig
-  relateBy?: RelateByValue
+  collapseTo?: CollapseToValue
 }
 
 export type InternalOptions = Options & {
@@ -212,7 +205,7 @@ export class SchemaBuilder {
   protected fieldNamingStrategy: FieldNamingStrategy
   protected getPhoton: PrismaClientFetcher
   protected inputs: InputsConfig
-  protected relateBy: RelateByValue
+  protected collapseTo: CollapseToValue
   protected unknownFieldsByModel: Index<string[]>
   publisher: Publisher
 
@@ -229,7 +222,7 @@ export class SchemaBuilder {
       ...rest,
     }
     this.inputs = config.inputs
-    this.relateBy = options.relateBy ?? 'any'
+    this.collapseTo = options.collapseTo ?? null
     this.dmmf = options.dmmf ?? getTransformedDmmf(config.paths.prismaClient)
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     if (config.builderHook) {
@@ -310,7 +303,7 @@ export class SchemaBuilder {
                         ctx,
                       },
                       inputs: publisherConfig.inputs,
-                      relateBy: publisherConfig.relateBy,
+                      collapseTo: publisherConfig.collapseTo,
                     })
                   }
                   return photon[mappedField.photonAccessor][
@@ -504,13 +497,13 @@ export class SchemaBuilder {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
-      relateBy: this.relateBy,
+      collapseTo: this.collapseTo,
       inputs: merge(this.inputs, inputs ?? {}),
       ...otherGivenOptions,
       // If args will be transformed based only on global config, no need to rename
       customNameRequired: isTransformRequired(
         inputs,
-        otherGivenOptions.relateBy,
+        otherGivenOptions.collapseTo,
       ),
     }
   }
@@ -556,7 +549,9 @@ export class SchemaBuilder {
     publisherConfig,
     field,
   }: FieldConfigData): CustomInputArg[] {
-    if (isTransformRequired(publisherConfig.inputs, publisherConfig.relateBy)) {
+    if (
+      isTransformRequired(publisherConfig.inputs, publisherConfig.collapseTo)
+    ) {
       return this.deepTransformInputTypes(field.args, publisherConfig)
     }
     return field.args.map(arg => {
@@ -584,25 +579,36 @@ export class SchemaBuilder {
           type: transformedInputType,
         }
       }
-      const relateByConfig = argConfig.relateBy ?? config.relateBy
       let transformedArg = arg
       let transformedTypeName = this.getTransformedTypeName(arg, config)
-      let relatedBy: RelatedByValue
-      if (
-        isRelationType(transformedInputType) &&
-        isRelationKey(relateByConfig)
-      ) {
-        transformedArg = transformedInputType.fields.find(
-          ({ name }) => name === relateByConfig,
-        )!
+      const collapseToValue = argConfig.collapseTo ?? config.collapseTo
+      let collapseToField = transformedInputType.fields.find(({ name }) => {
+        if (name === collapseToValue) {
+          const requiredSiblings = transformedInputType.fields.filter(
+            field => field.name !== name && field.inputType.isRequired,
+          )
+          // Do not collapse unless all sibling fields are optional
+          if (isEmpty(requiredSiblings)) {
+            return true
+          } else {
+            console.log(
+              `Not collapsing field "${name}" on type ${
+                transformedInputType.name
+              } due to required siblings: ${requiredSiblings
+                .map(field => `"${field.name}"`)
+                .join(', ')}.`,
+            )
+          }
+        }
+      })
+      if (collapseToField) {
         transformedInputType = this.publisher.getTypeFromArg(
-          transformedArg,
+          collapseToField,
         ) as DmmfTypes.InputType
         transformedTypeName = this.getTransformedTypeName(
-          transformedArg,
+          collapseToField,
           config,
         )
-        relatedBy = relateByConfig as RelationKey
       }
       const [computedFields, nonComputedFields] = split(
         transformedInputType.fields,
@@ -629,7 +635,7 @@ export class SchemaBuilder {
               config.inputs[name as InputFieldName]?.computeFrom,
             ]),
           ),
-          relatedBy,
+          collapsedTo: collapseToField?.name as CollapseToValue,
         },
       }
       if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
@@ -649,33 +655,34 @@ export class SchemaBuilder {
       return arg.inputType.type
     }
     const prefix = arg.inputType.type.replace('Input', '')
-    const getRelationSuffix = (relation: 'create' | 'connect') => {
-      if (config.relateBy === relation) {
-        return `${capitalize(relation)}All`
-      }
-      const affectedInputs = Object.entries(config.inputs).filter(
-        ([fieldName, fieldValue]) => fieldValue?.relateBy === relation,
-      )
-      if (!isEmpty(affectedInputs)) {
-        return `${capitalize(
-          relation,
-        )}${affectedInputs
-          .map(([fieldName, fieldValue]) => capitalize(fieldName))
-          .join('And')}`
-      }
-      return ''
+    let suffix = ''
+    if (config.collapseTo) {
+      suffix += `Collapse${capitalize(config.collapseTo)}`
     }
-    const computedInputEntries = Object.entries(config.inputs).filter(
-      ([fieldName, fieldValue]) => fieldValue && 'computeFrom' in fieldValue,
+    const inputSuffixes = Object.entries(config.inputs).reduce(
+      (suffixes, [fieldName, fieldValue]) => ({
+        collapse: fieldValue?.collapseTo
+          ? [
+              ...suffixes.collapse,
+              `${capitalize(fieldName)}To${capitalize(fieldValue.collapseTo)}`,
+            ]
+          : suffixes.collapse,
+        compute: fieldValue?.computeFrom
+          ? [...suffixes.compute, capitalize(fieldName)]
+          : suffixes.compute,
+      }),
+      {
+        collapse: [] as string[],
+        compute: [] as string[],
+      },
     )
-    const computedInputsSuffix = isEmpty(computedInputEntries)
-      ? ''
-      : `Without${computedInputEntries
-          .map(([fieldName]) => capitalize(fieldName))
-          .join('Or')}`
-    return `${prefix}${getRelationSuffix('create')}${getRelationSuffix(
-      'connect',
-    )}${computedInputsSuffix}Input`
+    if (!isEmpty(inputSuffixes.collapse)) {
+      suffix += `Collapse${inputSuffixes.collapse.join('And')}`
+    }
+    if (!isEmpty(inputSuffixes.compute)) {
+      suffix += `Compute${inputSuffixes.compute.join('And')}`
+    }
+    return `${prefix}${suffix}Input`
   }
 
   argsFromQueryOrModelField({

@@ -8,7 +8,7 @@ const inputsConfig = {
 
 const userCreateInputTypeName = 'UserCreateInput'
 
-describe('computedInputs args', () => {
+describe('computeFrom args', () => {
   it('values are inferred', async () => {
     const { publisher } = await getTestData({
       pluginOptions: { inputs: inputsConfig },
@@ -28,7 +28,7 @@ describe('computedInputs args', () => {
         inputType: publisher.getInputType(userCreateInputTypeName),
         publisher,
         inputs: inputsConfig,
-        relateBy: 'any',
+        collapseTo: null,
       }),
     ).toStrictEqual({
       data: {
@@ -61,7 +61,7 @@ describe('computedInputs args', () => {
           inputType: publisher.getInputType(userCreateInputTypeName),
           publisher,
           inputs: inputsConfig,
-          relateBy: 'any',
+          collapseTo: null,
         }),
       ).toStrictEqual({
         data: {
@@ -100,7 +100,7 @@ describe('computedInputs args', () => {
           inputType: publisher.getInputType(userCreateInputTypeName),
           publisher,
           inputs: complexInputsConfig,
-          relateBy: 'any',
+          collapseTo: null,
         }),
       ).toStrictEqual({
         data: {

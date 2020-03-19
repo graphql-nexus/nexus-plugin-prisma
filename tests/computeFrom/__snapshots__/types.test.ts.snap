@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`computedInputs typegen works at plugin-level: plugin-level-schema 1`] = `
+exports[`computeFrom typegen works at plugin-level: plugin-level-schema 1`] = `
 "type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
@@ -61,7 +61,7 @@ input UserWhereUniqueInput {
 "
 `;
 
-exports[`computedInputs typegen works at plugin-level: plugin-level-typegen 1`] = `
+exports[`computeFrom typegen works at plugin-level: plugin-level-typegen 1`] = `
 "
 interface ModelTypes {
   User: prisma.User
@@ -147,9 +147,9 @@ declare global {
   "
 `;
 
-exports[`computedInputs typegen works at resolver-level: resolver-level-schema 1`] = `
+exports[`computeFrom typegen works at resolver-level: resolver-level-schema 1`] = `
 "type Mutation {
-  createOneUser(data: UserCreateWithoutCreatedWithBrowserInput!): User!
+  createOneUser(data: UserCreateComputeCreatedWithBrowserInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }
 
@@ -165,20 +165,20 @@ input NestedCreateInput {
   user: UserCreateOneWithoutNestedInput
 }
 
-input NestedCreateManyWithoutUserWithoutCreatedWithBrowserInput {
-  create: [NestedCreateWithoutUserWithoutCreatedWithBrowserInput!]
-  connect: [NestedWhereUniqueWithoutCreatedWithBrowserInput!]
+input NestedCreateManyWithoutUserComputeCreatedWithBrowserInput {
+  create: [NestedCreateWithoutUserComputeCreatedWithBrowserInput!]
+  connect: [NestedWhereUniqueComputeCreatedWithBrowserInput!]
 }
 
-input NestedCreateWithoutUserWithoutCreatedWithBrowserInput {
+input NestedCreateWithoutUserComputeCreatedWithBrowserInput {
   name: String!
 }
 
-input NestedWhereUniqueInput {
+input NestedWhereUniqueComputeCreatedWithBrowserInput {
   id: Int
 }
 
-input NestedWhereUniqueWithoutCreatedWithBrowserInput {
+input NestedWhereUniqueInput {
   id: Int
 }
 
@@ -193,14 +193,14 @@ type User {
   createdWithBrowser: String!
 }
 
+input UserCreateComputeCreatedWithBrowserInput {
+  name: String!
+  nested: NestedCreateManyWithoutUserComputeCreatedWithBrowserInput
+}
+
 input UserCreateOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
   connect: UserWhereUniqueInput
-}
-
-input UserCreateWithoutCreatedWithBrowserInput {
-  name: String!
-  nested: NestedCreateManyWithoutUserWithoutCreatedWithBrowserInput
 }
 
 input UserCreateWithoutNestedInput {
@@ -214,7 +214,7 @@ input UserWhereUniqueInput {
 "
 `;
 
-exports[`computedInputs typegen works at resolver-level: resolver-level-typegen 1`] = `
+exports[`computeFrom typegen works at resolver-level: resolver-level-typegen 1`] = `
 "
 interface ModelTypes {
   User: prisma.User

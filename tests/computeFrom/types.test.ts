@@ -1,17 +1,17 @@
-import { mutationType } from 'nexus'
-import { printSchema } from 'graphql'
 import { getTestData, defaultDefinitions } from '../__utils'
+import { mutationType } from 'nexus'
 import { InputsConfig } from '../../src/utils'
+import { printSchema } from 'graphql'
 
-describe('relations typegen', () => {
+const inputsConfig = {
+  createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
+} as InputsConfig
+
+describe('computeFrom typegen', () => {
   it('works at plugin-level', async () => {
     const { schema, typegen } = await getTestData({
       pluginOptions: {
-        inputs: {
-          nested: {
-            relateBy: 'create',
-          },
-        } as InputsConfig,
+        inputs: inputsConfig,
       },
     })
     expect(printSchema(schema)).toMatchSnapshot('plugin-level-schema')
@@ -24,11 +24,7 @@ describe('relations typegen', () => {
         mutation: mutationType({
           definition(t: any) {
             t.crud.createOneUser({
-              inputs: {
-                nested: {
-                  relateBy: 'create',
-                },
-              } as InputsConfig,
+              inputs: inputsConfig,
             })
             t.crud.createOneNested()
           },
