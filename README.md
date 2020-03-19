@@ -479,11 +479,14 @@ const inputsConfig = {
     computeFrom: ({ args, ctx, info }) => ({ connect: { id: ctx.userId } }),
   },
   /*
-    Removes the "create/connect" input type for fields named "blog" and
-    the corresponding layer of the API, replacing it with a connect-only type.
+    Searches for fields named "connect" within fields named "blog." As long
+    as all siblings of "connect" are optional, replaces the input type of the
+    "blogs" field with the input type of the "connect" field, collapsing the
+    API to better accomodate its intended use (in this case, connecting existing
+    blogs as part of an input as opposed to creating new ones).
   */
   blog: {
-    relateBy: 'connect',
+    collapseTo: 'connect',
   },
 }
 
@@ -494,13 +497,13 @@ const inputsConfig = {
 nexusPrismaPlugin({
   inputs: inputsConfig,
   /*
-    Sets the default relateBy value globally. If unset, the default value
-    is "any", which preserves the "create/connect" layer from Prisma's API.
-    "relateBy" values passed to individual inputs always have a higher
-    precedence than those passed directly to a config like this one,
-    even if the config-level relateBy has a more narrow scope.
+    Sets the default collapseTo value globally. If unset, the default value
+    is null, which preserves inputs from Prisma's API. collapseTo values
+    passed to individual inputs always have a higher precedence than those 
+    passed directly to a config like this one, even if the config-level
+    collapseTo has a more narrow scope.
   */
-  relateBy: 'create',
+  collapseTo: 'create',
 })
 
 /*
@@ -514,18 +517,18 @@ mutationType({
       inputs: {
         blog: {
           /*
-            This overrides the relateBy value for the 'blog' field that was
+            This overrides the collapseTo value for the 'blog' field that was
             passed globally.
           */
-          relateBy: 'create',
+          collapseTo: 'create',
         },
       },
       /* 
-        Override the default relateBy for the resolver. For example,
-        if the global default is 'create', you might pass 'any' to allow
+        Override the default collapseTo for the resolver. For example,
+        if the global default is 'create', you might pass null to allow
         both create and connect by default.
       */
-      relateBy: 'any',
+      collapseTo: null,
     })
   },
 })
@@ -642,7 +645,7 @@ export type Options = {
     typegen?: string
   }
   inputs?: InputsConfig
-  relateBy?: RelateByValue
+  collapseTo?: CollapseToValue
 }
 ```
 
