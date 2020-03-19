@@ -11,6 +11,7 @@ type NexusInputDef =
   | Nexus.core.NexusArgDef<any>
 
 export class Publisher {
+  typesPublishing: Index<boolean> = {}
   typesPublished: Index<boolean> = {}
   inputsPublished: Index<DmmfTypes.InputType> = {}
   constructor(
@@ -172,7 +173,19 @@ export class Publisher {
     return this.nexusBuilder.hasType(typeName) || this.typesPublished[typeName]
   }
 
+  isPublishing(typeName: string) {
+    return this.typesPublishing[typeName]
+  }
+
+  // Publish an unfinalized version of an inputObject
+  markAsPublishing(inputType: DmmfTypes.InputType) {
+    this.typesPublishing[inputType.name] = true
+    this.inputsPublished[inputType.name] = inputType
+  }
+
+  // Finalize a published inputObject
   markTypeAsPublished(typeName: string) {
+    this.typesPublishing[typeName] = false
     this.typesPublished[typeName] = true
   }
 }

@@ -3,32 +3,32 @@
 exports[`collapseTo typegen avoids collapsing required fields: avoid-required-schema 1`] = `
 "type Mutation {
   createOneUser(data: UserCreateInput!): User!
-  createOneNested(data: NestedCreateInput!): Nested!
+  createOneNest(data: NestCreateInput!): Nest!
 }
 
-type Nested {
+type Nest {
   id: Int!
   createdWithBrowser: String!
   name: String!
 }
 
-input NestedCreateInput {
+input NestCreateInput {
   name: String!
   createdWithBrowser: String!
-  user: UserCreateOneWithoutNestedInput
+  user: UserCreateOneWithoutNestsInput
 }
 
-input NestedCreateManyWithoutUserInput {
-  create: [NestedCreateWithoutUserInput!]
-  connect: [NestedWhereUniqueInput!]
+input NestCreateManyWithoutUserInput {
+  create: [NestCreateWithoutUserInput!]
+  connect: [NestWhereUniqueInput!]
 }
 
-input NestedCreateWithoutUserInput {
+input NestCreateWithoutUserInput {
   name: String!
   createdWithBrowser: String!
 }
 
-input NestedWhereUniqueInput {
+input NestWhereUniqueInput {
   id: Int
 }
 
@@ -39,22 +39,22 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  nests(skip: Int, after: NestWhereUniqueInput, before: NestWhereUniqueInput, first: Int, last: Int): [Nest!]!
   createdWithBrowser: String!
 }
 
 input UserCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: NestedCreateManyWithoutUserInput
+  nests: NestCreateManyWithoutUserInput
 }
 
-input UserCreateOneWithoutNestedInput {
-  create: UserCreateWithoutNestedInput
+input UserCreateOneWithoutNestsInput {
+  create: UserCreateWithoutNestsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutNestedInput {
+input UserCreateWithoutNestsInput {
   name: String!
   createdWithBrowser: String!
 }
@@ -69,28 +69,28 @@ exports[`collapseTo typegen avoids collapsing required fields: avoid-required-ty
 "
 interface ModelTypes {
   User: prisma.User
-  Nested: prisma.Nested
+  Nest: prisma.Nest
 }
   
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'nested' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  filtering: 'id' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
-    nesteds: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
   },
     User: {
-    nested: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
-  },  Nested: {
+  },  Nest: {
 
 
   }
@@ -100,8 +100,8 @@ interface NexusPrismaTypes {
   Query: {
     user: 'User'
     users: 'User'
-    nested: 'Nested'
-    nesteds: 'Nested'
+    nest: 'Nest'
+    nests: 'Nest'
 
   },
   Mutation: {
@@ -111,21 +111,21 @@ interface NexusPrismaTypes {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
-    createOneNested: 'Nested'
-    updateOneNested: 'Nested'
-    updateManyNested: 'BatchPayload'
-    deleteOneNested: 'Nested'
-    deleteManyNested: 'BatchPayload'
-    upsertOneNested: 'Nested'
+    createOneNest: 'Nest'
+    updateOneNest: 'Nest'
+    updateManyNest: 'BatchPayload'
+    deleteOneNest: 'Nest'
+    deleteManyNest: 'BatchPayload'
+    upsertOneNest: 'Nest'
 
   },
   User: {
     id: 'Int'
     name: 'String'
-    nested: 'Nested'
+    nests: 'Nest'
     createdWithBrowser: 'String'
 
-},  Nested: {
+},  Nest: {
     id: 'Int'
     name: 'String'
     createdWithBrowser: 'String'
@@ -136,7 +136,7 @@ interface NexusPrismaTypes {
 
 interface NexusPrismaMethods {
   User: NexusPrismaFields<'User'>
-  Nested: NexusPrismaFields<'Nested'>
+  Nest: NexusPrismaFields<'Nest'>
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
@@ -154,27 +154,27 @@ declare global {
 exports[`collapseTo typegen works at plugin-level: plugin-level-schema 1`] = `
 "type Mutation {
   createOneUser(data: UserCreateInput!): User!
-  createOneNested(data: NestedCreateInput!): Nested!
+  createOneNest(data: NestCreateInput!): Nest!
 }
 
-type Nested {
+type Nest {
   id: Int!
   createdWithBrowser: String!
   name: String!
 }
 
-input NestedCreateInput {
+input NestCreateInput {
   name: String!
   createdWithBrowser: String!
-  user: UserCreateOneWithoutNestedInput
+  user: UserCreateOneWithoutNestsInput
 }
 
-input NestedCreateWithoutUserInput {
+input NestCreateWithoutUserInput {
   name: String!
   createdWithBrowser: String!
 }
 
-input NestedWhereUniqueInput {
+input NestWhereUniqueInput {
   id: Int
 }
 
@@ -185,22 +185,22 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  nests(skip: Int, after: NestWhereUniqueInput, before: NestWhereUniqueInput, first: Int, last: Int): [Nest!]!
   createdWithBrowser: String!
 }
 
 input UserCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: NestedCreateWithoutUserInput
+  nests: NestCreateWithoutUserInput
 }
 
-input UserCreateOneWithoutNestedInput {
-  create: UserCreateWithoutNestedInput
+input UserCreateOneWithoutNestsInput {
+  create: UserCreateWithoutNestsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutNestedInput {
+input UserCreateWithoutNestsInput {
   name: String!
   createdWithBrowser: String!
 }
@@ -215,28 +215,28 @@ exports[`collapseTo typegen works at plugin-level: plugin-level-typegen 1`] = `
 "
 interface ModelTypes {
   User: prisma.User
-  Nested: prisma.Nested
+  Nest: prisma.Nest
 }
   
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'nested' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  filtering: 'id' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
-    nesteds: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
   },
     User: {
-    nested: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
-  },  Nested: {
+  },  Nest: {
 
 
   }
@@ -246,8 +246,8 @@ interface NexusPrismaTypes {
   Query: {
     user: 'User'
     users: 'User'
-    nested: 'Nested'
-    nesteds: 'Nested'
+    nest: 'Nest'
+    nests: 'Nest'
 
   },
   Mutation: {
@@ -257,21 +257,21 @@ interface NexusPrismaTypes {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
-    createOneNested: 'Nested'
-    updateOneNested: 'Nested'
-    updateManyNested: 'BatchPayload'
-    deleteOneNested: 'Nested'
-    deleteManyNested: 'BatchPayload'
-    upsertOneNested: 'Nested'
+    createOneNest: 'Nest'
+    updateOneNest: 'Nest'
+    updateManyNest: 'BatchPayload'
+    deleteOneNest: 'Nest'
+    deleteManyNest: 'BatchPayload'
+    upsertOneNest: 'Nest'
 
   },
   User: {
     id: 'Int'
     name: 'String'
-    nested: 'Nested'
+    nests: 'Nest'
     createdWithBrowser: 'String'
 
-},  Nested: {
+},  Nest: {
     id: 'Int'
     name: 'String'
     createdWithBrowser: 'String'
@@ -282,7 +282,7 @@ interface NexusPrismaTypes {
 
 interface NexusPrismaMethods {
   User: NexusPrismaFields<'User'>
-  Nested: NexusPrismaFields<'Nested'>
+  Nest: NexusPrismaFields<'Nest'>
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
@@ -299,28 +299,28 @@ declare global {
 
 exports[`collapseTo typegen works at resolver-level: resolver-level-schema 1`] = `
 "type Mutation {
-  createOneUser(data: UserCreateCollapseNestedToCreateInput!): User!
-  createOneNested(data: NestedCreateInput!): Nested!
+  createOneUser(data: UserCreateCollapseNestsToCreateInput!): User!
+  createOneNest(data: NestCreateInput!): Nest!
 }
 
-type Nested {
+type Nest {
   id: Int!
   createdWithBrowser: String!
   name: String!
 }
 
-input NestedCreateInput {
+input NestCreateInput {
   name: String!
   createdWithBrowser: String!
-  user: UserCreateOneWithoutNestedInput
+  user: UserCreateOneWithoutNestsInput
 }
 
-input NestedCreateWithoutUserCollapseNestedToCreateInput {
+input NestCreateWithoutUserCollapseNestsToCreateInput {
   name: String!
   createdWithBrowser: String!
 }
 
-input NestedWhereUniqueInput {
+input NestWhereUniqueInput {
   id: Int
 }
 
@@ -331,22 +331,22 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  nests(skip: Int, after: NestWhereUniqueInput, before: NestWhereUniqueInput, first: Int, last: Int): [Nest!]!
   createdWithBrowser: String!
 }
 
-input UserCreateCollapseNestedToCreateInput {
+input UserCreateCollapseNestsToCreateInput {
   name: String!
   createdWithBrowser: String!
-  nested: NestedCreateWithoutUserCollapseNestedToCreateInput
+  nests: NestCreateWithoutUserCollapseNestsToCreateInput
 }
 
-input UserCreateOneWithoutNestedInput {
-  create: UserCreateWithoutNestedInput
+input UserCreateOneWithoutNestsInput {
+  create: UserCreateWithoutNestsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutNestedInput {
+input UserCreateWithoutNestsInput {
   name: String!
   createdWithBrowser: String!
 }
@@ -361,28 +361,28 @@ exports[`collapseTo typegen works at resolver-level: resolver-level-typegen 1`] 
 "
 interface ModelTypes {
   User: prisma.User
-  Nested: prisma.Nested
+  Nest: prisma.Nest
 }
   
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'nested' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  filtering: 'id' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
-    nesteds: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
   },
     User: {
-    nested: {
+    nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
   ordering: 'id' | 'name' | 'createdWithBrowser'
 }
 
-  },  Nested: {
+  },  Nest: {
 
 
   }
@@ -392,8 +392,8 @@ interface NexusPrismaTypes {
   Query: {
     user: 'User'
     users: 'User'
-    nested: 'Nested'
-    nesteds: 'Nested'
+    nest: 'Nest'
+    nests: 'Nest'
 
   },
   Mutation: {
@@ -403,21 +403,21 @@ interface NexusPrismaTypes {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
-    createOneNested: 'Nested'
-    updateOneNested: 'Nested'
-    updateManyNested: 'BatchPayload'
-    deleteOneNested: 'Nested'
-    deleteManyNested: 'BatchPayload'
-    upsertOneNested: 'Nested'
+    createOneNest: 'Nest'
+    updateOneNest: 'Nest'
+    updateManyNest: 'BatchPayload'
+    deleteOneNest: 'Nest'
+    deleteManyNest: 'BatchPayload'
+    upsertOneNest: 'Nest'
 
   },
   User: {
     id: 'Int'
     name: 'String'
-    nested: 'Nested'
+    nests: 'Nest'
     createdWithBrowser: 'String'
 
-},  Nested: {
+},  Nest: {
     id: 'Int'
     name: 'String'
     createdWithBrowser: 'String'
@@ -428,7 +428,7 @@ interface NexusPrismaTypes {
 
 interface NexusPrismaMethods {
   User: NexusPrismaFields<'User'>
-  Nested: NexusPrismaFields<'Nested'>
+  Nest: NexusPrismaFields<'Nest'>
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }

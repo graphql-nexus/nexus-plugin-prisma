@@ -26,7 +26,7 @@ describe('computeFrom typegen', () => {
             t.crud.createOneUser({
               inputs: inputsConfig,
             })
-            t.crud.createOneNested()
+            t.crud.createOneNest()
           },
         }),
       },

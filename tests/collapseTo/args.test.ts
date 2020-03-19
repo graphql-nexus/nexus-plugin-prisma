@@ -3,7 +3,7 @@ import { transformArgs } from '../../src/transformArgs'
 import { getTestData, defaultDefinitions } from '../__utils'
 import { InputsConfig } from '../../src/utils'
 
-describe('collapseTo', () => {
+describe('collapseTo args', () => {
   it('injects collapsed keys specified by a default value', async () => {
     const { publisher } = await getTestData({
       pluginOptions: {
@@ -15,7 +15,7 @@ describe('collapseTo', () => {
         params: {
           info: {} as any,
           args: {
-            data: { name: 'New User', nested: [{ id: 1 }] },
+            data: { name: 'User Name', nests: [{ id: 1 }] },
           } as any,
           ctx: {},
         },
@@ -26,14 +26,14 @@ describe('collapseTo', () => {
       }),
     ).toStrictEqual({
       data: {
-        name: 'New User',
-        nested: { connect: [{ id: 1 }] },
+        name: 'User Name',
+        nests: { connect: [{ id: 1 }] },
       },
     })
   }),
-    it('injects relation keys specified by an object', async () => {
+    it('injects collapsed keys specified by an input config', async () => {
       const inputs = {
-        nested: {
+        nests: {
           collapseTo: 'create',
         },
       } as InputsConfig
@@ -54,12 +54,12 @@ describe('collapseTo', () => {
           params: {
             info: {} as any,
             args: {
-              data: { name: 'New User', nested: [{ name: 'New Nested' }] },
+              data: { name: 'User Name', nests: [{ name: 'Nest Name' }] },
             } as any,
             ctx: {},
           },
           inputType: publisher.getInputType(
-            'UserCreateCollapseNestedToCreateInput',
+            'UserCreateCollapseNestsToCreateInput',
           ),
           publisher,
           inputs,
@@ -67,8 +67,8 @@ describe('collapseTo', () => {
         }),
       ).toStrictEqual({
         data: {
-          name: 'New User',
-          nested: { create: [{ name: 'New Nested' }] },
+          name: 'User Name',
+          nests: { create: [{ name: 'Nest Name' }] },
         },
       })
     })

@@ -20,7 +20,7 @@ describe('computeFrom args', () => {
           args: {
             data: {
               name: 'New User',
-              nested: { create: { name: 'Nested Name' } },
+              nests: { create: { name: 'Nest Name' } },
             } as any,
           },
           ctx: { browser: 'firefox' },
@@ -34,8 +34,8 @@ describe('computeFrom args', () => {
       data: {
         name: 'New User',
         createdWithBrowser: 'firefox',
-        nested: {
-          create: { createdWithBrowser: 'firefox', name: 'Nested Name' },
+        nests: {
+          create: { createdWithBrowser: 'firefox', name: 'Nest Name' },
         },
       },
     })
@@ -51,8 +51,8 @@ describe('computeFrom args', () => {
             args: {
               data: {
                 name: 'New User',
-                nested: {
-                  create: [{ name: 'Nested Name' }, { name: 'Nested Name' }],
+                nests: {
+                  create: [{ name: 'Nest Name' }, { name: 'Nest Name' }],
                 },
               } as any,
             },
@@ -67,10 +67,10 @@ describe('computeFrom args', () => {
         data: {
           name: 'New User',
           createdWithBrowser: 'firefox',
-          nested: {
+          nests: {
             create: [
-              { createdWithBrowser: 'firefox', name: 'Nested Name' },
-              { createdWithBrowser: 'firefox', name: 'Nested Name' },
+              { createdWithBrowser: 'firefox', name: 'Nest Name' },
+              { createdWithBrowser: 'firefox', name: 'Nest Name' },
             ],
           },
         },
@@ -80,10 +80,7 @@ describe('computeFrom args', () => {
       const complexInputsConfig = {
         name: {
           computeFrom: ({ args, ctx, info }: any) =>
-            `${args.data.nested.create.name} ${ctx.browser.slice(
-              1,
-              2,
-            )} ${info}`,
+            `${args.data.nests.create.name} ${ctx.browser.slice(1, 2)} ${info}`,
         },
       } as InputsConfig
       const { publisher } = await getTestData({
@@ -94,7 +91,7 @@ describe('computeFrom args', () => {
           params: {
             // Normally this would be GraphQLResolveInfo but using a string for simplicity
             info: 'Yam' as any,
-            args: { data: { nested: { create: { name: 'Sam' } } } },
+            args: { data: { nests: { create: { name: 'Sam' } } } },
             ctx: { browser: 'firefox' },
           } as any,
           inputType: publisher.getInputType(userCreateInputTypeName),
@@ -105,7 +102,7 @@ describe('computeFrom args', () => {
       ).toStrictEqual({
         data: {
           name: 'Sam i Yam',
-          nested: {
+          nests: {
             create: { name: 'Sam i Yam' },
           },
         },

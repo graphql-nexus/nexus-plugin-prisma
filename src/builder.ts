@@ -614,21 +614,22 @@ export class SchemaBuilder {
         transformedInputType.fields,
         ({ name }) => !!config.inputs[name as InputFieldName]?.computeFrom,
       )
-      const customArg: CustomInputArg = {
-        arg: {
-          ...transformedArg,
-          name: arg.name,
-          inputType: {
-            ...transformedArg.inputType,
-            type: transformedTypeName,
-          },
+      const customArg: DmmfTypes.SchemaArg = {
+        ...transformedArg,
+        name: arg.name,
+        inputType: {
+          ...transformedArg.inputType,
+          type: transformedTypeName,
         },
-        type: {
+      }
+      if (
+        !this.publisher.isPublished(transformedTypeName) &&
+        !this.publisher.isPublishing(transformedTypeName)
+      ) {
+        const customType: DmmfTypes.InputType = {
           ...transformedInputType,
           name: transformedTypeName,
-          fields: this.deepTransformInputTypes(nonComputedFields, config).map(
-            field => field.arg,
-          ),
+          fields: nonComputedFields,
           computedFields: fromEntries(
             computedFields.map(({ name }) => [
               name,
@@ -636,14 +637,26 @@ export class SchemaBuilder {
             ]),
           ),
           collapsedTo: collapseToField?.name as CollapseToValue,
-        },
-      }
-      if (!this.publisher.nexusBuilder.hasType(customArg.type.name)) {
+        }
+        // Store the shallow custom type in publisher
+        this.publisher.markAsPublishing(customType)
+        // Recurse after storing the shallow type to ensure it is available
+        customType.fields = this.deepTransformInputTypes(
+          nonComputedFields,
+          config,
+        ).map(field => field.arg)
+        // Finalize the custom published input
         this.publisher.nexusBuilder.addType(
-          this.publisher.inputType(customArg) as NexusInputObjectTypeDef<any>,
+          this.publisher.publishInputObjectType(
+            customType,
+          ) as NexusInputObjectTypeDef<any>,
         )
+        return { arg: customArg, type: customType }
       }
-      return customArg
+      return {
+        arg: customArg,
+        type: this.publisher.getInputType(transformedTypeName),
+      }
     })
   }
 

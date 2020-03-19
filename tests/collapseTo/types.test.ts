@@ -9,7 +9,7 @@ describe('collapseTo typegen', () => {
     const { schema, typegen } = await getTestData({
       pluginOptions: {
         inputs: {
-          nested: {
+          nests: {
             collapseTo: 'create',
           },
         } as InputsConfig,
@@ -26,12 +26,12 @@ describe('collapseTo typegen', () => {
           definition(t: any) {
             t.crud.createOneUser({
               inputs: {
-                nested: {
+                nests: {
                   collapseTo: 'create',
                 },
               } as InputsConfig,
             })
-            t.crud.createOneNested()
+            t.crud.createOneNest()
           },
         }),
       },

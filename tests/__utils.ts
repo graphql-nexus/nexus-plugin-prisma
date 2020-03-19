@@ -126,11 +126,11 @@ export const defaultDataModel = `
 model User {
   id  Int @id @default(autoincrement())
   name String
-  nested Nested[]
+  nests Nest[]
   createdWithBrowser String
 }
 
-model Nested {
+model Nest {
   id Int @id @default(autoincrement())
   name String
   createdWithBrowser String
@@ -146,7 +146,7 @@ export const defaultDefinitions = {
   mutation: mutationType({
     definition(t: any) {
       t.crud.createOneUser()
-      t.crud.createOneNested()
+      t.crud.createOneNest()
     },
   }),
   user: objectType({
@@ -154,12 +154,12 @@ export const defaultDefinitions = {
     definition: (t: any) => {
       t.model.id()
       t.model.name()
-      t.model.nested()
+      t.model.nests()
       t.model.createdWithBrowser()
     },
   }),
-  nested: objectType({
-    name: 'Nested',
+  nest: objectType({
+    name: 'Nest',
     definition: (t: any) => {
       t.model.id()
       t.model.createdWithBrowser()
