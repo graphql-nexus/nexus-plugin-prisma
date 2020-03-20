@@ -68,6 +68,8 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
       ...inputType,
       type: getReturnTypeName(inputType.type),
     },
+    collapsedTo: undefined,
+    computedFields: {},
   }
 }
 
@@ -75,8 +77,6 @@ function transformInputType(inputType: DMMF.InputType): DmmfTypes.InputType {
   return {
     ...inputType,
     fields: inputType.fields.map(transformArg),
-    collapsedTo: undefined,
-    computedFields: {},
   }
 }
 
