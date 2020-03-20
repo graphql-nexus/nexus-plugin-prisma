@@ -6,9 +6,7 @@ const inputsConfig = {
   createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
 } as InputsConfig
 
-const userCreateInputTypeName = 'UserCreateInput'
-
-describe('computeFrom args', () => {
+const userCreateInputTypeName = describe('computeFrom args', () => {
   it('values are inferred', async () => {
     const { publisher } = await getTestData({
       pluginOptions: { inputs: inputsConfig },
@@ -25,7 +23,7 @@ describe('computeFrom args', () => {
           },
           ctx: { browser: 'firefox' },
         },
-        inputType: publisher.getInputType(userCreateInputTypeName),
+        paramInputs: { data: { name: 'UserCreateInput' } as any },
         publisher,
         inputs: inputsConfig,
         collapseTo: null,
@@ -58,7 +56,7 @@ describe('computeFrom args', () => {
             },
             ctx: { browser: 'firefox' },
           },
-          inputType: publisher.getInputType(userCreateInputTypeName),
+          paramInputs: { data: { name: 'UserCreateInput' } as any },
           publisher,
           inputs: inputsConfig,
           collapseTo: null,
@@ -94,7 +92,7 @@ describe('computeFrom args', () => {
             args: { data: { nests: { create: { name: 'Sam' } } } },
             ctx: { browser: 'firefox' },
           } as any,
-          inputType: publisher.getInputType(userCreateInputTypeName),
+          paramInputs: { data: { name: 'UserCreateInput' } as any },
           publisher,
           inputs: complexInputsConfig,
           collapseTo: null,

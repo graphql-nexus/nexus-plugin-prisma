@@ -174,12 +174,16 @@ export type ComputeInput<
   MethodName extends MutationMethodName = MutationMethodName
 > = (params: MutationResolverParams<MethodName>) => unknown
 
+export type MutationType = core.GetGen<'argTypes'>['Mutation']
+
 export type MutationResolverParams<
   MethodName extends MutationMethodName = MutationMethodName
 > = {
   info: GraphQLResolveInfo
   ctx: Context
-  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
+  args: MutationType[MethodName] extends unknown
+    ? Record<string, any>
+    : MutationType[MethodName]
 }
 
 export type MutationMethodName = Extract<

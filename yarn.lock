@@ -886,10 +886,10 @@
   resolved "https://registry.yarnpkg.com/@prisma/studio/-/studio-0.187.0.tgz#41bf14df3a0b67ddd3e1a41ff0bdf76b89d83b38"
   integrity sha512-W80023UTIDYqilDHWTakr+UlYRAeHt2aegOU6GYbHaTU7OMwv99JtNm5g8DzC935fSQ9muJcvqDtNkGpte7z7w==
 
-"@re-do/utils@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@re-do/utils/-/utils-0.0.5.tgz#bd1bb86d3f7394fa757ae10c22329cc5295071ab"
-  integrity sha512-NsC46P4WX77uFL5jifr10ch327Op/GHLgoVtP25/IX01OmovSIMo8KLTPOJlVmwEMZNVMWOPDYe3h9JTtiYuBQ==
+"@re-do/utils@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@re-do/utils/-/utils-0.0.6.tgz#d22938c69281f7f7598d4dd51df8694527f8e503"
+  integrity sha512-dAxiavr14cAPXLptwOb0ZG9MJUsVvjn+NeaO/Umc6s9XgFVF2DcMsThrg9D8VaoO08BkqlnYMsxnpMp/J0+oiA==
   dependencies:
     "@babel/runtime-corejs3" "7.6.3"
     class-transformer "0.2.3"

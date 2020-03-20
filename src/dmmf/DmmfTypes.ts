@@ -1,5 +1,5 @@
 import { core } from 'nexus'
-import { ComputedFields, CollapseToValue } from '../utils'
+import { ComputedFields, CollapseToValue, PrismaInputFieldName } from '../utils'
 
 export declare namespace DmmfTypes {
   interface Document {
@@ -57,6 +57,8 @@ export declare namespace DmmfTypes {
       type: ArgType
       kind: FieldKind
     }
+    collapsedTo: CollapseToValue
+    computedFields: ComputedFields
   }
 
   interface OutputType {
@@ -81,8 +83,6 @@ export declare namespace DmmfTypes {
     atLeastOne?: boolean
     atMostOne?: boolean
     fields: SchemaArg[]
-    computedFields: ComputedFields
-    collapsedTo: CollapseToValue
   }
   interface Mapping {
     model: string

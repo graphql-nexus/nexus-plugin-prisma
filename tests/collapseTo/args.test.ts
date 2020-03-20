@@ -19,7 +19,9 @@ describe('collapseTo args', () => {
           } as any,
           ctx: {},
         },
-        inputType: publisher.getInputType('UserCreateInput'),
+        paramInputs: {
+          data: { name: 'UserCreateInput' } as any,
+        },
         publisher,
         inputs: {},
         collapseTo: 'connect',
@@ -58,9 +60,11 @@ describe('collapseTo args', () => {
             } as any,
             ctx: {},
           },
-          inputType: publisher.getInputType(
-            'UserCreateCollapseNestsToCreateInput',
-          ),
+          paramInputs: {
+            data: {
+              name: 'UserCreateCollapseNestsToCreateInput',
+            } as any,
+          },
           publisher,
           inputs,
           collapseTo: null,
@@ -69,6 +73,39 @@ describe('collapseTo args', () => {
         data: {
           name: 'User Name',
           nests: { create: [{ name: 'Nest Name' }] },
+        },
+      })
+    }),
+    it('injects collapsed keys into query inputs', async () => {
+      const inputs = {
+        createdAt: {
+          collapseTo: 'equals',
+        },
+      } as InputsConfig
+      const { publisher } = await getTestData({
+        pluginOptions: {
+          inputs,
+        },
+      })
+      expect(
+        transformArgs({
+          params: {
+            info: {} as any,
+            args: {
+              where: {
+                createdAt: 'DateTime',
+              },
+            } as any,
+            ctx: {},
+          },
+          paramInputs: { where: { name: 'UserWhereInput' } as any },
+          publisher,
+          inputs,
+          collapseTo: 'equals',
+        }),
+      ).toStrictEqual({
+        where: {
+          createdAt: { equals: 'DateTime' },
         },
       })
     })

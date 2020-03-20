@@ -289,22 +289,22 @@ export class SchemaBuilder {
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
-                resolve: (root, args, ctx, info) => {
+                resolve: (root, args = {}, ctx, info) => {
                   const photon = this.getPhoton(ctx)
-                  const inputArg = fieldConfig.args!.data as NexusArgDef<any>
-                  if (typeName === 'Mutation') {
-                    args = transformArgs({
-                      inputType: this.publisher.getInputType(inputArg.name),
-                      publisher: this.publisher,
-                      params: {
-                        info,
-                        args,
-                        ctx,
-                      },
-                      inputs: publisherConfig.inputs,
-                      collapseTo: publisherConfig.collapseTo,
-                    })
-                  }
+                  transformArgs({
+                    paramInputs: fieldConfig.args as Record<
+                      string,
+                      NexusArgDef<any>
+                    >,
+                    publisher: this.publisher,
+                    params: {
+                      info,
+                      args,
+                      ctx,
+                    },
+                    inputs: publisherConfig.inputs,
+                    collapseTo: publisherConfig.collapseTo,
+                  })
                   return photon[mappedField.photonAccessor][
                     mappedField.operation
                   ](args)
@@ -460,7 +460,7 @@ export class SchemaBuilder {
           typeName,
           resolve:
             field.outputType.kind === 'object'
-              ? (root, args, ctx) => {
+              ? (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
                   return photon[lowerFirst(mapping.model)]
                     ['findOne']({
@@ -604,6 +604,13 @@ export class SchemaBuilder {
           ...arg.inputType,
           type: transformedTypeName,
         },
+        collapsedTo: collapseToField?.name as CollapseToValue,
+        computedFields: fromEntries(
+          computedFields.map(({ name }) => [
+            name,
+            config.inputs[name as PrismaInputFieldName]?.computeFrom,
+          ]),
+        ),
       }
       if (
         !this.publisher.isPublished(transformedTypeName) &&
@@ -613,13 +620,6 @@ export class SchemaBuilder {
           ...transformedInputType,
           name: transformedTypeName,
           fields: nonComputedFields,
-          computedFields: fromEntries(
-            computedFields.map(({ name }) => [
-              name,
-              config.inputs[name as PrismaInputFieldName]?.computeFrom,
-            ]),
-          ),
-          collapsedTo: collapseToField?.name as CollapseToValue,
         }
         // Store the shallow custom type in publisher
         this.publisher.markAsPublishing(customType)
