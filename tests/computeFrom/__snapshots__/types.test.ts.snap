@@ -1,7 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`computeFrom typegen works at plugin-level: plugin-level-schema 1`] = `
-"type Mutation {
+"scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  not: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+}
+
+input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNest(data: NestCreateInput!): Nest!
 }
@@ -26,12 +50,42 @@ input NestCreateWithoutUserInput {
   name: String!
 }
 
+input NestFilter {
+  every: NestWhereInput
+  some: NestWhereInput
+  none: NestWhereInput
+}
+
+input NestWhereInput {
+  id: IntFilter
+  name: StringFilter
+  AND: [NestWhereInput!]
+  OR: [NestWhereInput!]
+  NOT: [NestWhereInput!]
+  user: UserWhereInput
+}
+
 input NestWhereUniqueInput {
   id: Int
 }
 
 type Query {
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
 }
 
 type User {
@@ -42,6 +96,7 @@ type User {
 }
 
 input UserCreateInput {
+  createdAt: DateTime
   name: String!
   nests: NestCreateManyWithoutUserInput
 }
@@ -52,7 +107,18 @@ input UserCreateOneWithoutNestsInput {
 }
 
 input UserCreateWithoutNestsInput {
+  createdAt: DateTime
   name: String!
+}
+
+input UserWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  name: StringFilter
+  nests: NestFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
 }
 
 input UserWhereUniqueInput {
@@ -71,8 +137,8 @@ interface ModelTypes {
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'name' | 'createdWithBrowser'
+  filtering: 'id' | 'createdAt' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'createdAt' | 'name' | 'createdWithBrowser'
 }
     nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
@@ -117,6 +183,7 @@ interface NexusPrismaTypes {
   },
   User: {
     id: 'Int'
+    createdAt: 'DateTime'
     name: 'String'
     nests: 'Nest'
     createdWithBrowser: 'String'
@@ -148,7 +215,31 @@ declare global {
 `;
 
 exports[`computeFrom typegen works at resolver-level: resolver-level-schema 1`] = `
-"type Mutation {
+"scalar DateTime
+
+input DateTimeFilter {
+  equals: DateTime
+  not: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+}
+
+input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type Mutation {
   createOneUser(data: UserCreateComputeCreatedWithBrowserInput!): User!
   createOneNest(data: NestCreateInput!): Nest!
 }
@@ -174,6 +265,22 @@ input NestCreateWithoutUserComputeCreatedWithBrowserInput {
   name: String!
 }
 
+input NestFilter {
+  every: NestWhereInput
+  some: NestWhereInput
+  none: NestWhereInput
+}
+
+input NestWhereInput {
+  id: IntFilter
+  name: StringFilter
+  createdWithBrowser: StringFilter
+  AND: [NestWhereInput!]
+  OR: [NestWhereInput!]
+  NOT: [NestWhereInput!]
+  user: UserWhereInput
+}
+
 input NestWhereUniqueComputeCreatedWithBrowserInput {
   id: Int
 }
@@ -184,6 +291,21 @@ input NestWhereUniqueInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
 }
 
 type User {
@@ -194,6 +316,7 @@ type User {
 }
 
 input UserCreateComputeCreatedWithBrowserInput {
+  createdAt: DateTime
   name: String!
   nests: NestCreateManyWithoutUserComputeCreatedWithBrowserInput
 }
@@ -204,8 +327,20 @@ input UserCreateOneWithoutNestsInput {
 }
 
 input UserCreateWithoutNestsInput {
+  createdAt: DateTime
   name: String!
   createdWithBrowser: String!
+}
+
+input UserWhereInput {
+  id: IntFilter
+  createdAt: DateTimeFilter
+  name: StringFilter
+  nests: NestFilter
+  createdWithBrowser: StringFilter
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
 }
 
 input UserWhereUniqueInput {
@@ -224,8 +359,8 @@ interface ModelTypes {
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'name' | 'createdWithBrowser'
+  filtering: 'id' | 'createdAt' | 'name' | 'nests' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'createdAt' | 'name' | 'createdWithBrowser'
 }
     nests: {
   filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT' | 'user'
@@ -270,6 +405,7 @@ interface NexusPrismaTypes {
   },
   User: {
     id: 'Int'
+    createdAt: 'DateTime'
     name: 'String'
     nests: 'Nest'
     createdWithBrowser: 'String'

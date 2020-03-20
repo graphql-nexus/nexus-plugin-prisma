@@ -39,6 +39,19 @@ describe('collapseTo typegen', () => {
     expect(printSchema(schema)).toMatchSnapshot('resolver-level-schema')
     expect(typegen).toMatchSnapshot('resolver-level-typegen')
   })
+  it('works for queries', async () => {
+    const { schema, typegen } = await getTestData({
+      pluginOptions: {
+        inputs: {
+          createdAt: {
+            collapseTo: 'equals',
+          },
+        } as InputsConfig,
+      },
+    })
+    expect(printSchema(schema)).toMatchSnapshot('query-schema')
+    expect(typegen).toMatchSnapshot('query-typegen')
+  })
   it('avoids collapsing required fields', async () => {
     let schema: NexusGraphQLSchema
     let typegen: string

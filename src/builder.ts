@@ -533,54 +533,37 @@ export class SchemaBuilder {
   }
 
   determineArgs(config: FieldConfigData): CustomInputArg[] {
-    if (config.typeName === 'Mutation') {
-      return this.argsFromMutationField(config)
-    } else if (config.operation === 'findOne') {
-      return config.field.args.map(arg => ({
-        arg,
-        type: this.publisher.getInputType(arg.inputType.type),
-      }))
-    } else {
-      return this.argsFromQueryOrModelField(config)
-    }
+    const args =
+      config.typeName !== 'Mutation' && config.operation !== 'findOne'
+        ? this.argsFromQueryOrModelField(config)
+        : this.toCustomArgs(config.field.args)
+    return this.deepTransformInputTypes(args, config.publisherConfig)
   }
 
-  argsFromMutationField({
-    publisherConfig,
-    field,
-  }: FieldConfigData): CustomInputArg[] {
-    if (
-      isTransformRequired(publisherConfig.inputs, publisherConfig.collapseTo)
-    ) {
-      return this.deepTransformInputTypes(field.args, publisherConfig)
-    }
-    return field.args.map(arg => {
-      const photonInputType = this.publisher.getInputType(arg.inputType.type)
-      return {
-        arg,
-        type: photonInputType,
-      }
-    })
+  toCustomArgs(args: DmmfTypes.SchemaArg[]): CustomInputArg[] {
+    return args.map(arg => ({
+      arg,
+      type: this.publisher.getTypeFromArg(arg),
+    }))
   }
 
   deepTransformInputTypes(
-    args: DmmfTypes.SchemaArg[],
+    args: CustomInputArg[],
     config: ResolvedFieldPublisherConfig,
   ): CustomInputArg[] {
-    return args.map(arg => {
-      let transformedInputType = this.publisher.getTypeFromArg(
-        arg,
-      ) as DmmfTypes.InputType
+    return args.map(({ arg, type }) => {
+      let transformedInputType = type as DmmfTypes.InputType
       const argConfig: InputConfig =
         config.inputs?.[arg.name as InputFieldName] ?? {}
-      if (arg.inputType.kind !== 'object') {
+      if (
+        !isTransformRequired(config.inputs, config.collapseTo) ||
+        arg.inputType.kind !== 'object'
+      ) {
         return {
           arg,
           type: transformedInputType,
         }
       }
-      let transformedArg = arg
-      let transformedTypeName = this.getTransformedTypeName(arg, config)
       const collapseToValue = argConfig.collapseTo ?? config.collapseTo
       let collapseToField = transformedInputType.fields.find(({ name }) => {
         if (name === collapseToValue) {
@@ -605,20 +588,20 @@ export class SchemaBuilder {
         transformedInputType = this.publisher.getTypeFromArg(
           collapseToField,
         ) as DmmfTypes.InputType
-        transformedTypeName = this.getTransformedTypeName(
-          collapseToField,
-          config,
-        )
       }
+      const transformedTypeName = this.getTransformedTypeName(
+        transformedInputType.name,
+        config,
+      )
       const [computedFields, nonComputedFields] = split(
-        transformedInputType.fields,
+        transformedInputType.fields ?? [],
         ({ name }) => !!config.inputs[name as InputFieldName]?.computeFrom,
       )
-      const customArg: DmmfTypes.SchemaArg = {
-        ...transformedArg,
+      const transformedArg: DmmfTypes.SchemaArg = {
+        ...arg,
         name: arg.name,
         inputType: {
-          ...transformedArg.inputType,
+          ...arg.inputType,
           type: transformedTypeName,
         },
       }
@@ -642,7 +625,7 @@ export class SchemaBuilder {
         this.publisher.markAsPublishing(customType)
         // Recurse after storing the shallow type to ensure it is available
         customType.fields = this.deepTransformInputTypes(
-          nonComputedFields,
+          this.toCustomArgs(nonComputedFields),
           config,
         ).map(field => field.arg)
         // Finalize the custom published input
@@ -651,23 +634,23 @@ export class SchemaBuilder {
             customType,
           ) as NexusInputObjectTypeDef<any>,
         )
-        return { arg: customArg, type: customType }
+        return { arg: transformedArg, type: customType }
       }
       return {
-        arg: customArg,
+        arg: transformedArg,
         type: this.publisher.getInputType(transformedTypeName),
       }
     })
   }
 
   getTransformedTypeName = (
-    arg: DmmfTypes.SchemaArg,
+    typeName: string,
     config: ResolvedFieldPublisherConfig,
   ) => {
     if (!config.customNameRequired) {
-      return arg.inputType.type
+      return typeName
     }
-    const prefix = arg.inputType.type.replace('Input', '')
+    const prefix = typeName.replace('Input', '')
     let suffix = ''
     if (config.collapseTo) {
       suffix += `Collapse${capitalize(config.collapseTo)}`

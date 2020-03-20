@@ -125,6 +125,7 @@ export async function mockConsoleLog<T extends (...args: any) => any>(
 export const defaultDataModel = `
 model User {
   id  Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
   name String
   nests Nest[]
   createdWithBrowser String
@@ -141,6 +142,7 @@ export const defaultDefinitions = {
   query: queryType({
     definition(t: any) {
       t.crud.user()
+      t.crud.users({ filtering: true })
     },
   }),
   mutation: mutationType({
