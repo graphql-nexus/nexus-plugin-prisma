@@ -1,66 +1,96 @@
-import { fromEntries } from '@re-do/utils'
-import { MutationResolverParams, InputsConfig, CollapseToValue } from './utils'
+import { transform, isEmpty } from '@re-do/utils'
+import {
+  MutationResolverParams,
+  InputsConfig,
+  CollapseToValue,
+  ComputeInput,
+  PrismaInputFieldName,
+  ComputedFields,
+} from './utils'
 import { DmmfTypes } from './dmmf/DmmfTypes'
 import { Publisher } from './publisher'
-import { core } from 'nexus'
-import { transform } from '@re-do/utils'
 
-type DeepTransformArgDataParams = Omit<
+type ShallowTransformDataParams = {
+  computedFields: ComputedFields
+  collapsedTo: CollapseToValue
+  resolverParams: MutationResolverParams
+  data: unknown
+}
+
+const shallowTransformData = ({
+  computedFields,
+  collapsedTo,
+  resolverParams,
+  data,
+}: ShallowTransformDataParams) => {
+  let shallowTransformedData = data
+  if (
+    data &&
+    typeof data === 'object' &&
+    !Array.isArray(data) &&
+    computedFields &&
+    !isEmpty(computedFields)
+  ) {
+    shallowTransformedData = {
+      ...(shallowTransformedData as Record<string, any>),
+      ...transform(
+        computedFields as Record<PrismaInputFieldName, ComputeInput>,
+        ([fieldName, computeFrom]) => [fieldName, computeFrom(resolverParams)],
+      ),
+    }
+  }
+  if (collapsedTo) {
+    // Inject relation key into data if one was omitted based on the field type
+    shallowTransformedData = {
+      [collapsedTo]: shallowTransformedData,
+    }
+  }
+  return shallowTransformedData
+}
+
+type DeepTransformDataParams = Omit<
   TransformArgsParams,
-  'paramInputs' | 'collapseTo'
+  'argTypes' | 'collapseTo'
 > & {
   arg: DmmfTypes.SchemaArg
 }
 
-function deepTransformArgData(
-  params: DeepTransformArgDataParams,
+const deepTransformData = (
+  params: DeepTransformDataParams,
   data: unknown,
-): any {
+): any => {
   const { arg, publisher } = params
   let deepTransformedData = data
   if (Array.isArray(data)) {
-    deepTransformedData = data.map(value => deepTransformArgData(params, value))
-  }
-  if (
+    deepTransformedData = data.map(value =>
+      deepTransformData(
+        { ...params, arg: { ...arg, collapsedTo: null } },
+        value,
+      ),
+    )
+  } else if (
     data &&
     typeof data === 'object' &&
     publisher.isPublished(arg.inputType.type)
   ) {
     const inputType = publisher.getInputType(arg.inputType.type)
-    deepTransformedData = fromEntries(
-      Object.entries(data as Record<string, any>).map(([name, value]) => {
-        const fieldArg = inputType.fields.find(_ => _.name === name)
-        if (!fieldArg) {
-          throw new Error(
-            `Couldn't find field '${name}' on input type '${
-              arg.name
-            }' which was expected based on your data (${JSON.stringify(
-              data,
-              null,
-              4,
-            )}). Found fields ${inputType.fields.map(_ => _.name)}`,
-          )
-        }
-        return [name, deepTransformArgData({ ...params, arg: fieldArg }, value)]
-      }),
+    deepTransformedData = transform(
+      data as Record<string, any>,
+      ([fieldName, fieldValue]) => [
+        fieldName,
+        deepTransformData(
+          { ...params, arg: getFieldArg(inputType.fields, fieldName) },
+          fieldValue,
+        ),
+      ],
     )
-    deepTransformedData = {
-      ...(deepTransformedData as Record<string, any>),
-      ...fromEntries(
-        Object.entries(arg.computedFields).map(([fieldName, computeFrom]) => [
-          fieldName,
-          computeFrom!(params.params),
-        ]),
-      ),
-    }
   }
-  if (arg.collapsedTo) {
-    // Inject relation key into data if one was omitted based on the field type
-    deepTransformedData = {
-      [arg.collapsedTo]: deepTransformedData,
-    }
-  }
-  return deepTransformedData
+  return shallowTransformData({
+    data: deepTransformedData,
+    resolverParams: params.params,
+    computedFields: arg.computedFields,
+    collapsedTo: arg.collapsedTo,
+  })
 }
 
 export const isTransformRequired = (
@@ -76,7 +106,7 @@ export const isTransformRequired = (
   )
 
 type TransformArgsParams = {
-  paramInputs: Record<string, core.NexusArgDef<any>>
+  argTypes: DmmfTypes.SchemaArg[]
   params: MutationResolverParams
   publisher: Publisher
   inputs: InputsConfig
@@ -84,28 +114,35 @@ type TransformArgsParams = {
 }
 
 export const transformArgs = ({
-  paramInputs,
+  argTypes,
   params,
   publisher,
   inputs,
   collapseTo,
 }: TransformArgsParams) =>
-  isTransformRequired(inputs, collapseTo)
-    ? transform(params.args, ([paramName, paramValue]) => {
-        const paramType = publisher.getInputType(paramInputs[paramName].name)
-        fromEntries(
-          paramType.fields.map(arg => [
-            arg.name,
-            deepTransformArgData(
-              {
-                arg,
-                publisher,
-                params,
-                inputs,
-              },
-              paramValue[arg.name],
-            ),
-          ]),
-        )
+  params.args && isTransformRequired(inputs, collapseTo)
+    ? transform(params.args, ([argName, argValue]) => {
+        return [
+          argName,
+          deepTransformData(
+            {
+              arg: getFieldArg(argTypes, argName),
+              publisher,
+              params,
+              inputs,
+            },
+            argValue,
+          ),
+        ]
       })
     : params.args
+
+function getFieldArg(args: DmmfTypes.SchemaArg[], name: string) {
+  const fieldArg = args.find(arg => arg.name === name)
+  if (!fieldArg) {
+    throw new Error(
+      `Couldn't find field '${name}' among args ${args.map(arg => arg.name)}`,
+    )
+  }
+  return fieldArg
+}

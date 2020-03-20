@@ -196,5 +196,6 @@ export const getTestData = async (options?: GetTestDataOptions) => {
     schema,
     typegen,
     publisher,
+    argTypes: publisher.getField('createOneUser').args,
   }
 }

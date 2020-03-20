@@ -5,7 +5,7 @@ import { InputsConfig } from '../../src/utils'
 
 describe('collapseTo args', () => {
   it('injects collapsed keys specified by a default value', async () => {
-    const { publisher } = await getTestData({
+    const { publisher, argTypes } = await getTestData({
       pluginOptions: {
         collapseTo: 'connect',
       },
@@ -19,9 +19,7 @@ describe('collapseTo args', () => {
           } as any,
           ctx: {},
         },
-        paramInputs: {
-          data: { name: 'UserCreateInput' } as any,
-        },
+        argTypes,
         publisher,
         inputs: {},
         collapseTo: 'connect',
@@ -39,7 +37,7 @@ describe('collapseTo args', () => {
           collapseTo: 'create',
         },
       } as InputsConfig
-      const { publisher } = await getTestData({
+      const { publisher, argTypes } = await getTestData({
         definitions: {
           ...defaultDefinitions,
           mutation: mutationType({
@@ -60,11 +58,7 @@ describe('collapseTo args', () => {
             } as any,
             ctx: {},
           },
-          paramInputs: {
-            data: {
-              name: 'UserCreateCollapseNestsToCreateInput',
-            } as any,
-          },
+          argTypes,
           publisher,
           inputs,
           collapseTo: null,
@@ -98,7 +92,7 @@ describe('collapseTo args', () => {
             } as any,
             ctx: {},
           },
-          paramInputs: { where: { name: 'UserWhereInput' } as any },
+          argTypes: publisher.getField('users').args,
           publisher,
           inputs,
           collapseTo: 'equals',

@@ -6,9 +6,9 @@ const inputsConfig = {
   createdWithBrowser: { computeFrom: ({ ctx }: any) => ctx.browser },
 } as InputsConfig
 
-const userCreateInputTypeName = describe('computeFrom args', () => {
-  it('values are inferred', async () => {
-    const { publisher } = await getTestData({
+describe('computeFrom args', () => {
+  it('shallow values are inferred', async () => {
+    const { publisher, argTypes } = await getTestData({
       pluginOptions: { inputs: inputsConfig },
     })
     expect(
@@ -23,7 +23,7 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
           },
           ctx: { browser: 'firefox' },
         },
-        paramInputs: { data: { name: 'UserCreateInput' } as any },
+        argTypes,
         publisher,
         inputs: inputsConfig,
         collapseTo: null,
@@ -39,7 +39,7 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
     })
   }),
     it('array values are inferred', async () => {
-      const { publisher } = await getTestData({
+      const { publisher, argTypes } = await getTestData({
         pluginOptions: { inputs: inputsConfig },
       })
       expect(
@@ -56,7 +56,7 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
             },
             ctx: { browser: 'firefox' },
           },
-          paramInputs: { data: { name: 'UserCreateInput' } as any },
+          argTypes,
           publisher,
           inputs: inputsConfig,
           collapseTo: null,
@@ -78,10 +78,13 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
       const complexInputsConfig = {
         name: {
           computeFrom: ({ args, ctx, info }: any) =>
-            `${args.data.nests.create.name} ${ctx.browser.slice(1, 2)} ${info}`,
+            `${args.data.createdWithBrowser} ${ctx.browser.slice(
+              1,
+              2,
+            )} ${info}`,
         },
       } as InputsConfig
-      const { publisher } = await getTestData({
+      const { publisher, argTypes } = await getTestData({
         pluginOptions: { inputs: complexInputsConfig },
       })
       expect(
@@ -89,10 +92,15 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
           params: {
             // Normally this would be GraphQLResolveInfo but using a string for simplicity
             info: 'Yam' as any,
-            args: { data: { nests: { create: { name: 'Sam' } } } },
+            args: {
+              data: {
+                createdWithBrowser: 'Sam',
+                nests: { create: { createdWithBrowser: 'i Yam Sam' } },
+              },
+            },
             ctx: { browser: 'firefox' },
           } as any,
-          paramInputs: { data: { name: 'UserCreateInput' } as any },
+          argTypes,
           publisher,
           inputs: complexInputsConfig,
           collapseTo: null,
@@ -100,8 +108,9 @@ const userCreateInputTypeName = describe('computeFrom args', () => {
       ).toStrictEqual({
         data: {
           name: 'Sam i Yam',
+          createdWithBrowser: 'Sam',
           nests: {
-            create: { name: 'Sam i Yam' },
+            create: { name: 'Sam i Yam', createdWithBrowser: 'i Yam Sam' },
           },
         },
       })

@@ -16,23 +16,22 @@
       "type": "node",
       "request": "launch",
       "name": "Jest Current File",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
       "args": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "${relativeFile}",
         "--config",
         "${workspaceRoot}/jest.config.js",
         "--runInBand"
       ],
+      "disableOptimisticBPs": true,
       "console": "integratedTerminal"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Jest Highlighted Test",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
       "args": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/jest/bin/jest.js",
         "${relativeFile}",
         "--testNamePattern",
         "${selectedText}",
@@ -40,6 +39,7 @@
         "${workspaceRoot}/jest.config.js",
         "--runInBand"
       ],
+      "disableOptimisticBPs": true,
       "console": "integratedTerminal"
     }
   ]

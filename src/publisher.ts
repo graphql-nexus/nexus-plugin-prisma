@@ -14,6 +14,7 @@ export class Publisher {
   typesPublishing: Index<boolean> = {}
   typesPublished: Index<boolean> = {}
   inputsPublished: Index<DmmfTypes.InputType> = {}
+  fieldsPublished: Index<DmmfTypes.SchemaField> = {}
   constructor(
     public dmmf: DmmfDocument,
     public nexusBuilder: Nexus.PluginBuilderLens,
@@ -175,6 +176,14 @@ export class Publisher {
 
   isPublishing(typeName: string) {
     return this.typesPublishing[typeName]
+  }
+
+  publishField(field: DmmfTypes.SchemaField) {
+    this.fieldsPublished[field.name] = field
+  }
+
+  getField(name: string) {
+    return this.fieldsPublished[name]
   }
 
   // Publish an unfinalized version of an inputObject

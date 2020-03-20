@@ -289,13 +289,12 @@ export class SchemaBuilder {
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
-                resolve: (root, args = {}, ctx, info) => {
+                resolve: (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
                   transformArgs({
-                    paramInputs: fieldConfig.args as Record<
-                      string,
-                      NexusArgDef<any>
-                    >,
+                    argTypes:
+                      this.publisher.getField(mappedField.field.name)?.args ??
+                      [],
                     publisher: this.publisher,
                     params: {
                       info,
@@ -320,7 +319,6 @@ export class SchemaBuilder {
               ) {
                 t.field(publisherConfig.alias, fieldConfig)
               }
-
               return crud
             }
 
@@ -522,7 +520,12 @@ export class SchemaBuilder {
   }
 
   buildArgsFromField(config: FieldConfigData): Nexus.core.ArgsRecord {
-    return this.determineArgs(config).reduce(
+    const customArgs = this.determineArgs(config)
+    this.publisher.publishField({
+      ...config.field,
+      args: customArgs.map(_ => _.arg),
+    })
+    return customArgs.reduce(
       (acc, customArg) => ({
         ...acc,
         [customArg.arg.name]: this.publisher.inputType(customArg) as any,
@@ -595,7 +598,8 @@ export class SchemaBuilder {
       const [computedFields, nonComputedFields] = split(
         transformedInputType.fields ?? [],
         ({ name }) =>
-          !!config.inputs[name as PrismaInputFieldName]?.computeFrom,
+          typeof config.inputs[name as PrismaInputFieldName]?.computeFrom ==
+          'function',
       )
       const transformedArg: DmmfTypes.SchemaArg = {
         ...arg,

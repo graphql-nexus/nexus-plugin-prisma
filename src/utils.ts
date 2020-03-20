@@ -181,9 +181,11 @@ export type MutationResolverParams<
 > = {
   info: GraphQLResolveInfo
   ctx: Context
-  args: MutationType[MethodName] extends unknown
-    ? Record<string, any>
-    : MutationType[MethodName]
+  args:
+    | (MutationType[MethodName] extends unknown
+        ? Record<string, any>
+        : MutationType[MethodName])
+    | undefined
 }
 
 export type MutationMethodName = Extract<
