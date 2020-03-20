@@ -33,7 +33,7 @@ import {
   InputsConfig,
   lowerFirst,
   InputConfig,
-  InputFieldName,
+  PrismaInputFieldName,
   CollapseToValue,
 } from './utils'
 import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
@@ -147,7 +147,6 @@ export type InternalOptions = Options & {
 
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
-
   return builder.build()
 }
 
@@ -554,7 +553,7 @@ export class SchemaBuilder {
     return args.map(({ arg, type }) => {
       let transformedInputType = type as DmmfTypes.InputType
       const argConfig: InputConfig =
-        config.inputs?.[arg.name as InputFieldName] ?? {}
+        config.inputs?.[arg.name as PrismaInputFieldName] ?? {}
       if (
         !isTransformRequired(config.inputs, config.collapseTo) ||
         arg.inputType.kind !== 'object'
@@ -595,7 +594,8 @@ export class SchemaBuilder {
       )
       const [computedFields, nonComputedFields] = split(
         transformedInputType.fields ?? [],
-        ({ name }) => !!config.inputs[name as InputFieldName]?.computeFrom,
+        ({ name }) =>
+          !!config.inputs[name as PrismaInputFieldName]?.computeFrom,
       )
       const transformedArg: DmmfTypes.SchemaArg = {
         ...arg,
@@ -616,7 +616,7 @@ export class SchemaBuilder {
           computedFields: fromEntries(
             computedFields.map(({ name }) => [
               name,
-              config.inputs[name as InputFieldName]?.computeFrom,
+              config.inputs[name as PrismaInputFieldName]?.computeFrom,
             ]),
           ),
           collapsedTo: collapseToField?.name as CollapseToValue,

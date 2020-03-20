@@ -3,6 +3,7 @@ import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { hardWriteFileSync, hardWriteFile } from './utils'
 import { getTransformedDmmf } from './dmmf/transformer'
+import * as prisma from '@prisma/client'
 
 type Options = {
   prismaClientPath: string
@@ -52,6 +53,15 @@ declare global {
     TypeName extends string,
     ModelOrCrud extends 'model' | 'crud'
   > = GetNexusPrisma<TypeName, ModelOrCrud>;
+
+  // Pre-transform inputs
+  interface PrismaInputs {
+  ${prisma.dmmf.schema.inputTypes.reduce(
+    (rendered, inputType) => `${rendered}
+    ${inputType.name}: prisma.${inputType.name}`,
+    '',
+  )}
+  }
 }
   `
 }
@@ -290,41 +300,61 @@ type GetNexusPrismaInput<
   : never;
 
 /**
- *  Represents arguments required by Prisma Client JS that will
- *  be derived from a request's input (args, context, and info)
- *  and omitted from the GraphQL API. The object itself maps the
- *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the prisma
- *  arg of the same name.
+ * A function that takes an object representing the request's input
+ * (args, context, and info) and returns the value to pass to the Prisma JS Client.
  */
-export type LocalComputedInputs<MethodName extends any> = Record<
-  string,
-  (params: LocalMutationResolverParams<MethodName>) => unknown
->
+export type ComputeInput<
+  MethodName extends MutationMethodName = MutationMethodName
+> = (params: MutationResolverParams<MethodName>) => unknown
 
-export type GlobalComputedInputs = Record<
-  string,
-  (params: GlobalMutationResolverParams) => unknown
->
-
-type BaseMutationResolverParams = {
+export type MutationResolverParams<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
   info: GraphQLResolveInfo
   ctx: Context
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
 }
 
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
-  args: Record<string, any> & { data: unknown }
-}
-
-export type LocalMutationResolverParams<
-  MethodName extends any
-> = BaseMutationResolverParams & {
-  args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
-    ? core.GetGen3<'argTypes', 'Mutation', MethodName>
-    : any
-}
+export type MutationMethodName = Extract<
+  keyof core.GetGen<'argTypes'>['Mutation'],
+  string
+>
 
 export type Context = core.GetGen<'context'>
+
+export type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
+
+export type PrismaInputFieldName = NestedKeys<PrismaInputs>
+
+export type CollapseToValue = PrismaInputFieldName | null | undefined
+
+export type StandardInputConfig = {
+  collapseTo?: CollapseToValue
+  computeFrom?: null
+}
+
+export type ComputedInputConfig<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  collapseTo?: null
+  computeFrom: ComputeInput<MethodName>
+}
+
+export type InputConfig = StandardInputConfig | ComputedInputConfig
+
+export type InputsConfig<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  [Name in PrismaInputFieldName]?:
+    | StandardInputConfig
+    | ComputedInputConfig<MethodName>
+}
+
+export type ComputedFields<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  [Name in PrismaInputFieldName]?: ComputeInput<MethodName>
+}
 
 type NexusPrismaRelationOpts<
   ModelName extends any,
@@ -338,11 +368,11 @@ type NexusPrismaRelationOpts<
 > extends never
   ? {
       alias?: string;
-      upfilteredKey?: string;
-      computedInputs?: LocalComputedInputs<MethodName>;
+      inputs?: InputsConfig<MethodName>
+      collapseTo?: CollapseToValue
     } & DynamicRequiredType<ReturnType> : {
-      computedInputs?: LocalComputedInputs<MethodName>;
-      upfilteredKey?: string;
+      inputs?: InputsConfig<MethodName>
+      collapseTo?: CollapseToValue
       filtering?:
         | boolean
         | Partial<

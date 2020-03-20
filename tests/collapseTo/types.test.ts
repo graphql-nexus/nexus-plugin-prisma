@@ -1,7 +1,7 @@
 import { mutationType } from 'nexus'
 import { printSchema } from 'graphql'
 import { getTestData, defaultDefinitions, mockConsoleLog } from '../__utils'
-import { InputsConfig, InputFieldName } from '../../src/utils'
+import { InputsConfig, PrismaInputFieldName } from '../../src/utils'
 import { NexusGraphQLSchema } from 'nexus/dist/core'
 
 describe('collapseTo typegen', () => {
@@ -58,7 +58,7 @@ describe('collapseTo typegen', () => {
     const { $output } = await mockConsoleLog(async () => {
       const data = await getTestData({
         pluginOptions: {
-          collapseTo: 'name' as InputFieldName,
+          collapseTo: 'name' as PrismaInputFieldName,
         },
       })
       schema = data.schema

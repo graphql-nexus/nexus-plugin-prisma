@@ -10,6 +10,11 @@ import { dirname, relative } from 'path'
 import { GraphQLResolveInfo } from 'graphql'
 import { core } from 'nexus'
 
+// Placeholder for type generated at runtime
+declare global {
+  interface PrismaInputs {}
+}
+
 /**
  * Write file contents but first delete the file off disk if present. This is a
  * useful function when the effect of file delete is needed to trigger some file
@@ -186,13 +191,11 @@ export type Context = core.GetGen<'context'>
 
 export type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
 
-export type InputFieldName = NestedKeys<
-  core.GetGen<'inputTypes'>
-> extends string
-  ? NestedKeys<core.GetGen<'inputTypes'>>
-  : string
+export type PrismaInputFieldName = NestedKeys<PrismaInputs> extends never
+  ? string
+  : NestedKeys<PrismaInputs>
 
-export type CollapseToValue = InputFieldName | null | undefined
+export type CollapseToValue = PrismaInputFieldName | null | undefined
 
 export type StandardInputConfig = {
   collapseTo?: CollapseToValue
@@ -211,7 +214,7 @@ export type InputConfig = StandardInputConfig | ComputedInputConfig
 export type InputsConfig<
   MethodName extends MutationMethodName = MutationMethodName
 > = {
-  [Name in InputFieldName]?:
+  [Name in PrismaInputFieldName]?:
     | StandardInputConfig
     | ComputedInputConfig<MethodName>
 }
@@ -219,5 +222,5 @@ export type InputsConfig<
 export type ComputedFields<
   MethodName extends MutationMethodName = MutationMethodName
 > = {
-  [Name in InputFieldName]?: ComputeInput<MethodName>
+  [Name in PrismaInputFieldName]?: ComputeInput<MethodName>
 }

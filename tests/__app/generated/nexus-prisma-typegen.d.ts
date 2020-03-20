@@ -72,41 +72,61 @@ type GetNexusPrismaInput<
   : never;
 
 /**
- *  Represents arguments required by Prisma Client JS that will
- *  be derived from a request's input (args, context, and info)
- *  and omitted from the GraphQL API. The object itself maps the
- *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the prisma
- *  arg of the same name.
+ * A function that takes an object representing the request's input
+ * (args, context, and info) and returns the value to pass to the Prisma JS Client.
  */
-export type LocalComputedInputs<MethodName extends any> = Record<
-  string,
-  (params: LocalMutationResolverParams<MethodName>) => unknown
->
+export type ComputeInput<
+  MethodName extends MutationMethodName = MutationMethodName
+> = (params: MutationResolverParams<MethodName>) => unknown
 
-export type GlobalComputedInputs = Record<
-  string,
-  (params: GlobalMutationResolverParams) => unknown
->
-
-type BaseMutationResolverParams = {
+export type MutationResolverParams<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
   info: GraphQLResolveInfo
   ctx: Context
+  args: core.GetGen<'argTypes'>['Mutation'][MethodName]
 }
 
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
-  args: Record<string, any> & { data: unknown }
-}
-
-export type LocalMutationResolverParams<
-  MethodName extends any
-> = BaseMutationResolverParams & {
-  args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
-    ? core.GetGen3<'argTypes', 'Mutation', MethodName>
-    : any
-}
+export type MutationMethodName = Extract<
+  keyof core.GetGen<'argTypes'>['Mutation'],
+  string
+>
 
 export type Context = core.GetGen<'context'>
+
+export type NestedKeys<T> = { [K in keyof T]: keyof T[K] }[keyof T]
+
+export type PrismaInputFieldName = NestedKeys<PrismaInputs>
+
+export type CollapseToValue = PrismaInputFieldName | null | undefined
+
+export type StandardInputConfig = {
+  collapseTo?: CollapseToValue
+  computeFrom?: null
+}
+
+export type ComputedInputConfig<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  collapseTo?: null
+  computeFrom: ComputeInput<MethodName>
+}
+
+export type InputConfig = StandardInputConfig | ComputedInputConfig
+
+export type InputsConfig<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  [Name in PrismaInputFieldName]?:
+    | StandardInputConfig
+    | ComputedInputConfig<MethodName>
+}
+
+export type ComputedFields<
+  MethodName extends MutationMethodName = MutationMethodName
+> = {
+  [Name in PrismaInputFieldName]?: ComputeInput<MethodName>
+}
 
 type NexusPrismaRelationOpts<
   ModelName extends any,
@@ -120,11 +140,11 @@ type NexusPrismaRelationOpts<
 > extends never
   ? {
       alias?: string;
-      upfilteredKey?: string;
-      computedInputs?: LocalComputedInputs<MethodName>;
+      inputs?: InputsConfig<MethodName>
+      collapseTo?: CollapseToValue
     } & DynamicRequiredType<ReturnType> : {
-      computedInputs?: LocalComputedInputs<MethodName>;
-      upfilteredKey?: string;
+      inputs?: InputsConfig<MethodName>
+      collapseTo?: CollapseToValue
       filtering?:
         | boolean
         | Partial<
@@ -356,5 +376,66 @@ declare global {
     TypeName extends string,
     ModelOrCrud extends 'model' | 'crud'
   > = GetNexusPrisma<TypeName, ModelOrCrud>;
+
+  // Pre-transform inputs
+  interface PrismaInputs {
+  
+    PostWhereInput: prisma.PostWhereInput
+    UserWhereInput: prisma.UserWhereInput
+    BubbleWhereInput: prisma.BubbleWhereInput
+    IdCompoundUniqueInput: prisma.IdCompoundUniqueInput
+    BubbleWhereUniqueInput: prisma.BubbleWhereUniqueInput
+    UserWhereUniqueInput: prisma.UserWhereUniqueInput
+    PostWhereUniqueInput: prisma.PostWhereUniqueInput
+    PostCreateWithoutAuthorsInput: prisma.PostCreateWithoutAuthorsInput
+    PostCreateManyWithoutAuthorsInput: prisma.PostCreateManyWithoutAuthorsInput
+    UserCreateWithoutBubbleInput: prisma.UserCreateWithoutBubbleInput
+    UserCreateManyWithoutBubbleInput: prisma.UserCreateManyWithoutBubbleInput
+    BubbleCreateInput: prisma.BubbleCreateInput
+    PostUpdateWithoutAuthorsDataInput: prisma.PostUpdateWithoutAuthorsDataInput
+    PostUpdateWithWhereUniqueWithoutAuthorsInput: prisma.PostUpdateWithWhereUniqueWithoutAuthorsInput
+    PostScalarWhereInput: prisma.PostScalarWhereInput
+    PostUpdateManyDataInput: prisma.PostUpdateManyDataInput
+    PostUpdateManyWithWhereNestedInput: prisma.PostUpdateManyWithWhereNestedInput
+    PostUpsertWithWhereUniqueWithoutAuthorsInput: prisma.PostUpsertWithWhereUniqueWithoutAuthorsInput
+    PostUpdateManyWithoutAuthorsInput: prisma.PostUpdateManyWithoutAuthorsInput
+    UserUpdateWithoutBubbleDataInput: prisma.UserUpdateWithoutBubbleDataInput
+    UserUpdateWithWhereUniqueWithoutBubbleInput: prisma.UserUpdateWithWhereUniqueWithoutBubbleInput
+    UserScalarWhereInput: prisma.UserScalarWhereInput
+    UserUpdateManyDataInput: prisma.UserUpdateManyDataInput
+    UserUpdateManyWithWhereNestedInput: prisma.UserUpdateManyWithWhereNestedInput
+    UserUpsertWithWhereUniqueWithoutBubbleInput: prisma.UserUpsertWithWhereUniqueWithoutBubbleInput
+    UserUpdateManyWithoutBubbleInput: prisma.UserUpdateManyWithoutBubbleInput
+    BubbleUpdateInput: prisma.BubbleUpdateInput
+    BubbleUpdateManyMutationInput: prisma.BubbleUpdateManyMutationInput
+    BubbleCreateWithoutMembersInput: prisma.BubbleCreateWithoutMembersInput
+    BubbleCreateOneWithoutMembersInput: prisma.BubbleCreateOneWithoutMembersInput
+    UserCreateInput: prisma.UserCreateInput
+    BubbleUpdateWithoutMembersDataInput: prisma.BubbleUpdateWithoutMembersDataInput
+    BubbleUpsertWithoutMembersInput: prisma.BubbleUpsertWithoutMembersInput
+    BubbleUpdateOneWithoutMembersInput: prisma.BubbleUpdateOneWithoutMembersInput
+    UserUpdateInput: prisma.UserUpdateInput
+    UserUpdateManyMutationInput: prisma.UserUpdateManyMutationInput
+    UserCreateWithoutPostsInput: prisma.UserCreateWithoutPostsInput
+    UserCreateManyWithoutPostsInput: prisma.UserCreateManyWithoutPostsInput
+    PostCreateInput: prisma.PostCreateInput
+    UserUpdateWithoutPostsDataInput: prisma.UserUpdateWithoutPostsDataInput
+    UserUpdateWithWhereUniqueWithoutPostsInput: prisma.UserUpdateWithWhereUniqueWithoutPostsInput
+    UserUpsertWithWhereUniqueWithoutPostsInput: prisma.UserUpsertWithWhereUniqueWithoutPostsInput
+    UserUpdateManyWithoutPostsInput: prisma.UserUpdateManyWithoutPostsInput
+    PostUpdateInput: prisma.PostUpdateInput
+    PostUpdateManyMutationInput: prisma.PostUpdateManyMutationInput
+    IntFilter: prisma.IntFilter
+    UserFilter: prisma.UserFilter
+    FloatFilter: prisma.FloatFilter
+    PostStatusFilter: prisma.PostStatusFilter
+    StringFilter: prisma.StringFilter
+    PostFilter: prisma.PostFilter
+    UUIDFilter: prisma.UUIDFilter
+    DateTimeFilter: prisma.DateTimeFilter
+    BubbleOrderByInput: prisma.BubbleOrderByInput
+    UserOrderByInput: prisma.UserOrderByInput
+    PostOrderByInput: prisma.PostOrderByInput
+  }
 }
   
