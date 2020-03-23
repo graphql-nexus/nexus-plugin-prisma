@@ -152,41 +152,42 @@ export function build(options: InternalOptions) {
 
 // The @types default is based on the priviledge given to such
 // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
-let defaultTypegenPath: string
-if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
-  defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
-} else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultTypegenPath = path.join(
-    process.cwd(),
-    'node_modules/@types/nexus-prisma-typegen/index.d.ts',
-  )
-} else {
-  defaultTypegenPath = path.join(
-    __dirname,
-    '../../@types/nexus-prisma-typegen/index.d.ts',
-  )
+export const getDefaultTypegenPath = () => {
+  if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
+    return process.env.NEXUS_PRISMA_TYPEGEN_PATH
+  } else if (process.env.NEXUS_PRISMA_LINK) {
+    return path.join(
+      process.cwd(),
+      'node_modules/@types/nexus-prisma-typegen/index.d.ts',
+    )
+  } else {
+    return path.join(__dirname, '../../@types/nexus-prisma-typegen/index.d.ts')
+  }
 }
 
-let defaultClientPath: string
-
-if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
-  defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
-} else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
-
-  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
-    defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
+export const getDefaultClientPath = () => {
+  let defaultClientPath: string
+  if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
+    defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
+  } else if (process.env.NEXUS_PRISMA_LINK) {
+    defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
+    if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
+      defaultClientPath = path.join(
+        process.cwd(),
+        '/node_modules/@prisma/client',
+      )
+    }
+  } else {
+    defaultClientPath = '@prisma/photon'
+    if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
+      defaultClientPath = '@prisma/client'
+    }
   }
-} else {
-  defaultClientPath = '@prisma/photon'
-
-  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
-    defaultClientPath = '@prisma/client'
-  }
+  return defaultClientPath
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
-const shouldGenerateArtifacts =
+export const getShouldGenerateArtifacts = () =>
   process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
     ? true
     : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
@@ -211,11 +212,11 @@ export class SchemaBuilder {
   constructor(public options: InternalOptions) {
     const { paths, ...rest } = options
     const config = {
-      shouldGenerateArtifacts,
+      shouldGenerateArtifacts: getShouldGenerateArtifacts(),
       prismaClient: (ctx: any) => ctx.prisma,
       paths: {
-        prismaClient: paths?.prismaClient ?? defaultClientPath,
-        typegen: paths?.typegen ?? defaultTypegenPath,
+        prismaClient: paths?.prismaClient ?? getDefaultClientPath(),
+        typegen: paths?.typegen ?? getDefaultTypegenPath(),
       },
       inputs: {},
       ...rest,
