@@ -611,9 +611,11 @@ export class SchemaBuilder {
       )
       const transformedArg: DmmfTypes.SchemaArg = {
         ...arg,
-        name: arg.name,
         inputType: {
-          ...arg.inputType,
+          isRequired:
+            collapseToField?.inputType.isRequired || arg.inputType.isRequired,
+          isList: collapseToField?.inputType.isList || arg.inputType.isList,
+          kind: 'object',
           type: transformedTypeName,
         },
         collapsedTo: collapseToField?.name as CollapseToValue,

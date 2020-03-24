@@ -304,7 +304,7 @@ input UserCreateInput {
   createdAt: DateTime
   name: String!
   createdWithBrowser: String!
-  nests: NestCreateWithoutUserInput
+  nests: [NestCreateWithoutUserInput!]
 }
 
 input UserCreateOneWithoutNestsInput {
@@ -555,7 +555,7 @@ input UserCreateCollapseNestsToCreateInput {
   createdAt: DateTime
   name: String!
   createdWithBrowser: String!
-  nests: NestCreateWithoutUserCollapseNestsToCreateInput
+  nests: [NestCreateWithoutUserCollapseNestsToCreateInput!]
 }
 
 input UserCreateOneWithoutNestsInput {
