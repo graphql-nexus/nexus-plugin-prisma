@@ -36,7 +36,7 @@ import {
   PrismaInputFieldName,
   CollapseToValue,
 } from './utils'
-import { NexusArgDef, NexusInputObjectTypeDef } from 'nexus/dist/core'
+import { NexusInputObjectTypeDef } from 'nexus/dist/core'
 import {
   WithRequiredKeys,
   capitalize,
@@ -320,6 +320,13 @@ export class SchemaBuilder {
               ) {
                 t.field(publisherConfig.alias, fieldConfig)
               }
+              this.assertFilteringOrOrderingArgNameExists(
+                typeName,
+                mappedField.field.outputType.type,
+                mappedField.field.name,
+                publisherConfig,
+                stage,
+              )
               return crud
             }
 

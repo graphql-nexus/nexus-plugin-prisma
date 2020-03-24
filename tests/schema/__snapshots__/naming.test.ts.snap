@@ -133,62 +133,15 @@ declare global {
   // Pre-transform inputs
   interface PrismaInputs {
   
-    PostWhereInput: prisma.PostWhereInput
-    UserWhereInput: prisma.UserWhereInput
-    BubbleWhereInput: prisma.BubbleWhereInput
+    ModelNameWhereInput: prisma.ModelNameWhereInput
     IdCompoundUniqueInput: prisma.IdCompoundUniqueInput
-    BubbleWhereUniqueInput: prisma.BubbleWhereUniqueInput
-    UserWhereUniqueInput: prisma.UserWhereUniqueInput
-    PostWhereUniqueInput: prisma.PostWhereUniqueInput
-    PostCreateWithoutAuthorsInput: prisma.PostCreateWithoutAuthorsInput
-    PostCreateManyWithoutAuthorsInput: prisma.PostCreateManyWithoutAuthorsInput
-    UserCreateWithoutBubbleInput: prisma.UserCreateWithoutBubbleInput
-    UserCreateManyWithoutBubbleInput: prisma.UserCreateManyWithoutBubbleInput
-    BubbleCreateInput: prisma.BubbleCreateInput
-    PostUpdateWithoutAuthorsDataInput: prisma.PostUpdateWithoutAuthorsDataInput
-    PostUpdateWithWhereUniqueWithoutAuthorsInput: prisma.PostUpdateWithWhereUniqueWithoutAuthorsInput
-    PostScalarWhereInput: prisma.PostScalarWhereInput
-    PostUpdateManyDataInput: prisma.PostUpdateManyDataInput
-    PostUpdateManyWithWhereNestedInput: prisma.PostUpdateManyWithWhereNestedInput
-    PostUpsertWithWhereUniqueWithoutAuthorsInput: prisma.PostUpsertWithWhereUniqueWithoutAuthorsInput
-    PostUpdateManyWithoutAuthorsInput: prisma.PostUpdateManyWithoutAuthorsInput
-    UserUpdateWithoutBubbleDataInput: prisma.UserUpdateWithoutBubbleDataInput
-    UserUpdateWithWhereUniqueWithoutBubbleInput: prisma.UserUpdateWithWhereUniqueWithoutBubbleInput
-    UserScalarWhereInput: prisma.UserScalarWhereInput
-    UserUpdateManyDataInput: prisma.UserUpdateManyDataInput
-    UserUpdateManyWithWhereNestedInput: prisma.UserUpdateManyWithWhereNestedInput
-    UserUpsertWithWhereUniqueWithoutBubbleInput: prisma.UserUpsertWithWhereUniqueWithoutBubbleInput
-    UserUpdateManyWithoutBubbleInput: prisma.UserUpdateManyWithoutBubbleInput
-    BubbleUpdateInput: prisma.BubbleUpdateInput
-    BubbleUpdateManyMutationInput: prisma.BubbleUpdateManyMutationInput
-    BubbleCreateWithoutMembersInput: prisma.BubbleCreateWithoutMembersInput
-    BubbleCreateOneWithoutMembersInput: prisma.BubbleCreateOneWithoutMembersInput
-    UserCreateInput: prisma.UserCreateInput
-    BubbleUpdateWithoutMembersDataInput: prisma.BubbleUpdateWithoutMembersDataInput
-    BubbleUpsertWithoutMembersInput: prisma.BubbleUpsertWithoutMembersInput
-    BubbleUpdateOneWithoutMembersInput: prisma.BubbleUpdateOneWithoutMembersInput
-    UserUpdateInput: prisma.UserUpdateInput
-    UserUpdateManyMutationInput: prisma.UserUpdateManyMutationInput
-    UserCreateWithoutPostsInput: prisma.UserCreateWithoutPostsInput
-    UserCreateManyWithoutPostsInput: prisma.UserCreateManyWithoutPostsInput
-    PostCreateInput: prisma.PostCreateInput
-    UserUpdateWithoutPostsDataInput: prisma.UserUpdateWithoutPostsDataInput
-    UserUpdateWithWhereUniqueWithoutPostsInput: prisma.UserUpdateWithWhereUniqueWithoutPostsInput
-    UserUpsertWithWhereUniqueWithoutPostsInput: prisma.UserUpsertWithWhereUniqueWithoutPostsInput
-    UserUpdateManyWithoutPostsInput: prisma.UserUpdateManyWithoutPostsInput
-    PostUpdateInput: prisma.PostUpdateInput
-    PostUpdateManyMutationInput: prisma.PostUpdateManyMutationInput
+    ModelNameWhereUniqueInput: prisma.ModelNameWhereUniqueInput
+    ModelNameCreateInput: prisma.ModelNameCreateInput
+    ModelNameUpdateInput: prisma.ModelNameUpdateInput
+    ModelNameUpdateManyMutationInput: prisma.ModelNameUpdateManyMutationInput
     IntFilter: prisma.IntFilter
-    UserFilter: prisma.UserFilter
-    FloatFilter: prisma.FloatFilter
-    PostStatusFilter: prisma.PostStatusFilter
     StringFilter: prisma.StringFilter
-    PostFilter: prisma.PostFilter
-    UUIDFilter: prisma.UUIDFilter
-    DateTimeFilter: prisma.DateTimeFilter
-    BubbleOrderByInput: prisma.BubbleOrderByInput
-    UserOrderByInput: prisma.UserOrderByInput
-    PostOrderByInput: prisma.PostOrderByInput
+    ModelNameOrderByInput: prisma.ModelNameOrderByInput
   }
 }
   "

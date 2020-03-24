@@ -3,7 +3,6 @@ import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { hardWriteFileSync, hardWriteFile } from './utils'
 import { getTransformedDmmf } from './dmmf/transformer'
-import * as prisma from '@prisma/client'
 
 type Options = {
   prismaClientPath: string
@@ -56,7 +55,7 @@ declare global {
 
   // Pre-transform inputs
   interface PrismaInputs {
-  ${prisma.dmmf.schema.inputTypes.reduce(
+  ${dmmf.schema.inputTypes.reduce(
     (rendered, inputType) => `${rendered}
     ${inputType.name}: prisma.${inputType.name}`,
     '',
