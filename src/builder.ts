@@ -292,7 +292,7 @@ export class SchemaBuilder {
                 operation: mappedField.operation,
                 resolve: (root, args, ctx, info) => {
                   const photon = this.getPhoton(ctx)
-                  transformArgs({
+                  const transformedArgs = transformArgs({
                     argTypes:
                       this.publisher.getField(mappedField.field.name)?.args ??
                       [],
@@ -307,7 +307,7 @@ export class SchemaBuilder {
                   })
                   return photon[mappedField.photonAccessor][
                     mappedField.operation
-                  ](args)
+                  ](transformedArgs)
                 },
               })
               if (
