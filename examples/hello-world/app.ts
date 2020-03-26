@@ -4,7 +4,7 @@ import { GraphQLServer } from 'graphql-yoga'
 import { nexusPrismaPlugin } from 'nexus-prisma'
 import * as path from 'path'
 
-const prisma = new PrismaClient({ debug: true })
+const prisma = new PrismaClient()
 
 new GraphQLServer({
   context: () => ({ prisma }),
