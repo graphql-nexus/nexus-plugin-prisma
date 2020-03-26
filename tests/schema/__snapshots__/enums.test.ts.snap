@@ -27,7 +27,7 @@ input UserWhereUniqueInput {
 
 exports[`does not automatically publish input/enum type if already created by user: typegen 1`] = `
 "import * as prisma from '@prisma/client';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers
@@ -374,7 +374,7 @@ input UserWhereUniqueInput {
 
 exports[`does not publish enum twice (from input/output type): typegen 1`] = `
 "import * as prisma from '@prisma/client';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers
@@ -698,7 +698,7 @@ type User {
 
 exports[`publishes enum even as output type: typegen 1`] = `
 "import * as prisma from '@prisma/client';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers

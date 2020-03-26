@@ -1,5 +1,5 @@
-import * as Nexus from 'nexus'
-import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
+import * as Nexus from '@nexus/schema'
+import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import * as path from 'path'
 import {
   addComputedInputs,

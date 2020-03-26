@@ -1,6 +1,6 @@
+import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as fs from 'fs-extra'
-import * as nexusBuilder from 'nexus/dist/builder'
 import * as path from 'path'
 import * as NexusPrisma from '../src'
 import * as types from './__app/main'

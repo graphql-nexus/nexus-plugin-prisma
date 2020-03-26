@@ -1,6 +1,6 @@
+import { core } from '@nexus/schema'
 import * as fs from 'fs-extra'
 import { GraphQLResolveInfo } from 'graphql'
-import { core } from 'nexus'
 import * as path from 'path'
 import { isDeepStrictEqual } from 'util'
 

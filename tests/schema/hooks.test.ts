@@ -1,4 +1,4 @@
-import { objectType } from 'nexus'
+import { objectType } from '@nexus/schema'
 import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, warns when wrong projected field or crud', async () => {
@@ -307,7 +307,9 @@ it('in prod stage, throw error if a graphql typename does not map to a prisma na
   })
 
   try {
-    const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [User])
+    const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [
+      User,
+    ])
 
     expect(schema).toMatchInlineSnapshot()
   } catch (e) {

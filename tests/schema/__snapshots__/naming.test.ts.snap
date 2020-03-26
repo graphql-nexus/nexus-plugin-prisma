@@ -77,7 +77,7 @@ input StringFilter {
 
 exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
 "import * as prisma from '@prisma/client';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers

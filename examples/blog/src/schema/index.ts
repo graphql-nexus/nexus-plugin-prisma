@@ -1,14 +1,14 @@
-import * as Nexus from 'nexus'
+import * as NexusSchema from '@nexus/schema'
 import { nexusPrismaPlugin } from 'nexus-prisma'
-import * as Query from './Query'
-import * as Mutation from './Mutation'
+import * as path from 'path'
 import * as Blog from './Blog'
+import * as Mutation from './Mutation'
 import * as Post from './Post'
+import * as Query from './Query'
 import * as Tag from './Tag'
 import * as User from './User'
-import * as path from 'path'
 
-export default Nexus.makeSchema({
+export default NexusSchema.makeSchema({
   types: [Query, Mutation, Blog, Post, User, Tag],
   plugins: [nexusPrismaPlugin()],
   outputs: {

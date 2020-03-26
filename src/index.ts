@@ -1,4 +1,4 @@
-import { plugin } from 'nexus'
+import { plugin } from '@nexus/schema'
 import { build as buildNexusPrismaTypes, Options } from './builder'
 
 /**

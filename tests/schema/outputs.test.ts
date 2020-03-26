@@ -1,4 +1,4 @@
-import * as Nexus from 'nexus'
+import * as Nexus from '@nexus/schema'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('only publishes output types that do not map to prisma models', async () => {
@@ -53,10 +53,10 @@ it('publishes scalars from input types', async () => {
     },
   })
 
-  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
-    Query,
-    User,
-  ])
+  const {
+    schemaString: schema,
+    typegen,
+  } = await generateSchemaAndTypes(datamodel, [Query, User])
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')

@@ -1,5 +1,9 @@
-import * as Nexus from 'nexus'
-import { OnUnknownFieldName, OnUnknownPrismaModelName, raiseErrorOrTriggerHook } from './hooks'
+import * as Nexus from '@nexus/schema'
+import {
+  OnUnknownFieldName,
+  OnUnknownPrismaModelName,
+  raiseErrorOrTriggerHook,
+} from './hooks'
 import { isDevMode } from './is-dev-mode'
 import { Index } from './utils'
 
