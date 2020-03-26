@@ -17,10 +17,10 @@
     "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
     "dev": "tsc --watch",
-    "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine.ts && jest --watch",
+    "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine.ts && jest"
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest"
   },
   "dependencies": {
     "camelcase": "^5.3.1",
