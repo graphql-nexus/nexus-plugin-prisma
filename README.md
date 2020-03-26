@@ -3,7 +3,7 @@
   <h1 align="center">nexus-prisma</h1>
 </p>
 
-[![CircleCI](https://circleci.com/gh/graphql-nexus/nexus-prisma.svg?style=svg)](https://circleci.com/gh/graphql-nexus/nexus-prisma)
+![trunk](https://github.com/graphql-nexus/nexus-schema-plugin-prisma/workflows/trunk/badge.svg)
 
 `nexus-prisma` is a Nexus plugin for bridging [Prisma](https://www.prisma.io) and [Nexus](https://nexus.js.org). It extends the Nexus DSL `t` with `.model` and `.crud` making it easy to project Prisma models and expose operations against them in your GraphQL API. Resolvers are dynamically created for you removing the need for traditional ORMs/query builders like TypeORM, Sequelize, or Knex. Out-of-box features include pagination, filtering, and ordering. When you do need to drop down into custom resolvers a [`Prisma Client JS`](https://github.com/prisma/prisma-client-js) instance on `ctx` will be ready to serve you, the same great tool `nexus-prisma` itself builds upon.
 
