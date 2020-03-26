@@ -29,10 +29,10 @@
   },
   "peerDependencies": {
     "@prisma/client": "2.0.0-preview023",
-    "graphql": "^14.5.0",
-    "nexus": "^0.12.0-rc.13"
+    "graphql": "^14.5.0"
   },
   "devDependencies": {
+    "@nexus/schema": "^0.12.0-rc.13",
     "@prisma/cli": "^0.1.47",
     "@prisma/client": "2.0.0-preview023",
     "@prisma/fetch-engine": "^0.3.60",
@@ -55,7 +55,6 @@
     "graphql-yoga": "^1.18.3",
     "jest": "^25.1.0",
     "jest-watch-typeahead": "^0.4.0",
-    "nexus": "^0.12.0-rc.13",
     "node-fetch": "^2.6.0",
     "prettier": "^1.17.1",
     "prisma2": "2.0.0-preview023",

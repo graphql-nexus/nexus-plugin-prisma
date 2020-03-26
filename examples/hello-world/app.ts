@@ -1,6 +1,6 @@
+import { makeSchema, mutationType, objectType, queryType } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
 import { GraphQLServer } from 'graphql-yoga'
-import { makeSchema, mutationType, objectType, queryType } from 'nexus'
 import { nexusPrismaPlugin } from 'nexus-prisma'
 import * as path from 'path'
 

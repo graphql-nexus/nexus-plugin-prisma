@@ -1,4 +1,4 @@
-import { core } from 'nexus'
+import { core } from '@nexus/schema'
 import { GlobalComputedInputs } from '../utils'
 
 export declare namespace DmmfTypes {

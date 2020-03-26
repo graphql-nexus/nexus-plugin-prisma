@@ -1,4 +1,4 @@
-import { objectType } from 'nexus'
+import { objectType } from '@nexus/schema'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()

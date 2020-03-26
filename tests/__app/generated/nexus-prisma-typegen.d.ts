@@ -1,5 +1,5 @@
 import * as prisma from '@prisma/client';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers
