@@ -12,7 +12,7 @@
   "scripts": {
     "release:preview": "dripip preview",
     "release:stable": "dripip stable",
-    "publish:pr": "yarn publish --tag pr.${PR} --no-git-tag-version --new-version \"0.0.0-pr.${PR}.$(git show -s head --format='%h')\"",
+    "release:pr": "dripip pr",
     "clean": "rm -rf dist",
     "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc",
     "build:doc": "doctoc README.md && prettier --write README.md",
