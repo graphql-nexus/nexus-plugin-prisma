@@ -10,10 +10,15 @@
     iterall "^1.2.2"
     tslib "^1.9.3"
 
-"@prisma/client@^2.0.0-preview022":
-  version "2.0.0-preview022"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview022.tgz#89c95b2ba17d151edb5891f0a114a2b000ed4e02"
-  integrity sha512-VVjwodKA7f/xIw704ZP5aAmaVXbcOa0g69E0RWDsMc/mSJlQyBjUtAnQy1QPvjaEA2V8+x+A85zW5JwrIs6qQg==
+"@prisma/cli@2.0.0-preview025":
+  version "2.0.0-preview025"
+  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.0.0-preview025.tgz#bf0f59f700dd25a621a4482f9d41cabfb4fe5958"
+  integrity sha512-KZIHsrYUUfBu8QwCdhgUbEeaors4Kw1s8LTPOWSWsn8ErT7H2Z3MWKv/8vN25l6RfoU53U5SEYn9+GwiPx1Fqw==
+
+"@prisma/client@^2.0.0-preview025":
+  version "2.0.0-preview025"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-preview025.tgz#163f43a62897a10750f9baaf980049ca5a4cdbe0"
+  integrity sha512-FhXqQY6WmbQldrqBMiYCcW06A0OH1hrebj5mmeb0Cq/PrWTaseypNY3Y/BPJlwpg8LGozqcs4GLcZx6QuA5QKw==
 
 "@types/aws-lambda@8.10.13":
   version "8.10.13"
@@ -731,11 +736,6 @@ pluralize@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-8.0.0.tgz#1a6fa16a38d12a1901e0320fa017051c539ce3b1"
   integrity sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==
-
-prisma2@2.0.0-preview022:
-  version "2.0.0-preview022"
-  resolved "https://registry.yarnpkg.com/prisma2/-/prisma2-2.0.0-preview022.tgz#959770a89696004411785cfb27a76ebc3eb889aa"
-  integrity sha512-esfFlVwGr/q5AoZFT+mf5FF+4bKYLIoqgfTNsrsodKzWnYR/JoTme2rO7FjM1U1jp80rCiX8RbcAvl6o/TG5zg==
 
 proxy-addr@~2.0.5:
   version "2.0.5"

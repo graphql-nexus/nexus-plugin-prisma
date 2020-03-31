@@ -23,7 +23,6 @@ new GraphQLServer({
     types: [
       queryType({
         definition(t) {
-          t.crud.fooBars()
           t.crud.user()
           t.crud.users({ ordering: true })
           t.crud.post()
@@ -36,12 +35,6 @@ new GraphQLServer({
           t.crud.createOnePost()
           t.crud.deleteOneUser()
           t.crud.deleteOnePost()
-        },
-      }),
-      objectType({
-        name: 'FooBar',
-        definition(t) {
-          t.model.id()
         },
       }),
       objectType({

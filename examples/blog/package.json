@@ -16,17 +16,17 @@
   },
   "dependencies": {
     "@nexus/schema": "^0.12.0-rc.13",
-    "@prisma/client": "^2.0.0-preview022",
+    "@prisma/client": "^2.0.0-preview025",
     "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.2",
-    "nexus-prisma": "^0.12.0-next.1"
+    "nexus-prisma": "file:.yalc/nexus-prisma"
   },
   "devDependencies": {
+    "@prisma/cli": "2.0.0-preview025",
     "@types/faker": "^4.1.5",
     "@types/ws": "^7.2.0",
     "faker": "^4.1.0",
-    "prettier": "^1.18.2",
-    "prisma2": "^2.0.0-preview022",
+    "prettier": "^2.0.2",
     "ts-node": "^8.3.0",
     "ts-node-dev": "^1.0.0-pre.41",
     "typescript": "^3.8.2"

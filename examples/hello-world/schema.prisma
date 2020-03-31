@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = "sqlite:./dev.db"
+  url      = "file:./dev.db"
 }
 
 generator prisma_client {
@@ -17,8 +17,4 @@ model User {
 model Post {
   id     String @id @default(cuid())
   author User[]
-}
-
-model FooBar {
-  id String @id @default(cuid())
 }
