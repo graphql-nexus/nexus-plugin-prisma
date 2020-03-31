@@ -1,4 +1,4 @@
-import { queryType, intArg, stringArg } from 'nexus'
+import { intArg, queryType, stringArg } from '@nexus/schema'
 
 export const Query = queryType({
   definition(t) {

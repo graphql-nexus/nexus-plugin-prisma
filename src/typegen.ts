@@ -1,8 +1,8 @@
-import { DmmfTypes, DmmfDocument } from './dmmf'
+import { DmmfDocument, DmmfTypes } from './dmmf'
+import { getTransformedDmmf } from './dmmf/transformer'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
-import { hardWriteFileSync, hardWriteFile } from './utils'
-import { getTransformedDmmf } from './dmmf/transformer'
+import { hardWriteFile, hardWriteFileSync } from './utils'
 
 type Options = {
   prismaClientPath: string
@@ -35,7 +35,7 @@ export function doGenerate(
 export function render(dmmf: DmmfDocument, prismaClientPath: string) {
   return `\
 import * as prisma from '${prismaClientPath}';
-import { core } from 'nexus';
+import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers

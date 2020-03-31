@@ -1,8 +1,8 @@
-import { mutationType } from 'nexus'
+import { mutationType } from '@nexus/schema'
 import { printSchema } from 'graphql'
 import { getTestData, defaultDefinitions, mockConsoleLog } from '../__utils'
 import { InputsConfig, PrismaInputFieldName } from '../../src/utils'
-import { NexusGraphQLSchema } from 'nexus/dist/core'
+import { NexusGraphQLSchema } from '@nexus/schema/dist/core'
 
 describe('collapseTo typegen', () => {
   it('works at plugin-level', async () => {

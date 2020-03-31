@@ -1,13 +1,13 @@
 const PrismaClientGenerator = require('@prisma/client/generator-build')
+import * as Nexus from '@nexus/schema'
 import * as SDK from '@prisma/sdk'
 import * as GQL from 'graphql'
-import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
-import { queryType, mutationType, objectType } from 'nexus'
+import { queryType, mutationType, objectType } from '@nexus/schema'
 import { getQueryEnginePath } from './__ensure-engine'
 
 type CreateNexusPrismaInternalOptions = Omit<

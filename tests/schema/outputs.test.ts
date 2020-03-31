@@ -1,4 +1,4 @@
-import * as Nexus from 'nexus'
+import * as Nexus from '@nexus/schema'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('only publishes output types that do not map to prisma models', async () => {

@@ -8,7 +8,7 @@ import {
 } from 'fs-extra'
 import { dirname, relative } from 'path'
 import { GraphQLResolveInfo } from 'graphql'
-import { core } from 'nexus'
+import { core } from '@nexus/schema'
 
 // Placeholder for type generated at runtime
 declare global {

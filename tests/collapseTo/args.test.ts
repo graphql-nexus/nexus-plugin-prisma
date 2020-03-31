@@ -1,4 +1,4 @@
-import { mutationType } from 'nexus'
+import { mutationType } from '@nexus/schema'
 import { transformArgs } from '../../src/transformArgs'
 import { getTestData, defaultDefinitions } from '../__utils'
 import { InputsConfig } from '../../src/utils'

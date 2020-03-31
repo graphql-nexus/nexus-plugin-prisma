@@ -1,5 +1,5 @@
 import { getTestData, defaultDefinitions } from '../__utils'
-import { mutationType } from 'nexus'
+import { mutationType } from '@nexus/schema'
 import { InputsConfig } from '../../src/utils'
 import { printSchema } from 'graphql'
 

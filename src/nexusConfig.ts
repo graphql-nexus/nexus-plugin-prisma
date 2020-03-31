@@ -1,4 +1,4 @@
-import { core } from 'nexus'
+import { core } from '@nexus/schema'
 import path from 'path'
 
 export function setupNexusConfig(builder: core.PluginBuilderLens): void {

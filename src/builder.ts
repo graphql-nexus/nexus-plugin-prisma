@@ -1,5 +1,5 @@
-import * as Nexus from 'nexus'
-import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
+import * as Nexus from '@nexus/schema'
+import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import * as path from 'path'
 import * as GraphQL from './graphql'
 import {
@@ -36,7 +36,7 @@ import {
   PrismaInputFieldName,
   CollapseToValue,
 } from './utils'
-import { NexusInputObjectTypeDef } from 'nexus/dist/core'
+import { NexusInputObjectTypeDef } from '@nexus/schema/dist/core'
 import {
   WithRequiredKeys,
   capitalize,

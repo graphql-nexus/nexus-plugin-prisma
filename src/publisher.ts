@@ -1,6 +1,6 @@
-import * as Nexus from 'nexus'
+import * as Nexus from '@nexus/schema'
 import { CustomInputArg } from './builder'
-import { DmmfTypes, DmmfDocument } from './dmmf'
+import { DmmfDocument, DmmfTypes } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
