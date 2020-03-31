@@ -50,7 +50,7 @@ new GraphQLServer({
         name: 'Post',
         definition(t) {
           t.model.id()
-          t.model.author()
+          t.model.authors()
         },
       }),
     ],

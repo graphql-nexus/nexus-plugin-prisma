@@ -23,7 +23,8 @@ model User {
   updatedAt DateTime @updatedAt
   name      String?
   posts     Post[]
-  blog      Blog
+  blogId    Int?
+  blog      Blog? @relation(fields: [blogId], references: [id])
   rating    Float
   role      UserRole
 }
@@ -37,8 +38,11 @@ model Post {
   id     Int        @id @default(autoincrement())
   title  String
   tags   Tag[]
-  blog   Blog
+  blogId Int?
+  blog   Blog? @relation(fields: [blogId], references: [id])
   status PostStatus
+  userId Int?
+  user User? @relation(fields: [userId], references: [id])
 }
 
 enum PostStatus {
@@ -47,6 +51,8 @@ enum PostStatus {
 }
 
 model Tag {
-  id    Int    @id @default(autoincrement())
-  value String
+  id     Int    @id @default(autoincrement())
+  value  String
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
 }

@@ -6,13 +6,15 @@ let ctx = createRuntimeTestContext()
 it('supports @id fields named "id"', async () => {
   const datamodel = `
   model User {
-    id  Int @id @default(autoincrement())
+    id    Int    @default(autoincrement()) @id
     posts Post[]
   }
-
+  
   model Post {
-    id  Int @id @default(autoincrement())
-    title String
+    id     Int    @default(autoincrement()) @id
+    title  String
+    userId Int
+    user   User   @relation(fields: [userId], references: [id])
   }
 `
   const User = objectType({
@@ -98,7 +100,9 @@ it('supports @id fields with custom name', async () => {
 
     model Post {
       custom_id  Int @id @default(autoincrement())
-      title String
+      title      String
+      userId     Int
+      user       User   @relation(fields: [userId], references: [custom_id])
     }
   `
   const User = objectType({
