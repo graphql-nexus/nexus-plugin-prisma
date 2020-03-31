@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, PostStatus } from '@prisma/client'
 import { name } from 'faker'
 
 main()
@@ -13,13 +13,18 @@ async function main() {
           name: name.firstName(),
           rating: 0.5,
           role: 'AUTHOR',
+          posts: {
+            create: [{
+              title: "post_1",
+              status: PostStatus.PUBLISHED,
+              blog: {}
+            }]
+          }
         },
       },
-    },
-    include: {
-      authors: true,
-    },
+    }
   })
+
   console.log('added blog with author:\n', blogWithAuthor)
   await prisma.disconnect()
 }

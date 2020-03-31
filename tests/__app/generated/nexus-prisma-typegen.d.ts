@@ -261,7 +261,7 @@ interface NexusPrismaInputs {
 }
     users: {
   filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
 }
     posts: {
   filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
@@ -272,7 +272,7 @@ interface NexusPrismaInputs {
     Bubble: {
     members: {
   filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
 }
 
   },  User: {
@@ -284,7 +284,7 @@ interface NexusPrismaInputs {
   },  Post: {
     authors: {
   filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName'
 }
 
   }
