@@ -82,7 +82,7 @@ const globalTestData = {
   }),
 }
 
-it.only('removes resolver-level computedInputs from the corresponding input type', async () => {
+it('removes resolver-level computedInputs from the corresponding input type', async () => {
   const { datamodel, ...resolvers } = resolverTestData
   const result = await generateSchemaAndTypes(
     datamodel,
