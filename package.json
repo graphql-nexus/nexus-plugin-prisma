@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "camelcase": "^5.3.1",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.0",
     "pluralize": "^8.0.0"
   },
   "peerDependencies": {
