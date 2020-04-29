@@ -28,7 +28,7 @@
         "source": "db"
       },
       "argument": "provider",
-      "value": "\"sqlite\""
+      "value": "\"postgresql\""
     },
     {
       "tag": "CreateArgument",
@@ -37,7 +37,7 @@
         "source": "db"
       },
       "argument": "url",
-      "value": "\"sqlite:./dev.db\""
+      "value": "\"postgresql://postgres:postgres@localhost:5432/myapp\""
     },
     {
       "tag": "CreateModel",
@@ -49,17 +49,6 @@
       "field": "id",
       "type": "Int",
       "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Blog",
-          "field": "id"
-        },
-        "directive": "id"
-      }
     },
     {
       "tag": "CreateDirective",
@@ -85,6 +74,17 @@
       },
       "argument": "",
       "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Blog",
+          "field": "id"
+        },
+        "directive": "id"
+      }
     },
     {
       "tag": "CreateField",
@@ -208,17 +208,6 @@
           "model": "User",
           "field": "id"
         },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "User",
-          "field": "id"
-        },
         "directive": "default"
       }
     },
@@ -235,6 +224,17 @@
       },
       "argument": "",
       "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "id"
+        },
+        "directive": "id"
+      }
     },
     {
       "tag": "CreateField",
@@ -386,17 +386,6 @@
           "model": "Post",
           "field": "id"
         },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Post",
-          "field": "id"
-        },
         "directive": "default"
       }
     },
@@ -413,6 +402,17 @@
       },
       "argument": "",
       "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Post",
+          "field": "id"
+        },
+        "directive": "id"
+      }
     },
     {
       "tag": "CreateField",
@@ -560,17 +560,6 @@
           "model": "Tag",
           "field": "id"
         },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Tag",
-          "field": "id"
-        },
         "directive": "default"
       }
     },
@@ -587,6 +576,17 @@
       },
       "argument": "",
       "value": "autoincrement()"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Tag",
+          "field": "id"
+        },
+        "directive": "id"
+      }
     },
     {
       "tag": "CreateField",
