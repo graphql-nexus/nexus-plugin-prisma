@@ -11,7 +11,6 @@ yarn -s prisma migrate save --experimental
 yarn -s prisma migrate up --experimental
 yarn -s prisma generate
 yarn -s ts-node prisma/seed.ts
-yarn -s dev
 ```
 
 ```
