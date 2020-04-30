@@ -260,8 +260,8 @@ interface NexusPrismaInputs {
   ordering: 'id' | 'createdAt'
 }
     users: {
-  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName'
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
 }
     posts: {
   filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
@@ -271,8 +271,8 @@ interface NexusPrismaInputs {
   },
     Bubble: {
     members: {
-  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName'
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
 }
 
   },  User: {
@@ -283,8 +283,8 @@ interface NexusPrismaInputs {
 
   },  Post: {
     authors: {
-  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'AND' | 'OR' | 'NOT' | 'bubble'
-  ordering: 'id' | 'firstName' | 'lastName'
+  filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'bubble'
+  ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
 }
 
   }
@@ -332,6 +332,7 @@ interface NexusPrismaTypes {
     firstName: 'String'
     lastName: 'String'
     bubble: 'Bubble'
+    bubbleId: 'String'
 
 },  Post: {
     id: 'Int'

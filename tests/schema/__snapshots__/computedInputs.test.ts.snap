@@ -321,15 +321,15 @@ interface NexusPrismaInputs {
   ordering: 'id' | 'name'
 }
     nesteds: {
-  filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT' | 'user'
-  ordering: 'id' | 'name'
+  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name' | 'userId'
 }
 
   },
     User: {
     nested: {
-  filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT' | 'user'
-  ordering: 'id' | 'name'
+  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'user'
+  ordering: 'id' | 'name' | 'userId'
 }
 
   },  Nested: {
@@ -372,6 +372,7 @@ interface NexusPrismaTypes {
     name: 'String'
     createdWithBrowser: 'String'
     user: 'User'
+    userId: 'Int'
 
 }
 }

@@ -1,4 +1,4 @@
-import { LiftEngine } from '@prisma/migrate'
+import { MigrateEngine } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
@@ -7,7 +7,7 @@ import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import * as path from 'path'
 import rimraf from 'rimraf'
-import { getEngineVersion, getEnginePath } from './__ensure-engine'
+import { getEnginePath, getEngineVersion } from './__ensure-engine'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -149,22 +149,21 @@ async function migrateLift({
   datamodel: string
 }): Promise<void> {
   /* Init Lift. */
-  const lift = new LiftEngine({
+  const lift = new MigrateEngine({
     projectDir,
     schemaPath,
     binaryPath: await getEnginePath('migration'),
   })
 
   /* Get migration. */
-  const {
-    datamodelSteps,
-    errors: stepErrors,
-  } = await lift.inferMigrationSteps({
-    migrationId,
-    datamodel,
-    assumeToBeApplied: [],
-    sourceConfig: datamodel,
-  })
+  const { datamodelSteps, errors: stepErrors } = await lift.inferMigrationSteps(
+    {
+      migrationId,
+      datamodel,
+      assumeToBeApplied: [],
+      sourceConfig: datamodel,
+    },
+  )
 
   if (stepErrors.length > 0) {
     throw stepErrors

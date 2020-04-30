@@ -10,19 +10,19 @@
     "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
     "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
-    "generate:prisma": "prisma2 generate",
+    "generate:prisma": "prisma generate",
     "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
     "data:inject": "ts-node prisma/fake-data.ts"
   },
   "dependencies": {
     "@nexus/schema": "^0.12.0-rc.13",
-    "@prisma/client": "^2.0.0-beta.1",
+    "@prisma/client": "^2.0.0-beta.3",
     "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.2",
-    "nexus-prisma": "^0.12.0-next.1"
+    "nexus-prisma": "^0.0.0-pr.656.1.d0fa8c1"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.0.0-beta.1",
+    "@prisma/cli": "^2.0.0-beta.3",
     "@types/faker": "^4.1.5",
     "@types/ws": "^7.2.0",
     "faker": "^4.1.0",

@@ -83,6 +83,20 @@ type Mutation {
   updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
 }
 
+input NullableStringFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: String
+  notIn: [String!]
+  startsWith: String
+}
+
 enum OrderByArg {
   asc
   desc
@@ -182,6 +196,7 @@ input UserFilter {
 input UserWhereInput {
   AND: [UserWhereInput!]
   bubble: BubbleWhereInput
+  bubbleId: NullableStringFilter
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
