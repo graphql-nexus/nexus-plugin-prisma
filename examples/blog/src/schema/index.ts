@@ -21,7 +21,7 @@ export default NexusSchema.makeSchema({
     contextType: 'Context.Context',
     sources: [
       {
-        source: '@prisma/client',
+        source: '.prisma/client',
         alias: 'prisma',
       },
       {

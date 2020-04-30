@@ -11,7 +11,7 @@ new GraphQLServer({
   schema: makeSchema({
     typegenAutoConfig: {
       contextType: '{ prisma: PrismaClient.PrismaClient }',
-      sources: [{ source: '@prisma/client', alias: 'PrismaClient' }],
+      sources: [{ source: '.prisma/client', alias: 'PrismaClient' }],
     },
     outputs: {
       typegen: path.join(
