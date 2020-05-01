@@ -150,7 +150,7 @@ export interface NexusGenInputs {
     create?: NexusGenInputs['UserCreateWithoutPostsInput'][] | null; // [UserCreateWithoutPostsInput!]
   }
   UserCreateWithoutPostsInput: { // input type
-    bubble?: NexusGenInputs['BubbleCreateOneWithoutMembersInput'] | null; // BubbleCreateOneWithoutMembersInput
+    Bubble?: NexusGenInputs['BubbleCreateOneWithoutMembersInput'] | null; // BubbleCreateOneWithoutMembersInput
     firstName: string; // String!
     id?: string | null; // String
     lastName: string; // String!
@@ -162,7 +162,7 @@ export interface NexusGenInputs {
   }
   UserWhereInput: { // input type
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
+    Bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
     bubbleId?: NexusGenInputs['NullableStringFilter'] | null; // NullableStringFilter
     firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter

@@ -15,7 +15,7 @@ type Nested {
 
 input NestedCreateInput {
   name: String!
-  user: UserCreateOneWithoutNestedInput
+  User: UserCreateOneWithoutNestedInput
 }
 
 input NestedCreateManyWithoutUserInput {
@@ -321,14 +321,14 @@ interface NexusPrismaInputs {
   ordering: 'id' | 'name'
 }
     nesteds: {
-  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'user'
+  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
   ordering: 'id' | 'name' | 'userId'
 }
 
   },
     User: {
     nested: {
-  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'user'
+  filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
   ordering: 'id' | 'name' | 'userId'
 }
 
@@ -371,7 +371,7 @@ interface NexusPrismaTypes {
     id: 'Int'
     name: 'String'
     createdWithBrowser: 'String'
-    user: 'User'
+    User: 'User'
     userId: 'Int'
 
 }
