@@ -181,7 +181,7 @@ input UserCreateManyWithoutPostsInput {
 }
 
 input UserCreateWithoutPostsInput {
-  bubble: BubbleCreateOneWithoutMembersInput
+  Bubble: BubbleCreateOneWithoutMembersInput
   firstName: String!
   id: String
   lastName: String!
@@ -195,7 +195,7 @@ input UserFilter {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  bubble: BubbleWhereInput
+  Bubble: BubbleWhereInput
   bubbleId: NullableStringFilter
   firstName: StringFilter
   id: StringFilter
