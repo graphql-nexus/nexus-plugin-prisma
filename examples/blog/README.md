@@ -3,7 +3,7 @@
 ### Try It
 
 ```
-docker run --detach --publish 5432:5432 -e POSTGRES_PASSWORD=postgres --name 'nexus-schema-plugin-prisma' postgres:10.12
+docker run --detach --publish 5432:5432 -e POSTGRES_PASSWORD=postgres --name 'nexus-schema-plugin-prisma-blog' postgres:10.12
 ```
 
 ```
