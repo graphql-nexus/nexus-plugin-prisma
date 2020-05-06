@@ -6,6 +6,7 @@ import { hardWriteFile, hardWriteFileSync } from './utils'
 
 type Options = {
   prismaClientPath: string
+  generatedPrismaClientPath?: string
   typegenPath: string
 }
 
@@ -24,7 +25,7 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = getTransformedDmmf(options.prismaClientPath)
-  const tsDeclaration = render(dmmf, options.prismaClientPath)
+  const tsDeclaration = render(dmmf, options.generatedPrismaClientPath ||options.prismaClientPath)
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {

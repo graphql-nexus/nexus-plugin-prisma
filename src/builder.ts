@@ -99,6 +99,11 @@ export interface Options {
    */
   prismaClient?: PrismaClientFetcher
   /**
+   * Add optional relate path as string to prisma used in nexusTypes.gen.ts. If not provided,
+   * will use absolute path to prismaClient above.
+   */
+  generatedPrismaClientPath?: string
+  /**
    * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
    * and permits the same environment variables. This configuration will completely
    * go away once Nexus has typeGen plugin support.
@@ -188,6 +193,7 @@ const defaultOptions = {
   prismaClient: (ctx: any) => ctx.prisma,
   inputs: {
     prismaClient: defaultClientPath,
+    generatedPrismaClientPath:  undefined
   },
   outputs: {
     typegen: defaultTypegenPath,
@@ -239,6 +245,7 @@ export class SchemaBuilder {
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
         prismaClientPath: config.inputs.prismaClient,
+        generatedPrismaClientPath: config.inputs.generatedPrismaClientPath,
         typegenPath: config.outputs.typegen,
       })
     }
