@@ -98,6 +98,7 @@ export interface Options {
    * default getter returns `ctx.prisma`.
    */
   prismaClient?: PrismaClientFetcher
+  generatedPrismaClientPath?: string
   /**
    * Same purpose as for that used in `Nexus.makeSchema`. Follows the same rules
    * and permits the same environment variables. This configuration will completely
@@ -239,6 +240,7 @@ export class SchemaBuilder {
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
         prismaClientPath: config.inputs.prismaClient,
+        generatedPrismaClientPath: config.inputs.generatedPrismaClientPath,
         typegenPath: config.outputs.typegen,
       })
     }
