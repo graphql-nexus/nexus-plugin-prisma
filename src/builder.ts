@@ -99,7 +99,7 @@ export interface Options {
    */
   prismaClient?: PrismaClientFetcher
   /**
-   * Add optional relate path as string to prisma used in nexusTypes.gen.ts. If not provided,
+   * Add optional relative path as string for prismaClientPath used in nexusTypes.gen.ts. If not provided,
    * will use absolute path to prismaClient above.
    */
   generatedPrismaClientPath?: string
