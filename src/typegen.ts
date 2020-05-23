@@ -226,9 +226,10 @@ ${dmmf.datamodel.models
 
 function renderStaticTypes() {
   return outdent`
-    type IsModelNameExistsInGraphQLTypes<ReturnType> = ReturnType extends core.GetGen<'objectNames'>
-      ? true
-      : false
+    type IsModelNameExistsInGraphQLTypes<ReturnType> =
+      ReturnType extends core.GetGen<'objectNames'>
+        ? true
+        : false
 
     type NexusPrismaScalarOpts = {
       alias?: string
@@ -247,31 +248,29 @@ function renderStaticTypes() {
     /**
      * Determine if \`B\` is a subset (or equivalent to) of \`A\`.
     */
-    type IsSubset<A, B> = keyof A extends never
-      ? false
-      : B extends A
-      ? true
-      : false
+    type IsSubset<A, B> =
+      keyof A extends never ? false :
+      B extends A           ? true  :
+                              false
 
-    type OmitByValue<T, ValueType> = Pick<
-      T,
-      { [Key in keyof T]: T[Key] extends ValueType ? never : Key }[keyof T]
-    >
+    type OmitByValue<T, ValueType> =
+      Pick<T, { [Key in keyof T]: T[Key] extends ValueType ? never : Key }[keyof T]>
 
-    type GetSubsetTypes<ModelName extends string> = keyof OmitByValue<
-      {
-        [P in keyof RootObjectTypes]:
-          // if
-          ModelName extends keyof ModelTypes
-          ? IsSubset<RootObjectTypes[P], ModelTypes[ModelName]> extends true
-          // else if
-          ? RootObjectTypes[P]
-          : never
-          // else
-          : never
-      },
-      never
-    >
+    type GetSubsetTypes<ModelName extends string> =
+      keyof OmitByValue<
+        {
+          [P in keyof RootObjectTypes]:
+            // if
+            ModelName extends keyof ModelTypes
+            ? IsSubset<RootObjectTypes[P], ModelTypes[ModelName]> extends true
+            // else if
+            ? RootObjectTypes[P]
+            : never
+            // else
+            : never
+        },
+        never
+      >
 
     type SubsetTypes<ModelName extends string> =
       GetSubsetTypes<ModelName> extends never
@@ -279,7 +278,7 @@ function renderStaticTypes() {
         : GetSubsetTypes<ModelName>
 
     type DynamicRequiredType<ReturnType extends string> =
-      isModelNameExistsInGraphQLTypes<ReturnType> extends true
+      IsModelNameExistsInGraphQLTypes<ReturnType> extends true
         ? { type?: SubsetTypes<ReturnType> }
         : { type: SubsetTypes<ReturnType> }
 
