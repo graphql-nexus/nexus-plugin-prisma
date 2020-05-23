@@ -62,9 +62,9 @@
     "strip-ansi": "6.0.0",
     "tmp": "0.1.0",
     "ts-jest": "25.3.0",
-    "ts-morph": "^7.1.0",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.9.3"
+    "ts-morph": "7.1.0",
+    "ts-node": "8.10.1",
+    "typescript": "3.9.3"
   },
   "prettier": {
     "semi": false,
