@@ -260,22 +260,28 @@ function renderStaticTypes() {
 
     type GetSubsetTypes<ModelName extends string> = keyof OmitByValue<
       {
-        [P in keyof RootObjectTypes]: ModelName extends keyof ModelTypes
+        [P in keyof RootObjectTypes]:
+          // if
+          ModelName extends keyof ModelTypes
           ? IsSubset<RootObjectTypes[P], ModelTypes[ModelName]> extends true
-            ? RootObjectTypes[P]
-            : never
+          // else if
+          ? RootObjectTypes[P]
+          : never
+          // else
           : never
       },
       never
     >
 
-    type SubsetTypes<ModelName extends string> = GetSubsetTypes<ModelName> extends never
-      ? \`ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model('<ModelName>')\`
-      : GetSubsetTypes<ModelName>
+    type SubsetTypes<ModelName extends string> =
+      GetSubsetTypes<ModelName> extends never
+        ? \`ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model('<ModelName>')\`
+        : GetSubsetTypes<ModelName>
 
-    type DynamicRequiredType<ReturnType> = IsModelNameExistsInGraphQLTypes<ReturnType> extends true
-      ? { type?: SubsetTypes<ReturnType> }
-      : { type: SubsetTypes<ReturnType> }
+    type DynamicRequiredType<ReturnType extends string> =
+      isModelNameExistsInGraphQLTypes<ReturnType> extends true
+        ? { type?: SubsetTypes<ReturnType> }
+        : { type: SubsetTypes<ReturnType> }
 
     type GetNexusPrismaInput<
       ModelName extends string,
@@ -285,7 +291,7 @@ function renderStaticTypes() {
       ModelName extends keyof NexusPrismaInputs
         ? MethodName extends keyof NexusPrismaInputs[ModelName]
           ? InputName extends keyof NexusPrismaInputs[ModelName][MethodName]
-            ? NexusPrismaInputs[ModelName][MethodName][InputName]
+            ? NexusPrismaInputs[ModelName][MethodName][InputName] & string
             : never
           : never
         : never
@@ -329,24 +335,29 @@ function renderStaticTypes() {
 
     export type Context = core.GetGen<'context'>
 
-    type NexusPrismaRelationOpts<ModelName extends string, MethodName extends string, ReturnType> =
-      // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
+    type BaseRelationOptions<MethodName extends string, ReturnType extends string> =
+      DynamicRequiredType<ReturnType> & {
+        alias?: string
+        computedInputs?: LocalComputedInputs<MethodName>
+      }
+
+    // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
+    type NexusPrismaRelationOpts<ModelName extends string, MethodName extends string, ReturnType extends string> =
       GetNexusPrismaInput<ModelName, MethodName, 'filtering'> extends never
-        ? {
-            alias?: string
-            computedInputs?: LocalComputedInputs<MethodName>
-          } & DynamicRequiredType<ReturnType>
-        : {
-            alias?: string;
-            computedInputs?: LocalComputedInputs<MethodName>
-            filtering?:
-              | boolean
-              | Partial<Record<GetNexusPrismaInput<ModelName, MethodName, 'filtering'>, boolean>>
-            ordering?:
-              | boolean
-              | Partial<Record<GetNexusPrismaInput<ModelName, MethodName, 'ordering'>, boolean>>
-            pagination?: boolean | Pagination
-          } & DynamicRequiredType<ReturnType>
+      ? BaseRelationOptions<MethodName, ReturnType>
+      // else if
+      : GetNexusPrismaInput<ModelName, MethodName, 'ordering'> extends never
+      ? BaseRelationOptions<MethodName, ReturnType>
+      // else
+      : BaseRelationOptions<MethodName, ReturnType> & {
+          filtering?:
+            | boolean
+            | Partial<Record<GetNexusPrismaInput<ModelName, MethodName, 'filtering'>, boolean>>
+          ordering?:
+            | boolean
+            | Partial<Record<GetNexusPrismaInput<ModelName, MethodName, 'ordering'>, boolean>>
+          pagination?: boolean | Pagination
+        }
 
     type IsScalar<TypeName extends string> = TypeName extends core.GetGen<'scalarNames'>
       ? true
@@ -386,43 +397,51 @@ function renderStaticTypes() {
      */
     type AKind<T extends Kind> = T
 
-    type GetKind<Name extends any> = IsEnum<Name> extends true
+    type GetKind<Name extends string> =
+      IsEnum<Name> extends true
       ? 'Enum'
+      // else if
       : IsScalar<Name> extends true
       ? 'Scalar'
+      // else if
       : IsObject<Name> extends true
       ? 'Object'
+      // else if
       : IsInputObject<Name> extends true
       ? 'InputObject'
+      // else
       // FIXME should be \`never\`, but GQL objects named differently
       // than backing type fall into this branch
       : 'Object'
 
     type NexusPrismaFields<ModelName extends keyof NexusPrismaTypes & string> = {
-      [MethodName in keyof NexusPrismaTypes[ModelName]]: NexusPrismaMethod<
-        ModelName,
-        MethodName,
-        GetKind<NexusPrismaTypes[ModelName][MethodName]> // Is the return type a scalar?
-      >;
-    };
+      [MethodName in keyof NexusPrismaTypes[ModelName] & string]:
+        NexusPrismaMethod<
+          ModelName,
+          MethodName,
+          GetKind<NexusPrismaTypes[ModelName][MethodName] & string> // Is the return type a scalar?
+        >
+    }
 
     type NexusPrismaMethod<
       ModelName extends keyof NexusPrismaTypes,
       MethodName extends keyof NexusPrismaTypes[ModelName] & string,
       ThisKind extends Kind,
-      ReturnType extends any = NexusPrismaTypes[ModelName][MethodName]
+      ReturnType extends string = NexusPrismaTypes[ModelName][MethodName] & string
     > =
       ThisKind extends AKind<'Enum'>
       ? () => NexusPrismaFields<ModelName>
+      // else if
+      // if scalar return scalar opts
       : ThisKind extends AKind<'Scalar'>
-      ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName> // Return optional scalar opts
-      : IsModelNameExistsInGraphQLTypes<ReturnType> extends true // If model name has a mapped graphql types
-      ? (
-          opts?: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>
-        ) => NexusPrismaFields<ModelName> // Then make opts optional
-      : (
-          opts: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>
-        ) => NexusPrismaFields<ModelName>; // Else force use input the related graphql type -> { type: '...' }
+      ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName>
+      // else if
+      // if model name has a mapped graphql types then make opts optional
+      : IsModelNameExistsInGraphQLTypes<ReturnType> extends true
+      ? (opts?: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>) => NexusPrismaFields<ModelName>
+      // else
+      // force use input the related graphql type -> { type: '...' }
+      : (opts: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>) => NexusPrismaFields<ModelName>
 
     type GetNexusPrismaMethod<TypeName extends string> = TypeName extends keyof NexusPrismaMethods
       ? NexusPrismaMethods[TypeName]
