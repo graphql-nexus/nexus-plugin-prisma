@@ -43,6 +43,13 @@ interface FieldPublisherConfig {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   computedInputs?: LocalComputedInputs<any>
+  middleware?: (
+    root: object,
+    args: object,
+    ctx: object,
+    info: object,
+    next: () => Promise<any>,
+  ) => Promise<any>
 }
 
 type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
@@ -50,7 +57,7 @@ type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 type ResolvedFieldPublisherConfig = Omit<
   WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
   'computedInputs'
-  // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
+// Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
 > & { locallyComputedInputs: LocalComputedInputs<any> }
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
@@ -79,12 +86,12 @@ const dmmfListFieldTypeToNexus = (
 ) => {
   return fieldType.isList
     ? {
-        list: [true],
-        nullable: false,
-      }
+      list: [true],
+      nullable: false,
+    }
     : {
-        nullable: !fieldType.isRequired,
-      }
+      nullable: !fieldType.isRequired,
+    }
 }
 
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
@@ -180,8 +187,8 @@ const shouldGenerateArtifacts =
   process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
     ? true
     : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
-    ? false
-    : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+      ? false
+      : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
 
 const defaultOptions = {
   shouldGenerateArtifacts,
@@ -292,27 +299,32 @@ export class SchemaBuilder {
                 typeName,
                 operation: mappedField.operation,
                 resolve: (root, args, ctx, info) => {
-                  const photon = this.getPhoton(ctx)
-                  if (
-                    typeName === 'Mutation' &&
-                    (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
-                      !isEmptyObject(this.globallyComputedInputs))
-                  ) {
-                    args = addComputedInputs({
-                      inputType,
-                      dmmf: this.dmmf,
-                      params: {
-                        info,
-                        args,
-                        ctx,
-                      },
-                      locallyComputedInputs:
-                        publisherConfig.locallyComputedInputs,
-                    })
+                  const resolve = () => {
+                    const photon = this.getPhoton(ctx)
+                    if (
+                      typeName === 'Mutation' &&
+                      (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
+                        !isEmptyObject(this.globallyComputedInputs))
+                    ) {
+                      args = addComputedInputs({
+                        inputType,
+                        dmmf: this.dmmf,
+                        params: {
+                          info,
+                          args,
+                          ctx,
+                        },
+                        locallyComputedInputs:
+                          publisherConfig.locallyComputedInputs,
+                      })
+                    }
+                    return photon[mappedField.photonAccessor][
+                      mappedField.operation
+                    ](args)
                   }
-                  return photon[mappedField.photonAccessor][
-                    mappedField.operation
-                  ](args)
+                  return givenConfig?.middleware
+                    ? givenConfig.middleware(root, args, ctx, info, resolve)
+                    : resolve()
                 },
               })
               if (
@@ -474,13 +486,13 @@ export class SchemaBuilder {
           resolve:
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
-                  const photon = this.getPhoton(ctx)
-                  return photon[lowerFirst(mapping.model)]
-                    ['findOne']({
-                      where: { [idField.name]: root[idField.name] },
-                    })
-                    [field.name](args)
-                }
+                const photon = this.getPhoton(ctx)
+                return photon[lowerFirst(mapping.model)]
+                ['findOne']({
+                  where: { [idField.name]: root[idField.name] },
+                })
+                [field.name](args)
+              }
               : undefined,
         })
 
@@ -567,8 +579,8 @@ export class SchemaBuilder {
           ...photonInputType,
           fields: publisherConfig.locallyComputedInputs
             ? photonInputType.fields.filter(
-                field => !(field.name in publisherConfig.locallyComputedInputs),
-              )
+              field => !(field.name in publisherConfig.locallyComputedInputs),
+            )
             : photonInputType.fields,
         },
       }
@@ -643,8 +655,8 @@ export class SchemaBuilder {
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))
           : field.args.filter(
-              arg => (publisherConfig.pagination as any)[arg.name] === true,
-            )
+            arg => (publisherConfig.pagination as any)[arg.name] === true,
+          )
 
       args.push(
         ...paginationsArgs.map(a => {
