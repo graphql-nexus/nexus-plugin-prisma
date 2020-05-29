@@ -259,7 +259,7 @@ it('supports aliased model fields', async () => {
 
   await dbClient.aliasedFieldModel.create({
     data: {
-      fullName: 'Jane Smith',
+      full_name: 'Jane Smith',
     },
   })
 
