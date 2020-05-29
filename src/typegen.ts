@@ -236,10 +236,8 @@ function renderStaticTypes() {
     }
 
     type Pagination = {
-      first?: boolean
-      last?: boolean
-      before?: boolean
-      after?: boolean
+      take?: boolean
+      cursor?: boolean
       skip?: boolean
     }
 

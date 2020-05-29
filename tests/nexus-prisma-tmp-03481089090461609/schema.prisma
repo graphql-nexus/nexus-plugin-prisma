@@ -1,0 +1,24 @@
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:/Users/thomasladd/github/nexus-schema-plugin-prisma/tests/nexus-prisma-tmp-03481089090461609/dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "/Users/thomasladd/github/nexus-schema-plugin-prisma/tests/nexus-prisma-tmp-03481089090461609/client"
+}
+
+
+    model User {
+      custom_id  Int @id @default(autoincrement())
+      posts Post[]
+    }
+
+    model Post {
+      custom_id  Int @id @default(autoincrement())
+      title      String
+      userId     Int
+      user       User   @relation(fields: [userId], references: [custom_id])
+    }
+  

@@ -638,7 +638,7 @@ export class SchemaBuilder {
     }
 
     if (publisherConfig.pagination) {
-      const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
+      const paginationKeys = ['take', 'cursor', 'skip']
       const paginationsArgs =
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))

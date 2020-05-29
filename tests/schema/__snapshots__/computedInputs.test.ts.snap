@@ -38,7 +38,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  nested(cursor: NestedWhereUniqueInput, take: Int, skip: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
@@ -75,10 +75,8 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
+  take?: boolean
+  cursor?: boolean
   skip?: boolean
 }
 
@@ -426,10 +424,8 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
+  take?: boolean
+  cursor?: boolean
   skip?: boolean
 }
 

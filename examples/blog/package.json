@@ -15,14 +15,14 @@
     "data:inject": "ts-node prisma/fake-data.ts"
   },
   "dependencies": {
-    "@nexus/schema": "^0.12.0-rc.13",
-    "@prisma/client": "2.0.0-beta.4",
+    "@nexus/schema": "^0.13.1",
+    "@prisma/client": "2.0.0-beta.7",
     "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.2",
     "nexus-prisma": "^0.13.0-next.2"
   },
   "devDependencies": {
-    "@prisma/cli": "2.0.0-beta.4",
+    "@prisma/cli": "2.0.0-beta.7",
     "@types/faker": "^4.1.5",
     "@types/ws": "^7.2.0",
     "faker": "^4.1.0",

@@ -24,7 +24,7 @@ export const Query = queryType({
               id: args.id,
             },
           })
-          .then(result => {
+          .then((result) => {
             if (result === null) {
               throw new Error(`No blog with id of "${args.id}"`)
             }
