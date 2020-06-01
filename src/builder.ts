@@ -473,15 +473,15 @@ export class SchemaBuilder {
           typeName,
           resolve:
             field.outputType.kind === 'object'
-            ? (root, args, ctx) => {
-                const photon = this.getPhoton(ctx)
-                return photon[lowerFirst(mapping.model)]
-                  ['findOne']({
-                    where: { [idField.name]: root[idField.name] },
-                  })
-                  [field.name](args)
-              }
-            : publisherConfig.alias != field.name
+              ? (root, args, ctx) => {
+                  const photon = this.getPhoton(ctx)
+                  return photon[lowerFirst(mapping.model)]
+                    ['findOne']({
+                      where: { [idField.name]: root[idField.name] },
+                    })
+                    [field.name](args)
+                }
+              : publisherConfig.alias != field.name
               ? (root) => root[field.name]
               : undefined,
         })
