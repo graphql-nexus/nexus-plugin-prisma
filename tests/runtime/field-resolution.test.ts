@@ -228,3 +228,54 @@ Object {
 }
 `)
 })
+
+it('supports aliased model fields', async () => {
+  const datamodel = `
+    model AliasedFieldModel {
+      id  Int @id @default(autoincrement())
+      full_name String
+    }
+  `
+
+  const AliasedFieldModel = objectType({
+    name: 'AliasedFieldModel',
+    definition(t: any) {
+      t.model.id()
+      t.model.full_name({alias: 'fullName'})
+    },
+  })
+
+  const Query = objectType({
+    name: 'Query',
+    definition(t: any) {
+      t.crud.aliasedFieldModels()
+    },
+  })
+
+  const { graphqlClient, dbClient } = await ctx.getContext({
+    datamodel,
+    types: [Query, AliasedFieldModel],
+  })
+
+  await dbClient.aliasedFieldModel.create({
+    data: {
+      full_name: 'Jane Smith',
+    },
+  })
+
+  const result = await graphqlClient.request(`{
+    aliasedFieldModels {
+      fullName
+    }
+  }`)
+
+  expect(result).toMatchInlineSnapshot(`
+Object {
+  "aliasedFieldModels": Array [
+    Object {
+      "fullName": "Jane Smith",
+    },
+  ],
+}
+`)
+})
