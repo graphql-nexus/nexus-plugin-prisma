@@ -15,7 +15,7 @@ it('integrates together', async () => {
   const projectRoot = path.join(__dirname, '/__app')
 
   const projectReadFile = (relPath: string): Promise<string> =>
-    fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
+    fs.readFile(path.join(projectRoot, relPath)).then((b) => b.toString())
 
   const projectPath = (...paths: string[]): string =>
     path.join(projectRoot, ...paths)
@@ -54,6 +54,7 @@ it('integrates together', async () => {
     outputs: {
       typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
     },
+    experimentalCRUD: true,
   })
 
   process.env.NODE_ENV = 'development'

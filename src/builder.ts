@@ -122,6 +122,13 @@ export interface Options {
      */
     typegen?: string
   }
+  /**
+   * Enable experimental CRUD capabilities.
+   * Add a `t.crud` method in your definition block to generate CRUD resolvers in your `Query` and `Mutation` GraphQL Object Type.
+   *
+   * @default false
+   */
+  experimentalCRUD?: boolean
   computedInputs?: GlobalComputedInputs
 }
 
@@ -248,7 +255,11 @@ export class SchemaBuilder {
    * The build entrypoint, bringing together sub-builders.
    */
   build() {
-    return [this.buildCRUD(), this.buildModel()]
+    if (this.options.experimentalCRUD === true) {
+      return [this.buildCRUD(), this.buildModel()]
+    }
+
+    return [this.buildModel()]
   }
 
   /**
@@ -482,7 +493,7 @@ export class SchemaBuilder {
                     [field.name](args)
                 }
               : publisherConfig.alias != field.name
-              ? (root) => root[field.name]
+              ? root => root[field.name]
               : undefined,
         })
 
