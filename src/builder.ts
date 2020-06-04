@@ -482,7 +482,7 @@ export class SchemaBuilder {
                     [field.name](args)
                 }
               : publisherConfig.alias != field.name
-              ? (root) => root[field.name]
+              ? root => root[field.name]
               : undefined,
         })
 
@@ -640,7 +640,7 @@ export class SchemaBuilder {
     }
 
     if (publisherConfig.pagination) {
-      const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
+      const paginationKeys = ['cursor', 'take', 'skip']
       const paginationsArgs =
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))

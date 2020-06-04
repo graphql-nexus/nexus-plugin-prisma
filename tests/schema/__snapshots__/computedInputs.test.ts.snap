@@ -38,7 +38,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  nested(skip: Int, after: NestedWhereUniqueInput, before: NestedWhereUniqueInput, first: Int, last: Int): [Nested!]!
+  nested(cursor: NestedWhereUniqueInput, take: Int, skip: Int): [Nested!]!
   createdWithBrowser: String!
 }
 
@@ -75,11 +75,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
@@ -426,11 +424,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>

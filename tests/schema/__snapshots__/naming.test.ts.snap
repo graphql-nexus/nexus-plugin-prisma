@@ -56,7 +56,7 @@ type Mutation {
 
 type Query {
   modelName(where: ModelNameWhereUniqueInput!): ModelName
-  modelNames(skip: Int, after: ModelNameWhereUniqueInput, before: ModelNameWhereUniqueInput, first: Int, last: Int): [ModelName!]!
+  modelNames(cursor: ModelNameWhereUniqueInput, take: Int, skip: Int): [ModelName!]!
 }
 
 input StringFilter {
@@ -91,11 +91,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
