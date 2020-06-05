@@ -1,5 +1,6 @@
 import * as Nexus from '@nexus/schema'
 import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
+import { defaultFieldResolver, GraphQLFieldResolver } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
 import {
@@ -44,12 +45,12 @@ interface FieldPublisherConfig {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   computedInputs?: LocalComputedInputs<any>
-  middleware?: (
+  resolve?: (
     root: object,
     args: object,
     ctx: object,
     info: object,
-    next: () => Promise<any>,
+    originalResolve: GraphQLFieldResolver<any, any, any>,
   ) => Promise<any>
 }
 
@@ -58,7 +59,7 @@ type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 type ResolvedFieldPublisherConfig = Omit<
   WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
   'computedInputs'
-// Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
+  // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
 > & { locallyComputedInputs: LocalComputedInputs<any> }
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
@@ -87,12 +88,12 @@ const dmmfListFieldTypeToNexus = (
 ) => {
   return fieldType.isList
     ? {
-      list: [true],
-      nullable: false,
-    }
+        list: [true],
+        nullable: false,
+      }
     : {
-      nullable: !fieldType.isRequired,
-    }
+        nullable: !fieldType.isRequired,
+      }
 }
 
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
@@ -195,8 +196,8 @@ const shouldGenerateArtifacts =
   process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
     ? true
     : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
-      ? false
-      : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
+    ? false
+    : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
 
 const defaultOptions = {
   shouldGenerateArtifacts,
@@ -305,40 +306,54 @@ export class SchemaBuilder {
                 field: mappedField.field,
                 givenConfig: givenConfig ? givenConfig : {},
               })
-              let fieldConfig = this.buildFieldConfig({
+
+              const originalResolve: GraphQLFieldResolver<any, any, any> = (
+                _root,
+                args,
+                ctx,
+                info,
+              ) => {
+                const photon = this.getPrismaClient(ctx)
+                if (
+                  typeName === 'Mutation' &&
+                  (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
+                    !isEmptyObject(this.globallyComputedInputs))
+                ) {
+                  args = addComputedInputs({
+                    inputType,
+                    dmmf: this.dmmf,
+                    params: {
+                      info,
+                      args,
+                      ctx,
+                    },
+                    locallyComputedInputs:
+                      publisherConfig.locallyComputedInputs,
+                  })
+                }
+                return photon[mappedField.photonAccessor][
+                  mappedField.operation
+                ](args)
+              }
+
+              const fieldConfig = this.buildFieldConfig({
                 field: mappedField.field,
                 publisherConfig,
                 typeName,
                 operation: mappedField.operation,
                 resolve: (root, args, ctx, info) => {
-                  const resolve = () => {
-                    const photon = this.getPrismaClient(ctx)
-                    if (
-                      typeName === 'Mutation' &&
-                      (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
-                        !isEmptyObject(this.globallyComputedInputs))
-                    ) {
-                      args = addComputedInputs({
-                        inputType,
-                        dmmf: this.dmmf,
-                        params: {
-                          info,
-                          args,
-                          ctx,
-                        },
-                        locallyComputedInputs:
-                          publisherConfig.locallyComputedInputs,
-                      })
-                    }
-                    return photon[mappedField.photonAccessor][
-                      mappedField.operation
-                    ](args)
-                  }
-                  return givenConfig?.middleware
-                    ? givenConfig.middleware(root, args, ctx, info, resolve)
-                    : resolve()
+                  return givenConfig?.resolve
+                    ? givenConfig.resolve(
+                        root,
+                        args,
+                        ctx,
+                        info,
+                        originalResolve,
+                      )
+                    : originalResolve(root, args, ctx, info)
                 },
               })
+
               if (
                 this.assertOutputTypeIsDefined(
                   typeName,
@@ -486,42 +501,54 @@ export class SchemaBuilder {
           this.dmmf,
         )
 
+        const originalResolve: GraphQLFieldResolver<any, any, any> | undefined =
+          field.outputType.kind === 'object'
+            ? (root, args, ctx) => {
+                const missingIdentifiers = Constraints.findMissingUniqueIdentifiers(
+                  root,
+                  uniqueIdentifiers,
+                )
+
+                if (missingIdentifiers !== null) {
+                  throw new Error(
+                    `Resolver ${typeName}.${
+                      publisherConfig.alias
+                    } is missing the following unique identifiers: ${missingIdentifiers.join(
+                      ', ',
+                    )}`,
+                  )
+                }
+
+                const photon = this.getPrismaClient(ctx)
+
+                return photon[lowerFirst(mapping.model)]
+                  .findOne({
+                    where: Constraints.buildWhereUniqueInput(
+                      root,
+                      uniqueIdentifiers,
+                    ),
+                  })
+                  [field.name](args)
+              }
+            : publisherConfig.alias != field.name
+            ? root => root[field.name]
+            : undefined
+
         const fieldConfig = this.buildFieldConfig({
           field,
           publisherConfig,
           typeName,
-          resolve:
-            field.outputType.kind === 'object'
-              ? (root, args, ctx) => {
-                  const missingIdentifiers = Constraints.findMissingUniqueIdentifiers(
-                    root,
-                    uniqueIdentifiers,
-                  )
-
-                  if (missingIdentifiers !== null) {
-                    throw new Error(
-                      `Resolver ${typeName}.${
-                        publisherConfig.alias
-                      } is missing the following unique identifiers: ${missingIdentifiers.join(
-                        ', ',
-                      )}`,
-                    )
-                  }
-
-                  const photon = this.getPrismaClient(ctx)
-
-                  return photon[lowerFirst(mapping.model)]
-                    .findOne({
-                      where: Constraints.buildWhereUniqueInput(
-                        root,
-                        uniqueIdentifiers,
-                      ),
-                    })
-                    [field.name](args)
-                }
-              : publisherConfig.alias != field.name
-              ? root => root[field.name]
-              : undefined,
+          resolve: givenConfig?.resolve
+            ? (root, args, ctx, info) => {
+                return givenConfig.resolve!(
+                  root,
+                  args,
+                  ctx,
+                  info,
+                  originalResolve ?? defaultFieldResolver,
+                )
+              }
+            : originalResolve,
         })
 
         t.field(publisherConfig.alias, fieldConfig)
@@ -618,8 +645,8 @@ export class SchemaBuilder {
           ...photonInputType,
           fields: publisherConfig.locallyComputedInputs
             ? photonInputType.fields.filter(
-              field => !(field.name in publisherConfig.locallyComputedInputs),
-            )
+                field => !(field.name in publisherConfig.locallyComputedInputs),
+              )
             : photonInputType.fields,
         },
       }
@@ -694,8 +721,8 @@ export class SchemaBuilder {
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))
           : field.args.filter(
-            arg => (publisherConfig.pagination as any)[arg.name] === true,
-          )
+              arg => (publisherConfig.pagination as any)[arg.name] === true,
+            )
 
       args.push(
         ...paginationsArgs.map(a => {
