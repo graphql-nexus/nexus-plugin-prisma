@@ -18,9 +18,12 @@ export declare namespace DmmfTypes {
   }
   interface Model {
     name: string
-    isEmbedded: boolean
     dbName: string | null
+    documentation?: string
     fields: Field[]
+    idFields: string[]
+    isEmbedded: boolean
+    uniqueFields: Array<string[]>
   }
   type FieldKind = 'scalar' | 'object' | 'enum'
   type DatamodelFieldKind = 'scalar' | 'relation' | 'enum'

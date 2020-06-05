@@ -9,7 +9,7 @@ type BatchPayload {
 type Bubble {
   createdAt: DateTime!
   id: String!
-  members(first: Int, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
+  members(cursor: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutMembersInput {
@@ -33,7 +33,7 @@ input BubbleMembersWhereInput {
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
-  id: UUIDFilter
+  id: StringFilter
   members: UserFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
@@ -152,7 +152,7 @@ input PostWhereUniqueInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, skip: Int): [User!]!
+  users(cursor: UserWhereUniqueInput, skip: Int, take: Int): [User!]!
 }
 
 input StringFilter {
@@ -172,7 +172,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, skip: Int, where: PostWhereInput): [Post!]!
+  posts(cursor: PostWhereUniqueInput, orderBy: PostOrderByInput, skip: Int, take: Int, where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {
@@ -207,20 +207,4 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: String
-}
-
-scalar UUID
-
-input UUIDFilter {
-  contains: UUID
-  endsWith: UUID
-  equals: UUID
-  gt: UUID
-  gte: UUID
-  in: [UUID!]
-  lt: UUID
-  lte: UUID
-  not: UUID
-  notIn: [UUID!]
-  startsWith: UUID
 }
