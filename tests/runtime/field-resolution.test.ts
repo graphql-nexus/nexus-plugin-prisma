@@ -241,7 +241,7 @@ it('supports aliased model fields', async () => {
     name: 'AliasedFieldModel',
     definition(t: any) {
       t.model.id()
-      t.model.full_name({alias: 'fullName'})
+      t.model.full_name({ alias: 'fullName' })
     },
   })
 

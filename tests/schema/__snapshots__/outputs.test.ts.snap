@@ -26,7 +26,7 @@ input IntFilter {
 }
 
 type Query {
-  users(where: UserWhereInput, skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+  users(where: UserWhereInput, cursor: UserWhereUniqueInput, take: Int, skip: Int): [User!]!
 }
 
 type User {
@@ -63,11 +63,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>

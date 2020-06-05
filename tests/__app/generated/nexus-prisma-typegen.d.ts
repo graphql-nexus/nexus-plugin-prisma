@@ -13,11 +13,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>

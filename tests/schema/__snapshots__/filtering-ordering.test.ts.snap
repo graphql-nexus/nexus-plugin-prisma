@@ -10,7 +10,7 @@ Warning: Your GraphQL \`Query\` object definition is projecting a relational fie
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: schema 1`] = `
 "type Query {
-  users(skip: Int, after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+  users(cursor: UserWhereUniqueInput, take: Int, skip: Int): [User!]!
 }
 
 type User {
@@ -40,11 +40,9 @@ type NexusPrismaScalarOpts = {
 }
 
 type Pagination = {
-  first?: boolean
-  last?: boolean
-  before?: boolean
-  after?: boolean
   skip?: boolean
+  take?: boolean
+  cursor?: boolean
 }
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
