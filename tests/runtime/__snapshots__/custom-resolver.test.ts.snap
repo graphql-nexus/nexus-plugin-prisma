@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`supports custom resolver for t.crud 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "id": 1,
+    },
+    Object {
+      "id": 2,
+    },
+  ],
+}
+`;
+
+exports[`supports custom resolver for t.model 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "name": "Foo (updated by middleware)",
+    },
+  ],
+}
+`;
