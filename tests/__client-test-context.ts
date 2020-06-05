@@ -1,5 +1,5 @@
 import { MigrateEngine } from '@prisma/migrate'
-import { getGenerator, getGenerators } from '@prisma/sdk'
+import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
 import { GraphQLClient } from 'graphql-request'
