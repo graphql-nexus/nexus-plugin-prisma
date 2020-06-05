@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`supports nested query with compound ids 1`] = `
+Object {
+  "parent": Object {
+    "child": Object {
+      "idField1": 1,
+      "idField2": 2,
+    },
+    "idField1": 1,
+    "idField2": 2,
+  },
+}
+`;
+
+exports[`supports nested query with one id field 1`] = `
+Object {
+  "parent": Object {
+    "child": Object {
+      "idField": 1,
+    },
+    "idField": 1,
+  },
+}
+`;

@@ -45,7 +45,7 @@ function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
         ...field,
         kind: field.kind === 'object' ? 'relation' : field.kind,
       })),
-    })),
+    })) as any, // TODO: Remove this once @prisma/client/runtime:DMMF contains the `uniqueFields` typed
   }
 }
 
