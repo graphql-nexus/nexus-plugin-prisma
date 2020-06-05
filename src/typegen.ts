@@ -231,8 +231,18 @@ function renderStaticTypes() {
         ? true
         : false
 
+    type CustomFieldResolver<TypeName extends string, FieldName extends string> =
+      (
+        root: core.RootValue<TypeName>,
+        args: core.ArgsValue<TypeName, FieldName>,
+        context: core.GetGen<"context">,
+        info: GraphQLResolveInfo,
+        originalResolve: core.FieldResolver<TypeName, FieldName>
+      ) => core.MaybePromise<core.ResultValue<TypeName, FieldName>> | core.MaybePromiseDeep<core.ResultValue<TypeName, FieldName>>
+
     type NexusPrismaScalarOpts<TypeName extends string, MethodName extends string, Alias extends string | undefined> = {
       alias?: Alias
+      resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
     } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
     type Pagination = {
@@ -335,6 +345,7 @@ function renderStaticTypes() {
     type BaseRelationOptions<TypeName extends string, MethodName extends string, Alias extends string | undefined, ReturnType extends string> =
       DynamicRequiredType<ReturnType> & {
         alias?: Alias
+        resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
         computedInputs?: LocalComputedInputs<MethodName>
       } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
