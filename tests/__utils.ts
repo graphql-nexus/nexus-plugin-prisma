@@ -48,7 +48,10 @@ export async function getPinnedDmmfFromSchema(datamodel: string) {
 export async function generateSchemaAndTypes(
   datamodel: string,
   types: any[],
-  options?: TransformOptions & { experimentalCRUD?: boolean },
+  options?: TransformOptions & {
+    experimentalCRUD?: boolean
+    plugins?: Nexus.core.NexusPlugin[]
+  },
 ) {
   const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
@@ -57,7 +60,7 @@ export async function generateSchemaAndTypes(
   })
   const schema = Nexus.makeSchema({
     types,
-    plugins: [nexusPrisma],
+    plugins: [nexusPrisma, ...(options?.plugins ?? [])],
     outputs: false,
   })
 

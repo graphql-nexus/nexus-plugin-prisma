@@ -1,3 +1,4 @@
+import * as Nexus from '@nexus/schema'
 import { MigrateEngine } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
@@ -14,6 +15,7 @@ type RuntimeTestContext = {
   getContext: (args: {
     datamodel: string
     types: any[]
+    plugins?: Nexus.core.NexusPlugin[]
   }) => Promise<{
     graphqlClient: GraphQLClient
     dbClient: any
@@ -40,7 +42,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   afterEach(teardownCtx)
 
   return {
-    async getContext({ datamodel, types }) {
+    async getContext({ datamodel, types, plugins }) {
       try {
         const prismaClient = await generateClientFromDatamodel(datamodel)
         generatedClient = prismaClient
@@ -48,6 +50,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
         const serverAndClient = await getGraphQLServerAndClient(
           datamodel,
           types,
+          plugins ?? [],
           prismaClient,
         )
         httpServer = serverAndClient.httpServer
@@ -67,9 +70,12 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 async function getGraphQLServerAndClient(
   datamodel: string,
   types: any[],
+  plugins: Nexus.core.NexusPlugin[],
   prismaClient: { client: any; teardown(): Promise<void> },
 ) {
-  const { schema } = await generateSchemaAndTypes(datamodel, types, {})
+  const { schema } = await generateSchemaAndTypes(datamodel, types, {
+    plugins,
+  })
   const port = await getPort()
   const endpoint = '/graphql'
   const graphqlServer = new GraphQLServer({
