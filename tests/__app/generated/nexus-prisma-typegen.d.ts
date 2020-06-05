@@ -8,9 +8,9 @@ type IsModelNameExistsInGraphQLTypes<ReturnType> =
     ? true
     : false
 
-type NexusPrismaScalarOpts = {
-  alias?: string
-}
+type NexusPrismaScalarOpts<TypeName extends string, MethodName extends string, Alias extends string | undefined> = {
+  alias?: Alias
+} & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
 type Pagination = {
   skip?: boolean
@@ -109,21 +109,21 @@ export type LocalMutationResolverParams<MethodName extends string> =
 
 export type Context = core.GetGen<'context'>
 
-type BaseRelationOptions<MethodName extends string, ReturnType extends string> =
+type BaseRelationOptions<TypeName extends string, MethodName extends string, Alias extends string | undefined, ReturnType extends string> =
   DynamicRequiredType<ReturnType> & {
-    alias?: string
+    alias?: Alias
     computedInputs?: LocalComputedInputs<MethodName>
-  }
+  } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
 // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
-type NexusPrismaRelationOpts<ModelName extends string, MethodName extends string, ReturnType extends string> =
+type NexusPrismaRelationOpts<ModelName extends string, MethodName extends string, Alias extends string | undefined, ReturnType extends string> =
   GetNexusPrismaInput<ModelName, MethodName, 'filtering'> extends never
-  ? BaseRelationOptions<MethodName, ReturnType>
+  ? BaseRelationOptions<ModelName, MethodName, Alias, ReturnType>
   // else if
   : GetNexusPrismaInput<ModelName, MethodName, 'ordering'> extends never
-  ? BaseRelationOptions<MethodName, ReturnType>
+  ? BaseRelationOptions<ModelName, MethodName, Alias, ReturnType>
   // else
-  : BaseRelationOptions<MethodName, ReturnType> & {
+  : BaseRelationOptions<ModelName, MethodName, Alias, ReturnType> & {
       filtering?:
         | boolean
         | Partial<Record<GetNexusPrismaInput<ModelName, MethodName, 'filtering'>, boolean>>
@@ -208,14 +208,14 @@ type NexusPrismaMethod<
   // else if
   // if scalar return scalar opts
   : ThisKind extends AKind<'Scalar'>
-  ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName>
+  ? <Alias extends string | undefined = undefined>(opts?: NexusPrismaScalarOpts<ModelName, MethodName, Alias>) => NexusPrismaFields<ModelName>
   // else if
   // if model name has a mapped graphql types then make opts optional
   : IsModelNameExistsInGraphQLTypes<ReturnType> extends true
-  ? (opts?: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>) => NexusPrismaFields<ModelName>
+  ? <Alias extends string | undefined = undefined>(opts?: NexusPrismaRelationOpts<ModelName, MethodName, Alias, ReturnType>) => NexusPrismaFields<ModelName>
   // else
   // force use input the related graphql type -> { type: '...' }
-  : (opts: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>) => NexusPrismaFields<ModelName>
+  : <Alias extends string | undefined = undefined>(opts: NexusPrismaRelationOpts<ModelName, MethodName, Alias, ReturnType>) => NexusPrismaFields<ModelName>
 
 type GetNexusPrismaMethod<TypeName extends string> = TypeName extends keyof NexusPrismaMethods
   ? NexusPrismaMethods[TypeName]

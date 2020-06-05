@@ -546,7 +546,18 @@ export class SchemaBuilder {
   buildFieldConfig(
     config: FieldConfigData,
   ): Nexus.core.NexusOutputFieldConfig<any, string> {
+    const {
+      alias,
+      locallyComputedInputs,
+      type,
+      filtering,
+      ordering,
+      pagination,
+      ...additionalExternalPropsSuchAsPlugins
+    } = config.publisherConfig
+
     return {
+      ...additionalExternalPropsSuchAsPlugins,
       type: this.publisher.outputType(
         config.publisherConfig.type,
         config.field,
