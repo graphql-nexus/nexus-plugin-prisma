@@ -1,3 +1,4 @@
+import * as Nexus from '@nexus/schema'
 import { MigrateEngine } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
@@ -9,14 +10,18 @@ import * as path from 'path'
 import rimraf from 'rimraf'
 import { getEnginePath, getEngineVersion } from './__ensure-engine'
 import { generateSchemaAndTypes } from './__utils'
+import { GraphQLSchema } from 'graphql'
 
 type RuntimeTestContext = {
   getContext: (args: {
     datamodel: string
     types: any[]
+    plugins?: Nexus.core.NexusPlugin[]
   }) => Promise<{
     graphqlClient: GraphQLClient
     dbClient: any
+    schema: GraphQLSchema
+    schemaString: string
   }>
 }
 
@@ -40,14 +45,18 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   afterEach(teardownCtx)
 
   return {
-    async getContext({ datamodel, types }) {
+    async getContext({ datamodel, types, plugins }) {
       try {
+        // Force query engine binary path
+        process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
+
         const prismaClient = await generateClientFromDatamodel(datamodel)
         generatedClient = prismaClient
 
         const serverAndClient = await getGraphQLServerAndClient(
           datamodel,
           types,
+          plugins ?? [],
           prismaClient,
         )
         httpServer = serverAndClient.httpServer
@@ -55,6 +64,8 @@ export function createRuntimeTestContext(): RuntimeTestContext {
         return {
           dbClient: prismaClient.client,
           graphqlClient: serverAndClient.client,
+          schema: serverAndClient.schema,
+          schemaString: serverAndClient.schemaString,
         }
       } catch (e) {
         await teardownCtx()
@@ -67,9 +78,12 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 async function getGraphQLServerAndClient(
   datamodel: string,
   types: any[],
+  plugins: Nexus.core.NexusPlugin[],
   prismaClient: { client: any; teardown(): Promise<void> },
 ) {
-  const { schema } = await generateSchemaAndTypes(datamodel, types, {})
+  const { schema, schemaString } = await generateSchemaAndTypes(datamodel, types, {
+    plugins,
+  })
   const port = await getPort()
   const endpoint = '/graphql'
   const graphqlServer = new GraphQLServer({
@@ -80,7 +94,7 @@ async function getGraphQLServerAndClient(
 
   const httpServer = await graphqlServer.start({ port, endpoint })
 
-  return { client, httpServer }
+  return { client, httpServer, schema, schemaString }
 }
 
 async function generateClientFromDatamodel(datamodelString: string) {

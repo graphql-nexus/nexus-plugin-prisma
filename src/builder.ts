@@ -1,6 +1,7 @@
 import * as Nexus from '@nexus/schema'
 import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import * as path from 'path'
+import * as Constraints from './constraints'
 import {
   addComputedInputs,
   DmmfDocument,
@@ -129,6 +130,13 @@ export interface Options {
      */
     typegen?: string
   }
+  /**
+   * Enable experimental CRUD capabilities.
+   * Add a `t.crud` method in your definition block to generate CRUD resolvers in your `Query` and `Mutation` GraphQL Object Type.
+   *
+   * @default false
+   */
+  experimentalCRUD?: boolean
   computedInputs?: GlobalComputedInputs
 }
 
@@ -211,7 +219,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
-  protected getPhoton: PrismaClientFetcher
+  protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
@@ -238,7 +246,7 @@ export class SchemaBuilder {
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
 
-    this.getPhoton = (ctx: any) => {
+    this.getPrismaClient = (ctx: any) => {
       const photon = config.prismaClient(ctx)
       assertPhotonInContext(photon)
       return photon
@@ -255,7 +263,11 @@ export class SchemaBuilder {
    * The build entrypoint, bringing together sub-builders.
    */
   build() {
-    return [this.buildCRUD(), this.buildModel()]
+    if (this.options.experimentalCRUD === true) {
+      return [this.buildCRUD(), this.buildModel()]
+    }
+
+    return [this.buildModel()]
   }
 
   /**
@@ -300,7 +312,7 @@ export class SchemaBuilder {
                 operation: mappedField.operation,
                 resolve: (root, args, ctx, info) => {
                   const resolve = () => {
-                    const photon = this.getPhoton(ctx)
+                    const photon = this.getPrismaClient(ctx)
                     if (
                       typeName === 'Mutation' &&
                       (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
@@ -469,15 +481,10 @@ export class SchemaBuilder {
           stage,
         )
         const mapping = this.dmmf.getMapping(typeName)
-        const idField = this.dmmf
-          .getModelOrThrow(typeName)
-          .fields.find(f => f.isId)
-
-        if (!idField) {
-          throw new Error(
-            `Your Prisma Model ${typeName} does not have an @id field. It's required for nexus-prisma to work.`,
-          )
-        }
+        const uniqueIdentifiers = Constraints.resolveUniqueIdentifiers(
+          typeName,
+          this.dmmf,
+        )
 
         const fieldConfig = this.buildFieldConfig({
           field,
@@ -486,13 +493,34 @@ export class SchemaBuilder {
           resolve:
             field.outputType.kind === 'object'
               ? (root, args, ctx) => {
-                const photon = this.getPhoton(ctx)
-                return photon[lowerFirst(mapping.model)]
-                ['findOne']({
-                  where: { [idField.name]: root[idField.name] },
-                })
-                [field.name](args)
-              }
+                  const missingIdentifiers = Constraints.findMissingUniqueIdentifiers(
+                    root,
+                    uniqueIdentifiers,
+                  )
+
+                  if (missingIdentifiers !== null) {
+                    throw new Error(
+                      `Resolver ${typeName}.${
+                        publisherConfig.alias
+                      } is missing the following unique identifiers: ${missingIdentifiers.join(
+                        ', ',
+                      )}`,
+                    )
+                  }
+
+                  const photon = this.getPrismaClient(ctx)
+
+                  return photon[lowerFirst(mapping.model)]
+                    .findOne({
+                      where: Constraints.buildWhereUniqueInput(
+                        root,
+                        uniqueIdentifiers,
+                      ),
+                    })
+                    [field.name](args)
+                }
+              : publisherConfig.alias != field.name
+              ? root => root[field.name]
               : undefined,
         })
 
@@ -529,7 +557,18 @@ export class SchemaBuilder {
   buildFieldConfig(
     config: FieldConfigData,
   ): Nexus.core.NexusOutputFieldConfig<any, string> {
+    const {
+      alias,
+      locallyComputedInputs,
+      type,
+      filtering,
+      ordering,
+      pagination,
+      ...additionalExternalPropsSuchAsPlugins
+    } = config.publisherConfig
+
     return {
+      ...additionalExternalPropsSuchAsPlugins,
       type: this.publisher.outputType(
         config.publisherConfig.type,
         config.field,
@@ -650,7 +689,7 @@ export class SchemaBuilder {
     }
 
     if (publisherConfig.pagination) {
-      const paginationKeys = ['first', 'last', 'before', 'after', 'skip']
+      const paginationKeys = ['cursor', 'take', 'skip']
       const paginationsArgs =
         publisherConfig.pagination === true
           ? field.args.filter(a => paginationKeys.includes(a.name))
