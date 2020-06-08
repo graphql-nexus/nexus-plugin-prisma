@@ -33,7 +33,7 @@ input BubbleMembersWhereInput {
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
-  id: StringFilter
+  id: UUIDFilter
   members: UserFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
@@ -207,4 +207,20 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: String
+}
+
+scalar UUID
+
+input UUIDFilter {
+  contains: UUID
+  endsWith: UUID
+  equals: UUID
+  gt: UUID
+  gte: UUID
+  in: [UUID!]
+  lt: UUID
+  lte: UUID
+  not: UUID
+  notIn: [UUID!]
+  startsWith: UUID
 }
