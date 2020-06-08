@@ -64,7 +64,7 @@ ${colors.yellow('Warning')}: ${colors.green(
         )} ${colors.yellow('is an experimental feature with many practical limitations. You must explicitly enable it before using.')}
 Please add ${colors.green(`experimentalCRUD: true`)} in the ${colors.green(
           'nexusPluginPrisma()',
-        )} if you still wish to enable it.`)
+        )} constructor if you still wish to enable it.`)
       }
     },
   })
