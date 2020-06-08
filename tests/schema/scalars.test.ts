@@ -13,6 +13,7 @@ it('publishes date and json scalar output types', async () => {
     id  Int @id @default(autoincrement())
     date DateTime
     json Json
+    optionalJson Json?
   }
   `
 
@@ -22,6 +23,7 @@ it('publishes date and json scalar output types', async () => {
       t.model.id()
       t.model.date()
       t.model.json()
+      t.model.optionalJson()
     },
   })
 

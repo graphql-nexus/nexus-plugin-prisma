@@ -13,6 +13,7 @@ type User {
   id: Int!
   date: DateTime!
   json: Json!
+  optionalJson: Json
 }
 "
 `;
@@ -275,8 +276,8 @@ interface ModelTypes {
 interface NexusPrismaInputs {
   Query: {
     users: {
-  filtering: 'id' | 'date' | 'json' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'date' | 'json'
+  filtering: 'id' | 'date' | 'json' | 'optionalJson' | 'AND' | 'OR' | 'NOT'
+  ordering: 'id' | 'date' | 'json' | 'optionalJson'
 }
 
   },
@@ -305,6 +306,7 @@ interface NexusPrismaTypes {
     id: 'Int'
     date: 'DateTime'
     json: 'Json'
+    optionalJson: 'Json'
 
 }
 }

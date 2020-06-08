@@ -125,7 +125,7 @@ export class Publisher {
         inputType.fields
           .map(field => {
             // TODO: Do not filter JsonFilter once Prisma implements them
-            if (field.inputType.type === 'JsonFilter') {
+            if (['JsonFilter', 'NullableJsonFilter'].includes(field.inputType.type)) {
               return null
             }
 
