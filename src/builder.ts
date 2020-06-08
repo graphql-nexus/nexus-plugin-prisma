@@ -153,7 +153,12 @@ export interface InternalOptions extends Options {
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
 
-  return builder.build()
+  return {
+    types: builder.build(),
+    wasCrudUsedButDisabled() {
+      return builder.wasCrudUsedButDisabled
+    }
+  }
 }
 
 // The @types default is based on the priviledge given to such
@@ -224,6 +229,7 @@ export class SchemaBuilder {
   protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
+  public wasCrudUsedButDisabled: boolean
 
   constructor(public options: InternalOptions) {
     const config = {
@@ -246,6 +252,7 @@ export class SchemaBuilder {
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
     this.fieldNamingStrategy = defaultFieldNamingStrategy
+    this.wasCrudUsedButDisabled = false
 
     this.getPrismaClient = (ctx: any) => {
       const photon = config.prismaClient(ctx)
@@ -268,7 +275,7 @@ export class SchemaBuilder {
       return [this.buildCRUD(), this.buildModel()]
     }
 
-    return [this.buildModel()]
+    return [this.buildModel(), this.buildDisabledCRUD()]
   }
 
   /**
@@ -390,6 +397,20 @@ export class SchemaBuilder {
           this.options.onUnknownFieldName,
         )
       },
+    })
+  }
+
+  protected buildDisabledCRUD(): DynamicOutputPropertyDef<'crud'> {
+    return Nexus.dynamicOutputProperty({
+      name: 'crud',
+      factory: () => {
+        this.wasCrudUsedButDisabled = true
+        return new Proxy({}, {
+          get() {
+            return () => {}
+          },
+        })
+      }
     })
   }
 

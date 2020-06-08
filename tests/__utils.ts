@@ -15,7 +15,7 @@ export const createNexusPrismaInternal = (
   Nexus.createPlugin({
     name: 'nexus-prisma-internal',
     onInstall: nexusBuilder => ({
-      types: NexusPrismaBuilder.build({ ...options, nexusBuilder }),
+      types: NexusPrismaBuilder.build({ ...options, nexusBuilder }).types,
     }),
   })
 
