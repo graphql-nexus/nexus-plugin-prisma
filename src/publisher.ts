@@ -123,21 +123,30 @@ export class Publisher {
       name: inputType.name,
       definition: t => {
         inputType.fields
-          .map(field => ({
-            ...field,
-            inputType: {
-              ...field.inputType,
-              type: this.isPublished(field.inputType.type)
-                ? // Simply reference the field input type if it's already been visited, otherwise create it
-                  field.inputType.type
-                : this.inputType({
-                    arg: field,
-                    type: this.getTypeFromArg(field),
-                  }),
-            },
-          }))
+          .map(field => {
+            // TODO: Do not filter JsonFilter once Prisma implements them
+            if (field.inputType.type === 'JsonFilter') {
+              return null
+            }
+
+            return {
+              ...field,
+              inputType: {
+                ...field.inputType,
+                type: this.isPublished(field.inputType.type)
+                  ? // Simply reference the field input type if it's already been visited, otherwise create it
+                    field.inputType.type
+                  : this.inputType({
+                      arg: field,
+                      type: this.getTypeFromArg(field),
+                    }),
+              },
+            }
+          })
           .forEach(field => {
-            t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
+            if (field) {
+              t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
+            }
           })
       },
     })
