@@ -14,7 +14,7 @@
     "release:stable": "dripip stable",
     "release:pr": "dripip pr",
     "clean": "rm -rf dist",
-    "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc",
+    "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc && ts-node scripts/post-build",
     "dev": "tsc --watch",
     "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
     "prepublishOnly": "yarn -s build",
