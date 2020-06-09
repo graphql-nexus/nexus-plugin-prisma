@@ -246,9 +246,10 @@ function renderStaticTypes() {
     } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
     type Pagination = {
-      skip?: boolean
-      take?: boolean
-      cursor?: boolean
+      first?: boolean
+      last?: boolean
+      before?: boolean
+      after?: boolean
     }
 
     type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
