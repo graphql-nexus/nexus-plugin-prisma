@@ -7,7 +7,6 @@ import {
   addComputedInputs,
   DmmfDocument,
   DmmfTypes,
-  fatalIfOldPhotonIsInstalled,
   getTransformedDmmf,
 } from './dmmf'
 import * as GraphQL from './graphql'
@@ -157,7 +156,7 @@ export function build(options: InternalOptions) {
     types: builder.build(),
     wasCrudUsedButDisabled() {
       return builder.wasCrudUsedButDisabled
-    }
+    },
   }
 }
 
@@ -183,17 +182,9 @@ let defaultClientPath: string
 if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.NEXUS_PRISMA_LINK) {
-  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/photon')
-
-  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
-    defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
-  }
+  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
 } else {
-  defaultClientPath = '@prisma/photon'
-
-  if (!fatalIfOldPhotonIsInstalled(defaultClientPath)) {
-    defaultClientPath = '@prisma/client'
-  }
+  defaultClientPath = '@prisma/client'
 }
 
 // NOTE This will be repalced by Nexus plugins once typegen integration is available.
@@ -405,12 +396,15 @@ export class SchemaBuilder {
       name: 'crud',
       factory: () => {
         this.wasCrudUsedButDisabled = true
-        return new Proxy({}, {
-          get() {
-            return () => {}
+        return new Proxy(
+          {},
+          {
+            get() {
+              return () => {}
+            },
           },
-        })
-      }
+        )
+      },
     })
   }
 
