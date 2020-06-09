@@ -20,10 +20,14 @@ export interface MappedField extends Omit<BaseMappedField, 'field'> {
 const buildField = (
   mapping: DmmfTypes.Mapping,
   operation: OperationName,
-): BaseMappedField => {
+): BaseMappedField | null => {
+  if (mapping[operation] === undefined) {
+    return null
+  }
+
   return {
     operation,
-    field: mapping[operation],
+    field: mapping[operation]!,
     model: mapping.model,
     photonAccessor: lowerFirst(mapping.model),
   }
@@ -31,7 +35,7 @@ const buildField = (
 
 const CRUD_MAPPED_FIELDS: Record<
   string,
-  (m: DmmfTypes.Mapping) => BaseMappedField[]
+  (m: DmmfTypes.Mapping) => (BaseMappedField | null)[]
 > = {
   Query: m => [buildField(m, 'findOne'), buildField(m, 'findMany')],
   Mutation: m => [
@@ -48,16 +52,19 @@ export const getCrudMappedFields = (
   typeName: 'Query' | 'Mutation',
   dmmf: DmmfDocument,
   namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy,
-): MappedField[] =>
-  flatMap(dmmf.mappings, m => CRUD_MAPPED_FIELDS[typeName](m)).map(
-    mappedField => ({
-      ...mappedField,
-      field: {
-        ...dmmf.getOutputType(typeName).getField(mappedField.field),
-        name: namingStrategy[mappedField.operation](
-          mappedField.field,
-          mappedField.model,
-        ),
-      },
-    }),
-  )
+): MappedField[] => {
+  const mappedFields = flatMap(dmmf.mappings, m =>
+    CRUD_MAPPED_FIELDS[typeName](m),
+  ).filter(mappedField => mappedField !== null) as BaseMappedField[]
+
+  return mappedFields.map(mappedField => ({
+    ...mappedField,
+    field: {
+      ...dmmf.getOutputType(typeName).getField(mappedField.field),
+      name: namingStrategy[mappedField.operation](
+        mappedField.field,
+        mappedField.model,
+      ),
+    },
+  }))
+}
