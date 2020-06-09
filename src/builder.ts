@@ -258,6 +258,7 @@ export class SchemaBuilder {
       Typegen.generateSync({
         prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
+        paginationStrategy: this.paginationStrategy,
       })
     }
   }

@@ -251,7 +251,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Bubble: {
     members: { // args
-      cursor?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
       orderBy?: NexusGenInputs['BubbleMembersOrderByInput'] | null; // BubbleMembersOrderByInput
       where?: NexusGenInputs['BubbleMembersWhereInput'] | null; // BubbleMembersWhereInput
     }
@@ -270,17 +270,21 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
     }
     users: { // args
-      cursor?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      before?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
       skip?: number | null; // Int
-      take?: number | null; // Int
     }
   }
   User: {
     posts: { // args
-      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      after?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      before?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
       orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
       skip?: number | null; // Int
-      take?: number | null; // Int
       where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }

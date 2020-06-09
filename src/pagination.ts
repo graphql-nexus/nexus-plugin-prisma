@@ -1,7 +1,7 @@
 import { DmmfTypes, getReturnTypeName } from './dmmf'
 import { DMMF } from '@prisma/client/runtime'
 
-export interface PaginationStrategy<T = any> {
+export interface PaginationStrategy<T = object> {
   transformDmmfArgs: (params: {
     args: DmmfTypes.SchemaArg[]
     paginationArgNames: string[]
@@ -71,13 +71,15 @@ const relayLikePaginationArgs: Record<
   }),
 }
 
-export const relayLikePaginationStrategy: PaginationStrategy<{
+interface RelayLikePaginationArgs {
   first?: number
   last?: number
   skip?: number
   before?: object
   after?: object
-}> = {
+}
+
+export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePaginationArgs> = {
   paginationArgNames: Object.keys(relayLikePaginationArgs),
   transformDmmfArgs({ args, paginationArgNames, field }) {
     const fieldOutputTypeName = getReturnTypeName(field.outputType.type)

@@ -11,7 +11,7 @@ import { PaginationStrategy, relayLikePaginationStrategy } from '../pagination'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
-  paginationStrategy?: PaginationStrategy<any>
+  paginationStrategy?: PaginationStrategy
 }
 
 export const getTransformedDmmf = (

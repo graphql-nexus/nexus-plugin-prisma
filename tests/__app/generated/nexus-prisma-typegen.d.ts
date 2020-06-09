@@ -22,12 +22,6 @@ type NexusPrismaScalarOpts<TypeName extends string, MethodName extends string, A
   resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
 } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
 
-type Pagination = {
-  skip?: boolean
-  take?: boolean
-  cursor?: boolean
-}
-
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
 
 /**
@@ -246,6 +240,15 @@ type GetNexusPrisma<TypeName extends string, ModelOrCrud extends 'model' | 'crud
           ? GetNexusPrismaMethod<TypeName>
           : never
       : never
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  skip?: boolean
+  before?: boolean
+  after?: boolean
+}
 
 // Generated
 interface ModelTypes {

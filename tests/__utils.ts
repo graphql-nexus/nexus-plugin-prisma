@@ -8,6 +8,7 @@ import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { render as renderTypegen } from '../src/typegen'
 import { getEnginePath } from './__ensure-engine'
+import { relayLikePaginationStrategy } from '../src/pagination'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
@@ -67,7 +68,7 @@ export async function generateSchemaAndTypes(
   return {
     schemaString: GQL.printSchema(schema),
     schema,
-    typegen: renderTypegen(dmmf, '@prisma/client'),
+    typegen: renderTypegen(dmmf, '@prisma/client', relayLikePaginationStrategy),
   }
 }
 
@@ -91,7 +92,11 @@ export async function generateSchemaAndTypesWithoutThrowing(
     types: [types, nexusPrisma],
     outputs: false,
   })
-  const typegen = renderTypegen(dmmf, '@prisma/client')
+  const typegen = renderTypegen(
+    dmmf,
+    '@prisma/client',
+    relayLikePaginationStrategy,
+  )
 
   return {
     schema: GQL.printSchema(schemaAndMissingTypes.schema),
