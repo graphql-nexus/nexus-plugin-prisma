@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create: converts nulls to undefined when fields are not nullable 1`] = `
+Object {
+  "data": Object {
+    "id": undefined,
+    "posts": Object {
+      "connect": undefined,
+      "create": Object {
+        "id": "titi",
+      },
+    },
+  },
+}
+`;
+
+exports[`findMany: converts nulls to undefined when fields are not nullable 1`] = `
+Object {
+  "cursor": undefined,
+  "orderBy": Object {
+    "birthDate": null,
+    "email": null,
+    "id": "asc",
+  },
+  "skip": undefined,
+  "take": 1,
+  "where": Object {
+    "AND": undefined,
+    "NOT": Object {
+      "AND": Object {
+        "birthDate": undefined,
+      },
+      "posts": null,
+    },
+  },
+}
+`;
+
+exports[`model filtering: converts nulls to undefined when fields are not nullable 1`] = `
+Object {
+  "where": Object {
+    "authors": Object {
+      "every": Object {
+        "birthDate": undefined,
+        "email": null,
+        "posts": null,
+      },
+    },
+    "id": undefined,
+  },
+}
+`;

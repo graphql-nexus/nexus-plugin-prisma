@@ -50,8 +50,8 @@ export const hardWriteFileSync = (filePath: string, data: string): void => {
  * TODO
  */
 export const indexBy = <X extends Record<string, any>>(
-  indexer: ((x: X) => string) | keyof X,
   xs: X[],
+  indexer: ((x: X) => string) | keyof X,
 ): Index<X> => {
   const seed: Index<X> = {}
   if (typeof indexer === 'function') {

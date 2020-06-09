@@ -26,6 +26,7 @@ import {
   FieldNamingStrategy,
   OperationName,
 } from './naming-strategies'
+import { transformNullsToUndefined } from './null'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
@@ -33,6 +34,7 @@ import {
   assertPhotonInContext,
   GlobalComputedInputs,
   Index,
+  indexBy,
   isEmptyObject,
   LocalComputedInputs,
   lowerFirst,
@@ -313,6 +315,7 @@ export class SchemaBuilder {
                 field: mappedField.field,
                 givenConfig: givenConfig ? givenConfig : {},
               })
+              const schemaArgsIndex = indexBy(mappedField.field.args, 'name')
 
               const originalResolve: GraphQLFieldResolver<any, any, any> = (
                 _root,
@@ -326,6 +329,7 @@ export class SchemaBuilder {
                   (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
                     !isEmptyObject(this.globallyComputedInputs))
                 ) {
+                  args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                   args = addComputedInputs({
                     inputType,
                     dmmf: this.dmmf,
@@ -521,6 +525,7 @@ export class SchemaBuilder {
           typeName,
           this.dmmf,
         )
+        const schemaArgsIndex = indexBy(field.args, 'name')
 
         const originalResolve: GraphQLFieldResolver<any, any, any> | undefined =
           field.outputType.kind === 'object'
@@ -541,6 +546,8 @@ export class SchemaBuilder {
                 }
 
                 const photon = this.getPrismaClient(ctx)
+
+                args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
 
                 return photon[lowerFirst(mapping.model)]
                   .findOne({

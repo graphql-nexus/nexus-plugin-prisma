@@ -12,6 +12,7 @@ export class DmmfDocument implements DmmfTypes.Document {
   public mappingsIndex: Index<DmmfTypes.Mapping>
   public enumsIndex: Index<DmmfTypes.Enum>
   public modelsIndex: Index<DmmfTypes.Model>
+  public inputTypesIndexWithFields: InputTypeIndexWithField
 
   constructor({ datamodel, schema, mappings }: DmmfTypes.Document) {
     // ExternalDMMF
@@ -20,11 +21,12 @@ export class DmmfDocument implements DmmfTypes.Document {
     this.mappings = mappings
 
     // Indices
-    this.modelsIndex = indexBy('name', datamodel.models)
-    this.enumsIndex = indexBy('name', schema.enums)
-    this.inputTypesIndex = indexBy('name', schema.inputTypes)
-    this.outputTypesIndex = indexBy('name', schema.outputTypes)
-    this.mappingsIndex = indexBy('model', mappings)
+    this.modelsIndex = indexBy(datamodel.models, 'name')
+    this.enumsIndex = indexBy(schema.enums, 'name')
+    this.inputTypesIndex = indexBy(schema.inputTypes, 'name')
+    this.outputTypesIndex = indexBy(schema.outputTypes, 'name')
+    this.mappingsIndex = indexBy(mappings, 'model')
+    this.inputTypesIndexWithFields = indexInputTypeWithFields(schema.inputTypes)
 
     // Entrypoints
     this.queryObject = this.getOutputType('Query')
@@ -33,6 +35,16 @@ export class DmmfDocument implements DmmfTypes.Document {
 
   getInputType(inputTypeName: string) {
     const inputType = this.inputTypesIndex[inputTypeName]
+
+    if (!inputType) {
+      throw new Error('Could not find input type name: ' + inputTypeName)
+    }
+
+    return inputType
+  }
+
+  getInputTypeWithIndexedFields(inputTypeName: string) {
+    const inputType = this.inputTypesIndexWithFields[inputTypeName]
 
     if (!inputType) {
       throw new Error('Could not find input type name: ' + inputTypeName)
@@ -134,4 +146,25 @@ export class OutputType {
 
     return field
   }
+}
+
+type InputTypeIndexWithField = Index<
+  Omit<DmmfTypes.InputType, 'fields'> & {
+    fields: Index<DmmfTypes.SchemaArg>
+  }
+>
+
+function indexInputTypeWithFields(inputTypes: DmmfTypes.InputType[]) {
+  const indexedInputTypes: InputTypeIndexWithField = {}
+
+  for (const inputType of inputTypes) {
+    const indexedFields = indexBy(inputType.fields, 'name')
+
+    indexedInputTypes[inputType.name] = {
+      ...inputType,
+      fields: indexedFields,
+    }
+  }
+
+  return indexedInputTypes
 }
