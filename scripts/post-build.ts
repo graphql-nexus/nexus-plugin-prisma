@@ -1,3 +1,7 @@
+/**
+ * This script is a temp fix, hack.
+ * https://github.com/graphql-nexus/nexus-schema-plugin-prisma/pull/700.
+ */
 import * as fs from 'fs-jetpack'
 
 let contents
