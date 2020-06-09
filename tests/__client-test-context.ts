@@ -3,14 +3,15 @@ import { MigrateEngine } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
+import { GraphQLSchema } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
 import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
+import { outdent } from 'outdent'
 import * as path from 'path'
 import rimraf from 'rimraf'
 import { getEnginePath, getEngineVersion } from './__ensure-engine'
 import { generateSchemaAndTypes } from './__utils'
-import { GraphQLSchema } from 'graphql'
 
 type RuntimeTestContext = {
   getContext: (args: {
@@ -81,9 +82,13 @@ async function getGraphQLServerAndClient(
   plugins: Nexus.core.NexusPlugin[],
   prismaClient: { client: any; teardown(): Promise<void> },
 ) {
-  const { schema, schemaString } = await generateSchemaAndTypes(datamodel, types, {
-    plugins,
-  })
+  const { schema, schemaString } = await generateSchemaAndTypes(
+    datamodel,
+    types,
+    {
+      plugins,
+    },
+  )
   const port = await getPort()
   const endpoint = '/graphql'
   const graphqlServer = new GraphQLServer({
@@ -105,19 +110,19 @@ async function generateClientFromDatamodel(datamodelString: string) {
 
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
-  const datamodel = `
-datasource db {
-  provider = "sqlite"
-  url      = "file:${tmpDir}/dev.db"
-}
+  const datamodel = outdent`
+    datasource db {
+      provider = "sqlite"
+      url      = "file:${tmpDir}/dev.db"
+    }
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "${clientDir}"
-}
+    generator client {
+      provider = "prisma-client-js"
+      output   = "${clientDir}"
+    }
 
-${datamodelString}
-`
+    ${datamodelString}
+  `
   const schemaPath = path.join(tmpDir, 'schema.prisma')
 
   fs.writeFileSync(schemaPath, datamodel)

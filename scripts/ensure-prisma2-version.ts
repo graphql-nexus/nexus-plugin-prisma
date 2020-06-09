@@ -21,4 +21,6 @@ if (peerPrismaClientVersion !== prisma2Version) {
   )
 }
 
-console.log('Versions are all in sync.')
+if (process.env.DEBUG) {
+  console.log('Versions are all in sync.')
+}

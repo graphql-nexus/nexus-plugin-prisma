@@ -968,15 +968,15 @@ const {
 const path = require('path')
 const debug = debugLib('prisma-client')
 
-debug(\\"Client Version 2.0.0-beta.9\\")
+debug(\\"Client Version 2.0.0\\")
 debug(\\"Engine Version de2bc1cbdb5561ad73d2f08463fa2eec48993f56\\")
 
 /**
- * Prisma Client JS version: 2.0.0-beta.9
+ * Prisma Client JS version: 2.0.0
  * Query Engine version: de2bc1cbdb5561ad73d2f08463fa2eec48993f56
  */
 exports.prismaVersion = {
-  client: \\"2.0.0-beta.9\\",
+  client: \\"2.0.0\\",
   engine: \\"de2bc1cbdb5561ad73d2f08463fa2eec48993f56\\"
 }
 
@@ -1052,7 +1052,7 @@ const config = {
   \\"sqliteDatasourceOverrides\\": [],
   \\"relativePath\\": \\"../../../tests/__app\\",
   \\"internalDatasources\\": [],
-  \\"clientVersion\\": \\"2.0.0-beta.9\\"
+  \\"clientVersion\\": \\"2.0.0\\"
 }
 config.document = dmmf
 config.dirname = __dirname
@@ -1089,7 +1089,7 @@ export { PrismaClientValidationError }
 export { sql, empty, join, raw }
 
 /**
- * Prisma Client JS version: 2.0.0-beta.9
+ * Prisma Client JS version: 2.0.0
  * Query Engine version: de2bc1cbdb5561ad73d2f08463fa2eec48993f56
  */
 export declare type PrismaVersion = {
@@ -1361,10 +1361,10 @@ export declare class PrismaClient<
    * Performs a raw query and returns the SELECT data
    * @example
    * \`\`\`
-   * // With parameters use prisma.raw\`\`, values will be escaped automatically
-   * const result = await prisma.raw\`SELECT * FROM User WHERE id = \${1} OR email = \${'ema.il'};\`
+   * // With parameters use prisma.queryRaw\`\`, values will be escaped automatically
+   * const result = await prisma.queryRaw\`SELECT * FROM User WHERE id = \${1} OR email = \${'ema.il'};\`
    * // Or
-   * const result = await prisma.raw('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'ema.il')
+   * const result = await prisma.queryRaw('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'ema.il')
   * \`\`\`
   * 
   * Read more in our [docs](https://github.com/prisma/prisma/blob/master/docs/prisma-client-js/api.md#raw-database-access).
@@ -1495,7 +1495,7 @@ export interface BubbleDelegate {
    * const bubbles = await prisma.bubble.findMany()
    * 
    * // Get first 10 Bubbles
-   * const bubbles = await prisma.bubble.findMany({ first: 10 })
+   * const bubbles = await prisma.bubble.findMany({ take: 10 })
    * 
    * // Only select the \`id\`
    * const bubbleWithIdOnly = await prisma.bubble.findMany({ select: { id: true } })
@@ -1699,7 +1699,7 @@ export type FindManyBubbleArgs = {
   **/
   cursor?: BubbleWhereUniqueInput
   /**
-   * Get all Bubbles that come after or before the Bubble you provide with the current order.
+   * The number of Bubbles to fetch. If negative number, it will take Bubbles before the \`cursor\`.
   **/
   take?: number
   /**
@@ -1907,7 +1907,7 @@ export interface UserDelegate {
    * const users = await prisma.user.findMany()
    * 
    * // Get first 10 Users
-   * const users = await prisma.user.findMany({ first: 10 })
+   * const users = await prisma.user.findMany({ take: 10 })
    * 
    * // Only select the \`id\`
    * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
@@ -2113,7 +2113,7 @@ export type FindManyUserArgs = {
   **/
   cursor?: UserWhereUniqueInput
   /**
-   * Get all Users that come after or before the User you provide with the current order.
+   * The number of Users to fetch. If negative number, it will take Users before the \`cursor\`.
   **/
   take?: number
   /**
@@ -2313,7 +2313,7 @@ export interface PostDelegate {
    * const posts = await prisma.post.findMany()
    * 
    * // Get first 10 Posts
-   * const posts = await prisma.post.findMany({ first: 10 })
+   * const posts = await prisma.post.findMany({ take: 10 })
    * 
    * // Only select the \`id\`
    * const postWithIdOnly = await prisma.post.findMany({ select: { id: true } })
@@ -2517,7 +2517,7 @@ export type FindManyPostArgs = {
   **/
   cursor?: PostWhereUniqueInput
   /**
-   * Get all Posts that come after or before the Post you provide with the current order.
+   * The number of Posts to fetch. If negative number, it will take Posts before the \`cursor\`.
   **/
   take?: number
   /**
