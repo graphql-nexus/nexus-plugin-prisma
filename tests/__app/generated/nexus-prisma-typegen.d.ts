@@ -245,7 +245,6 @@ type GetNexusPrisma<TypeName extends string, ModelOrCrud extends 'model' | 'crud
 type Pagination = {
   first?: boolean
   last?: boolean
-  skip?: boolean
   before?: boolean
   after?: boolean
 }

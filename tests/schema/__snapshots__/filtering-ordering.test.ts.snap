@@ -10,7 +10,7 @@ Warning: Your GraphQL \`Query\` object definition is projecting a relational fie
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: schema 1`] = `
 "type Query {
-  users(first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput, skip: Int): [User!]!
+  users(first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
@@ -272,7 +272,6 @@ type GetNexusPrisma<TypeName extends string, ModelOrCrud extends 'model' | 'crud
 type Pagination = {
   first?: boolean
   last?: boolean
-  skip?: boolean
   before?: boolean
   after?: boolean
 }

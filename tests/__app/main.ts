@@ -47,7 +47,7 @@ export const Bubble = objectType({
     t.model.createdAt()
     // ASSERT filtering & ordering & pagination for only certain properties
     t.model.members({
-      pagination: { after: true, skip: false },
+      pagination: { after: true, first: false },
       filtering: { id: true },
       ordering: { firstName: true },
     })

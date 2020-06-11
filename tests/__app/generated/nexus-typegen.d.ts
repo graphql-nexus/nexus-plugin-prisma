@@ -274,7 +274,6 @@ export interface NexusGenArgTypes {
       before?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
-      skip?: number | null; // Int
     }
   }
   User: {
@@ -284,7 +283,6 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
-      skip?: number | null; // Int
       where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
