@@ -31,7 +31,10 @@ export function doGenerate(
   const prismaClientImportId =
     Path.isAbsolute(options.typegenPath) &&
     Path.isAbsolute(options.prismaClientPath)
-      ? Path.relative(options.typegenPath, options.prismaClientPath)
+      ? Path.relative(
+          Path.dirname(options.typegenPath),
+          options.prismaClientPath,
+        )
       : options.prismaClientPath
   const dmmf = getTransformedDmmf(options.prismaClientPath)
   const tsDeclaration = render({
