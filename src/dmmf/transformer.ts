@@ -7,9 +7,11 @@ import {
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
+import { PaginationStrategy, relayLikePaginationStrategy } from '../pagination'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
+  paginationStrategy?: PaginationStrategy
 }
 
 export const getTransformedDmmf = (
@@ -22,6 +24,7 @@ const addDefaultOptions = (
   givenOptions?: TransformOptions,
 ): Required<TransformOptions> => ({
   globallyComputedInputs: {},
+  paginationStrategy: relayLikePaginationStrategy,
   ...givenOptions,
 })
 
@@ -49,32 +52,54 @@ function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
   }
 }
 
+const paginationArgNames = ['cursor', 'take', 'skip']
+
 function transformSchema(
   schema: DMMF.Schema,
-  { globallyComputedInputs }: Required<TransformOptions>,
+  { globallyComputedInputs, paginationStrategy }: Required<TransformOptions>,
 ): DmmfTypes.Schema {
   return {
     enums: schema.enums,
     inputTypes: schema.inputTypes.map(_ =>
       transformInputType(_, globallyComputedInputs),
     ),
-    outputTypes: schema.outputTypes.map(o => ({
-      ...o,
-      fields: o.fields.map(f => ({
-        ...f,
-        args: f.args.map(transformArg),
-        outputType: {
-          ...f.outputType,
-          type: getReturnTypeName(f.outputType.type),
-        },
-      })),
-    })),
+    outputTypes: schema.outputTypes.map(o => {
+      return {
+        ...o,
+        fields: o.fields.map(f => {
+          let args = f.args.map(transformArg)
+          const argNames = args.map(a => a.name)
+
+          // If this field has pagination
+          if (
+            paginationArgNames.every(paginationArgName =>
+              argNames.includes(paginationArgName),
+            )
+          ) {
+            args = paginationStrategy.transformDmmfArgs({
+              args,
+              paginationArgNames,
+              field: f,
+            })
+          }
+
+          return {
+            ...f,
+            args,
+            outputType: {
+              ...f.outputType,
+              type: getReturnTypeName(f.outputType.type) as any,
+            },
+          }
+        }),
+      }
+    }),
   }
 }
 
 /**
- * Conversion from a Photon arg type to a GraphQL arg type using
- * heuristics. A conversion is needed becuase GraphQL does not
+ * Conversion from a Prisma Client arg type to a GraphQL arg type using
+ * heuristics. A conversion is needed because GraphQL does not
  * support union types on args, but Photon does.
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
@@ -230,10 +255,10 @@ function transformInputType(
 //
 // TODO _why_ is the dmmf like this?
 //
-// FIXME `any` type becuase this is used by both outputType and inputType
+// FIXME `any` type because this is used by both outputType and inputType
 // and there is currently no generic capturing both ideas.
 //
-function getReturnTypeName(type: any) {
+export function getReturnTypeName(type: any): string {
   if (typeof type === 'string') {
     return type
   }

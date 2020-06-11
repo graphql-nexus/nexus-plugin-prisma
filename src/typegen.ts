@@ -4,10 +4,12 @@ import { getTransformedDmmf } from './dmmf/transformer'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
 import { hardWriteFile, hardWriteFileSync } from './utils'
+import { PaginationStrategy } from './pagination'
 
 type Options = {
   prismaClientPath: string
   typegenPath: string
+  paginationStrategy: PaginationStrategy
 }
 
 export function generateSync(options: Options): void {
@@ -25,7 +27,11 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = getTransformedDmmf(options.prismaClientPath)
-  const tsDeclaration = render(dmmf, options.prismaClientPath)
+  const tsDeclaration = render({
+    dmmf,
+    prismaClientPath: options.prismaClientPath,
+    paginationStrategy: options.paginationStrategy,
+  })
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {
@@ -33,20 +39,27 @@ export function doGenerate(
   }
 }
 
-export function render(dmmf: DmmfDocument, prismaClientPath: string) {
+export function render(params: {
+  dmmf: DmmfDocument
+  prismaClientPath: string
+  paginationStrategy: PaginationStrategy
+}) {
   return `\
-import * as prisma from '${prismaClientPath}';
+import * as prisma from '${params.prismaClientPath}';
 import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
 // Types helpers
 ${renderStaticTypes()}
 
+// Pagination type
+${renderPaginationType(params.paginationStrategy)}
+
 // Generated
-${renderModelTypes(dmmf)}
-${renderNexusPrismaInputs(dmmf)}
-${renderNexusPrismaTypes(dmmf)}
-${renderNexusPrismaMethods(dmmf)}
+${renderModelTypes(params.dmmf)}
+${renderNexusPrismaInputs(params.dmmf)}
+${renderNexusPrismaTypes(params.dmmf)}
+${renderNexusPrismaMethods(params.dmmf)}
 
 declare global {
   type NexusPrisma<
@@ -60,20 +73,18 @@ declare global {
 function renderModelTypes(dmmf: DmmfDocument) {
   return `\
 interface ModelTypes {
-${dmmf.datamodel.models.map((m) => `  ${m.name}: prisma.${m.name}`).join('\n')}
+${dmmf.datamodel.models.map(m => `  ${m.name}: prisma.${m.name}`).join('\n')}
 }
   `
 }
 
 function renderNexusPrismaTypes(dmmf: DmmfDocument) {
-  const queriesByType = getCrudMappedFields('Query', dmmf).map(
-    (mappedfield) => ({
-      fieldName: mappedfield.field.name,
-      returnType: mappedfield.field.outputType.type,
-    }),
-  )
+  const queriesByType = getCrudMappedFields('Query', dmmf).map(mappedfield => ({
+    fieldName: mappedfield.field.name,
+    returnType: mappedfield.field.outputType.type,
+  }))
   const mutationsByType = getCrudMappedFields('Mutation', dmmf).map(
-    (mappedField) => ({
+    mappedField => ({
       fieldName: mappedField.field.name,
       returnType: mappedField.field.outputType.type,
     }),
@@ -81,7 +92,7 @@ function renderNexusPrismaTypes(dmmf: DmmfDocument) {
   const fieldsByType = dmmf.datamodel.models.reduce<
     Record<string, { fieldName: string; returnType: string }[]>
   >((acc, m) => {
-    acc[m.name] = m.fields.map((f) => ({
+    acc[m.name] = m.fields.map(f => ({
       fieldName: f.name,
       returnType: f.type,
     }))
@@ -96,7 +107,7 @@ function renderNexusPrismaTypes(dmmf: DmmfDocument) {
       returnType: string
     }[],
   ): string => `\
-${input.map((f) => `    ${f.fieldName}: '${f.returnType}'`).join('\n')}
+${input.map(f => `    ${f.fieldName}: '${f.returnType}'`).join('\n')}
 `
 
   return `\
@@ -119,20 +130,18 @@ ${renderNexusPrismaType(fields)}
 function renderNexusPrismaInputs(dmmf: DmmfDocument) {
   const queriesFields = getCrudMappedFields('Query', dmmf)
     .filter(
-      (mappedField) =>
+      mappedField =>
         mappedField.field.outputType.isList &&
         mappedField.field.outputType.kind === 'object',
     )
-    .map((mappedField) => {
-      const whereArg = mappedField.field.args.find((a) => a.name === 'where')!
-      const orderByArg = mappedField.field.args.find(
-        (a) => a.name === 'orderBy',
-      )!
+    .map(mappedField => {
+      const whereArg = mappedField.field.args.find(a => a.name === 'where')!
+      const orderByArg = mappedField.field.args.find(a => a.name === 'orderBy')!
       const whereInput = dmmf.schema.inputTypes.find(
-        (i) => i.name === whereArg.inputType.type,
+        i => i.name === whereArg.inputType.type,
       )!
       const orderByInput = dmmf.schema.inputTypes.find(
-        (i) => i.name === orderByArg.inputType.type,
+        i => i.name === orderByArg.inputType.type,
       )!
 
       return {
@@ -146,7 +155,7 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
     })
 
   const fieldsByType = dmmf.datamodel.models
-    .map((m) => dmmf.getOutputType(m.name))
+    .map(m => dmmf.getOutputType(m.name))
     .reduce<
       Record<
         string,
@@ -158,16 +167,16 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
       >
     >((acc, type) => {
       acc[type.name] = type.fields
-        .filter((f) => f.outputType.isList && f.outputType.kind === 'object')
-        .map((f) => {
-          const whereArg = f.args.find((a) => a.name === 'where')!
+        .filter(f => f.outputType.isList && f.outputType.kind === 'object')
+        .map(f => {
+          const whereArg = f.args.find(a => a.name === 'where')!
 
-          const orderByArg = f.args.find((a) => a.name === 'orderBy')!
+          const orderByArg = f.args.find(a => a.name === 'orderBy')!
           const whereInput = dmmf.schema.inputTypes.find(
-            (i) => i.name === whereArg.inputType.type,
+            i => i.name === whereArg.inputType.type,
           )!
           const orderByInput = dmmf.schema.inputTypes.find(
-            (i) => i.name === orderByArg.inputType.type,
+            i => i.name === orderByArg.inputType.type,
           )!
 
           return {
@@ -190,9 +199,9 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
   ): string => `\
 ${input
   .map(
-    (f) => `    ${f.fieldName}: {
-  filtering: ${f.filtering.fields.map((f) => `'${f.name}'`).join(' | ')}
-  ordering: ${f.ordering.fields.map((f) => `'${f.name}'`).join(' | ')}
+    f => `    ${f.fieldName}: {
+  filtering: ${f.filtering.fields.map(f => `'${f.name}'`).join(' | ')}
+  ordering: ${f.ordering.fields.map(f => `'${f.name}'`).join(' | ')}
 }`,
   )
   .join('\n')}
@@ -216,12 +225,21 @@ function renderNexusPrismaMethods(dmmf: DmmfDocument) {
   return `\
 interface NexusPrismaMethods {
 ${dmmf.datamodel.models
-  .map((m) => `  ${m.name}: NexusPrismaFields<'${m.name}'>`)
+  .map(m => `  ${m.name}: NexusPrismaFields<'${m.name}'>`)
   .join('\n')}
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
   `
+}
+
+function renderPaginationType(paginationStrategy: PaginationStrategy) {
+  return outdent`
+    type Pagination = {
+    ${paginationStrategy.paginationArgNames
+      .map(argName => `  ${argName}?: boolean`)
+      .join('\n')}
+    }`
 }
 
 function renderStaticTypes() {
@@ -244,12 +262,6 @@ function renderStaticTypes() {
       alias?: Alias
       resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
     } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
-
-    type Pagination = {
-      skip?: boolean
-      take?: boolean
-      cursor?: boolean
-    }
 
     type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
 
