@@ -38,7 +38,7 @@ input BubbleMembersWhereInput {
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
-  id: StringFilter
+  id: UUIDFilter
   members: UserFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
@@ -213,6 +213,22 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: String
 }
+
+scalar UUID
+
+input UUIDFilter {
+  contains: UUID
+  endsWith: UUID
+  equals: UUID
+  gt: UUID
+  gte: UUID
+  in: [UUID!]
+  lt: UUID
+  lte: UUID
+  not: UUID
+  notIn: [UUID!]
+  startsWith: UUID
+}
 "
 `;
 
@@ -255,7 +271,7 @@ export interface NexusGenInputs {
   BubbleWhereInput: { // input type
     AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
     members?: NexusGenInputs['UserFilter'] | null; // UserFilter
     NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
     OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
@@ -351,6 +367,19 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
+  UUIDFilter: { // input type
+    contains?: any | null; // UUID
+    endsWith?: any | null; // UUID
+    equals?: any | null; // UUID
+    gt?: any | null; // UUID
+    gte?: any | null; // UUID
+    in?: any[] | null; // [UUID!]
+    lt?: any | null; // UUID
+    lte?: any | null; // UUID
+    not?: any | null; // UUID
+    notIn?: any[] | null; // [UUID!]
+    startsWith?: any | null; // UUID
+  }
   UserCreateManyWithoutPostsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'][] | null; // [UserWhereUniqueInput!]
     create?: NexusGenInputs['UserCreateWithoutPostsInput'][] | null; // [UserCreateWithoutPostsInput!]
@@ -410,6 +439,7 @@ export interface NexusGenRootTypes {
   Boolean: boolean;
   ID: string;
   DateTime: any;
+  UUID: any;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -430,6 +460,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   PostWhereInput: NexusGenInputs['PostWhereInput'];
   PostWhereUniqueInput: NexusGenInputs['PostWhereUniqueInput'];
   StringFilter: NexusGenInputs['StringFilter'];
+  UUIDFilter: NexusGenInputs['UUIDFilter'];
   UserCreateManyWithoutPostsInput: NexusGenInputs['UserCreateManyWithoutPostsInput'];
   UserCreateWithoutPostsInput: NexusGenInputs['UserCreateWithoutPostsInput'];
   UserFilter: NexusGenInputs['UserFilter'];
@@ -514,13 +545,13 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = \\"BatchPayload\\" | \\"Bubble\\" | \\"Mutation\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NullableStringFilter\\" | \\"PostCreateInput\\" | \\"PostFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
+export type NexusGenInputNames = \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NullableStringFilter\\" | \\"PostCreateInput\\" | \\"PostFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"UUIDFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
 export type NexusGenEnumNames = \\"OrderByArg\\" | \\"PostStatus\\";
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = \\"Boolean\\" | \\"DateTime\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\";
+export type NexusGenScalarNames = \\"Boolean\\" | \\"DateTime\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\" | \\"UUID\\";
 
 export type NexusGenUnionNames = never;
 
@@ -941,6 +972,10 @@ Object {
         "dbName": null,
         "fields": Array [
           Object {
+            "default": Object {
+              "args": Array [],
+              "name": "uuid",
+            },
             "hasDefaultValue": true,
             "isGenerated": false,
             "isId": true,
@@ -954,6 +989,10 @@ Object {
             "type": "String",
           },
           Object {
+            "default": Object {
+              "args": Array [],
+              "name": "now",
+            },
             "hasDefaultValue": true,
             "isGenerated": false,
             "isId": false,
@@ -989,11 +1028,16 @@ Object {
         "isGenerated": false,
         "name": "Bubble",
         "uniqueFields": Array [],
+        "uniqueIndexes": Array [],
       },
       Object {
         "dbName": null,
         "fields": Array [
           Object {
+            "default": Object {
+              "args": Array [],
+              "name": "cuid",
+            },
             "hasDefaultValue": true,
             "isGenerated": false,
             "isId": true,
@@ -1091,11 +1135,16 @@ Object {
         "isGenerated": false,
         "name": "User",
         "uniqueFields": Array [],
+        "uniqueIndexes": Array [],
       },
       Object {
         "dbName": null,
         "fields": Array [
           Object {
+            "default": Object {
+              "args": Array [],
+              "name": "autoincrement",
+            },
             "hasDefaultValue": true,
             "isGenerated": false,
             "isId": true,
@@ -1159,6 +1208,7 @@ Object {
         "isGenerated": false,
         "name": "Post",
         "uniqueFields": Array [],
+        "uniqueIndexes": Array [],
       },
     ],
   },
@@ -1511,14 +1561,14 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
-                "type": "String",
+                "type": "UUID",
               },
               Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "StringFilter",
+                "type": "UUIDFilter",
               },
             ],
             "isRelationFilter": false,
@@ -4304,6 +4354,162 @@ Object {
           },
         ],
         "name": "NullableStringFilter",
+      },
+      Object {
+        "atLeastOne": false,
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUIDFilter",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "not",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "contains",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "startsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "UUID",
+              },
+            ],
+            "isRelationFilter": false,
+            "name": "endsWith",
+          },
+        ],
+        "name": "UUIDFilter",
       },
       Object {
         "atLeastOne": false,
