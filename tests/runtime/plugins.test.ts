@@ -1,4 +1,4 @@
-import { objectType, fieldAuthorizePlugin } from '@nexus/schema'
+import { fieldAuthorizePlugin, objectType } from '@nexus/schema'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()
@@ -10,27 +10,28 @@ it('forwards plugins to t.model', async () => {
       name  String
     }
   `
-  const User = objectType({
-    name: 'User',
-    definition(t: any) {
-      t.model.id({
-        authorize() {
-          return new Error('nope')
-        },
-      })
-    },
-  })
-
-  const Query = objectType({
-    name: 'Query',
-    definition(t: any) {
-      t.crud.users()
-    },
-  })
+  const types = [
+    objectType({
+      name: 'User',
+      definition(t: any) {
+        t.model.id({
+          authorize() {
+            return new Error('nope')
+          },
+        })
+      },
+    }),
+    objectType({
+      name: 'Query',
+      definition(t: any) {
+        t.crud.users()
+      },
+    }),
+  ]
 
   const { graphqlClient, dbClient } = await ctx.getContext({
     datamodel,
-    types: [Query, User],
+    types,
     plugins: [fieldAuthorizePlugin()],
   })
 

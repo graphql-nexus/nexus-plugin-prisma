@@ -19,7 +19,7 @@
     "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
     "prepublishOnly": "yarn -s build",
     "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest"
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit"
   },
   "dependencies": {
     "camelcase": "^6.0.0",
@@ -29,17 +29,17 @@
   },
   "peerDependencies": {
     "@nexus/schema": "^0.13.1 || ^0.14.0",
-    "@prisma/client": "2.0.0-beta.8",
+    "@prisma/client": "2.0.0",
     "graphql": "^14.5.0"
   },
   "devDependencies": {
     "@nexus/schema": "0.13.1",
-    "@prisma/cli": "2.0.0-beta.8",
-    "@prisma/client": "2.0.0-beta.8",
-    "@prisma/fetch-engine": "2.0.0-beta.8",
-    "@prisma/get-platform": "2.0.0-beta.8",
-    "@prisma/migrate": "2.0.0-beta.8",
-    "@prisma/sdk": "2.0.0-beta.8",
+    "@prisma/cli": "2.0.0",
+    "@prisma/client": "2.0.0",
+    "@prisma/fetch-engine": "2.0.0",
+    "@prisma/get-platform": "2.0.0",
+    "@prisma/migrate": "2.0.0",
+    "@prisma/sdk": "2.0.0",
     "@types/fs-extra": "8.1.0",
     "@types/jest": "25.1.4",
     "@types/node": "13.9.5",
