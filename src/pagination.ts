@@ -1,6 +1,14 @@
 import { DmmfTypes, getReturnTypeName } from './dmmf'
 import { DMMF } from '@prisma/client/runtime'
 
+interface PaginationResult {
+  cursor?: object
+  skip?: string | number
+  take?: string | number
+  orderBy?: { [x: string]: 'asc' | 'desc' }
+  [x: string]: any
+}
+
 export interface PaginationStrategy<T = object> {
   transformDmmfArgs: (params: {
     args: DmmfTypes.SchemaArg[]
@@ -8,15 +16,11 @@ export interface PaginationStrategy<T = object> {
     field: DMMF.SchemaField
   }) => DmmfTypes.SchemaArg[]
   paginationArgNames: string[]
-  resolve: (
-    args: T,
-  ) => { cursor?: object; skip?: string | number; take?: string | number } & {
-    [x: string]: any
-  }
+  resolve: (args: T) => PaginationResult
 }
 
 const relayLikePaginationArgs: Record<
-  'first' | 'last' | 'skip' | 'before' | 'after',
+  'first' | 'last' | 'before' | 'after',
   (typeName: string) => DmmfTypes.SchemaArg
 > = {
   first: () => ({
@@ -31,16 +35,6 @@ const relayLikePaginationArgs: Record<
   }),
   last: () => ({
     name: 'last',
-    inputType: {
-      type: 'Int',
-      kind: 'scalar',
-      isRequired: false,
-      isList: false,
-      isNullable: false,
-    },
-  }),
-  skip: () => ({
-    name: 'skip',
     inputType: {
       type: 'Int',
       kind: 'scalar',
@@ -74,7 +68,6 @@ const relayLikePaginationArgs: Record<
 interface RelayLikePaginationArgs {
   first?: number
   last?: number
-  skip?: number
   before?: object
   after?: object
 }
@@ -93,21 +86,56 @@ export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePagination
       relayLikePaginationArgs.last(fieldOutputTypeName),
       relayLikePaginationArgs.before(fieldOutputTypeName),
       relayLikePaginationArgs.after(fieldOutputTypeName),
-      relayLikePaginationArgs.skip(fieldOutputTypeName),
     )
 
     return args
   },
   resolve(args) {
-    const { first, last, before, after, skip: originalSkip } = args
+    const { first, last, before, after } = args
 
+    // If no pagination set, don't touch the args
     if (!first && !last && !before && !after) {
       return args
     }
 
-    const take = resolveTake(first, last)
+    /**
+     * This is currently only possible with js transformation on the result. eg:
+     * after: 1, last: 1
+     * ({
+     *   cursor: { id: $before },
+     *   take: Number.MAX_SAFE_INTEGER,
+     *   skip: 1
+     * }).slice(length - $last, length)
+     */
+    if (after && last) {
+      throw new Error(`after and last can't be set simultaneously`)
+    }
+
+    /**
+     * This is currently only possible with js transformation on the result. eg:
+     * before: 4, first: 1
+     * ({
+     *   cursor: { id: $before },
+     *   take: Number.MIN_SAFE_INTEGER,
+     *   skip: 1
+     * }).slice(0, $first)
+     */
+    if (before && first) {
+      throw new Error(`before and first can't be set simultaneously`)
+    }
+
+    // Edge-case: simulates a single `before` with a hack
+    if (before && !first && !last && !after) {
+      return {
+        cursor: before,
+        skip: 1,
+        take: Number.MIN_SAFE_INTEGER,
+      }
+    }
+
+    const take = resolveTake(first, last, before)
     const cursor = resolveCursor(before, after)
-    const skip = resolveSkip(originalSkip, cursor)
+    const skip = resolveSkip(cursor)
 
     delete args.first
     delete args.last
@@ -115,33 +143,20 @@ export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePagination
     delete args.after
 
     const newArgs = {
-      ...args,
       take,
       cursor,
       skip,
+      ...args,
     }
-
-    console.log('pagination args', newArgs)
 
     return newArgs
   },
 }
 
-function resolveSkip(skip: number | undefined, cursor: object | undefined) {
-  if (!skip) {
-    return undefined
-  }
-
-  if (cursor) {
-    return skip + 1
-  }
-
-  return skip
-}
-
 function resolveTake(
   first: number | undefined,
   last: number | undefined,
+  before: object | undefined,
 ): number | undefined {
   if (first && last) {
     throw new Error(`first and last can't be set simultaneously`)
@@ -159,6 +174,10 @@ function resolveTake(
       throw new Error(`last can't be negative`)
     }
 
+    if (last === 0) {
+      return 0
+    }
+
     return last * -1
   }
 
@@ -171,4 +190,12 @@ function resolveCursor(before: object | undefined, after: object | undefined) {
   }
 
   return before ?? after
+}
+
+function resolveSkip(cursor: object | undefined) {
+  if (cursor) {
+    return 1
+  }
+
+  return undefined
 }
