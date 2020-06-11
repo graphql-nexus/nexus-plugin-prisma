@@ -14,7 +14,7 @@ type BatchPayload {
 type Bubble {
   createdAt: DateTime!
   id: String!
-  members(cursor: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
+  members(after: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutMembersInput {
@@ -157,7 +157,7 @@ input PostWhereUniqueInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(cursor: UserWhereUniqueInput, skip: Int, take: Int): [User!]!
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 input StringFilter {
@@ -177,7 +177,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(cursor: PostWhereUniqueInput, orderBy: PostOrderByInput, skip: Int, take: Int, where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {
@@ -470,7 +470,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Bubble: {
     members: { // args
-      cursor?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
       orderBy?: NexusGenInputs['BubbleMembersOrderByInput'] | null; // BubbleMembersOrderByInput
       where?: NexusGenInputs['BubbleMembersWhereInput'] | null; // BubbleMembersWhereInput
     }
@@ -489,17 +489,19 @@ export interface NexusGenArgTypes {
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
     }
     users: { // args
-      cursor?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
-      skip?: number | null; // Int
-      take?: number | null; // Int
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      before?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
     }
   }
   User: {
     posts: { // args
-      cursor?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      after?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      before?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
       orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
-      skip?: number | null; // Int
-      take?: number | null; // Int
       where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
@@ -578,12 +580,6 @@ type NexusPrismaScalarOpts<TypeName extends string, MethodName extends string, A
   alias?: Alias
   resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
 } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
-
-type Pagination = {
-  skip?: boolean
-  take?: boolean
-  cursor?: boolean
-}
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
 
@@ -803,6 +799,14 @@ type GetNexusPrisma<TypeName extends string, ModelOrCrud extends 'model' | 'crud
           ? GetNexusPrismaMethod<TypeName>
           : never
       : never
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
 
 // Generated
 interface ModelTypes {

@@ -9,7 +9,7 @@ type BatchPayload {
 type Bubble {
   createdAt: DateTime!
   id: String!
-  members(cursor: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
+  members(after: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutMembersInput {
@@ -152,7 +152,7 @@ input PostWhereUniqueInput {
 
 type Query {
   user(where: UserWhereUniqueInput!): User
-  users(cursor: UserWhereUniqueInput, skip: Int, take: Int): [User!]!
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
 input StringFilter {
@@ -172,7 +172,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(cursor: PostWhereUniqueInput, orderBy: PostOrderByInput, skip: Int, take: Int, where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {

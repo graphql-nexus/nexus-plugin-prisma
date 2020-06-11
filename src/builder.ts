@@ -36,6 +36,7 @@ import {
   LocalComputedInputs,
   lowerFirst,
 } from './utils'
+import { PaginationStrategy, relayLikePaginationStrategy } from './pagination'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -77,7 +78,7 @@ type FieldConfigData = {
 
 /**
  * When dealing with list types we rely on the list type zero value (empty-list)
- * to represet the idea of null.
+ * to represent the idea of null.
  *
  * For Prisma Client JS' part, it will never return null for list type fields nor will it
  * ever return null value list members.
@@ -160,7 +161,7 @@ export function build(options: InternalOptions) {
   }
 }
 
-// The @types default is based on the priviledge given to such
+// The @types default is based on the privileged given to such
 // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
 let defaultTypegenPath: string
 if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
@@ -187,7 +188,7 @@ if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = '@prisma/client'
 }
 
-// NOTE This will be repalced by Nexus plugins once typegen integration is available.
+// NOTE This will be replaced by Nexus plugins once typegen integration is available.
 const shouldGenerateArtifacts =
   process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
     ? true
@@ -216,6 +217,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
+  protected paginationStrategy: PaginationStrategy
   protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
@@ -233,10 +235,12 @@ export class SchemaBuilder {
     this.globallyComputedInputs = config.computedInputs
       ? config.computedInputs
       : {}
+    this.paginationStrategy = relayLikePaginationStrategy
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
+        paginationStrategy: this.paginationStrategy,
       })
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
     this.unknownFieldsByModel = {}
@@ -254,6 +258,7 @@ export class SchemaBuilder {
       Typegen.generateSync({
         prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
+        paginationStrategy: this.paginationStrategy,
       })
     }
   }
@@ -329,6 +334,9 @@ export class SchemaBuilder {
                       publisherConfig.locallyComputedInputs,
                   })
                 }
+
+                args = this.paginationStrategy.resolve(args)
+
                 return photon[mappedField.photonAccessor][
                   mappedField.operation
                 ](args)
@@ -536,6 +544,8 @@ export class SchemaBuilder {
 
                 const photon = this.getPrismaClient(ctx)
 
+                args = this.paginationStrategy.resolve(args)
+
                 return photon[lowerFirst(mapping.model)]
                   .findOne({
                     where: Constraints.buildWhereUniqueInput(
@@ -731,10 +741,11 @@ export class SchemaBuilder {
     }
 
     if (publisherConfig.pagination) {
-      const paginationKeys = ['cursor', 'take', 'skip']
       const paginationsArgs =
         publisherConfig.pagination === true
-          ? field.args.filter(a => paginationKeys.includes(a.name))
+          ? field.args.filter(a =>
+              this.paginationStrategy.paginationArgNames.includes(a.name),
+            )
           : field.args.filter(
               arg => (publisherConfig.pagination as any)[arg.name] === true,
             )
@@ -762,7 +773,7 @@ export class SchemaBuilder {
   /**
    * This handles "tailored field feature publishing".
    *
-   * With tailord field feature publishing, users can specify that only some
+   * With tailored field feature publishing, users can specify that only some
    * fields of the PSL model are exposed under the given field feature. For
    * example, in the following...
    *
