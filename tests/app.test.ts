@@ -15,7 +15,7 @@ it('integrates together', async () => {
   const projectRoot = path.join(__dirname, '/__app')
 
   const projectReadFile = (relPath: string): Promise<string> =>
-    fs.readFile(path.join(projectRoot, relPath)).then((b) => b.toString())
+    fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
 
   const projectPath = (...paths: string[]): string =>
     path.join(projectRoot, ...paths)
@@ -103,8 +103,6 @@ it('integrates together', async () => {
 
   // For convenience
   expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
-  expect(photonTSD).toMatchSnapshot('photon typescript declaration')
-  expect(photonSource).toMatchSnapshot('photon source code')
   expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
   expect($output).toMatchSnapshot('console.log output')
 
