@@ -88,7 +88,7 @@ function transformSchema(
             args,
             outputType: {
               ...f.outputType,
-              type: getReturnTypeName(f.outputType.type),
+              type: getReturnTypeName(f.outputType.type) as any,
             },
           }
         }),
