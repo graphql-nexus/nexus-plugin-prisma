@@ -16,14 +16,14 @@ Object {
 
 exports[`findMany: converts nulls to undefined when fields are not nullable 1`] = `
 Object {
-  "cursor": undefined,
+  "after": undefined,
+  "before": undefined,
+  "first": 1,
   "orderBy": Object {
     "birthDate": null,
     "email": null,
     "id": "asc",
   },
-  "skip": undefined,
-  "take": 1,
   "where": Object {
     "AND": undefined,
     "NOT": Object {

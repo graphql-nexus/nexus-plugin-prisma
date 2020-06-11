@@ -57,9 +57,9 @@ test('findMany: converts nulls to undefined when fields are not nullable', async
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'findMany')
   const incomingArgs = {
-    cursor: null, // not nullable
-    skip: null, // not nullable
-    take: 1,
+    before: null, // not nullable
+    after: null, // not nullable
+    first: 1,
     orderBy: {
       email: null, // nullable
       birthDate: null, // nullable
