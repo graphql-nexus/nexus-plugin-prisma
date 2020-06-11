@@ -11,34 +11,34 @@ import { DmmfDocument, DmmfTypes } from './dmmf'
  * This is the reason why we need to convert all `null` values that were assigned to `non-nullable` fields to `undefined`.
  */
 export function transformNullsToUndefined(
-  args: Record<string, any>,
-  schemaArgs: Record<string, DmmfTypes.SchemaArg>,
+  graphqlArgs: Record<string, any>,
+  prismaArgs: Record<string, DmmfTypes.SchemaArg>,
   dmmf: DmmfDocument,
 ) {
-  const keys = Object.keys(args)
+  const keys = Object.keys(graphqlArgs)
   for (const key of keys) {
-    const val = args[key]
-    const schemaArg = schemaArgs[key]
+    const val = graphqlArgs[key]
+    const prismaArg = prismaArgs[key]
 
-    if (!schemaArg) {
+    if (!prismaArg) {
       throw new Error(`Could not find schema arg with name: ${key}`)
     }
 
     const shouldConvertNullToUndefined =
-      val === null && schemaArg.inputType.isNullable === false
+      val === null && prismaArg.inputType.isNullable === false
 
     if (shouldConvertNullToUndefined) {
-      args[key] = undefined
+      graphqlArgs[key] = undefined
     } else if (isObject(val)) {
-      const newSchemaArgs = dmmf.getInputTypeWithIndexedFields(
-        schemaArg.inputType.type,
+      const nestedPrismaArgs = dmmf.getInputTypeWithIndexedFields(
+        prismaArg.inputType.type,
       ).fields
 
-      args[key] = transformNullsToUndefined(args[key], newSchemaArgs, dmmf)
+      graphqlArgs[key] = transformNullsToUndefined(graphqlArgs[key], nestedPrismaArgs, dmmf)
     }
   }
 
-  return args
+  return graphqlArgs
 }
 
 function isObject(obj: any): boolean {
