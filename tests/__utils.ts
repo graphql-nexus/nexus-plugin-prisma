@@ -68,7 +68,11 @@ export async function generateSchemaAndTypes(
   return {
     schemaString: GQL.printSchema(schema),
     schema,
-    typegen: renderTypegen(dmmf, '@prisma/client', relayLikePaginationStrategy),
+    typegen: renderTypegen({
+      dmmf,
+      prismaClientPath: '@prisma/client',
+      paginationStrategy: relayLikePaginationStrategy,
+    }),
   }
 }
 
@@ -92,11 +96,11 @@ export async function generateSchemaAndTypesWithoutThrowing(
     types: [types, nexusPrisma],
     outputs: false,
   })
-  const typegen = renderTypegen(
+  const typegen = renderTypegen({
     dmmf,
-    '@prisma/client',
-    relayLikePaginationStrategy,
-  )
+    prismaClientPath: '@prisma/client',
+    paginationStrategy: relayLikePaginationStrategy,
+  })
 
   return {
     schema: GQL.printSchema(schemaAndMissingTypes.schema),

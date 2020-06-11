@@ -27,11 +27,11 @@ export function doGenerate(
   options: Options,
 ): void | Promise<void> {
   const dmmf = getTransformedDmmf(options.prismaClientPath)
-  const tsDeclaration = render(
+  const tsDeclaration = render({
     dmmf,
-    options.prismaClientPath,
-    options.paginationStrategy,
-  )
+    prismaClientPath: options.prismaClientPath,
+    paginationStrategy: options.paginationStrategy,
+  })
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {
@@ -39,13 +39,13 @@ export function doGenerate(
   }
 }
 
-export function render(
-  dmmf: DmmfDocument,
-  prismaClientPath: string,
-  paginationStrategy: PaginationStrategy,
-) {
+export function render(params: {
+  dmmf: DmmfDocument
+  prismaClientPath: string
+  paginationStrategy: PaginationStrategy
+}) {
   return `\
-import * as prisma from '${prismaClientPath}';
+import * as prisma from '${params.prismaClientPath}';
 import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -53,13 +53,13 @@ import { GraphQLResolveInfo } from 'graphql';
 ${renderStaticTypes()}
 
 // Pagination type
-${renderPaginationType(paginationStrategy)}
+${renderPaginationType(params.paginationStrategy)}
 
 // Generated
-${renderModelTypes(dmmf)}
-${renderNexusPrismaInputs(dmmf)}
-${renderNexusPrismaTypes(dmmf)}
-${renderNexusPrismaMethods(dmmf)}
+${renderModelTypes(params.dmmf)}
+${renderNexusPrismaInputs(params.dmmf)}
+${renderNexusPrismaTypes(params.dmmf)}
+${renderNexusPrismaMethods(params.dmmf)}
 
 declare global {
   type NexusPrisma<
@@ -234,12 +234,12 @@ ${dmmf.datamodel.models
 }
 
 function renderPaginationType(paginationStrategy: PaginationStrategy) {
-  return `\
-type Pagination = {
-${paginationStrategy.paginationArgNames
-  .map(argName => `  ${argName}?: boolean`)
-  .join('\n')}
-}`
+  return outdent`
+    type Pagination = {
+    ${paginationStrategy.paginationArgNames
+      .map(argName => `  ${argName}?: boolean`)
+      .join('\n')}
+    }`
 }
 
 function renderStaticTypes() {

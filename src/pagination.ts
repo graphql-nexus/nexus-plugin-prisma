@@ -10,13 +10,13 @@ interface PaginationResult {
 }
 
 export interface PaginationStrategy<T = object> {
-  transformDmmfArgs: (params: {
+  paginationArgNames: string[]
+  transformDmmfArgs(params: {
     args: DmmfTypes.SchemaArg[]
     paginationArgNames: string[]
     field: DMMF.SchemaField
-  }) => DmmfTypes.SchemaArg[]
-  paginationArgNames: string[]
-  resolve: (args: T) => PaginationResult
+  }): DmmfTypes.SchemaArg[]
+  resolve(args: T): PaginationResult
 }
 
 const relayLikePaginationArgs: Record<
