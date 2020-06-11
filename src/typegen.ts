@@ -1,10 +1,11 @@
 import { outdent } from 'outdent'
+import * as Path from 'path'
 import { DmmfDocument, DmmfTypes } from './dmmf'
 import { getTransformedDmmf } from './dmmf/transformer'
 import { getCrudMappedFields } from './mapping'
 import { defaultFieldNamingStrategy } from './naming-strategies'
-import { hardWriteFile, hardWriteFileSync } from './utils'
 import { PaginationStrategy } from './pagination'
+import { hardWriteFile, hardWriteFileSync } from './utils'
 
 type Options = {
   prismaClientPath: string
@@ -26,12 +27,22 @@ export function doGenerate(
   sync: boolean,
   options: Options,
 ): void | Promise<void> {
+  const paginationStrategy = options.paginationStrategy
+  const prismaClientImportId =
+    Path.isAbsolute(options.typegenPath) &&
+    Path.isAbsolute(options.prismaClientPath)
+      ? Path.relative(
+          Path.dirname(options.typegenPath),
+          options.prismaClientPath,
+        )
+      : options.prismaClientPath
   const dmmf = getTransformedDmmf(options.prismaClientPath)
   const tsDeclaration = render({
     dmmf,
-    prismaClientPath: options.prismaClientPath,
-    paginationStrategy: options.paginationStrategy,
+    paginationStrategy,
+    prismaClientImportId,
   })
+
   if (sync) {
     hardWriteFileSync(options.typegenPath, tsDeclaration)
   } else {
@@ -41,11 +52,11 @@ export function doGenerate(
 
 export function render(params: {
   dmmf: DmmfDocument
-  prismaClientPath: string
+  prismaClientImportId: string
   paginationStrategy: PaginationStrategy
 }) {
   return `\
-import * as prisma from '${params.prismaClientPath}';
+import * as prisma from '${params.prismaClientImportId}';
 import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';
 

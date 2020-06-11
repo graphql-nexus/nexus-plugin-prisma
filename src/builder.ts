@@ -26,6 +26,7 @@ import {
   OperationName,
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
+import { PaginationStrategy, relayLikePaginationStrategy } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
@@ -38,7 +39,6 @@ import {
   LocalComputedInputs,
   lowerFirst,
 } from './utils'
-import { PaginationStrategy, relayLikePaginationStrategy } from './pagination'
 
 interface FieldPublisherConfig {
   alias?: string
@@ -168,7 +168,7 @@ export function build(options: InternalOptions) {
 let defaultTypegenPath: string
 if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
   defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
-} else if (process.env.NEXUS_PRISMA_LINK) {
+} else if (process.env.LINK) {
   defaultTypegenPath = path.join(
     process.cwd(),
     'node_modules/@types/nexus-prisma-typegen/index.d.ts',
@@ -184,7 +184,7 @@ let defaultClientPath: string
 
 if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
-} else if (process.env.NEXUS_PRISMA_LINK) {
+} else if (process.env.LINK) {
   defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
 } else {
   defaultClientPath = '@prisma/client'
@@ -325,7 +325,11 @@ export class SchemaBuilder {
                   (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
                     !isEmptyObject(this.globallyComputedInputs))
                 ) {
-                  args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
+                  args = transformNullsToUndefined(
+                    args,
+                    schemaArgsIndex,
+                    this.dmmf,
+                  )
                   args = addComputedInputs({
                     inputType,
                     dmmf: this.dmmf,
@@ -549,7 +553,11 @@ export class SchemaBuilder {
 
                 const photon = this.getPrismaClient(ctx)
 
-                args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
+                args = transformNullsToUndefined(
+                  args,
+                  schemaArgsIndex,
+                  this.dmmf,
+                )
                 args = this.paginationStrategy.resolve(args)
 
                 return photon[lowerFirst(mapping.model)]
