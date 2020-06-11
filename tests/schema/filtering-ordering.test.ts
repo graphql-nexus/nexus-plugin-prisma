@@ -29,11 +29,9 @@ it('in dev stage, removes filtering or ordering entirely if no arg or wrong args
     },
   })
 
-  const { schemaString: schema, $output, typegen } = await mockConsoleLog(
-    async () => {
-      return generateSchemaAndTypes(datamodel, [Query, User])
-    },
-  )
+  const { schemaString: schema, $output, typegen } = await mockConsoleLog(async () => {
+    return generateSchemaAndTypes(datamodel, [Query, User])
+  })
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')
@@ -69,10 +67,7 @@ it('in prod stage, throw error if no arg or wrong args are passed', async () => 
   })
 
   try {
-    const {
-      schemaString: schema,
-      typegen,
-    } = await generateSchemaAndTypes(datamodel, [Query, User])
+    const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [Query, User])
 
     expect(schema).toMatchSnapshot('schema')
     expect(typegen).toMatchSnapshot('typegen')

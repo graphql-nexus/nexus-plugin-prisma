@@ -9,7 +9,7 @@ export const Query = queryType({
 })
 
 export const Mutation = mutationType({
-  definition: t => {
+  definition: (t) => {
     t.crud.createOnePost()
     t.crud.updateManyPost()
   },

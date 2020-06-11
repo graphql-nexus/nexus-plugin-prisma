@@ -23,18 +23,11 @@ export function generate(options: Options): Promise<void> {
 
 export function doGenerate(sync: true, options: Options): void
 export function doGenerate(sync: false, options: Options): Promise<void>
-export function doGenerate(
-  sync: boolean,
-  options: Options,
-): void | Promise<void> {
+export function doGenerate(sync: boolean, options: Options): void | Promise<void> {
   const paginationStrategy = options.paginationStrategy
   const prismaClientImportId =
-    Path.isAbsolute(options.typegenPath) &&
-    Path.isAbsolute(options.prismaClientPath)
-      ? Path.relative(
-          Path.dirname(options.typegenPath),
-          options.prismaClientPath,
-        )
+    Path.isAbsolute(options.typegenPath) && Path.isAbsolute(options.prismaClientPath)
+      ? Path.relative(Path.dirname(options.typegenPath), options.prismaClientPath)
       : options.prismaClientPath
   const dmmf = getTransformedDmmf(options.prismaClientPath)
   const tsDeclaration = render({
@@ -84,26 +77,24 @@ declare global {
 function renderModelTypes(dmmf: DmmfDocument) {
   return `\
 interface ModelTypes {
-${dmmf.datamodel.models.map(m => `  ${m.name}: prisma.${m.name}`).join('\n')}
+${dmmf.datamodel.models.map((m) => `  ${m.name}: prisma.${m.name}`).join('\n')}
 }
   `
 }
 
 function renderNexusPrismaTypes(dmmf: DmmfDocument) {
-  const queriesByType = getCrudMappedFields('Query', dmmf).map(mappedfield => ({
+  const queriesByType = getCrudMappedFields('Query', dmmf).map((mappedfield) => ({
     fieldName: mappedfield.field.name,
     returnType: mappedfield.field.outputType.type,
   }))
-  const mutationsByType = getCrudMappedFields('Mutation', dmmf).map(
-    mappedField => ({
-      fieldName: mappedField.field.name,
-      returnType: mappedField.field.outputType.type,
-    }),
-  )
+  const mutationsByType = getCrudMappedFields('Mutation', dmmf).map((mappedField) => ({
+    fieldName: mappedField.field.name,
+    returnType: mappedField.field.outputType.type,
+  }))
   const fieldsByType = dmmf.datamodel.models.reduce<
     Record<string, { fieldName: string; returnType: string }[]>
   >((acc, m) => {
-    acc[m.name] = m.fields.map(f => ({
+    acc[m.name] = m.fields.map((f) => ({
       fieldName: f.name,
       returnType: f.type,
     }))
@@ -116,9 +107,9 @@ function renderNexusPrismaTypes(dmmf: DmmfDocument) {
     input: {
       fieldName: string
       returnType: string
-    }[],
+    }[]
   ): string => `\
-${input.map(f => `    ${f.fieldName}: '${f.returnType}'`).join('\n')}
+${input.map((f) => `    ${f.fieldName}: '${f.returnType}'`).join('\n')}
 `
 
   return `\
@@ -132,7 +123,7 @@ ${renderNexusPrismaType(mutationsByType)}
 ${Object.entries(fieldsByType).map(
   ([modelName, fields]) => `  ${modelName}: {
 ${renderNexusPrismaType(fields)}
-}`,
+}`
 )}
 }
 `
@@ -141,24 +132,18 @@ ${renderNexusPrismaType(fields)}
 function renderNexusPrismaInputs(dmmf: DmmfDocument) {
   const queriesFields = getCrudMappedFields('Query', dmmf)
     .filter(
-      mappedField =>
-        mappedField.field.outputType.isList &&
-        mappedField.field.outputType.kind === 'object',
+      (mappedField) => mappedField.field.outputType.isList && mappedField.field.outputType.kind === 'object'
     )
-    .map(mappedField => {
-      const whereArg = mappedField.field.args.find(a => a.name === 'where')!
-      const orderByArg = mappedField.field.args.find(a => a.name === 'orderBy')!
-      const whereInput = dmmf.schema.inputTypes.find(
-        i => i.name === whereArg.inputType.type,
-      )!
-      const orderByInput = dmmf.schema.inputTypes.find(
-        i => i.name === orderByArg.inputType.type,
-      )!
+    .map((mappedField) => {
+      const whereArg = mappedField.field.args.find((a) => a.name === 'where')!
+      const orderByArg = mappedField.field.args.find((a) => a.name === 'orderBy')!
+      const whereInput = dmmf.schema.inputTypes.find((i) => i.name === whereArg.inputType.type)!
+      const orderByInput = dmmf.schema.inputTypes.find((i) => i.name === orderByArg.inputType.type)!
 
       return {
         fieldName: defaultFieldNamingStrategy[mappedField.operation](
           mappedField.field.name,
-          mappedField.model,
+          mappedField.model
         ),
         filtering: whereInput,
         ordering: orderByInput,
@@ -166,7 +151,7 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
     })
 
   const fieldsByType = dmmf.datamodel.models
-    .map(m => dmmf.getOutputType(m.name))
+    .map((m) => dmmf.getOutputType(m.name))
     .reduce<
       Record<
         string,
@@ -178,17 +163,13 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
       >
     >((acc, type) => {
       acc[type.name] = type.fields
-        .filter(f => f.outputType.isList && f.outputType.kind === 'object')
-        .map(f => {
-          const whereArg = f.args.find(a => a.name === 'where')!
+        .filter((f) => f.outputType.isList && f.outputType.kind === 'object')
+        .map((f) => {
+          const whereArg = f.args.find((a) => a.name === 'where')!
 
-          const orderByArg = f.args.find(a => a.name === 'orderBy')!
-          const whereInput = dmmf.schema.inputTypes.find(
-            i => i.name === whereArg.inputType.type,
-          )!
-          const orderByInput = dmmf.schema.inputTypes.find(
-            i => i.name === orderByArg.inputType.type,
-          )!
+          const orderByArg = f.args.find((a) => a.name === 'orderBy')!
+          const whereInput = dmmf.schema.inputTypes.find((i) => i.name === whereArg.inputType.type)!
+          const orderByInput = dmmf.schema.inputTypes.find((i) => i.name === orderByArg.inputType.type)!
 
           return {
             fieldName: f.name,
@@ -206,14 +187,14 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
       fieldName: string
       filtering: DmmfTypes.InputType
       ordering: DmmfTypes.InputType
-    }[],
+    }[]
   ): string => `\
 ${input
   .map(
-    f => `    ${f.fieldName}: {
-  filtering: ${f.filtering.fields.map(f => `'${f.name}'`).join(' | ')}
-  ordering: ${f.ordering.fields.map(f => `'${f.name}'`).join(' | ')}
-}`,
+    (f) => `    ${f.fieldName}: {
+  filtering: ${f.filtering.fields.map((f) => `'${f.name}'`).join(' | ')}
+  ordering: ${f.ordering.fields.map((f) => `'${f.name}'`).join(' | ')}
+}`
   )
   .join('\n')}
 `
@@ -226,7 +207,7 @@ ${renderNexusPrismaInput(queriesFields)}
   ${Object.entries(fieldsByType).map(
     ([modelName, fields]) => `  ${modelName}: {
 ${renderNexusPrismaInput(fields)}
-  }`,
+  }`
   )}
 }
 `
@@ -235,9 +216,7 @@ ${renderNexusPrismaInput(fields)}
 function renderNexusPrismaMethods(dmmf: DmmfDocument) {
   return `\
 interface NexusPrismaMethods {
-${dmmf.datamodel.models
-  .map(m => `  ${m.name}: NexusPrismaFields<'${m.name}'>`)
-  .join('\n')}
+${dmmf.datamodel.models.map((m) => `  ${m.name}: NexusPrismaFields<'${m.name}'>`).join('\n')}
   Query: NexusPrismaFields<'Query'>
   Mutation: NexusPrismaFields<'Mutation'>
 }
@@ -247,9 +226,7 @@ ${dmmf.datamodel.models
 function renderPaginationType(paginationStrategy: PaginationStrategy) {
   return outdent`
     type Pagination = {
-    ${paginationStrategy.paginationArgNames
-      .map(argName => `  ${argName}?: boolean`)
-      .join('\n')}
+    ${paginationStrategy.paginationArgNames.map((argName) => `  ${argName}?: boolean`).join('\n')}
     }`
 }
 

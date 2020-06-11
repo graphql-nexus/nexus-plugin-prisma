@@ -13,26 +13,24 @@ const operationToRoot: Record<OperationName, 'Query' | 'Mutation'> = {
   deleteMany: 'Mutation',
   update: 'Mutation',
   updateMany: 'Mutation',
-  upsert: 'Mutation'
+  upsert: 'Mutation',
 }
 
 async function getSchemaArgsForCrud(
   datamodel: string,
   model: string,
-  operation: OperationName,
+  operation: OperationName
 ): Promise<{
   schemaArgs: Record<string, DmmfTypes.SchemaArg>
   dmmf: DmmfDocument
 }> {
   const dmmf = await getDmmf(datamodel)
   const mappedField = getCrudMappedFields(operationToRoot[operation], dmmf).find(
-    x => x.operation === operation && x.model === model,
+    (x) => x.operation === operation && x.model === model
   )
 
   if (!mappedField) {
-    throw new Error(
-      `Could not find mapped fields for model ${model} and operation ${operation}`,
-    )
+    throw new Error(`Could not find mapped fields for model ${model} and operation ${operation}`)
   }
 
   return {
@@ -128,7 +126,7 @@ test('model filtering: converts nulls to undefined when fields are not nullable'
   }
   `
   const dmmf = await getDmmf(datamodel)
-  const schemaArgs = dmmf.getOutputType('User').fields.find(f => f.name === 'posts')?.args!
+  const schemaArgs = dmmf.getOutputType('User').fields.find((f) => f.name === 'posts')?.args!
   const indexedSchemaArgs = indexBy(schemaArgs, 'name')
   const incomingArgs = {
     where: {

@@ -8,18 +8,15 @@ it('support models with only one id field (some crud operations are removed)', a
   }
 `
 
-const User = objectType({
-  name: 'User',
-  definition(t: any) {
-    t.model.id()
-  },
-})
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model.id()
+    },
+  })
 
-const {
-  schemaString: schema,
-  typegen,
-} = await generateSchemaAndTypes(datamodel, [User])
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [User])
 
-expect(schema).toMatchSnapshot('schema')
-expect(typegen).toMatchSnapshot('typegen')
+  expect(schema).toMatchSnapshot('schema')
+  expect(typegen).toMatchSnapshot('typegen')
 })

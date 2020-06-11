@@ -31,7 +31,7 @@ it('supports custom resolver for t.crud', async () => {
           args: unknown,
           ctx: unknown,
           info: GraphQLResolveInfo,
-          originalResolve: GraphQLFieldResolver<any, any, any>,
+          originalResolve: GraphQLFieldResolver<any, any, any>
         ) => {
           before()
           const res = await originalResolve(root, args, ctx, info)
@@ -85,7 +85,7 @@ it('supports custom resolver for t.model', async () => {
           args: unknown,
           ctx: unknown,
           info: GraphQLResolveInfo,
-          originalResolve: GraphQLFieldResolver<any, any, any>,
+          originalResolve: GraphQLFieldResolver<any, any, any>
         ) => {
           before()
           const res = await originalResolve(root, args, ctx, info)

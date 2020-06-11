@@ -6,13 +6,10 @@ import { dmmfFieldToNexusFieldConfig, Index } from './utils'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
-  constructor(
-    public dmmf: DmmfDocument,
-    public nexusBuilder: Nexus.PluginBuilderLens,
-  ) {}
+  constructor(public dmmf: DmmfDocument, public nexusBuilder: Nexus.PluginBuilderLens) {}
 
   inputType(
-    customArg: CustomInputArg,
+    customArg: CustomInputArg
   ):
     | string
     | Nexus.core.NexusInputObjectTypeDef<string>
@@ -27,7 +24,7 @@ export class Publisher {
         dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
           type: customArg.type.name,
-        }),
+        })
       )
     }
 
@@ -52,10 +49,7 @@ export class Publisher {
      * - Or if outputTypeName matches a prisma model name
      * - Then simply reference the type. Types that matches a prisma model name should be published manually by users.
      */
-    if (
-      this.isPublished(outputTypeName) ||
-      this.dmmf.hasModel(outputTypeName)
-    ) {
+    if (this.isPublished(outputTypeName) || this.dmmf.hasModel(outputTypeName)) {
       return outputTypeName
     }
 
@@ -82,7 +76,7 @@ export class Publisher {
 
     return Nexus.objectType({
       name,
-      definition: t => {
+      definition: (t) => {
         for (const field of dmmfObject.fields) {
           t.field(field.name, dmmfFieldToNexusFieldConfig(field.outputType))
         }
@@ -121,9 +115,9 @@ export class Publisher {
 
     return Nexus.inputObjectType({
       name: inputType.name,
-      definition: t => {
+      definition: (t) => {
         inputType.fields
-          .map(field => {
+          .map((field) => {
             // TODO: Do not filter JsonFilter once Prisma implements them
             // https://github.com/prisma/prisma/issues/2563
             if (['JsonFilter', 'NullableJsonFilter'].includes(field.inputType.type)) {
@@ -144,7 +138,7 @@ export class Publisher {
               },
             }
           })
-          .forEach(field => {
+          .forEach((field) => {
             if (field) {
               t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
             }

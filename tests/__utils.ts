@@ -11,11 +11,11 @@ import { render as renderTypegen } from '../src/typegen'
 import { getEnginePath } from './__ensure-engine'
 
 export const createNexusPrismaInternal = (
-  options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>,
+  options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>
 ) =>
   Nexus.createPlugin({
     name: 'nexus-prisma-internal',
-    onInstall: nexusBuilder => ({
+    onInstall: (nexusBuilder) => ({
       types: NexusPrismaBuilder.build({ ...options, nexusBuilder }).types,
     }),
   })
@@ -27,8 +27,8 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
         datamodel,
         prismaPath: await getEnginePath('query'),
       }),
-      options,
-    ),
+      options
+    )
   )
 }
 
@@ -52,7 +52,7 @@ export async function generateSchemaAndTypes(
   options?: TransformOptions & {
     experimentalCRUD?: boolean
     plugins?: Nexus.core.NexusPlugin[]
-  },
+  }
 ) {
   const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
@@ -79,7 +79,7 @@ export async function generateSchemaAndTypes(
 export async function generateSchemaAndTypesWithoutThrowing(
   datamodel: string,
   types: any[],
-  options?: TransformOptions,
+  options?: TransformOptions
 ) {
   const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = new NexusPrismaBuilder.SchemaBuilder({
@@ -112,7 +112,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
 type UnPromisify<T> = T extends Promise<infer U> ? U : T
 
 export async function mockConsoleLog<T extends (...args: any) => any>(
-  func: T,
+  func: T
 ): Promise<{ $output: string } & UnPromisify<ReturnType<T>>> {
   const oldLog = console.log
   let outputData = ''

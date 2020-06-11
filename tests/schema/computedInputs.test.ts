@@ -84,10 +84,7 @@ const globalTestData = {
 
 it('removes resolver-level computedInputs from the corresponding input type', async () => {
   const { datamodel, ...resolvers } = resolverTestData
-  const result = await generateSchemaAndTypes(
-    datamodel,
-    Object.values(resolvers),
-  )
+  const result = await generateSchemaAndTypes(datamodel, Object.values(resolvers))
 
   expect({
     schema: result.schemaString,
@@ -110,19 +107,15 @@ it('infers the value of resolver-level computedInputs at runtime', async () => {
       locallyComputedInputs: {
         createdWithBrowser: ({ ctx }) => ctx.browser,
       },
-    }),
+    })
   ).toStrictEqual({ data: { name: 'New User', createdWithBrowser: 'firefox' } })
 })
 
 it('removes global computedInputs from all input types', async () => {
   const { datamodel, ...resolvers } = globalTestData
-  const result = await generateSchemaAndTypes(
-    datamodel,
-    Object.values(resolvers),
-    {
-      globallyComputedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
-    },
-  )
+  const result = await generateSchemaAndTypes(datamodel, Object.values(resolvers), {
+    globallyComputedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
+  })
 
   expect({
     schema: result.schemaString,
@@ -150,7 +143,7 @@ it('infers the value of global computedInputs at runtime', async () => {
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       locallyComputedInputs: {},
-    }),
+    })
   ).toStrictEqual({
     data: {
       name: 'New User',
@@ -185,7 +178,7 @@ it('handles arrays when recursing for computedInputs', async () => {
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       locallyComputedInputs: {},
-    }),
+    })
   ).toStrictEqual({
     data: {
       name: 'New User',
@@ -219,7 +212,7 @@ it('can combine resolver-level (shallow) and global (deep) computed inputs', asy
       dmmf,
       // These are applied only to UserCreateInput
       locallyComputedInputs: { name: ({ ctx }) => ctx.name },
-    }),
+    })
   ).toStrictEqual({
     data: {
       name: 'autopopulated',
@@ -237,9 +230,7 @@ it('can use a combination of args, context and info to compute values', async ()
   const dmmf = await getDmmf(datamodel, {
     globallyComputedInputs: {
       createdWithBrowser: ({ args, ctx, info }) =>
-        `${ctx.browser.slice(1, 2)} ${info} ${
-          (args.data as any).nested.create.name
-        }`,
+        `${ctx.browser.slice(1, 2)} ${info} ${(args.data as any).nested.create.name}`,
     },
   })
   expect(
@@ -253,10 +244,9 @@ it('can use a combination of args, context and info to compute values', async ()
       inputType: dmmf.getInputType('UserCreateInput'),
       dmmf,
       locallyComputedInputs: {
-        name: ({ args, ctx, info }) =>
-          `${args.data.nested.create.name} ${ctx.browser.slice(1, 2)} ${info}`,
+        name: ({ args, ctx, info }) => `${args.data.nested.create.name} ${ctx.browser.slice(1, 2)} ${info}`,
       },
-    }),
+    })
   ).toStrictEqual({
     data: {
       name: 'Sam i Yam',

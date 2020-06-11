@@ -26,7 +26,7 @@ it('only publishes output types that do not map to prisma models', async () => {
     await generateSchemaAndTypes(datamodel, [Query, Mutation])
   } catch (e) {
     expect(e).toMatchInlineSnapshot(
-      `[Error: Your GraphQL \`Query\` object definition is projecting a field \`user\` with \`User\` as output type, but \`User\` is not defined in your GraphQL Schema]`,
+      `[Error: Your GraphQL \`Query\` object definition is projecting a field \`user\` with \`User\` as output type, but \`User\` is not defined in your GraphQL Schema]`
     )
   }
 })
@@ -53,10 +53,7 @@ it('publishes scalars from input types', async () => {
     },
   })
 
-  const {
-    schemaString: schema,
-    typegen,
-  } = await generateSchemaAndTypes(datamodel, [Query, User])
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [Query, User])
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')

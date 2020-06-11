@@ -41,11 +41,8 @@ export function nexusPrismaPlugin(options?: Options) {
 
   return plugin({
     name: 'nexus-prisma',
-    onInstall: nexusBuilder => {
-      const {
-        types,
-        wasCrudUsedButDisabled: wasCrudUsed,
-      } = buildNexusPrismaTypes({
+    onInstall: (nexusBuilder) => {
+      const { types, wasCrudUsedButDisabled: wasCrudUsed } = buildNexusPrismaTypes({
         ...options,
         nexusBuilder,
       })
@@ -59,11 +56,11 @@ export function nexusPrismaPlugin(options?: Options) {
     onBeforeBuild() {
       if (wasCrudUsedButDisabled?.() === true) {
         console.log(`\
-${colors.yellow('Warning')}: ${colors.green(
-          't.crud',
-        )} ${colors.yellow('is an experimental feature with many practical limitations. You must explicitly enable it before using.')}
+${colors.yellow('Warning')}: ${colors.green('t.crud')} ${colors.yellow(
+          'is an experimental feature with many practical limitations. You must explicitly enable it before using.'
+        )}
 Please add ${colors.green(`experimentalCRUD: true`)} in the ${colors.green(
-          'nexusPluginPrisma()',
+          'nexusPluginPrisma()'
         )} constructor if you still wish to enable it.`)
       }
     },

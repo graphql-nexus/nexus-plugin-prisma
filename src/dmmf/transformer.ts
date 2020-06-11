@@ -1,9 +1,5 @@
 import { DMMF } from '@prisma/client/runtime'
-import {
-  GlobalComputedInputs,
-  GlobalMutationResolverParams,
-  LocalComputedInputs,
-} from '../utils'
+import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
@@ -16,22 +12,16 @@ export type TransformOptions = {
 
 export const getTransformedDmmf = (
   photonClientPackagePath: string,
-  options?: TransformOptions,
-): DmmfDocument =>
-  new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath), options))
+  options?: TransformOptions
+): DmmfDocument => new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath), options))
 
-const addDefaultOptions = (
-  givenOptions?: TransformOptions,
-): Required<TransformOptions> => ({
+const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
   paginationStrategy: relayLikePaginationStrategy,
   ...givenOptions,
 })
 
-export function transform(
-  document: DMMF.Document,
-  options?: TransformOptions,
-): DmmfTypes.Document {
+export function transform(document: DMMF.Document, options?: TransformOptions): DmmfTypes.Document {
   return {
     datamodel: transformDatamodel(document.datamodel),
     mappings: document.mappings as DmmfTypes.Mapping[],
@@ -42,9 +32,9 @@ export function transform(
 function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
   return {
     enums: datamodel.enums,
-    models: datamodel.models.map(model => ({
+    models: datamodel.models.map((model) => ({
       ...model,
-      fields: model.fields.map(field => ({
+      fields: model.fields.map((field) => ({
         ...field,
         kind: field.kind === 'object' ? 'relation' : field.kind,
       })),
@@ -56,26 +46,20 @@ const paginationArgNames = ['cursor', 'take', 'skip']
 
 function transformSchema(
   schema: DMMF.Schema,
-  { globallyComputedInputs, paginationStrategy }: Required<TransformOptions>,
+  { globallyComputedInputs, paginationStrategy }: Required<TransformOptions>
 ): DmmfTypes.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map(_ =>
-      transformInputType(_, globallyComputedInputs),
-    ),
-    outputTypes: schema.outputTypes.map(o => {
+    inputTypes: schema.inputTypes.map((_) => transformInputType(_, globallyComputedInputs)),
+    outputTypes: schema.outputTypes.map((o) => {
       return {
         ...o,
-        fields: o.fields.map(f => {
+        fields: o.fields.map((f) => {
           let args = f.args.map(transformArg)
-          const argNames = args.map(a => a.name)
+          const argNames = args.map((a) => a.name)
 
           // If this field has pagination
-          if (
-            paginationArgNames.every(paginationArgName =>
-              argNames.includes(paginationArgName),
-            )
-          ) {
+          if (paginationArgNames.every((paginationArgName) => argNames.includes(paginationArgName))) {
             args = paginationStrategy.transformDmmfArgs({
               args,
               paginationArgNames,
@@ -104,9 +88,9 @@ function transformSchema(
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   // FIXME: *Enum*Filter are currently empty
-  let inputType = arg.inputType.some(a => a.kind === 'enum')
+  let inputType = arg.inputType.some((a) => a.kind === 'enum')
     ? arg.inputType[0]
-    : arg.inputType.find(a => a.kind === 'object')!
+    : arg.inputType.find((a) => a.kind === 'object')!
 
   if (!inputType) {
     inputType = arg.inputType[0]
@@ -133,10 +117,7 @@ type AddComputedInputParams = {
 /** Resolver-level computed inputs aren't recursive so aren't
  *  needed for deep computed inputs.
  */
-type AddDeepComputedInputsArgs = Omit<
-  AddComputedInputParams,
-  'locallyComputedInputs'
-> & { data: any } // Used to recurse through the input object
+type AddDeepComputedInputsArgs = Omit<AddComputedInputParams, 'locallyComputedInputs'> & { data: any } // Used to recurse through the input object
 
 /**
  * Recursively looks for inputs that need a value from globallyComputedInputs
@@ -149,13 +130,13 @@ function addGloballyComputedInputs({
   data,
 }: AddDeepComputedInputsArgs): Record<string, any> {
   if (Array.isArray(data)) {
-    return data.map(value =>
+    return data.map((value) =>
       addGloballyComputedInputs({
         inputType,
         dmmf,
         params,
         data: value,
-      }),
+      })
     )
   }
   // Get values for computedInputs corresponding to keys that exist in inputType
@@ -164,12 +145,12 @@ function addGloballyComputedInputs({
       ...values,
       [key]: inputType.computedInputs[key](params),
     }),
-    {} as Record<string, any>,
+    {} as Record<string, any>
   )
   // Combine computedInputValues with values provided by the user, recursing to add
   // global computedInputs to nested types
   return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
-    const field = inputType.fields.find(_ => _.name === fieldName)!
+    const field = inputType.fields.find((_) => _.name === fieldName)!
     const fieldValue =
       field.inputType.kind === 'object'
         ? addGloballyComputedInputs({
@@ -210,7 +191,7 @@ export function addComputedInputs({
           ...args,
           [fieldName]: computeFieldValue(params),
         }),
-        {} as Record<string, any>,
+        {} as Record<string, any>
       ),
     },
   }
@@ -218,9 +199,9 @@ export function addComputedInputs({
 
 function transformInputType(
   inputType: DMMF.InputType,
-  globallyComputedInputs: GlobalComputedInputs,
+  globallyComputedInputs: GlobalComputedInputs
 ): DmmfTypes.InputType {
-  const fieldNames = inputType.fields.map(field => field.name)
+  const fieldNames = inputType.fields.map((field) => field.name)
   /**
    * Only global computed inputs are removed during schema transform.
    * Resolver level computed inputs are filtered as part of the
@@ -228,20 +209,14 @@ function transformInputType(
    * at runtime so their values can be inferred alongside the
    * global values.
    */
-  const globallyComputedInputsInType = Object.keys(
-    globallyComputedInputs,
-  ).reduce(
+  const globallyComputedInputsInType = Object.keys(globallyComputedInputs).reduce(
     (args, key) =>
-      fieldNames.includes(key)
-        ? Object.assign(args, { [key]: globallyComputedInputs[key] })
-        : args,
-    {} as GlobalComputedInputs,
+      fieldNames.includes(key) ? Object.assign(args, { [key]: globallyComputedInputs[key] }) : args,
+    {} as GlobalComputedInputs
   )
   return {
     ...inputType,
-    fields: inputType.fields
-      .filter(field => !(field.name in globallyComputedInputs))
-      .map(transformArg),
+    fields: inputType.fields.filter((field) => !(field.name in globallyComputedInputs)).map(transformArg),
     computedInputs: globallyComputedInputsInType,
   }
 }

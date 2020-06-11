@@ -120,11 +120,7 @@ it('supports nested query with compound ids', async () => {
     types: [Query, Parent, Child],
   })
 
-  const { schemaString } = await generateSchemaAndTypes(datamodel, [
-    Query,
-    Parent,
-    Child,
-  ])
+  const { schemaString } = await generateSchemaAndTypes(datamodel, [Query, Parent, Child])
 
   console.log(schemaString)
 
@@ -351,11 +347,7 @@ it('supports nested query without id but compound uniques', async () => {
     types: [Query, Parent, Child],
   })
 
-  const { schemaString } = await generateSchemaAndTypes(datamodel, [
-    Query,
-    Parent,
-    Child,
-  ])
+  const { schemaString } = await generateSchemaAndTypes(datamodel, [Query, Parent, Child])
 
   console.log(schemaString)
 

@@ -9,14 +9,11 @@ import { DmmfDocument } from './dmmf'
  * 3. One (and only one) field with a @unique annotation (if there are multiple, use the first one)
  * 4. Multiple fields with a @@unique clause
  */
-export function resolveUniqueIdentifiers(
-  typeName: string,
-  dmmf: DmmfDocument,
-): string[] {
+export function resolveUniqueIdentifiers(typeName: string, dmmf: DmmfDocument): string[] {
   const model = dmmf.getModelOrThrow(typeName)
 
   // Try finding 1.
-  const singleIdField = model.fields.find(f => f.isId)
+  const singleIdField = model.fields.find((f) => f.isId)
 
   if (singleIdField) {
     return [singleIdField.name]
@@ -27,7 +24,7 @@ export function resolveUniqueIdentifiers(
     return model.idFields
   }
 
-  const singleUniqueField = model.fields.find(f => f.isUnique)
+  const singleUniqueField = model.fields.find((f) => f.isUnique)
 
   if (singleUniqueField) {
     return [singleUniqueField.name]
@@ -37,14 +34,12 @@ export function resolveUniqueIdentifiers(
     return model.uniqueFields[0]
   }
 
-  throw new Error(
-    `Unable to resolve a unique identifier for the Prisma model: ${model.name}`,
-  )
+  throw new Error(`Unable to resolve a unique identifier for the Prisma model: ${model.name}`)
 }
 
 export function findMissingUniqueIdentifiers(
   data: Record<string, any>,
-  uniqueIdentifiers: string[],
+  uniqueIdentifiers: string[]
 ): string[] | null {
   const missingIdentifiers: string[] = []
 
@@ -61,10 +56,7 @@ export function findMissingUniqueIdentifiers(
   return null
 }
 
-export function buildWhereUniqueInput(
-  data: Record<string, any>,
-  uniqueIdentifiers: string[],
-) {
+export function buildWhereUniqueInput(data: Record<string, any>, uniqueIdentifiers: string[]) {
   if (uniqueIdentifiers.length === 1) {
     return pickFromRecord(data, uniqueIdentifiers)
   }

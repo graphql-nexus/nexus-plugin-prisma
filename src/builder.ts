@@ -3,12 +3,7 @@ import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import { defaultFieldResolver, GraphQLFieldResolver } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
-import {
-  addComputedInputs,
-  DmmfDocument,
-  DmmfTypes,
-  getTransformedDmmf,
-} from './dmmf'
+import { addComputedInputs, DmmfDocument, DmmfTypes, getTransformedDmmf } from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -52,7 +47,7 @@ interface FieldPublisherConfig {
     args: object,
     ctx: object,
     info: object,
-    originalResolve: GraphQLFieldResolver<any, any, any>,
+    originalResolve: GraphQLFieldResolver<any, any, any>
   ) => Promise<any>
 }
 
@@ -85,9 +80,7 @@ type FieldConfigData = {
  * For Prisma Client JS' part, it will never return null for list type fields nor will it
  * ever return null value list members.
  */
-const dmmfListFieldTypeToNexus = (
-  fieldType: DmmfTypes.SchemaField['outputType'],
-) => {
+const dmmfListFieldTypeToNexus = (fieldType: DmmfTypes.SchemaField['outputType']) => {
   return fieldType.isList
     ? {
         list: [true],
@@ -169,15 +162,9 @@ let defaultTypegenPath: string
 if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
   defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
 } else if (process.env.LINK) {
-  defaultTypegenPath = path.join(
-    process.cwd(),
-    'node_modules/@types/nexus-prisma-typegen/index.d.ts',
-  )
+  defaultTypegenPath = path.join(process.cwd(), 'node_modules/@types/nexus-prisma-typegen/index.d.ts')
 } else {
-  defaultTypegenPath = path.join(
-    __dirname,
-    '../../@types/nexus-prisma-typegen/index.d.ts',
-  )
+  defaultTypegenPath = path.join(__dirname, '../../@types/nexus-prisma-typegen/index.d.ts')
 }
 
 let defaultClientPath: string
@@ -234,9 +221,7 @@ export class SchemaBuilder {
       outputs: { ...defaultOptions.outputs, ...options.outputs },
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
-    this.globallyComputedInputs = config.computedInputs
-      ? config.computedInputs
-      : {}
+    this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
     this.paginationStrategy = relayLikePaginationStrategy
     this.dmmf =
       options.dmmf ||
@@ -288,121 +273,83 @@ export class SchemaBuilder {
       factory: ({ typeDef: t, typeName, stage }) => {
         if (typeName === GraphQL.rootNames.Subscription) {
           // TODO Lets put a GitHub issue link in this error message
-          throw new Error(
-            `t.crud is not yet supported on the 'Subscription' type.`,
-          )
+          throw new Error(`t.crud is not yet supported on the 'Subscription' type.`)
         }
 
-        if (
-          typeName !== GraphQL.rootNames.Query &&
-          typeName !== GraphQL.rootNames.Mutation
-        ) {
+        if (typeName !== GraphQL.rootNames.Query && typeName !== GraphQL.rootNames.Mutation) {
           throw new Error(
-            `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`,
+            `t.crud can only be used on GraphQL root types 'Query' & 'Mutation' but was used on '${typeName}'. Please use 't.model' instead`
           )
         }
-        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce(
-          (crud, mappedField) => {
-            const fieldPublisher: FieldPublisher = givenConfig => {
-              const inputType = this.dmmf.getInputType(
-                mappedField.field.args[0].inputType.type,
-              )
-              const publisherConfig = this.buildPublisherConfig({
-                field: mappedField.field,
-                givenConfig: givenConfig ? givenConfig : {},
-              })
-              const schemaArgsIndex = indexBy(mappedField.field.args, 'name')
+        const publishers = getCrudMappedFields(typeName, this.dmmf).reduce((crud, mappedField) => {
+          const fieldPublisher: FieldPublisher = (givenConfig) => {
+            const inputType = this.dmmf.getInputType(mappedField.field.args[0].inputType.type)
+            const publisherConfig = this.buildPublisherConfig({
+              field: mappedField.field,
+              givenConfig: givenConfig ? givenConfig : {},
+            })
+            const schemaArgsIndex = indexBy(mappedField.field.args, 'name')
 
-              const originalResolve: GraphQLFieldResolver<any, any, any> = (
-                _root,
-                args,
-                ctx,
-                info,
-              ) => {
-                const photon = this.getPrismaClient(ctx)
-                if (
-                  typeName === 'Mutation' &&
-                  (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
-                    !isEmptyObject(this.globallyComputedInputs))
-                ) {
-                  args = transformNullsToUndefined(
-                    args,
-                    schemaArgsIndex,
-                    this.dmmf,
-                  )
-                  args = addComputedInputs({
-                    inputType,
-                    dmmf: this.dmmf,
-                    params: {
-                      info,
-                      args,
-                      ctx,
-                    },
-                    locallyComputedInputs:
-                      publisherConfig.locallyComputedInputs,
-                  })
-                }
-
-                args = this.paginationStrategy.resolve(args)
-
-                return photon[mappedField.photonAccessor][
-                  mappedField.operation
-                ](args)
-              }
-
-              const fieldConfig = this.buildFieldConfig({
-                field: mappedField.field,
-                publisherConfig,
-                typeName,
-                operation: mappedField.operation,
-                resolve: (root, args, ctx, info) => {
-                  return givenConfig?.resolve
-                    ? givenConfig.resolve(
-                        root,
-                        args,
-                        ctx,
-                        info,
-                        originalResolve,
-                      )
-                    : originalResolve(root, args, ctx, info)
-                },
-              })
-
+            const originalResolve: GraphQLFieldResolver<any, any, any> = (_root, args, ctx, info) => {
+              const photon = this.getPrismaClient(ctx)
               if (
-                this.assertOutputTypeIsDefined(
-                  typeName,
-                  mappedField.field.name,
-                  publisherConfig.type,
-                  stage,
-                )
+                typeName === 'Mutation' &&
+                (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
+                  !isEmptyObject(this.globallyComputedInputs))
               ) {
-                t.field(publisherConfig.alias, fieldConfig)
+                args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
+                args = addComputedInputs({
+                  inputType,
+                  dmmf: this.dmmf,
+                  params: {
+                    info,
+                    args,
+                    ctx,
+                  },
+                  locallyComputedInputs: publisherConfig.locallyComputedInputs,
+                })
               }
 
-              this.assertFilteringOrOrderingArgNameExists(
-                typeName,
-                mappedField.field.outputType.type,
-                mappedField.field.name,
-                publisherConfig,
-                stage,
-              )
+              args = this.paginationStrategy.resolve(args)
 
-              return crud
+              return photon[mappedField.photonAccessor][mappedField.operation](args)
             }
 
-            crud[mappedField.field.name] = fieldPublisher
+            const fieldConfig = this.buildFieldConfig({
+              field: mappedField.field,
+              publisherConfig,
+              typeName,
+              operation: mappedField.operation,
+              resolve: (root, args, ctx, info) => {
+                return givenConfig?.resolve
+                  ? givenConfig.resolve(root, args, ctx, info, originalResolve)
+                  : originalResolve(root, args, ctx, info)
+              },
+            })
+
+            if (
+              this.assertOutputTypeIsDefined(typeName, mappedField.field.name, publisherConfig.type, stage)
+            ) {
+              t.field(publisherConfig.alias, fieldConfig)
+            }
+
+            this.assertFilteringOrOrderingArgNameExists(
+              typeName,
+              mappedField.field.outputType.type,
+              mappedField.field.name,
+              publisherConfig,
+              stage
+            )
 
             return crud
-          },
-          {} as PublisherMethods,
-        )
+          }
 
-        return proxifyPublishers(
-          publishers,
-          typeName,
-          stage,
-          this.options.onUnknownFieldName,
-        )
+          crud[mappedField.field.name] = fieldPublisher
+
+          return crud
+        }, {} as PublisherMethods)
+
+        return proxifyPublishers(publishers, typeName, stage, this.options.onUnknownFieldName)
       },
     })
   }
@@ -418,7 +365,7 @@ export class SchemaBuilder {
             get() {
               return () => {}
             },
-          },
+          }
         )
       },
     })
@@ -480,15 +427,14 @@ export class SchemaBuilder {
         if (hasPrismaModel) {
           return this.internalBuildModel(typeName, typeDef, stage)
         } else {
-          const accessor = (modelName: string) =>
-            this.internalBuildModel(modelName, typeDef, stage)
+          const accessor = (modelName: string) => this.internalBuildModel(modelName, typeDef, stage)
 
           return proxifyModelFunction(
             accessor,
             typeName,
             stage,
             this.options.onUnknownPrismaModelName,
-            this.unknownFieldsByModel,
+            this.unknownFieldsByModel
           )
         }
       },
@@ -498,25 +444,18 @@ export class SchemaBuilder {
   protected internalBuildModel(
     typeName: string,
     t: Nexus.core.OutputDefinitionBlock<any>,
-    stage: Nexus.core.OutputFactoryConfig<any>['stage'],
+    stage: Nexus.core.OutputFactoryConfig<any>['stage']
   ) {
     const model = this.dmmf.getModelOrThrow(typeName)
     const outputType = this.dmmf.getOutputType(model.name)
 
     const publishers = outputType.fields.reduce((acc, field) => {
-      const fieldPublisher: FieldPublisher = givenConfig => {
+      const fieldPublisher: FieldPublisher = (givenConfig) => {
         const publisherConfig = this.buildPublisherConfig({
           field,
           givenConfig: givenConfig ?? {},
         })
-        if (
-          !this.assertOutputTypeIsDefined(
-            typeName,
-            publisherConfig.alias,
-            publisherConfig.type,
-            stage,
-          )
-        ) {
+        if (!this.assertOutputTypeIsDefined(typeName, publisherConfig.alias, publisherConfig.type, stage)) {
           return acc
         }
         this.assertFilteringOrOrderingArgNameExists(
@@ -524,53 +463,38 @@ export class SchemaBuilder {
           field.outputType.type,
           publisherConfig.alias,
           publisherConfig,
-          stage,
+          stage
         )
         const mapping = this.dmmf.getMapping(typeName)
-        const uniqueIdentifiers = Constraints.resolveUniqueIdentifiers(
-          typeName,
-          this.dmmf,
-        )
+        const uniqueIdentifiers = Constraints.resolveUniqueIdentifiers(typeName, this.dmmf)
         const schemaArgsIndex = indexBy(field.args, 'name')
 
         const originalResolve: GraphQLFieldResolver<any, any, any> | undefined =
           field.outputType.kind === 'object'
             ? (root, args, ctx) => {
-                const missingIdentifiers = Constraints.findMissingUniqueIdentifiers(
-                  root,
-                  uniqueIdentifiers,
-                )
+                const missingIdentifiers = Constraints.findMissingUniqueIdentifiers(root, uniqueIdentifiers)
 
                 if (missingIdentifiers !== null) {
                   throw new Error(
                     `Resolver ${typeName}.${
                       publisherConfig.alias
-                    } is missing the following unique identifiers: ${missingIdentifiers.join(
-                      ', ',
-                    )}`,
+                    } is missing the following unique identifiers: ${missingIdentifiers.join(', ')}`
                   )
                 }
 
                 const photon = this.getPrismaClient(ctx)
 
-                args = transformNullsToUndefined(
-                  args,
-                  schemaArgsIndex,
-                  this.dmmf,
-                )
+                args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                 args = this.paginationStrategy.resolve(args)
 
                 return photon[lowerFirst(mapping.model)]
                   .findOne({
-                    where: Constraints.buildWhereUniqueInput(
-                      root,
-                      uniqueIdentifiers,
-                    ),
+                    where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
                   })
                   [field.name](args)
               }
             : publisherConfig.alias != field.name
-            ? root => root[field.name]
+            ? (root) => root[field.name]
             : undefined
 
         const fieldConfig = this.buildFieldConfig({
@@ -579,13 +503,7 @@ export class SchemaBuilder {
           typeName,
           resolve: givenConfig?.resolve
             ? (root, args, ctx, info) => {
-                return givenConfig.resolve!(
-                  root,
-                  args,
-                  ctx,
-                  info,
-                  originalResolve ?? defaultFieldResolver,
-                )
+                return givenConfig.resolve!(root, args, ctx, info, originalResolve ?? defaultFieldResolver)
               }
             : originalResolve,
         })
@@ -599,12 +517,7 @@ export class SchemaBuilder {
       return acc
     }, {} as PublisherMethods)
 
-    return proxifyPublishers(
-      publishers,
-      typeName,
-      stage,
-      this.options.onUnknownFieldName,
-    )
+    return proxifyPublishers(publishers, typeName, stage, this.options.onUnknownFieldName)
   }
 
   buildPublisherConfig({
@@ -620,9 +533,7 @@ export class SchemaBuilder {
     }
   }
 
-  buildFieldConfig(
-    config: FieldConfigData,
-  ): Nexus.core.NexusOutputFieldConfig<any, string> {
+  buildFieldConfig(config: FieldConfigData): Nexus.core.NexusOutputFieldConfig<any, string> {
     const {
       alias,
       locallyComputedInputs,
@@ -635,10 +546,7 @@ export class SchemaBuilder {
 
     return {
       ...additionalExternalPropsSuchAsPlugins,
-      type: this.publisher.outputType(
-        config.publisherConfig.type,
-        config.field,
-      ),
+      type: this.publisher.outputType(config.publisherConfig.type, config.field),
       ...dmmfListFieldTypeToNexus(config.field.outputType),
       args: this.buildArgsFromField(config),
       resolve: config.resolve,
@@ -651,7 +559,7 @@ export class SchemaBuilder {
         ...acc,
         [customArg.arg.name]: this.publisher.inputType(customArg) as any,
       }),
-      {} as Nexus.core.ArgsRecord,
+      {} as Nexus.core.ArgsRecord
     )
   }
 
@@ -659,7 +567,7 @@ export class SchemaBuilder {
     if (config.typeName === 'Mutation') {
       return this.argsFromMutationField(config)
     } else if (config.operation === 'findOne') {
-      return config.field.args.map(arg => ({
+      return config.field.args.map((arg) => ({
         arg,
         type: this.dmmf.getInputType(arg.inputType.type),
       }))
@@ -668,11 +576,8 @@ export class SchemaBuilder {
     }
   }
 
-  argsFromMutationField({
-    publisherConfig,
-    field,
-  }: FieldConfigData): CustomInputArg[] {
-    return field.args.map(arg => {
+  argsFromMutationField({ publisherConfig, field }: FieldConfigData): CustomInputArg[] {
+    return field.args.map((arg) => {
       const photonInputType = this.dmmf.getInputType(arg.inputType.type)
       /*
       Since globallyComputedInputs were already filtered during schema transformation,
@@ -683,40 +588,31 @@ export class SchemaBuilder {
         type: {
           ...photonInputType,
           fields: publisherConfig.locallyComputedInputs
-            ? photonInputType.fields.filter(
-                field => !(field.name in publisherConfig.locallyComputedInputs),
-              )
+            ? photonInputType.fields.filter((field) => !(field.name in publisherConfig.locallyComputedInputs))
             : photonInputType.fields,
         },
       }
     })
   }
 
-  protected argsFromQueryOrModelField({
-    typeName,
-    field,
-    publisherConfig,
-  }: FieldConfigData) {
+  protected argsFromQueryOrModelField({ typeName, field, publisherConfig }: FieldConfigData) {
     let args: CustomInputArg[] = []
 
     if (publisherConfig.filtering) {
       const inputObjectTypeDefName = `${field.outputType.type}WhereInput`
       const whereArg = field.args.find(
-        arg =>
-          arg.inputType.type === inputObjectTypeDefName && arg.name === 'where',
+        (arg) => arg.inputType.type === inputObjectTypeDefName && arg.name === 'where'
       )
 
       if (!whereArg) {
-        throw new Error(
-          `Could not find filtering argument for ${typeName}.${field.name}`,
-        )
+        throw new Error(`Could not find filtering argument for ${typeName}.${field.name}`)
       }
 
       const inputType = this.handleInputObjectCustomization(
         publisherConfig.filtering,
         inputObjectTypeDefName,
         field.name,
-        typeName,
+        typeName
       )
 
       if (inputType.fields.length > 0) {
@@ -730,20 +626,18 @@ export class SchemaBuilder {
     if (publisherConfig.ordering) {
       const orderByTypeName = `${field.outputType.type}OrderByInput`
       const orderByArg = field.args.find(
-        arg => arg.inputType.type === orderByTypeName && arg.name === 'orderBy',
+        (arg) => arg.inputType.type === orderByTypeName && arg.name === 'orderBy'
       )
 
       if (!orderByArg) {
-        throw new Error(
-          `Could not find ordering argument for ${typeName}.${field.name}`,
-        )
+        throw new Error(`Could not find ordering argument for ${typeName}.${field.name}`)
       }
 
       const inputType = this.handleInputObjectCustomization(
         publisherConfig.ordering,
         orderByTypeName,
         field.name,
-        typeName,
+        typeName
       )
 
       if (inputType.fields.length > 0) {
@@ -757,15 +651,11 @@ export class SchemaBuilder {
     if (publisherConfig.pagination) {
       const paginationsArgs =
         publisherConfig.pagination === true
-          ? field.args.filter(a =>
-              this.paginationStrategy.paginationArgNames.includes(a.name),
-            )
-          : field.args.filter(
-              arg => (publisherConfig.pagination as any)[arg.name] === true,
-            )
+          ? field.args.filter((a) => this.paginationStrategy.paginationArgNames.includes(a.name))
+          : field.args.filter((arg) => (publisherConfig.pagination as any)[arg.name] === true)
 
       args.push(
-        ...paginationsArgs.map(a => {
+        ...paginationsArgs.map((a) => {
           if (a.inputType.kind === 'scalar' || a.inputType.kind === 'enum') {
             return {
               arg: a,
@@ -777,7 +667,7 @@ export class SchemaBuilder {
               type: this.dmmf.inputTypesIndex[a.inputType.type],
             }
           }
-        }),
+        })
       )
     }
 
@@ -810,7 +700,7 @@ export class SchemaBuilder {
     fieldWhitelist: Record<string, boolean> | boolean,
     inputTypeName: string,
     fieldName: string,
-    graphQLTypeName: string,
+    graphQLTypeName: string
   ): DmmfTypes.InputType {
     const photonObject = this.dmmf.getInputType(inputTypeName)
 
@@ -824,8 +714,8 @@ export class SchemaBuilder {
 
     // REFACTOR use an intersection function
     const whitelistedFieldNames = Object.keys(fieldWhitelist)
-    const userExposedObjectFields = photonObject.fields.filter(field =>
-      whitelistedFieldNames.includes(field.name),
+    const userExposedObjectFields = photonObject.fields.filter((field) =>
+      whitelistedFieldNames.includes(field.name)
     )
 
     const uniqueName = photonObject.isWhereType
@@ -843,7 +733,7 @@ export class SchemaBuilder {
     typeName: string,
     fieldName: string,
     outputType: string,
-    stage: 'walk' | 'build',
+    stage: 'walk' | 'build'
   ): boolean {
     if (
       this.options.nexusBuilder.hasType(outputType) ||
@@ -864,7 +754,7 @@ export class SchemaBuilder {
         error: new Error(message),
       },
       message,
-      stage,
+      stage
     )
 
     return false
@@ -876,20 +766,16 @@ export class SchemaBuilder {
     fieldName: string,
     config: FieldPublisherConfig,
     stage: 'build' | 'walk',
-    configProperty: 'filtering' | 'ordering',
+    configProperty: 'filtering' | 'ordering'
   ): { wrongArgNames: string[] } | true {
     if (!config[configProperty] || config[configProperty] === true) {
       return true
     }
 
-    const argNames = Object.keys(
-      config[configProperty] as Record<string, boolean>,
-    )
-    const typeNameFieldNames = this.dmmf
-      .getModelOrThrow(prismaOutputTypeName)
-      .fields.map(f => f.name)
+    const argNames = Object.keys(config[configProperty] as Record<string, boolean>)
+    const typeNameFieldNames = this.dmmf.getModelOrThrow(prismaOutputTypeName).fields.map((f) => f.name)
     const wrongArgNames = argNames.filter(
-      filteringFieldName => !typeNameFieldNames.includes(filteringFieldName),
+      (filteringFieldName) => !typeNameFieldNames.includes(filteringFieldName)
     )
 
     if (wrongArgNames.length === 0) {
@@ -900,9 +786,7 @@ export class SchemaBuilder {
     const renderMessage = (argName: string) =>
       `Your GraphQL \`${parentTypeName}\` object definition is projecting a relational field \`${fieldName}\`. On it, you are declaring that clients be able to ${actionWord} by Prisma \`${prismaOutputTypeName}\` model field \`${argName}\`. However, your Prisma model \`${prismaOutputTypeName}\` model has no such field \`${argName}\``
 
-    const message = wrongArgNames
-      .map(argName => renderMessage(argName))
-      .join('\n')
+    const message = wrongArgNames.map((argName) => renderMessage(argName)).join('\n')
 
     raiseErrorOrTriggerHook(
       this.options.onUnknownArgName,
@@ -913,7 +797,7 @@ export class SchemaBuilder {
         error: new Error(message),
       },
       message,
-      stage,
+      stage
     )
 
     return { wrongArgNames }
@@ -924,23 +808,9 @@ export class SchemaBuilder {
     prismaOutputTypeName: string,
     fieldName: string,
     config: FieldPublisherConfig,
-    stage: 'build' | 'walk',
+    stage: 'build' | 'walk'
   ): void {
-    this.assertArgNameExists(
-      parentTypeName,
-      prismaOutputTypeName,
-      fieldName,
-      config,
-      stage,
-      'filtering',
-    )
-    this.assertArgNameExists(
-      parentTypeName,
-      prismaOutputTypeName,
-      fieldName,
-      config,
-      stage,
-      'ordering',
-    )
+    this.assertArgNameExists(parentTypeName, prismaOutputTypeName, fieldName, config, stage, 'filtering')
+    this.assertArgNameExists(parentTypeName, prismaOutputTypeName, fieldName, config, stage, 'ordering')
   }
 }

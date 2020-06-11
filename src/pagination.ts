@@ -78,14 +78,14 @@ export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePagination
     const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
 
     // Remove old pagination args
-    args = args.filter(a => !paginationArgNames.includes(a.name))
+    args = args.filter((a) => !paginationArgNames.includes(a.name))
 
     // Push new pagination args
     args.push(
       relayLikePaginationArgs.first(fieldOutputTypeName),
       relayLikePaginationArgs.last(fieldOutputTypeName),
       relayLikePaginationArgs.before(fieldOutputTypeName),
-      relayLikePaginationArgs.after(fieldOutputTypeName),
+      relayLikePaginationArgs.after(fieldOutputTypeName)
     )
 
     return args
@@ -156,7 +156,7 @@ export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePagination
 function resolveTake(
   first: number | undefined,
   last: number | undefined,
-  before: object | undefined,
+  before: object | undefined
 ): number | undefined {
   if (first && last) {
     throw new Error(`first and last can't be set simultaneously`)

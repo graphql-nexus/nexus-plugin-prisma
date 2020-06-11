@@ -735,6 +735,11 @@
   dependencies:
     "@types/node" ">= 8"
 
+"@prisma-labs/prettier-config@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@prisma-labs/prettier-config/-/prettier-config-0.1.0.tgz#ef6cb5f89487974ca997516e9b39d5ccbefeeaad"
+  integrity sha512-P0h2y+gnIxFP2HdsTYSYHWmabGBlxyVjnUepsrRe8gAF36mxOonGsbsQmKt/Q9H9CMjrSkFoDe5F5HLi2iW5/Q==
+
 "@prisma/cli@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.0.0.tgz#d5638c627e98faaa93230359185072a19e17a020"

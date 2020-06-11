@@ -18,7 +18,7 @@
     "dev": "tsc --watch",
     "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
     "prepublishOnly": "yarn -s build",
-    "style": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'example/**/*.ts'",
+    "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit"
   },
   "dependencies": {
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@nexus/schema": "0.13.1",
+    "@prisma-labs/prettier-config": "^0.1.0",
     "@prisma/cli": "2.0.0",
     "@prisma/client": "2.0.0",
     "@prisma/fetch-engine": "2.0.0",
@@ -66,10 +67,5 @@
     "ts-node": "8.10.1",
     "typescript": "3.9.3"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all",
-    "arrowParens": "avoid"
-  }
+  "prettier": "@prisma-labs/prettier-config"
 }

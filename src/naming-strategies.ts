@@ -23,18 +23,15 @@ export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
 
 export type OperationName = Exclude<keyof DmmfTypes.Mapping, 'model' | 'plural'>
 
-export type FieldNamingStrategy = Record<
-  OperationName,
-  (fieldName: string, modelName: string) => string
->
+export type FieldNamingStrategy = Record<OperationName, (fieldName: string, modelName: string) => string>
 
 export const defaultFieldNamingStrategy: FieldNamingStrategy = {
   findOne: (_, modelName) => camelCase(modelName),
   findMany: (_, modelName) => camelCase(pluralize(modelName)),
-  create: fieldName => fieldName,
-  update: fieldName => fieldName,
-  delete: fieldName => fieldName,
-  deleteMany: fieldName => fieldName,
-  updateMany: fieldName => fieldName,
-  upsert: fieldName => fieldName,
+  create: (fieldName) => fieldName,
+  update: (fieldName) => fieldName,
+  delete: (fieldName) => fieldName,
+  deleteMany: (fieldName) => fieldName,
+  updateMany: (fieldName) => fieldName,
+  upsert: (fieldName) => fieldName,
 }

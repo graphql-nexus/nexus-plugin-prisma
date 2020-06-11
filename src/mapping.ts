@@ -1,9 +1,5 @@
 import { DmmfDocument, DmmfTypes } from './dmmf'
-import {
-  defaultFieldNamingStrategy,
-  FieldNamingStrategy,
-  OperationName,
-} from './naming-strategies'
+import { defaultFieldNamingStrategy, FieldNamingStrategy, OperationName } from './naming-strategies'
 import { flatMap, lowerFirst } from './utils'
 
 interface BaseMappedField {
@@ -17,10 +13,7 @@ export interface MappedField extends Omit<BaseMappedField, 'field'> {
   field: DmmfTypes.SchemaField
 }
 
-const buildField = (
-  mapping: DmmfTypes.Mapping,
-  operation: OperationName,
-): BaseMappedField | null => {
+const buildField = (mapping: DmmfTypes.Mapping, operation: OperationName): BaseMappedField | null => {
   if (mapping[operation] === undefined) {
     return null
   }
@@ -33,12 +26,9 @@ const buildField = (
   }
 }
 
-const CRUD_MAPPED_FIELDS: Record<
-  string,
-  (m: DmmfTypes.Mapping) => (BaseMappedField | null)[]
-> = {
-  Query: m => [buildField(m, 'findOne'), buildField(m, 'findMany')],
-  Mutation: m => [
+const CRUD_MAPPED_FIELDS: Record<string, (m: DmmfTypes.Mapping) => (BaseMappedField | null)[]> = {
+  Query: (m) => [buildField(m, 'findOne'), buildField(m, 'findMany')],
+  Mutation: (m) => [
     buildField(m, 'create'),
     buildField(m, 'update'),
     buildField(m, 'updateMany'),
@@ -51,20 +41,17 @@ const CRUD_MAPPED_FIELDS: Record<
 export const getCrudMappedFields = (
   typeName: 'Query' | 'Mutation',
   dmmf: DmmfDocument,
-  namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy,
+  namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy
 ): MappedField[] => {
-  const mappedFields = flatMap(dmmf.mappings, m =>
-    CRUD_MAPPED_FIELDS[typeName](m),
-  ).filter(mappedField => mappedField !== null) as BaseMappedField[]
+  const mappedFields = flatMap(dmmf.mappings, (m) => CRUD_MAPPED_FIELDS[typeName](m)).filter(
+    (mappedField) => mappedField !== null
+  ) as BaseMappedField[]
 
-  return mappedFields.map(mappedField => ({
+  return mappedFields.map((mappedField) => ({
     ...mappedField,
     field: {
       ...dmmf.getOutputType(typeName).getField(mappedField.field),
-      name: namingStrategy[mappedField.operation](
-        mappedField.field,
-        mappedField.model,
-      ),
+      name: namingStrategy[mappedField.operation](mappedField.field, mappedField.model),
     },
   }))
 }

@@ -20,12 +20,6 @@ export const isRootName = (x: any): x is RootName => rootNameValues.includes(x)
 
 export type ScalarName = 'Int' | 'Float' | 'String' | 'ID' | 'Boolean'
 
-export const scalarsNameValues: ScalarName[] = [
-  'Int',
-  'Float',
-  'String',
-  'ID',
-  'Boolean',
-]
+export const scalarsNameValues: ScalarName[] = ['Int', 'Float', 'String', 'ID', 'Boolean']
 
 export const isScalarType = (name: string): boolean => scalarsNameValues.includes(name as any)

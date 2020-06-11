@@ -34,10 +34,11 @@ it('generates publishers pluralized & camel-cased', async () => {
     },
   })
 
-  const {
-    schemaString: schema,
-    typegen,
-  } = await generateSchemaAndTypes(datamodel, [Query, Mutation, ModelName])
+  const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
+    Query,
+    Mutation,
+    ModelName,
+  ])
 
   expect(schema).toMatchSnapshot('schema')
   expect(typegen).toMatchSnapshot('typegen')

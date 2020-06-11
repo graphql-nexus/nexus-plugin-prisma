@@ -16,10 +16,7 @@ export async function getEngineFileName(engineType: EngineType) {
 export async function getEnginePath(engineType: EngineType) {
   const binaryName = await getEngineFileName(engineType)
 
-  return Path.join(
-    Path.dirname(require.resolve('@prisma/cli/package.json')),
-    binaryName,
-  )
+  return Path.join(Path.dirname(require.resolve('@prisma/cli/package.json')), binaryName)
 }
 
 export function getEngineVersion() {
@@ -35,8 +32,8 @@ async function main() {
     download({
       binaries: {
         'query-engine': cliEngineDir,
-        "introspection-engine": cliEngineDir,
-        'migration-engine': cliEngineDir
+        'introspection-engine': cliEngineDir,
+        'migration-engine': cliEngineDir,
       },
       version: getEngineVersion(),
       showProgress: true,

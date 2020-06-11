@@ -15,10 +15,9 @@ it('integrates together', async () => {
   const projectRoot = path.join(__dirname, '/__app')
 
   const projectReadFile = (relPath: string): Promise<string> =>
-    fs.readFile(path.join(projectRoot, relPath)).then(b => b.toString())
+    fs.readFile(path.join(projectRoot, relPath)).then((b) => b.toString())
 
-  const projectPath = (...paths: string[]): string =>
-    path.join(projectRoot, ...paths)
+  const projectPath = (...paths: string[]): string => path.join(projectRoot, ...paths)
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -76,27 +75,13 @@ it('integrates together', async () => {
   // learning, and detecting unexpected changes.
   //
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
-  const nexusPrismaTypeGen = await projectReadFile(
-    '/generated/nexus-prisma-typegen.d.ts',
-  )
-  const nexusCoreTypegen = await projectReadFile(
-    '/generated/nexus-typegen.d.ts',
-  )
-  const photonTSD = await projectReadFile(
-    '../../node_modules/@prisma/client/index.d.ts',
-  )
-  const photonSource = (
-    await projectReadFile('../../node_modules/@prisma/client/index.js')
-  )
-    .replace(
-      /(path\.join\(__dirname, 'runtime\/).*('\);)/,
-      '$1__NON_DETERMINISTIC_CONTENT__$2',
-    )
+  const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-prisma-typegen.d.ts')
+  const nexusCoreTypegen = await projectReadFile('/generated/nexus-typegen.d.ts')
+  const photonTSD = await projectReadFile('../../node_modules/@prisma/client/index.d.ts')
+  const photonSource = (await projectReadFile('../../node_modules/@prisma/client/index.js'))
+    .replace(/(path\.join\(__dirname, 'runtime\/).*('\);)/, '$1__NON_DETERMINISTIC_CONTENT__$2')
     .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
-    .replace(
-      /generator: {.*},/,
-      'generator: {__NON_DETERMINISTIC_CONTENT__:true}',
-    )
+    .replace(/generator: {.*},/, 'generator: {__NON_DETERMINISTIC_CONTENT__:true}')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')

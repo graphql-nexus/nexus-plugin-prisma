@@ -27,11 +27,7 @@ it('publishes date and json scalar output types', async () => {
     },
   })
 
-  const {
-    schemaString,
-    schema,
-    typegen,
-  } = await generateSchemaAndTypes(datamodel, [User])
+  const { schemaString, schema, typegen } = await generateSchemaAndTypes(datamodel, [User])
 
   expect(schema.getType('Json')).not.toEqual(undefined)
   expect(schema.getType('DateTime')).not.toEqual(undefined)

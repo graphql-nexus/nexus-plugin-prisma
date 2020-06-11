@@ -16,7 +16,7 @@ import { isDeepStrictEqual } from 'util'
 export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
   fs
     .unlink(filePath)
-    .catch(error => {
+    .catch((error) => {
       return error.code === 'ENOENT' ? Promise.resolve() : Promise.reject(error)
     })
     .then(() => fs.mkdirp(path.dirname(filePath)))
@@ -51,7 +51,7 @@ export const hardWriteFileSync = (filePath: string, data: string): void => {
  */
 export const indexBy = <X extends Record<string, any>>(
   xs: X[],
-  indexer: ((x: X) => string) | keyof X,
+  indexer: ((x: X) => string) | keyof X
 ): Index<X> => {
   const seed: Index<X> = {}
   if (typeof indexer === 'function') {
@@ -70,7 +70,7 @@ export const indexBy = <X extends Record<string, any>>(
 }
 
 export const upperFirst = (s: string): string => {
-  return s.replace(/^\w/, c => c.toUpperCase())
+  return s.replace(/^\w/, (c) => c.toUpperCase())
 }
 
 export function lowerFirst(s: string): string {
@@ -78,10 +78,7 @@ export function lowerFirst(s: string): string {
   return s[0].toLowerCase() + s.slice(1)
 }
 
-export function flatMap<T, U>(
-  array: T[],
-  callbackfn: (value: T, index: number, array: T[]) => U[],
-): U[] {
+export function flatMap<T, U>(array: T[], callbackfn: (value: T, index: number, array: T[]) => U[]): U[] {
   return Array.prototype.concat(...array.map(callbackfn))
 }
 
@@ -109,18 +106,13 @@ export function assertPhotonInContext(prismaClient: any) {
 
 export function trimIfInNodeModules(path: string) {
   if (path.includes('node_modules')) {
-    return path.substring(
-      path.lastIndexOf('node_modules') + 'node_modules'.length + 1,
-    )
+    return path.substring(path.lastIndexOf('node_modules') + 'node_modules'.length + 1)
   }
 
   return path
 }
 
-export function getImportPathRelativeToOutput(
-  from: string,
-  to: string,
-): string {
+export function getImportPathRelativeToOutput(from: string, to: string): string {
   if (to.includes('node_modules')) {
     return trimIfInNodeModules(to)
   }
@@ -169,10 +161,7 @@ export type LocalComputedInputs<MethodName extends string> = Record<
   (params: LocalMutationResolverParams<MethodName>) => unknown
 >
 
-export type GlobalComputedInputs = Record<
-  string,
-  (params: GlobalMutationResolverParams) => unknown
->
+export type GlobalComputedInputs = Record<string, (params: GlobalMutationResolverParams) => unknown>
 
 type BaseMutationResolverParams = {
   info: GraphQLResolveInfo
@@ -183,9 +172,7 @@ export type GlobalMutationResolverParams = BaseMutationResolverParams & {
   args: Record<string, any> & { data: unknown }
 }
 
-export type LocalMutationResolverParams<
-  MethodName extends string
-> = BaseMutationResolverParams & {
+export type LocalMutationResolverParams<MethodName extends string> = BaseMutationResolverParams & {
   args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
     ? core.GetGen3<'argTypes', 'Mutation', MethodName>
     : any

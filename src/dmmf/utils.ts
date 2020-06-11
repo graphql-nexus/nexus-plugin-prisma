@@ -8,7 +8,7 @@ export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
   } catch (error) {
     throw new Error(
       `Failed to import prisma client package at ${packagePath}. The following error occured while trying:
-        ${error.stack}`,
+        ${error.stack}`
     )
   }
 

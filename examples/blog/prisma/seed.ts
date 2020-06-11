@@ -14,15 +14,17 @@ async function main() {
           rating: 0.5,
           role: 'AUTHOR',
           posts: {
-            create: [{
-              title: "post_1",
-              status: PostStatus.PUBLISHED,
-              blog: {}
-            }]
-          }
+            create: [
+              {
+                title: 'post_1',
+                status: PostStatus.PUBLISHED,
+                blog: {},
+              },
+            ],
+          },
         },
       },
-    }
+    },
   })
 
   console.log('added blog with author:\n', blogWithAuthor)

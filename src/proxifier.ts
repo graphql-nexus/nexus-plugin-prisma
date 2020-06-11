@@ -1,9 +1,5 @@
 import * as Nexus from '@nexus/schema'
-import {
-  OnUnknownFieldName,
-  OnUnknownPrismaModelName,
-  raiseErrorOrTriggerHook,
-} from './hooks'
+import { OnUnknownFieldName, OnUnknownPrismaModelName, raiseErrorOrTriggerHook } from './hooks'
 import { isDevMode } from './is-dev-mode'
 import { Index } from './utils'
 
@@ -11,7 +7,7 @@ export function proxifyPublishers<T extends object>(
   publishers: T,
   typeName: string,
   stage: Nexus.core.OutputFactoryConfig<any>['stage'],
-  onUnknownFieldName: OnUnknownFieldName | undefined,
+  onUnknownFieldName: OnUnknownFieldName | undefined
 ) {
   if (!isDevMode()) {
     return publishers
@@ -35,7 +31,7 @@ export function proxifyPublishers<T extends object>(
           validFieldNames: Object.keys(publishers),
         },
         message,
-        stage,
+        stage
       )
 
       return () => {}
@@ -48,12 +44,10 @@ export function proxifyModelFunction(
   modelName: string,
   stage: Nexus.core.OutputFactoryConfig<any>['stage'],
   onUnknownPrismaModelName: OnUnknownPrismaModelName | undefined,
-  unknownFieldsByModel: Index<string[]>,
+  unknownFieldsByModel: Index<string[]>
 ) {
   if (stage === 'build' && unknownFieldsByModel[modelName]?.length > 0) {
-    const wrongFieldsFormatted = unknownFieldsByModel[modelName]
-      .map(field => `"${field}"`)
-      .join(', ')
+    const wrongFieldsFormatted = unknownFieldsByModel[modelName].map((field) => `"${field}"`).join(', ')
     const message = `\
 Your GraphQL \`${modelName}\` object definition is attempting to expose some Prisma model fields named \`${wrongFieldsFormatted}\`, but there is no such Prisma model called \`${modelName}\`
 If this is not intentional, make sure you don't have a typo in your GraphQL type name \`${modelName}\`
@@ -63,7 +57,7 @@ If this is intentional, pass the mapped Prisma model name as parameter like so \
       onUnknownPrismaModelName,
       { unknownPrismaModelName: modelName, error: new Error() },
       message,
-      stage,
+      stage
     )
 
     /**

@@ -105,9 +105,7 @@ it('in other stages, throws error when wrong projected field or crud', async () 
   try {
     await generateSchemaAndTypes(datamodel, [Query, User])
   } catch (e) {
-    expect(e).toMatchInlineSnapshot(
-      `[TypeError: t.crud.userss is not a function]`,
-    )
+    expect(e).toMatchInlineSnapshot(`[TypeError: t.crud.userss is not a function]`)
   }
 })
 
@@ -138,7 +136,7 @@ it('in production, throws if a wrong arg named is passed to filtering', async ()
     await generateSchemaAndTypes(datamodel, [Query, User])
   } catch (e) {
     expect(e).toMatchInlineSnapshot(
-      `[Error: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`]`,
+      `[Error: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`]`
     )
   }
 })
@@ -205,7 +203,7 @@ it('in production, throws if a wrong arg named is passed to ordering', async () 
     await generateSchemaAndTypes(datamodel, [Query, User])
   } catch (e) {
     expect(e).toMatchInlineSnapshot(
-      `[Error: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`]`,
+      `[Error: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`unknownField\`. However, your Prisma model \`User\` model has no such field \`unknownField\`]`
     )
   }
 })
@@ -266,7 +264,7 @@ it('in dev stage, warns if a graphql typename does not map to a prisma name but 
   })
 
   const { schemaString: schema, $output } = await mockConsoleLog(() =>
-    generateSchemaAndTypes(datamodel, [User]),
+    generateSchemaAndTypes(datamodel, [User])
   )
 
   expect(schema).toMatchInlineSnapshot(`
@@ -307,9 +305,7 @@ it('in prod stage, throw error if a graphql typename does not map to a prisma na
   })
 
   try {
-    const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [
-      User,
-    ])
+    const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [User])
 
     expect(schema).toMatchInlineSnapshot()
   } catch (e) {

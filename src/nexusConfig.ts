@@ -4,10 +4,7 @@ import path from 'path'
 export function setupNexusConfig(builder: core.PluginBuilderLens): void {
   // Setup defaults
   const defaultSchemaPath = path.join(process.cwd(), 'schema.graphql')
-  const defaultTypesPath = path.join(
-    __dirname,
-    '../node_modules/@types/nexus-typegen/index.d.ts',
-  )
+  const defaultTypesPath = path.join(__dirname, '../node_modules/@types/nexus-typegen/index.d.ts')
   const defaults = {
     outputs: {
       schema: defaultSchemaPath,
@@ -20,18 +17,14 @@ export function setupNexusConfig(builder: core.PluginBuilderLens): void {
   } as const
 
   let outputs = builder.getConfigOption('outputs')
-  let shouldGenerateArtifacts = builder.getConfigOption(
-    'shouldGenerateArtifacts',
-  )
+  let shouldGenerateArtifacts = builder.getConfigOption('shouldGenerateArtifacts')
   if (!builder.hasConfigOption('shouldGenerateArtifacts')) {
     shouldGenerateArtifacts =
       process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
         ? true
         : process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'false'
         ? false
-        : Boolean(
-            !process.env.NODE_ENV || process.env.NODE_ENV === 'development',
-          )
+        : Boolean(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')
     builder.setConfigOption('shouldGenerateArtifacts', shouldGenerateArtifacts)
   }
   if (shouldGenerateArtifacts === false || outputs === false) {

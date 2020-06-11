@@ -14,10 +14,7 @@ new GraphQLServer({
       sources: [{ source: '.prisma/client', alias: 'PrismaClient' }],
     },
     outputs: {
-      typegen: path.join(
-        __dirname,
-        'node_modules/@types/nexus-typegen/index.d.ts',
-      ),
+      typegen: path.join(__dirname, 'node_modules/@types/nexus-typegen/index.d.ts'),
     },
     plugins: [nexusPrismaPlugin()],
     types: [

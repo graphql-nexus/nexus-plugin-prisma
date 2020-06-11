@@ -5,12 +5,10 @@ import * as path from 'path'
 
 jest.setTimeout(20000)
 
-const formatTSDiagonsticsForJest = (
-  diagnostics: readonly tsm.Diagnostic[],
-): string => {
-  const tsDiagnostics = diagnostics.map(d => d.compilerObject)
+const formatTSDiagonsticsForJest = (diagnostics: readonly tsm.Diagnostic[]): string => {
+  const tsDiagnostics = diagnostics.map((d) => d.compilerObject)
   const formatHost: ts.FormatDiagnosticsHost = {
-    getCanonicalFileName: path => path,
+    getCanonicalFileName: (path) => path,
     getCurrentDirectory: ts.sys.getCurrentDirectory,
     getNewLine: () => ts.sys.newLine,
   }
@@ -18,18 +16,13 @@ const formatTSDiagonsticsForJest = (
   const tsReport = ts.formatDiagnosticsWithColorAndContext(
     // FIXME Fat type error without any, but it works...
     tsDiagnostics as any,
-    formatHost,
+    formatHost
   )
 
-  const sourcePath =
-    process.cwd() +
-    '/' +
-    (((global as any).TS_FORMAT_PROJECT_ROOT as string) || '')
+  const sourcePath = process.cwd() + '/' + (((global as any).TS_FORMAT_PROJECT_ROOT as string) || '')
 
-  const summaryReport = `${
-    tsDiagnostics.length
-  } Type Error(s):\n\n${tsDiagnostics
-    .map(d => (d.file ? d.file.fileName.replace(sourcePath, '') : '<no file>'))
+  const summaryReport = `${tsDiagnostics.length} Type Error(s):\n\n${tsDiagnostics
+    .map((d) => (d.file ? d.file.fileName.replace(sourcePath, '') : '<no file>'))
     .join('\n')}`
 
   const jestReport = `${summaryReport}\n\n${tsReport}`
@@ -43,17 +36,12 @@ expect.extend({
       tsConfigFilePath: path.join(projectRootPath, 'tsconfig.json'),
     })
     if (project.getSourceFiles().length === 0) {
-      throw new Error(
-        'Cannot expect type check assertion to work because no source files matched.',
-      )
+      throw new Error('Cannot expect type check assertion to work because no source files matched.')
     }
     const diagnostics = project.getPreEmitDiagnostics()
     const pass = diagnostics.length === 0
     return {
-      message: () =>
-        pass
-          ? 'expected program to not typecheck'
-          : formatTSDiagonsticsForJest(diagnostics),
+      message: () => (pass ? 'expected program to not typecheck' : formatTSDiagonsticsForJest(diagnostics)),
       pass,
     }
   },

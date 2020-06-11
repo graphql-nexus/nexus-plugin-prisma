@@ -54,12 +54,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
         const prismaClient = await generateClientFromDatamodel(datamodel)
         generatedClient = prismaClient
 
-        const serverAndClient = await getGraphQLServerAndClient(
-          datamodel,
-          types,
-          plugins ?? [],
-          prismaClient,
-        )
+        const serverAndClient = await getGraphQLServerAndClient(datamodel, types, plugins ?? [], prismaClient)
         httpServer = serverAndClient.httpServer
 
         return {
@@ -80,15 +75,11 @@ async function getGraphQLServerAndClient(
   datamodel: string,
   types: any[],
   plugins: Nexus.core.NexusPlugin[],
-  prismaClient: { client: any; teardown(): Promise<void> },
+  prismaClient: { client: any; teardown(): Promise<void> }
 ) {
-  const { schema, schemaString } = await generateSchemaAndTypes(
-    datamodel,
-    types,
-    {
-      plugins,
-    },
-  )
+  const { schema, schemaString } = await generateSchemaAndTypes(datamodel, types, {
+    plugins,
+  })
   const port = await getPort()
   const endpoint = '/graphql'
   const graphqlServer = new GraphQLServer({
@@ -175,14 +166,12 @@ async function migrateLift({
   })
 
   /* Get migration. */
-  const { datamodelSteps, errors: stepErrors } = await lift.inferMigrationSteps(
-    {
-      migrationId,
-      datamodel,
-      assumeToBeApplied: [],
-      sourceConfig: datamodel,
-    },
-  )
+  const { datamodelSteps, errors: stepErrors } = await lift.inferMigrationSteps({
+    migrationId,
+    datamodel,
+    assumeToBeApplied: [],
+    sourceConfig: datamodel,
+  })
 
   if (stepErrors.length > 0) {
     throw stepErrors
