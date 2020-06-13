@@ -101,7 +101,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
   const typegen = renderTypegen({
     dmmf,
     prismaClientImportId: '@prisma/client',
-    paginationStrategy: paginationStrategies.native,
+    paginationStrategy: paginationStrategies.relay,
   })
 
   return {
