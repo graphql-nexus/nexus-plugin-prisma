@@ -21,7 +21,7 @@ import {
   OperationName,
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
-import { PaginationStrategy, relayLikePaginationStrategy } from './pagination'
+import paginationStrategies, { PaginationStrategy } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
@@ -126,6 +126,7 @@ export interface Options {
      */
     typegen?: string
   }
+  paginationStrategy?: 'relay' | 'native'
   /**
    * Enable experimental CRUD capabilities.
    * Add a `t.crud` method in your definition block to generate CRUD resolvers in your `Query` and `Mutation` GraphQL Object Type.
@@ -188,6 +189,7 @@ const shouldGenerateArtifacts =
 const defaultOptions = {
   shouldGenerateArtifacts,
   prismaClient: (ctx: any) => ctx.prisma,
+  paginationStrategy: 'relay',
   inputs: {
     prismaClient: defaultClientPath,
   },
@@ -222,7 +224,7 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
-    this.paginationStrategy = relayLikePaginationStrategy
+    this.paginationStrategy = paginationStrategies[config.paginationStrategy as Options['paginationStrategy'] ?? 'relay']
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {

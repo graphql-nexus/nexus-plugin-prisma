@@ -3,7 +3,7 @@ import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs
 import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
-import { PaginationStrategy, relayLikePaginationStrategy } from '../pagination'
+import paginationStrategies, { PaginationStrategy } from '../pagination'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
@@ -17,7 +17,7 @@ export const getTransformedDmmf = (
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
-  paginationStrategy: relayLikePaginationStrategy,
+  paginationStrategy: paginationStrategies.relay,
   ...givenOptions,
 })
 

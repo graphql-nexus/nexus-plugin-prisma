@@ -72,7 +72,55 @@ interface RelayLikePaginationArgs {
   after?: object
 }
 
-export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePaginationArgs> = {
+interface PaginationStrategies {
+  relay: PaginationStrategy<RelayLikePaginationArgs>;
+  native: PaginationStrategy<NativePaginationArgs>;
+}
+
+const nativePaginationArgs: Record<
+  'take' | 'skip' | 'cursor',
+  (typeName: string) => DmmfTypes.SchemaArg
+> = {
+  take: () => ({
+    name: 'take',
+    inputType: {
+      type: 'Int',
+      kind: 'scalar',
+      isRequired: false,
+      isList: false,
+      isNullable: false,
+    },
+  }),
+  skip: () => ({
+    name: 'skip',
+    inputType: {
+      type: 'Int',
+      kind: 'scalar',
+      isRequired: false,
+      isList: false,
+      isNullable: false,
+    },
+  }),
+  cursor: (typeName: string) => ({
+    name: 'cursor',
+    inputType: {
+      type: `${typeName}WhereUniqueInput`,
+      kind: 'object',
+      isRequired: false,
+      isList: false,
+      isNullable: false,
+    },
+  }),
+}
+
+interface NativePaginationArgs {
+  cursor?: object
+  take?: number
+  skip?: number
+}
+
+const PaginationStrategies: PaginationStrategies = {
+  relay: {
   paginationArgNames: Object.keys(relayLikePaginationArgs),
   transformDmmfArgs({ args, paginationArgNames, field }) {
     const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
@@ -151,6 +199,28 @@ export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePagination
 
     return newArgs
   },
+  },
+  native: {
+     paginationArgNames: Object.keys(nativePaginationArgs),
+  transformDmmfArgs({ args, paginationArgNames, field }) {
+    const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
+
+    // Remove old pagination args
+    args = args.filter((a) => !paginationArgNames.includes(a.name))
+
+    // Push new pagination args
+    args.push(
+      nativePaginationArgs.take(fieldOutputTypeName),
+      nativePaginationArgs.skip(fieldOutputTypeName),
+      nativePaginationArgs.cursor(fieldOutputTypeName),
+    )
+
+    return args
+  },
+  resolve(args) {
+    return args;
+  },
+  }
 }
 
 function resolveTake(
@@ -199,3 +269,5 @@ function resolveSkip(cursor: object | undefined) {
 
   return undefined
 }
+
+export default PaginationStrategies;
