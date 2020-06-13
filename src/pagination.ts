@@ -73,14 +73,11 @@ interface RelayLikePaginationArgs {
 }
 
 interface PaginationStrategies {
-  relay: PaginationStrategy<RelayLikePaginationArgs>;
-  native: PaginationStrategy<NativePaginationArgs>;
+  relay: PaginationStrategy<RelayLikePaginationArgs>
+  native: PaginationStrategy<NativePaginationArgs>
 }
 
-const nativePaginationArgs: Record<
-  'take' | 'skip' | 'cursor',
-  (typeName: string) => DmmfTypes.SchemaArg
-> = {
+const nativePaginationArgs: Record<'take' | 'skip' | 'cursor', (typeName: string) => DmmfTypes.SchemaArg> = {
   take: () => ({
     name: 'take',
     inputType: {
@@ -121,106 +118,106 @@ interface NativePaginationArgs {
 
 const PaginationStrategies: PaginationStrategies = {
   relay: {
-  paginationArgNames: Object.keys(relayLikePaginationArgs),
-  transformDmmfArgs({ args, paginationArgNames, field }) {
-    const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
+    paginationArgNames: Object.keys(relayLikePaginationArgs),
+    transformDmmfArgs({ args, paginationArgNames, field }) {
+      const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
 
-    // Remove old pagination args
-    args = args.filter((a) => !paginationArgNames.includes(a.name))
+      // Remove old pagination args
+      args = args.filter((a) => !paginationArgNames.includes(a.name))
 
-    // Push new pagination args
-    args.push(
-      relayLikePaginationArgs.first(fieldOutputTypeName),
-      relayLikePaginationArgs.last(fieldOutputTypeName),
-      relayLikePaginationArgs.before(fieldOutputTypeName),
-      relayLikePaginationArgs.after(fieldOutputTypeName)
-    )
+      // Push new pagination args
+      args.push(
+        relayLikePaginationArgs.first(fieldOutputTypeName),
+        relayLikePaginationArgs.last(fieldOutputTypeName),
+        relayLikePaginationArgs.before(fieldOutputTypeName),
+        relayLikePaginationArgs.after(fieldOutputTypeName)
+      )
 
-    return args
-  },
-  resolve(args) {
-    const { first, last, before, after } = args
-
-    // If no pagination set, don't touch the args
-    if (!first && !last && !before && !after) {
       return args
-    }
+    },
+    resolve(args) {
+      const { first, last, before, after } = args
 
-    /**
-     * This is currently only possible with js transformation on the result. eg:
-     * after: 1, last: 1
-     * ({
-     *   cursor: { id: $before },
-     *   take: Number.MAX_SAFE_INTEGER,
-     *   skip: 1
-     * }).slice(length - $last, length)
-     */
-    if (after && last) {
-      throw new Error(`after and last can't be set simultaneously`)
-    }
-
-    /**
-     * This is currently only possible with js transformation on the result. eg:
-     * before: 4, first: 1
-     * ({
-     *   cursor: { id: $before },
-     *   take: Number.MIN_SAFE_INTEGER,
-     *   skip: 1
-     * }).slice(0, $first)
-     */
-    if (before && first) {
-      throw new Error(`before and first can't be set simultaneously`)
-    }
-
-    // Edge-case: simulates a single `before` with a hack
-    if (before && !first && !last && !after) {
-      return {
-        cursor: before,
-        skip: 1,
-        take: Number.MIN_SAFE_INTEGER,
+      // If no pagination set, don't touch the args
+      if (!first && !last && !before && !after) {
+        return args
       }
-    }
 
-    const take = resolveTake(first, last, before)
-    const cursor = resolveCursor(before, after)
-    const skip = resolveSkip(cursor)
+      /**
+       * This is currently only possible with js transformation on the result. eg:
+       * after: 1, last: 1
+       * ({
+       *   cursor: { id: $before },
+       *   take: Number.MAX_SAFE_INTEGER,
+       *   skip: 1
+       * }).slice(length - $last, length)
+       */
+      if (after && last) {
+        throw new Error(`after and last can't be set simultaneously`)
+      }
 
-    delete args.first
-    delete args.last
-    delete args.before
-    delete args.after
+      /**
+       * This is currently only possible with js transformation on the result. eg:
+       * before: 4, first: 1
+       * ({
+       *   cursor: { id: $before },
+       *   take: Number.MIN_SAFE_INTEGER,
+       *   skip: 1
+       * }).slice(0, $first)
+       */
+      if (before && first) {
+        throw new Error(`before and first can't be set simultaneously`)
+      }
 
-    const newArgs = {
-      take,
-      cursor,
-      skip,
-      ...args,
-    }
+      // Edge-case: simulates a single `before` with a hack
+      if (before && !first && !last && !after) {
+        return {
+          cursor: before,
+          skip: 1,
+          take: Number.MIN_SAFE_INTEGER,
+        }
+      }
 
-    return newArgs
-  },
+      const take = resolveTake(first, last, before)
+      const cursor = resolveCursor(before, after)
+      const skip = resolveSkip(cursor)
+
+      delete args.first
+      delete args.last
+      delete args.before
+      delete args.after
+
+      const newArgs = {
+        take,
+        cursor,
+        skip,
+        ...args,
+      }
+
+      return newArgs
+    },
   },
   native: {
-     paginationArgNames: Object.keys(nativePaginationArgs),
-  transformDmmfArgs({ args, paginationArgNames, field }) {
-    const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
+    paginationArgNames: Object.keys(nativePaginationArgs),
+    transformDmmfArgs({ args, paginationArgNames, field }) {
+      const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
 
-    // Remove old pagination args
-    args = args.filter((a) => !paginationArgNames.includes(a.name))
+      // Remove old pagination args
+      args = args.filter((a) => !paginationArgNames.includes(a.name))
 
-    // Push new pagination args
-    args.push(
-      nativePaginationArgs.take(fieldOutputTypeName),
-      nativePaginationArgs.skip(fieldOutputTypeName),
-      nativePaginationArgs.cursor(fieldOutputTypeName),
-    )
+      // Push new pagination args
+      args.push(
+        nativePaginationArgs.take(fieldOutputTypeName),
+        nativePaginationArgs.skip(fieldOutputTypeName),
+        nativePaginationArgs.cursor(fieldOutputTypeName)
+      )
 
-    return args
+      return args
+    },
+    resolve(args) {
+      return args
+    },
   },
-  resolve(args) {
-    return args;
-  },
-  }
 }
 
 function resolveTake(
@@ -270,4 +267,4 @@ function resolveSkip(cursor: object | undefined) {
   return undefined
 }
 
-export default PaginationStrategies;
+export default PaginationStrategies

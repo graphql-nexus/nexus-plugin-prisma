@@ -224,7 +224,8 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
-    this.paginationStrategy = paginationStrategies[config.paginationStrategy as Options['paginationStrategy'] ?? 'relay']
+    this.paginationStrategy =
+      paginationStrategies[(config.paginationStrategy as Options['paginationStrategy']) ?? 'relay']
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {

@@ -59,7 +59,7 @@ export async function generateSchemaAndTypes(
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
     experimentalCRUD: options?.experimentalCRUD === false ? false : true,
-    paginationStrategy: options?.paginationType ?? 'relay'
+    paginationStrategy: options?.paginationType ?? 'relay',
   })
   const schema = Nexus.makeSchema({
     types,
@@ -73,7 +73,7 @@ export async function generateSchemaAndTypes(
     typegen: renderTypegen({
       dmmf,
       prismaClientImportId: '@prisma/client',
-      paginationStrategy: options?.paginationStrategy ?? paginationStrategies.relay
+      paginationStrategy: options?.paginationStrategy ?? paginationStrategies.relay,
     }),
   }
 }
