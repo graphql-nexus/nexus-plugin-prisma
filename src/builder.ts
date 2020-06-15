@@ -21,7 +21,7 @@ import {
   OperationName,
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
-import paginationStrategies, { PaginationStrategy } from './pagination'
+import { paginationStrategies, PaginationStrategyTypes } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
@@ -217,7 +217,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
-  protected paginationStrategy: PaginationStrategy
+  protected paginationStrategy: PaginationStrategyTypes
   protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
   protected globallyComputedInputs: GlobalComputedInputs
@@ -662,8 +662,13 @@ export class SchemaBuilder {
     if (publisherConfig.pagination) {
       const paginationsArgs =
         publisherConfig.pagination === true
-          ? field.args.filter((a) => this.paginationStrategy.paginationArgNames.includes(a.name))
-          : field.args.filter((arg) => (publisherConfig.pagination as any)[arg.name] === true)
+          ? field.args.filter((a) => {
+              const argNames = this.paginationStrategy.paginationArgNames as string[]
+              return argNames.includes(a.name)
+            })
+          : field.args.filter((arg) => {
+              return (publisherConfig.pagination as any)[arg.name] === true
+            })
 
       args.push(
         ...paginationsArgs.map((a) => {

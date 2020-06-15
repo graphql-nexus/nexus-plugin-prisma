@@ -6,7 +6,7 @@ import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
-import paginationStrategies from '../src/pagination'
+import { paginationStrategies } from '../src/pagination'
 import { render as renderTypegen } from '../src/typegen'
 import { getEnginePath } from './__ensure-engine'
 

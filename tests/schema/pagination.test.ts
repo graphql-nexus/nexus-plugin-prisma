@@ -1,5 +1,5 @@
 import { objectType } from '@nexus/schema'
-import paginationStrategies from '../../src/pagination'
+import { paginationStrategies } from '../../src/pagination'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('support relay pagination (default)', async () => {
