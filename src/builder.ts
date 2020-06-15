@@ -198,7 +198,7 @@ const shouldGenerateArtifacts =
 const defaultOptions = {
   shouldGenerateArtifacts,
   prismaClient: (ctx: any) => ctx.prisma,
-  paginationStrategy: 'relay',
+  paginationStrategy: 'relay' as const,
   inputs: {
     prismaClient: defaultClientPath,
   },
@@ -233,8 +233,7 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
-    this.paginationStrategy =
-      paginationStrategies[(config.paginationStrategy as Options['paginationStrategy']) ?? 'relay']
+    this.paginationStrategy = paginationStrategies[config.paginationStrategy]
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
