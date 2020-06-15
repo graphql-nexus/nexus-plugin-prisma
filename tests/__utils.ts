@@ -51,13 +51,15 @@ export async function generateSchemaAndTypes(
   types: any[],
   options?: TransformOptions & {
     experimentalCRUD?: boolean
-    plugins?: Nexus.core.NexusPlugin[]
+    plugins?: Nexus.core.NexusPlugin[],
+    scalars?: Record<string, GQL.GraphQLScalarType>
   }
 ) {
   const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
     experimentalCRUD: options?.experimentalCRUD === false ? false : true,
+    scalars: options?.scalars
   })
   const schema = Nexus.makeSchema({
     types,

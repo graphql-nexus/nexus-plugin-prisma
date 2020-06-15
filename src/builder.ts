@@ -1,6 +1,6 @@
 import * as Nexus from '@nexus/schema'
 import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
-import { defaultFieldResolver, GraphQLFieldResolver } from 'graphql'
+import { defaultFieldResolver, GraphQLFieldResolver, GraphQLScalarType } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
 import { addComputedInputs, DmmfDocument, DmmfTypes, getTransformedDmmf } from './dmmf'
@@ -133,6 +133,14 @@ export interface Options {
    * @default false
    */
   experimentalCRUD?: boolean
+  /**
+   * Map of GraphQL scalar types to be used by the library for the Prisma scalars
+   * 
+   * When not provided, the scalar types will be passthrough.
+   * 
+   * @default {}
+   */
+  scalars?: Record<string, GraphQLScalarType>
   computedInputs?: GlobalComputedInputs
 }
 
@@ -209,6 +217,7 @@ export class SchemaBuilder {
   protected paginationStrategy: PaginationStrategy
   protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
+  protected scalars: Record<string, GraphQLScalarType>
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
   public wasCrudUsedButDisabled: boolean
@@ -229,7 +238,8 @@ export class SchemaBuilder {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
       })
-    this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
+    this.scalars = options.scalars ?? {}
+    this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)
     this.unknownFieldsByModel = {}
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
