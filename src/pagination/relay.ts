@@ -1,25 +1,15 @@
-import { DmmfTypes, getReturnTypeName } from './dmmf'
-import { DMMF } from '@prisma/client/runtime'
+import { DmmfTypes, getReturnTypeName } from '../dmmf'
+import { keys } from '../utils'
+import { PaginationStrategy } from './'
 
-interface PaginationResult {
-  cursor?: object
-  skip?: string | number
-  take?: string | number
-  orderBy?: { [x: string]: 'asc' | 'desc' }
-  [x: string]: any
+interface RelayPaginationArgs {
+  first?: number
+  last?: number
+  before?: object
+  after?: object
 }
 
-export interface PaginationStrategy<T = object> {
-  paginationArgNames: string[]
-  transformDmmfArgs(params: {
-    args: DmmfTypes.SchemaArg[]
-    paginationArgNames: string[]
-    field: DMMF.SchemaField
-  }): DmmfTypes.SchemaArg[]
-  resolve(args: T): PaginationResult
-}
-
-const relayLikePaginationArgs: Record<
+const relayPaginationArgsToDmmfArgs: Record<
   'first' | 'last' | 'before' | 'after',
   (typeName: string) => DmmfTypes.SchemaArg
 > = {
@@ -65,27 +55,20 @@ const relayLikePaginationArgs: Record<
   }),
 }
 
-interface RelayLikePaginationArgs {
-  first?: number
-  last?: number
-  before?: object
-  after?: object
-}
-
-export const relayLikePaginationStrategy: PaginationStrategy<RelayLikePaginationArgs> = {
-  paginationArgNames: Object.keys(relayLikePaginationArgs),
-  transformDmmfArgs({ args, paginationArgNames, field }) {
+export const relayStrategy: PaginationStrategy<RelayPaginationArgs> = {
+  paginationArgNames: keys(relayPaginationArgsToDmmfArgs),
+  transformDmmfArgs({ paginationArgNames, args, field }) {
     const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
 
     // Remove old pagination args
-    args = args.filter((a) => !paginationArgNames.includes(a.name))
+    args = args.filter((dmmfArg) => !paginationArgNames.includes(dmmfArg.name))
 
     // Push new pagination args
     args.push(
-      relayLikePaginationArgs.first(fieldOutputTypeName),
-      relayLikePaginationArgs.last(fieldOutputTypeName),
-      relayLikePaginationArgs.before(fieldOutputTypeName),
-      relayLikePaginationArgs.after(fieldOutputTypeName)
+      relayPaginationArgsToDmmfArgs.first(fieldOutputTypeName),
+      relayPaginationArgsToDmmfArgs.last(fieldOutputTypeName),
+      relayPaginationArgsToDmmfArgs.before(fieldOutputTypeName),
+      relayPaginationArgsToDmmfArgs.after(fieldOutputTypeName)
     )
 
     return args

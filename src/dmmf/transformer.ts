@@ -1,9 +1,9 @@
 import { DMMF } from '@prisma/client/runtime'
+import { paginationStrategies, PaginationStrategy } from '../pagination'
 import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
-import { getPhotonDmmf } from './utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
-import { PaginationStrategy, relayLikePaginationStrategy } from '../pagination'
+import { getPhotonDmmf } from './utils'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
@@ -17,7 +17,7 @@ export const getTransformedDmmf = (
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
-  paginationStrategy: relayLikePaginationStrategy,
+  paginationStrategy: paginationStrategies.relay,
   ...givenOptions,
 })
 
