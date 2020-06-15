@@ -200,18 +200,6 @@ const PaginationStrategies: PaginationStrategies = {
   prisma: {
     paginationArgNames: Object.keys(prismaPaginationArgs),
     transformDmmfArgs({ args, paginationArgNames, field }) {
-      const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
-
-      // Remove old pagination args
-      args = args.filter((a) => !paginationArgNames.includes(a.name))
-
-      // Push new pagination args
-      args.push(
-        prismaPaginationArgs.take(fieldOutputTypeName),
-        prismaPaginationArgs.skip(fieldOutputTypeName),
-        prismaPaginationArgs.cursor(fieldOutputTypeName)
-      )
-
       return args
     },
     resolve(args) {

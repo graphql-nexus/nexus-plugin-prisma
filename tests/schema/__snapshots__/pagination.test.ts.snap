@@ -16,7 +16,7 @@ type Query {
 
 type User {
   id: Int!
-  posts(take: Int, skip: Int, cursor: PostWhereUniqueInput): [Post!]!
+  posts(cursor: PostWhereUniqueInput, take: Int, skip: Int): [Post!]!
 }
 "
 `;
