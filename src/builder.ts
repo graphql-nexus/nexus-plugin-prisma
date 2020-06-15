@@ -126,7 +126,16 @@ export interface Options {
      */
     typegen?: string
   }
-  paginationStrategy?: 'relay' | 'native'
+  /**
+   * Select the pagination strategy.
+   *
+   * 'prisma' strategy results in GraphQL pagination arguments mirroring those of Prisma: skip, cursor, take
+   *
+   * 'relay' strategy results in GraphQL pagination arguments matching those of the [GraphQL Relay specification](https://relay.dev/graphql/connections.htm): before, after, first, last.
+   *
+   * @default 'relay'
+   */
+  paginationStrategy?: 'relay' | 'prisma'
   /**
    * Enable experimental CRUD capabilities.
    * Add a `t.crud` method in your definition block to generate CRUD resolvers in your `Query` and `Mutation` GraphQL Object Type.

@@ -1,5 +1,5 @@
-import { DmmfTypes, getReturnTypeName } from './dmmf'
 import { DMMF } from '@prisma/client/runtime'
+import { DmmfTypes, getReturnTypeName } from './dmmf'
 
 interface PaginationResult {
   cursor?: object
@@ -74,10 +74,10 @@ interface RelayLikePaginationArgs {
 
 interface PaginationStrategies {
   relay: PaginationStrategy<RelayLikePaginationArgs>
-  native: PaginationStrategy<NativePaginationArgs>
+  prisma: PaginationStrategy<PrismaPaginationArgs>
 }
 
-const nativePaginationArgs: Record<'take' | 'skip' | 'cursor', (typeName: string) => DmmfTypes.SchemaArg> = {
+const prismaPaginationArgs: Record<'take' | 'skip' | 'cursor', (typeName: string) => DmmfTypes.SchemaArg> = {
   take: () => ({
     name: 'take',
     inputType: {
@@ -110,7 +110,7 @@ const nativePaginationArgs: Record<'take' | 'skip' | 'cursor', (typeName: string
   }),
 }
 
-interface NativePaginationArgs {
+interface PrismaPaginationArgs {
   cursor?: object
   take?: number
   skip?: number
@@ -197,8 +197,8 @@ const PaginationStrategies: PaginationStrategies = {
       return newArgs
     },
   },
-  native: {
-    paginationArgNames: Object.keys(nativePaginationArgs),
+  prisma: {
+    paginationArgNames: Object.keys(prismaPaginationArgs),
     transformDmmfArgs({ args, paginationArgNames, field }) {
       const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
 
@@ -207,9 +207,9 @@ const PaginationStrategies: PaginationStrategies = {
 
       // Push new pagination args
       args.push(
-        nativePaginationArgs.take(fieldOutputTypeName),
-        nativePaginationArgs.skip(fieldOutputTypeName),
-        nativePaginationArgs.cursor(fieldOutputTypeName)
+        prismaPaginationArgs.take(fieldOutputTypeName),
+        prismaPaginationArgs.skip(fieldOutputTypeName),
+        prismaPaginationArgs.cursor(fieldOutputTypeName)
       )
 
       return args

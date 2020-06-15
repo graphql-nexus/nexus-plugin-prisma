@@ -1,6 +1,6 @@
 import { objectType } from '@nexus/schema'
-import { generateSchemaAndTypes, getDmmf } from '../__utils'
 import paginationStrategies from '../../src/pagination'
+import { generateSchemaAndTypes } from '../__utils'
 
 it('support relay pagination (default)', async () => {
   const datamodel = `
@@ -41,7 +41,7 @@ it('support relay pagination (default)', async () => {
   expect(typegen).toMatchSnapshot('typegen')
 })
 
-it('support native pagination', async () => {
+it('support prisma pagination', async () => {
   const datamodel = `
   model User {
     id Int @id @default(autoincrement())
@@ -75,8 +75,8 @@ it('support native pagination', async () => {
   })
 
   const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [User, Post], {
-    paginationType: 'native',
-    paginationStrategy: paginationStrategies.native,
+    paginationType: 'prisma',
+    paginationStrategy: paginationStrategies.prisma,
   })
 
   expect(schema).toMatchSnapshot('schema')

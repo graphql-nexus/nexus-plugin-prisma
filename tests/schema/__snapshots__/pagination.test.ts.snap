@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`support native pagination: schema 1`] = `
+exports[`support prisma pagination: schema 1`] = `
 "type Post {
   id: Int!
   title: String!
@@ -21,7 +21,7 @@ type User {
 "
 `;
 
-exports[`support native pagination: typegen 1`] = `
+exports[`support prisma pagination: typegen 1`] = `
 "import * as prisma from '@prisma/client';
 import { core } from '@nexus/schema';
 import { GraphQLResolveInfo } from 'graphql';

@@ -52,7 +52,7 @@ export async function generateSchemaAndTypes(
   options?: TransformOptions & {
     experimentalCRUD?: boolean
     plugins?: Nexus.core.NexusPlugin[]
-    paginationType?: 'native' | 'relay'
+    paginationType?: 'relay' | 'prisma'
   }
 ) {
   const dmmf = await getDmmf(datamodel, options)
