@@ -7,7 +7,7 @@ import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { relayLikePaginationStrategy } from '../src/pagination'
-import { render as renderTypegen } from '../src/typegen'
+import { render as renderTypegen } from '../src/typegen/render'
 import { getEnginePath } from './__ensure-engine'
 
 export const createNexusPrismaInternal = (

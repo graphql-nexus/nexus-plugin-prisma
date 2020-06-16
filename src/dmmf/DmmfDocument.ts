@@ -1,5 +1,6 @@
 import { DmmfTypes } from './DmmfTypes'
 import { indexBy, Index } from '../utils'
+import { scalarsNameValues } from '../graphql'
 
 export class DmmfDocument implements DmmfTypes.Document {
   public datamodel: DmmfTypes.Datamodel
@@ -13,6 +14,7 @@ export class DmmfDocument implements DmmfTypes.Document {
   public enumsIndex: Index<DmmfTypes.Enum>
   public modelsIndex: Index<DmmfTypes.Model>
   public inputTypesIndexWithFields: InputTypeIndexWithField
+  public customScalars: Array<string>
 
   constructor({ datamodel, schema, mappings }: DmmfTypes.Document) {
     // ExternalDMMF
@@ -27,6 +29,7 @@ export class DmmfDocument implements DmmfTypes.Document {
     this.outputTypesIndex = indexBy(schema.outputTypes, 'name')
     this.mappingsIndex = indexBy(mappings, 'model')
     this.inputTypesIndexWithFields = indexInputTypeWithFields(schema.inputTypes)
+    this.customScalars = findCustomScalars(datamodel.models)
 
     // Entrypoints
     this.queryObject = this.getOutputType('Query')
@@ -167,4 +170,18 @@ function indexInputTypeWithFields(inputTypes: DmmfTypes.InputType[]) {
   }
 
   return indexedInputTypes
+}
+
+function findCustomScalars(models: DmmfTypes.Model[]): Array<string> {
+  const customScalars = new Set<string>()
+
+  for (const model of models) {
+    for (const field of model.fields) {
+      if (field.kind === 'scalar' && !scalarsNameValues.includes(field.type as any)) {
+        customScalars.add(field.type)
+      }
+    }
+  }
+
+  return [...customScalars]
 }

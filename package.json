@@ -7,7 +7,9 @@
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
     "dist",
-    "src"
+    "src",
+    "typegen.js",
+    "typegen.d.ts"
   ],
   "scripts": {
     "release:preview": "dripip preview",

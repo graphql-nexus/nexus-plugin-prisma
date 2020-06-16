@@ -48,10 +48,11 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
+  const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
   const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
     shouldGenerateArtifacts: true,
     outputs: {
-      typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
+      typegen: nexusPrismaTypegenPath,
     },
     experimentalCRUD: true,
   })
@@ -70,6 +71,20 @@ it('integrates together', async () => {
     })
   })
 
+  /**
+   * Hack: Replace `nexus-prisma/typegen` by a relative path to the local typegen.d.ts file
+   * This is because locally, nexus-prisma is not installed
+   */
+
+  let typegenContent = fs.readFileSync(nexusPrismaTypegenPath).toString()
+
+  typegenContent = typegenContent.replace(
+    `nexus-prisma/typegen`,
+    '../../../typegen'
+  )
+
+  fs.writeFileSync(nexusPrismaTypegenPath, typegenContent)
+
   // Snapshot generated files for manual correctness tracking.
   // Generated files from deps are tracked too, for easier debugging,
   // learning, and detecting unexpected changes.
@@ -77,11 +92,6 @@ it('integrates together', async () => {
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
   const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-prisma-typegen.d.ts')
   const nexusCoreTypegen = await projectReadFile('/generated/nexus-typegen.d.ts')
-  const photonTSD = await projectReadFile('../../node_modules/@prisma/client/index.d.ts')
-  const photonSource = (await projectReadFile('../../node_modules/@prisma/client/index.js'))
-    .replace(/(path\.join\(__dirname, 'runtime\/).*('\);)/, '$1__NON_DETERMINISTIC_CONTENT__$2')
-    .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
-    .replace(/generator: {.*},/, 'generator: {__NON_DETERMINISTIC_CONTENT__:true}')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
