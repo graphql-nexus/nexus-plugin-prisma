@@ -21,7 +21,7 @@ import {
   OperationName,
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
-import { PaginationStrategy, relayLikePaginationStrategy } from './pagination'
+import { paginationStrategies, PaginationStrategyTypes } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
@@ -127,6 +127,16 @@ export interface Options {
     typegen?: string
   }
   /**
+   * Select the pagination strategy.
+   *
+   * 'prisma' strategy results in GraphQL pagination arguments mirroring those of Prisma: skip, cursor, take
+   *
+   * 'relay' strategy results in GraphQL pagination arguments matching those of the [GraphQL Relay specification](https://relay.dev/graphql/connections.htm): before, after, first, last.
+   *
+   * @default 'relay'
+   */
+  paginationStrategy?: 'relay' | 'prisma'
+  /**
    * Enable experimental CRUD capabilities.
    * Add a `t.crud` method in your definition block to generate CRUD resolvers in your `Query` and `Mutation` GraphQL Object Type.
    *
@@ -196,6 +206,7 @@ const shouldGenerateArtifacts =
 const defaultOptions = {
   shouldGenerateArtifacts,
   prismaClient: (ctx: any) => ctx.prisma,
+  paginationStrategy: 'relay' as const,
   inputs: {
     prismaClient: defaultClientPath,
   },
@@ -214,7 +225,7 @@ export class SchemaBuilder {
   readonly dmmf: DmmfDocument
   protected argsNamingStrategy: ArgsNamingStrategy
   protected fieldNamingStrategy: FieldNamingStrategy
-  protected paginationStrategy: PaginationStrategy
+  protected paginationStrategy: PaginationStrategyTypes
   protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
   protected scalars: Record<string, GraphQLScalarType>
@@ -231,7 +242,7 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
-    this.paginationStrategy = relayLikePaginationStrategy
+    this.paginationStrategy = paginationStrategies[config.paginationStrategy]
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
@@ -661,8 +672,13 @@ export class SchemaBuilder {
     if (publisherConfig.pagination) {
       const paginationsArgs =
         publisherConfig.pagination === true
-          ? field.args.filter((a) => this.paginationStrategy.paginationArgNames.includes(a.name))
-          : field.args.filter((arg) => (publisherConfig.pagination as any)[arg.name] === true)
+          ? field.args.filter((a) => {
+              const argNames = this.paginationStrategy.paginationArgNames as string[]
+              return argNames.includes(a.name)
+            })
+          : field.args.filter((arg) => {
+              return (publisherConfig.pagination as any)[arg.name] === true
+            })
 
       args.push(
         ...paginationsArgs.map((a) => {

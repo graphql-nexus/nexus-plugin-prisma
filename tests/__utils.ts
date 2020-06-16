@@ -6,8 +6,8 @@ import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
-import { relayLikePaginationStrategy } from '../src/pagination'
-import { render as renderTypegen } from '../src/typegen/render'
+import { paginationStrategies } from '../src/pagination'
+import { render as renderTypegen } from '../src/typegen'
 import { getEnginePath } from './__ensure-engine'
 
 export const createNexusPrismaInternal = (
@@ -51,15 +51,17 @@ export async function generateSchemaAndTypes(
   types: any[],
   options?: TransformOptions & {
     experimentalCRUD?: boolean
-    plugins?: Nexus.core.NexusPlugin[],
     scalars?: Record<string, GQL.GraphQLScalarType>
+    plugins?: Nexus.core.NexusPlugin[]
+    paginationType?: 'relay' | 'prisma'
   }
 ) {
   const dmmf = await getDmmf(datamodel, options)
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
     experimentalCRUD: options?.experimentalCRUD === false ? false : true,
-    scalars: options?.scalars
+    scalars: options?.scalars,
+    paginationStrategy: options?.paginationType ?? 'relay',
   })
   const schema = Nexus.makeSchema({
     types,
@@ -73,7 +75,7 @@ export async function generateSchemaAndTypes(
     typegen: renderTypegen({
       dmmf,
       prismaClientImportId: '@prisma/client',
-      paginationStrategy: relayLikePaginationStrategy,
+      paginationStrategy: options?.paginationStrategy ?? paginationStrategies.relay,
     }),
   }
 }
@@ -101,7 +103,7 @@ export async function generateSchemaAndTypesWithoutThrowing(
   const typegen = renderTypegen({
     dmmf,
     prismaClientImportId: '@prisma/client',
-    paginationStrategy: relayLikePaginationStrategy,
+    paginationStrategy: paginationStrategies.relay,
   })
 
   return {

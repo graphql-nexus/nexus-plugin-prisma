@@ -181,3 +181,7 @@ export type LocalMutationResolverParams<MethodName extends string> = BaseMutatio
 export type Context = core.GetGen<'context'>
 
 export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
+
+export function keys<A extends object>(a: A): (keyof A)[] {
+  return Object.keys(a) as any
+}
