@@ -27,7 +27,7 @@ input UserWhereUniqueInput {
 
 exports[`does not automatically publish input/enum type if already created by user: typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -42,7 +42,7 @@ type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata
@@ -148,7 +148,7 @@ input UserWhereUniqueInput {
 
 exports[`does not publish enum twice (from input/output type): typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -163,7 +163,7 @@ type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata
@@ -246,7 +246,7 @@ type User {
 
 exports[`publishes enum even as output type: typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -261,7 +261,7 @@ type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata

@@ -49,7 +49,7 @@ input UserWhereUniqueInput {
 
 exports[`publishes scalars from input types: typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -64,7 +64,7 @@ type CustomScalars = 'DateTime'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata

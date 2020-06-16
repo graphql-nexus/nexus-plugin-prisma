@@ -77,7 +77,7 @@ input StringFilter {
 
 exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -92,7 +92,7 @@ type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  ModelName: prisma.ModelName
+  ModelName: Prisma.ModelName
 }
 
 // Prisma input types metadata

@@ -1,5 +1,5 @@
 import * as Typegen from '../../../typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -14,9 +14,9 @@ type CustomScalars = 'DateTime'
 
 // Prisma model type definitions
 interface PrismaModels {
-  Bubble: prisma.Bubble
-  User: prisma.User
-  Post: prisma.Post
+  Bubble: Prisma.Bubble
+  User: Prisma.User
+  Post: Prisma.Post
 }
 
 // Prisma input types metadata

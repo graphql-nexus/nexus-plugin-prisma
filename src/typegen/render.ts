@@ -50,7 +50,7 @@ export function render(params: {
 }) {
   return `\
 import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '${params.prismaClientImportId}';
+import * as Prisma from '${params.prismaClientImportId}';
 
 // Pagination type
 ${renderPaginationType(params.paginationStrategy)}
@@ -93,7 +93,7 @@ declare global {
 function renderPrismaModels(dmmf: DmmfDocument) {
   return `\
 interface PrismaModels {
-${dmmf.datamodel.models.map((m) => `  ${m.name}: prisma.${m.name}`).join('\n')}
+${dmmf.datamodel.models.map((m) => `  ${m.name}: Prisma.${m.name}`).join('\n')}
 }`
 }
 

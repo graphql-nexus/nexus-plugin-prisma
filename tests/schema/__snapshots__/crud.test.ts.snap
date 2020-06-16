@@ -13,7 +13,7 @@ type User {
 
 exports[`support models with only one id field (some crud operations are removed): typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -28,7 +28,7 @@ type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata

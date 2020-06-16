@@ -20,7 +20,7 @@ type User {
 
 exports[`publishes date and json scalar output types: typegen 1`] = `
 "import * as Typegen from 'nexus-prisma/typegen'
-import * as prisma from '@prisma/client';
+import * as Prisma from '@prisma/client';
 
 // Pagination type
 type Pagination = {
@@ -35,7 +35,7 @@ type CustomScalars = 'DateTime' | 'Json'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: prisma.User
+  User: Prisma.User
 }
 
 // Prisma input types metadata
