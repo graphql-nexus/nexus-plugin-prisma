@@ -135,12 +135,12 @@ export interface Options {
   experimentalCRUD?: boolean
   /**
    * Map of GraphQL scalar types to be used by the library for the Prisma scalars
-   * 
+   *
    * When not provided, the scalar types will be passthrough.
-   * 
+   *
    * @default {}
    */
-  scalars?: Record<string, GraphQLScalarType>
+  scalars?: Partial<Record<Typegen.GetGen<'scalars'>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
 }
 
@@ -238,7 +238,7 @@ export class SchemaBuilder {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
       })
-    this.scalars = options.scalars ?? {}
+    this.scalars = options.scalars as any ?? {}
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)
     this.unknownFieldsByModel = {}
 
