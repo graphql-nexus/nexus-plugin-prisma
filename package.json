@@ -21,7 +21,7 @@
     "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit"
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && yarn build && jest --forceExit"
   },
   "dependencies": {
     "camelcase": "^6.0.0",
