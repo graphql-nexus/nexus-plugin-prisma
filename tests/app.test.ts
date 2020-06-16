@@ -2,9 +2,9 @@ import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import * as NexusPrisma from '../src'
 import * as types from './__app/main'
-import { mockConsoleLog } from './__utils'
+import { mockConsoleLog, createNexusPrismaInternal } from './__utils'
+import { getImportPathRelativeToOutput } from '../src/utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
@@ -48,13 +48,22 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
+
   const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
-  const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
+  const typegenFacadePath = require.resolve('../typegen')
+  const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {
       typegen: nexusPrismaTypegenPath,
     },
     experimentalCRUD: true,
+    /**
+     * Import nexus-prisma from the local typegen.d.ts file, as nexus-prisma is not installed
+     */
+    nexusPrismaImportId: getImportPathRelativeToOutput(
+      path.dirname(nexusPrismaTypegenPath),
+      typegenFacadePath
+    ),
   })
 
   process.env.NODE_ENV = 'development'
@@ -70,20 +79,6 @@ it('integrates together', async () => {
       },
     })
   })
-
-  /**
-   * Hack: Replace `nexus-prisma/typegen` by a relative path to the local typegen.d.ts file
-   * This is because locally, nexus-prisma is not installed
-   */
-
-  let typegenContent = fs.readFileSync(nexusPrismaTypegenPath).toString()
-
-  typegenContent = typegenContent.replace(
-    `nexus-prisma/typegen`,
-    '../../../typegen'
-  )
-
-  fs.writeFileSync(nexusPrismaTypegenPath, typegenContent)
 
   // Snapshot generated files for manual correctness tracking.
   // Generated files from deps are tracked too, for easier debugging,

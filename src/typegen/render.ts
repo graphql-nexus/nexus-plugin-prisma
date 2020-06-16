@@ -11,6 +11,7 @@ type Options = {
   prismaClientPath: string
   typegenPath: string
   paginationStrategy: PaginationStrategy
+  nexusPrismaImportId?: string
 }
 
 export function generateSync(options: Options): void {
@@ -34,6 +35,7 @@ export function doGenerate(sync: boolean, options: Options): void | Promise<void
     dmmf,
     paginationStrategy,
     prismaClientImportId,
+    nexusPrismaImportId: options.nexusPrismaImportId,
   })
 
   if (sync) {
@@ -46,10 +48,11 @@ export function doGenerate(sync: boolean, options: Options): void | Promise<void
 export function render(params: {
   dmmf: DmmfDocument
   prismaClientImportId: string
+  nexusPrismaImportId?: string
   paginationStrategy: PaginationStrategy
 }) {
   return `\
-import * as Typegen from 'nexus-prisma/typegen'
+import * as Typegen from '${params.nexusPrismaImportId ?? 'nexus-prisma/typegen'}'
 import * as Prisma from '${params.prismaClientImportId}';
 
 // Pagination type
@@ -134,11 +137,13 @@ ${renderNexusPrismaType(queriesByType)}
   Mutation: {
 ${renderNexusPrismaType(mutationsByType)}
   },
-${Object.entries(fieldsByType).map(
-  ([modelName, fields]) => `  ${modelName}: {
+${Object.entries(fieldsByType)
+  .map(
+    ([modelName, fields]) => `  ${modelName}: {
 ${renderNexusPrismaType(fields)}
   }`
-).join('\n')}
+  )
+  .join('\n')}
 }`
 }
 
@@ -216,11 +221,13 @@ interface NexusPrismaInputs {
   Query: {
 ${renderNexusPrismaInput(queriesFields)}
   },
-${Object.entries(fieldsByType).map(
+${Object.entries(fieldsByType)
+  .map(
     ([modelName, fields]) => `  ${modelName}: {
 ${renderNexusPrismaInput(fields)}
   }`
-  ).join('\n')}
+  )
+  .join('\n')}
 }`
 }
 

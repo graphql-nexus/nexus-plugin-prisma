@@ -157,6 +157,7 @@ export interface Options {
 export interface InternalOptions extends Options {
   dmmf?: DmmfDocument // For testing
   nexusBuilder: Nexus.PluginBuilderLens
+  nexusPrismaImportId?: string,
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
   onUnknownArgName?: OnUnknownArgName // For pumpkins
@@ -267,6 +268,7 @@ export class SchemaBuilder {
         prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
         paginationStrategy: this.paginationStrategy,
+        nexusPrismaImportId: options.nexusPrismaImportId
       })
     }
   }
