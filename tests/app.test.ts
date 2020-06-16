@@ -50,7 +50,7 @@ it('integrates together', async () => {
   //
 
   const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
-  const typegenFacadePath = require.resolve('../typegen')
+  const typegenFacadePath = require.resolve('../src/typegen/static')
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {
