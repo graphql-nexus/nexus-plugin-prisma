@@ -102,7 +102,7 @@ it('supports custom scalars as input type', async () => {
         }
      }
     `,
-    { dateTime: '2020-06-15T00:00:00.561Z' }
+    { dateTime: new Date().toISOString() }
   )
 
   expect(before).toBeCalled()
