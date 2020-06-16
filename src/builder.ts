@@ -1,6 +1,6 @@
 import * as Nexus from '@nexus/schema'
 import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
-import { defaultFieldResolver, GraphQLFieldResolver } from 'graphql'
+import { defaultFieldResolver, GraphQLFieldResolver, GraphQLScalarType } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
 import { addComputedInputs, DmmfDocument, DmmfTypes, getTransformedDmmf } from './dmmf'
@@ -143,12 +143,21 @@ export interface Options {
    * @default false
    */
   experimentalCRUD?: boolean
+  /**
+   * Map of GraphQL scalar types to be used by the library for the Prisma scalars
+   *
+   * When not provided, the scalar types will be passthrough.
+   *
+   * @default {}
+   */
+  scalars?: Partial<Record<Typegen.GetGen<'scalars'>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
 }
 
 export interface InternalOptions extends Options {
   dmmf?: DmmfDocument // For testing
   nexusBuilder: Nexus.PluginBuilderLens
+  nexusPrismaImportId?: string,
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
   onUnknownArgName?: OnUnknownArgName // For pumpkins
@@ -220,6 +229,7 @@ export class SchemaBuilder {
   protected paginationStrategy: PaginationStrategyTypes
   protected getPrismaClient: PrismaClientFetcher
   protected publisher: Publisher
+  protected scalars: Record<string, GraphQLScalarType>
   protected globallyComputedInputs: GlobalComputedInputs
   protected unknownFieldsByModel: Index<string[]>
   public wasCrudUsedButDisabled: boolean
@@ -240,7 +250,8 @@ export class SchemaBuilder {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
       })
-    this.publisher = new Publisher(this.dmmf, config.nexusBuilder)
+    this.scalars = options.scalars as any ?? {}
+    this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)
     this.unknownFieldsByModel = {}
 
     this.argsNamingStrategy = defaultArgsNamingStrategy
@@ -257,6 +268,7 @@ export class SchemaBuilder {
         prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
         paginationStrategy: this.paginationStrategy,
+        nexusPrismaImportId: options.nexusPrismaImportId
       })
     }
   }

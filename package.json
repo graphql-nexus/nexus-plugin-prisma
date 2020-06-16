@@ -7,7 +7,9 @@
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
     "dist",
-    "src"
+    "src",
+    "typegen.js",
+    "typegen.d.ts"
   ],
   "scripts": {
     "release:preview": "dripip preview",
@@ -53,6 +55,7 @@
     "get-port": "5.1.1",
     "graphql": "14.6.0",
     "graphql-request": "1.8.2",
+    "graphql-scalars": "^1.1.5",
     "graphql-yoga": "1.18.3",
     "jest": "25.2.4",
     "jest-watch-typeahead": "0.4.2",

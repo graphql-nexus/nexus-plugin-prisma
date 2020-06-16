@@ -3,10 +3,11 @@ import { CustomInputArg } from './builder'
 import { DmmfDocument, DmmfTypes } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
+import { GraphQLScalarType } from 'graphql'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
-  constructor(public dmmf: DmmfDocument, public nexusBuilder: Nexus.PluginBuilderLens) {}
+  constructor(public dmmf: DmmfDocument, public nexusBuilder: Nexus.PluginBuilderLens, public scalars: Record<string, GraphQLScalarType>) {}
 
   inputType(
     customArg: CustomInputArg
@@ -15,7 +16,8 @@ export class Publisher {
     | Nexus.core.NexusInputObjectTypeDef<string>
     | Nexus.core.NexusEnumTypeDef<string>
     | Nexus.core.NexusScalarTypeDef<string>
-    | Nexus.core.NexusArgDef<any> {
+    | Nexus.core.NexusArgDef<any>
+    | GraphQLScalarType {
     const typeName = customArg.type.name
 
     // If type is already published, just reference it
@@ -91,6 +93,10 @@ export class Publisher {
 
     this.markTypeAsPublished(typeName)
 
+    if (this.scalars[typeName]) {
+      return this.scalars[typeName]
+    }
+
     return Nexus.scalarType({
       name: typeName,
       serialize(value) {
@@ -161,7 +167,7 @@ export class Publisher {
 
   isPublished(typeName: string) {
     // If the user's app has published a type of the same name treat it as an
-    // overide to us auto publishing.
+    // override to us auto publishing.
     return this.nexusBuilder.hasType(typeName) || this.typesPublished[typeName]
   }
 

@@ -2,9 +2,9 @@ import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as fs from 'fs-extra'
 import * as path from 'path'
-import * as NexusPrisma from '../src'
 import * as types from './__app/main'
-import { mockConsoleLog } from './__utils'
+import { mockConsoleLog, createNexusPrismaInternal } from './__utils'
+import { getImportPathRelativeToOutput } from '../src/utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
@@ -48,12 +48,22 @@ it('integrates together', async () => {
   // enable subsequent type checks. A user currently has to figure
   // this part out on their own more or less.
   //
-  const nexusPrisma = NexusPrisma.nexusPrismaPlugin({
+
+  const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
+  const typegenFacadePath = require.resolve('../src/typegen/static')
+  const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {
-      typegen: projectPath(`/generated/nexus-prisma-typegen.d.ts`),
+      typegen: nexusPrismaTypegenPath,
     },
     experimentalCRUD: true,
+    /**
+     * Import nexus-prisma from the local typegen.d.ts file, as nexus-prisma is not installed
+     */
+    nexusPrismaImportId: getImportPathRelativeToOutput(
+      path.dirname(nexusPrismaTypegenPath),
+      typegenFacadePath
+    ),
   })
 
   process.env.NODE_ENV = 'development'
@@ -77,11 +87,6 @@ it('integrates together', async () => {
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
   const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-prisma-typegen.d.ts')
   const nexusCoreTypegen = await projectReadFile('/generated/nexus-typegen.d.ts')
-  const photonTSD = await projectReadFile('../../node_modules/@prisma/client/index.d.ts')
-  const photonSource = (await projectReadFile('../../node_modules/@prisma/client/index.js'))
-    .replace(/(path\.join\(__dirname, 'runtime\/).*('\);)/, '$1__NON_DETERMINISTIC_CONTENT__$2')
-    .replace(/"output": ".*",/, '"output": "__NON_DETERMINISTIC_CONTENT__"')
-    .replace(/generator: {.*},/, 'generator: {__NON_DETERMINISTIC_CONTENT__:true}')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')

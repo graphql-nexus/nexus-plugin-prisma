@@ -51,6 +51,7 @@ export async function generateSchemaAndTypes(
   types: any[],
   options?: TransformOptions & {
     experimentalCRUD?: boolean
+    scalars?: Record<string, GQL.GraphQLScalarType>
     plugins?: Nexus.core.NexusPlugin[]
     paginationType?: 'relay' | 'prisma'
   }
@@ -59,6 +60,7 @@ export async function generateSchemaAndTypes(
   const nexusPrisma = createNexusPrismaInternal({
     dmmf,
     experimentalCRUD: options?.experimentalCRUD === false ? false : true,
+    scalars: options?.scalars,
     paginationStrategy: options?.paginationType ?? 'relay',
   })
   const schema = Nexus.makeSchema({
