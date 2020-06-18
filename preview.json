@@ -1,0 +1,60 @@
+{
+  "kind": "ok",
+  "type": "dry_run",
+  "data": {
+    "report": {
+      "stops": [],
+      "errors": [],
+      "passes": [
+        {
+          "details": {},
+          "summary": "You must have npm auth setup to publish to the registrty",
+          "code": "npm_auth_not_setup"
+        },
+        { "details": {}, "summary": "You must be on the trunk branch", "code": "must_be_on_trunk" },
+        {
+          "details": {},
+          "summary": "A preview release requires the commit to have no existing stable or preview release.",
+          "code": "preview_on_commit_with_preview_and_or_stable"
+        },
+        {
+          "details": {},
+          "summary": "A preview release must have at least one commit since the last preview",
+          "code": "series_empty"
+        },
+        {
+          "details": {},
+          "summary": "A preview release must have at least one semantic commit",
+          "code": "series_only_has_meaningless_commits"
+        }
+      ]
+    },
+    "release": {
+      "bumpType": "minor",
+      "version": {
+        "version": "0.15.0-next.7",
+        "vprefix": false,
+        "major": 0,
+        "minor": 15,
+        "patch": 0,
+        "preRelease": { "buildNum": 7, "identifier": "next" }
+      }
+    },
+    "commits": [
+      {
+        "raw": "feat: enable configuring scalars (#712)",
+        "parsed": {
+          "typeKind": "feat",
+          "type": "feat",
+          "scope": null,
+          "description": "enable configuring scalars (#712)",
+          "body": null,
+          "footers": [],
+          "breakingChange": null,
+          "completesInitialDevelopment": false
+        }
+      }
+    ],
+    "changelog": "#### BREAKING CHANGES\n\n- 34a2bdf support prisma 2 (#692)\n- cdfcda2 revert to old pagination model (#699)\n- 0c03826 support Prisma Beta 8 (#688)\n- ea8c5fc support prisma beta 7 (#683)\n- 541996b put `t.crud` behind an experimental flag (#682)\n\n#### Features\n\n- fe9611e enable configuring scalars (#712)\n- 18e017d configurable pagination, prisma option (#709)\n- cd3b5c9 relative @prisma/client import when path given (#704)\n- 34a2bdf (breaking) support prisma 2 (#692)\n- cdfcda2 (breaking) revert to old pagination model (#699)\n- a08b741 warn if t.crud is used but not enabled (#691)\n- 0703fb7 partially support Json type (#690)\n- 0c03826 (breaking) support Prisma Beta 8 (#688)\n- 9569bd6 support custom resolvers (#674)\n- 7c5f4b8 forward nexus plugins into t.model and t.crud (#687)\n- 6d44cdd support model without ids, compound ids and uniques (#686)\n- ea8c5fc (breaking) support prisma beta 7 (#683)\n- 541996b (breaking) put `t.crud` behind an experimental flag (#682)\n\n#### Fixes\n\n- b089997 automated releases\n- 2cabc65 convert nulls to undefined for non-nullable Prisma fields (#695)\n- 061df60 do not require react types (#700)\n- c63b8ae support model with a single id field (#696)\n\n#### Improvements\n\n- c9ee9bb test: remove verbose snapshots (#705)\n- a5671d0 improve: remove photon check (#693)\n\n#### Chores\n\n- 81a53b7 prettier format\n- ffe63d9 setup automated preview releases\n- b67b73b sync lock file\n- f903d5a update examples\n"
+  }
+}

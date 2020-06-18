@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - './.mysql-data/db:/var/lib/mysql'
+    restart: always
+    ports:
+      - 4567:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+  postgres:
+    image: postgres:10.13
+    volumes:
+      - './.postgres-data/db:/var/lib/postgresql/data'
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres

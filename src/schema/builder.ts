@@ -150,7 +150,7 @@ export interface Options {
    *
    * @default {}
    */
-  scalars?: Partial<Record<Typegen.GetGen<'scalars'>, GraphQLScalarType>>
+  scalars?: Partial<Record<Typegen.GetGen<'scalars', string>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
 }
 

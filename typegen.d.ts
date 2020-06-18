@@ -1,1 +1,1 @@
-export * from './dist/typegen/static'
+export * from 'nexus-prisma/typegen'

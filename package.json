@@ -1,15 +1,19 @@
 {
-  "name": "nexus-prisma",
+  "name": "nexus-plugin-prisma-test",
   "version": "0.0.0-see-git-tags",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/plugin-entrypoint.js",
+  "types": "dist/plugin-entrypoint.d.ts",
   "license": "MIT",
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
     "dist",
     "src",
     "typegen.js",
-    "typegen.d.ts"
+    "typegen.d.ts",
+    "schema.js",
+    "schema.d.ts",
+    "client.js",
+    "client.d.ts"
   ],
   "scripts": {
     "release:preview": "dripip preview",
@@ -17,58 +21,88 @@
     "release:pr": "dripip pr",
     "clean": "rm -rf dist",
     "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && tsc && ts-node scripts/post-build",
-    "dev": "tsc --watch",
-    "dev:test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
+    "build:ci": "tsc",
+    "dev": "node scripts/build-module-facades && tsc --watch",
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit"
-  },
-  "dependencies": {
-    "camelcase": "^6.0.0",
-    "fs-extra": "^9.0.0",
-    "outdent": "^0.7.1",
-    "pluralize": "^8.0.0"
+    "postinstall": "node ./scripts/postinstall.js",
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit",
+    "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --watch",
+    "test:unit": "jest src --forceExit",
+    "test:e2e:mysql": "yarn test tests/framework/e2e/mysql.test.ts",
+    "test:e2e:postgres": "yarn test tests/framework/e2e/postgres.test.ts",
+    "test:e2e:sqlite": "yarn test tests/framework/e2e/sqlite.test.ts",
+    "test:setup:db": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "peerDependencies": {
-    "@nexus/schema": "^0.13.1 || ^0.14.0",
-    "@prisma/client": "2.0.0",
-    "graphql": "^14.5.0"
+    "@nexus/schema": "^0.14.0",
+    "graphql": "^14.6.0"
+  },
+  "dependencies": {
+    "@prisma/cli": "2.0.1",
+    "@prisma/client": "2.0.1",
+    "@prisma/sdk": "2.0.1",
+    "camelcase": "^6.0.0",
+    "chalk": "^4.0.0",
+    "common-tags": "^1.8.0",
+    "dotenv": "^8.2.0",
+    "fs-extra": "^9.0.0",
+    "fs-jetpack": "^2.4.0",
+    "outdent": "^0.7.1",
+    "pluralize": "^8.0.0",
+    "prismjs": "^1.20.0",
+    "stacktrace-parser": "^0.1.10"
   },
   "devDependencies": {
-    "@nexus/schema": "0.13.1",
-    "@prisma-labs/prettier-config": "^0.1.0",
-    "@prisma/cli": "2.0.0",
-    "@prisma/client": "2.0.0",
+    "@nexus/schema": "^0.14.0",
+    "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/fetch-engine": "2.0.0",
     "@prisma/get-platform": "2.0.0",
     "@prisma/migrate": "2.0.0",
-    "@prisma/sdk": "2.0.0",
+    "@types/common-tags": "1.8.0",
     "@types/fs-extra": "8.1.0",
     "@types/jest": "25.1.4",
     "@types/node": "13.9.5",
     "@types/node-fetch": "2.5.5",
     "@types/pluralize": "0.0.29",
     "@types/prettier": "1.19.1",
+    "@types/prismjs": "1.16.1",
     "@types/rimraf": "3.0.0",
     "@types/tmp": "0.1.0",
     "dripip": "0.9.0",
     "get-port": "5.1.1",
-    "graphql": "14.6.0",
+    "graphql": "^14.6.0",
     "graphql-request": "1.8.2",
     "graphql-scalars": "^1.1.5",
     "graphql-yoga": "1.18.3",
     "jest": "25.2.4",
-    "jest-watch-typeahead": "0.4.2",
+    "jest-watch-typeahead": "0.6.0",
+    "nexus": "0.24.0",
     "node-fetch": "2.6.0",
+    "node-pty": "0.9.0",
     "prettier": "2.0.2",
+    "pretty-quick": "2.0.1",
     "react": "16.13.0",
     "rimraf": "3.0.2",
+    "rxjs": "6.5.5",
     "strip-ansi": "6.0.0",
     "tmp": "0.1.0",
     "ts-jest": "25.3.0",
     "ts-morph": "7.1.0",
     "ts-node": "8.10.1",
-    "typescript": "3.9.3"
+    "tslib": "2.0.0",
+    "typescript": "3.9.5"
+  },
+  "prisma": {
+    "version": "de2bc1cbdb5561ad73d2f08463fa2eec48993f56"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "watchPlugins": [
+      "jest-watch-typeahead/filename",
+      "jest-watch-typeahead/testname"
+    ]
   },
   "prettier": "@prisma-labs/prettier-config"
 }

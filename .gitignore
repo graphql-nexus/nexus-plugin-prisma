@@ -9,3 +9,6 @@ failed-*.md
 .idea
 .yalc
 yalc.lock
+.vscode
+.postgres-data
+.mysql-data

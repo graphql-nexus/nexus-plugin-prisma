@@ -2,9 +2,9 @@ import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import { getImportPathRelativeToOutput } from '../../src/schema/utils'
 import * as types from './__app/main'
-import { mockConsoleLog, createNexusPrismaInternal } from './__utils'
-import { getImportPathRelativeToOutput } from '../src/utils'
+import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing

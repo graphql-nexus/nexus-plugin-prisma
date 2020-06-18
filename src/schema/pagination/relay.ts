@@ -1,6 +1,6 @@
 import { DmmfTypes, getReturnTypeName } from '../dmmf'
 import { keys } from '../utils'
-import { PaginationStrategy } from './'
+import { PaginationStrategy } from '.'
 
 interface RelayPaginationArgs {
   first?: number
@@ -116,7 +116,7 @@ export const relayStrategy: PaginationStrategy<RelayPaginationArgs> = {
       }
     }
 
-    const take = resolveTake(first, last, before)
+    const take = resolveTake(first, last)
     const cursor = resolveCursor(before, after)
     const skip = resolveSkip(cursor)
 
@@ -139,7 +139,6 @@ export const relayStrategy: PaginationStrategy<RelayPaginationArgs> = {
 function resolveTake(
   first: number | undefined,
   last: number | undefined,
-  before: object | undefined
 ): number | undefined {
   if (first && last) {
     throw new Error(`first and last can't be set simultaneously`)
