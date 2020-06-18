@@ -735,7 +735,7 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@prisma-labs/prettier-config@^0.1.0":
+"@prisma-labs/prettier-config@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@prisma-labs/prettier-config/-/prettier-config-0.1.0.tgz#ef6cb5f89487974ca997516e9b39d5ccbefeeaad"
   integrity sha512-P0h2y+gnIxFP2HdsTYSYHWmabGBlxyVjnUepsrRe8gAF36mxOonGsbsQmKt/Q9H9CMjrSkFoDe5F5HLi2iW5/Q==
@@ -3579,7 +3579,7 @@ graphql-request@1.8.2:
   dependencies:
     cross-fetch "2.2.2"
 
-graphql-scalars@^1.1.5:
+graphql-scalars@1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.1.5.tgz#9d0485e4f67a4120400dcbfa83797fc74f2f19af"
   integrity sha512-2Kbq8VgreOB62eKUafwp7qvyvDIS3wmw+JNzyXydQS6I986/s4ceJZs6Hc7Ex/9zBrhFsUlVIEl0a6oUqGCU/Q==
