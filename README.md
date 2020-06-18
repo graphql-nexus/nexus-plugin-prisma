@@ -1,8 +1,23 @@
-<p align="center">
-  <img src="https://i.imgur.com/8qvElTM.png" width="300" align="center" />
-  <h1 align="center">nexus-prisma</h1>
-</p>
+# `nexus-prisma` has migrated!
 
-![trunk](https://github.com/graphql-nexus/nexus-schema-plugin-prisma/workflows/trunk/badge.svg)
+### Please Change These Things
 
-[Docs](https://www.nexusjs.org/#/components/schema/plugins/prisma)
+#### Your Dependencies
+
+```
+npm remove nexus-prisma @prisma/client @prisma/cli
+npm add nexus-plugin-prisma@TODO
+```
+
+#### Your Imports
+
+```diff
+- import { nexusPluginPrisma } from 'nexus-prisma'
++ import { nexusPluginPrisma } from 'nexus-plugin-prisma/schema'
+```
+
+### Learn More
+
+- [About the transition](https://nxs.li/nexus-prisma-to-nexus-plugin-prisma/about)
+- [About the Prisma plugin for Nexus framework](https://nxs.li/plugins/prisma)
+- [About how to migrate from `@nexus/schema` to Neuxs ](https://nxs.li/schema-to-framework/migrate)
