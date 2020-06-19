@@ -60,7 +60,7 @@ input UserWhereUniqueInput {
   id: Int
 }
 ",
-  "typegen": "import * as Typegen from 'nexus-prisma/typegen'
+  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -193,7 +193,7 @@ input UserWhereUniqueInput {
   id: Int
 }
 ",
-  "typegen": "import * as Typegen from 'nexus-prisma/typegen'
+  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type

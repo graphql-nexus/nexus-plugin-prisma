@@ -12,7 +12,7 @@ type User {
 `;
 
 exports[`support models with only one id field (some crud operations are removed): typegen 1`] = `
-"import * as Typegen from 'nexus-prisma/typegen'
+"import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
