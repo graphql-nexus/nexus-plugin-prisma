@@ -31,8 +31,8 @@
     "test:unit": "jest src --forceExit",
     "test:schema": "yarn test tests/schema",
     "test:framework:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
-    "test:framework:postgres": "yarn --testTimeout=400000 test tests/framework/e2e/postgres.test.ts",
-    "test:framework:sqlite": "yarn --testTimeout=400000 test tests/framework/e2e/sqlite.test.ts",
+    "test:framework:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
+    "test:framework:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
     "test:setup:db": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "peerDependencies": {
