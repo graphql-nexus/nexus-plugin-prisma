@@ -27,7 +27,8 @@ const facades = [
   ['client.js',    "module.exports = require('@prisma/client')" + os.EOL],
   ['schema.d.ts',  "export * from './dist/schema-entrypoint'"  + os.EOL],
   ['schema.js',    "module.exports = require('./dist/schema-entrypoint')" + os.EOL],
-  ['typegen.d.ts', "export * from 'nexus-prisma/typegen'" + os.EOL],
+  ['typegen.js',   "module.exports = require('./dist/schema/typegen/static')" + os.EOL],
+  ['typegen.d.ts', "export * from './dist/schema/typegen/static'" + os.EOL],
 ]
 
 // Write facade files
