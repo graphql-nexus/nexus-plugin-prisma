@@ -3765,14 +3765,7 @@ graphql-request@1.8.2:
   dependencies:
     cross-fetch "2.2.2"
 
-graphql-request@^2.1.0-next.1:
-  version "2.1.0-next.1"
-  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-2.1.0-next.1.tgz#d0771d814ebcb39ea67208da12e301f3f5d6a80d"
-  integrity sha512-9Qr+z4FCzxwFrnG9BE366v9KcgRXLv2bmFkj3RHfSQNDgPHCUM2mA83bwjhgxg4jig/F8X/pcceOZPwRkMleKQ==
-  dependencies:
-    cross-fetch "^3.0.4"
-
-graphql-scalars@^1.1.5:
+graphql-scalars@1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/graphql-scalars/-/graphql-scalars-1.1.5.tgz#9d0485e4f67a4120400dcbfa83797fc74f2f19af"
   integrity sha512-2Kbq8VgreOB62eKUafwp7qvyvDIS3wmw+JNzyXydQS6I986/s4ceJZs6Hc7Ex/9zBrhFsUlVIEl0a6oUqGCU/Q==

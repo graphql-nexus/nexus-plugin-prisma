@@ -55,7 +55,7 @@
     "stacktrace-parser": "^0.1.10"
   },
   "devDependencies": {
-    "@nexus/schema": "^0.14.0",
+    "@nexus/schema": "0.14.0",
     "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/fetch-engine": "2.0.0",
     "@prisma/get-platform": "2.0.0",
@@ -74,7 +74,7 @@
     "get-port": "5.1.1",
     "graphql": "^14.6.0",
     "graphql-request": "1.8.2",
-    "graphql-scalars": "^1.1.5",
+    "graphql-scalars": "1.1.5",
     "graphql-yoga": "1.18.3",
     "jest": "25.2.4",
     "jest-watch-typeahead": "0.6.0",
