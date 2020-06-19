@@ -31,6 +31,6 @@ export function linkableProjectDir(): string {
     return process.cwd()
   } else {
     // lib/src/nexus-plugin-prisma/node_modules
-    return Path.join(__dirname, '..', '..', '..', '..')
+    return Path.join(__dirname, '..', '..', '..', '..', '..')
   }
 }
