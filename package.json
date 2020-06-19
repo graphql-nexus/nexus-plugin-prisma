@@ -1,8 +1,8 @@
 {
   "name": "nexus-plugin-prisma",
   "version": "0.0.0-see-git-tags",
-  "main": "dist/plugin-entrypoint.js",
-  "types": "dist/plugin-entrypoint.d.ts",
+  "main": "dist/framework-entrypoint.js",
+  "types": "dist/framework-entrypoint.d.ts",
   "license": "MIT",
   "author": "Flavian Desverne <desverne@prisma.io>",
   "files": [
@@ -28,11 +28,11 @@
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "postinstall": "node ./scripts/postinstall.js",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --testTimeout=400000 --forceExit",
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit",
     "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest src tests/schema --watch",
-    "test:unit": "jest src --forceExit",
+    "test:unit": "jest src --testTimeout=15000 --forceExit",
     "test:schema": "yarn test tests/schema",
-    "test:framework:mysql": "yarn test tests/framework/e2e/mysql.test.ts",
+    "test:framework:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
     "test:framework:postgres": "yarn test tests/framework/e2e/postgres.test.ts",
     "test:framework:sqlite": "yarn test tests/framework/e2e/sqlite.test.ts",
     "test:setup:db": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"

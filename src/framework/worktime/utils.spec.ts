@@ -6,9 +6,6 @@ import * as Path from 'path'
 import * as TC from '../../../tests/__helpers/test-context'
 import { getGenerators } from './utils'
 
-// prisma client is installed during tests
-jest.setTimeout(15 * 1000)
-
 const ctx = TC.create(TC.tmpDir(), TC.fs(), (ctx) => {
   const nexus = ({
     log: {
