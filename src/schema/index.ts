@@ -40,7 +40,7 @@ export function nexusPrismaPlugin(options?: Options) {
   let wasCrudUsedButDisabled: null | (() => boolean) = null
 
   return plugin({
-    name: 'nexus-prisma',
+    name: 'nexus-plugin-prisma',
     onInstall: (nexusBuilder) => {
       const { types, wasCrudUsedButDisabled: wasCrudUsed } = buildNexusPrismaTypes({
         ...options,
