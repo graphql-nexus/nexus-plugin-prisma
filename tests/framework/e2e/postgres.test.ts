@@ -9,7 +9,7 @@ const tmpDir = getTmpDir()
 const ctx = createE2EContext({
   dir: Path.join(tmpDir, 'postgres'),
   localNexus: null,
-  serverPort: 4000,
+  serverPort: 4001,
 })
 
 test('e2e', async () => {
