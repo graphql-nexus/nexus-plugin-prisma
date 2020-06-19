@@ -8,6 +8,7 @@
   "files": [
     "dist",
     "src",
+    "scripts",
     "typegen.js",
     "typegen.d.ts",
     "schema.js",
