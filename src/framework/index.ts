@@ -3,7 +3,7 @@ import { Settings } from './settings'
 
 export const prisma: PluginEntrypoint<Settings> = (settings) => ({
   settings,
-  packageJsonPath: require.resolve('../package.json'),
+  packageJsonPath: require.resolve('../../package.json'),
   runtime: {
     module: require.resolve('./runtime'),
     export: 'plugin',
