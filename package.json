@@ -26,13 +26,13 @@
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "postinstall": "node ./scripts/postinstall.js",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit",
+    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --testTimeout=400000 --forceExit",
     "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest src tests/schema --watch",
     "test:unit": "jest src --forceExit",
     "test:schema": "yarn test tests/schema",
-    "test:framework:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
-    "test:framework:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
-    "test:framework:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
+    "test:framework:mysql": "yarn test tests/framework/e2e/mysql.test.ts",
+    "test:framework:postgres": "yarn test tests/framework/e2e/postgres.test.ts",
+    "test:framework:sqlite": "yarn test tests/framework/e2e/sqlite.test.ts",
     "test:setup:db": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "peerDependencies": {
@@ -96,14 +96,6 @@
   },
   "prisma": {
     "version": "de2bc1cbdb5561ad73d2f08463fa2eec48993f56"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ]
   },
   "prettier": "@prisma-labs/prettier-config"
 }

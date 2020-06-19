@@ -1,14 +1,9 @@
 const chalk = require('chalk')
 const jetpack = require('fs-jetpack')
 const path = require('path')
-
-if (process.env.INIT_CWD) {
-  // necessary, because npm chooses __dirname as process.cwd() in the postinstall hook
-  process.chdir(process.env.INIT_CWD)
-}
-
+// proccess.env.PWD is undifined on Windows https://github.com/mrblueblue/gettext-loader/issues/18
 const pwd = process.cwd()
-const destDir = path.join(pwd, 'node_modules', '@types', 'nexus-plugin-prisma')
+const destDir = path.join(pwd, '..', '@types', 'nexus-plugin-prisma')
 
 jetpack.dir(destDir)
 jetpack.copy(path.join(pwd, 'global-type.d.ts'), path.join(destDir, 'index.d.ts'), { overwrite: true })
