@@ -125,4 +125,4 @@ jobs:
           fi
           export NEXUS_VERSION=${{ matrix.nexus-version }}
 
-          yarn test:e2e:${{ matrix.database }}
+          yarn test:framework:${{ matrix.database }}
