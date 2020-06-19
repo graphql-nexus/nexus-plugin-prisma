@@ -1,12 +1,14 @@
 const chalk = require('chalk')
 const jetpack = require('fs-jetpack')
 const path = require('path')
-// proccess.env.PWD is undifined on Windows https://github.com/mrblueblue/gettext-loader/issues/18
+// process.env.PWD is undefined on Windows https://github.com/mrblueblue/gettext-loader/issues/18
+
 const pwd = process.cwd()
+const from = path.join(__dirname, '..', 'global-type.d.ts')
 const destDir = path.join(pwd, '..', '@types', 'nexus-plugin-prisma')
 
 jetpack.dir(destDir)
-jetpack.copy(path.join(pwd, 'global-type.d.ts'), path.join(destDir, 'index.d.ts'), { overwrite: true })
+jetpack.copy(from, path.join(destDir, 'index.d.ts'), { overwrite: true })
 
 console.log(chalk.bold.yellowBright('----------------------------------'))
 console.log(
