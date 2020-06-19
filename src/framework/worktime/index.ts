@@ -10,7 +10,6 @@ import { withDefaults } from '../lib/defaults'
 import { Settings } from '../settings'
 import * as Scaffolders from './scaffolders'
 import { getGenerators } from './utils'
-import { copyGlobalInterface } from '../lib/typegen'
 
 export const plugin: WorktimePlugin<Settings> = (userSettings) => (p) => {
   const settings = withDefaults(userSettings, {
@@ -27,7 +26,6 @@ export const plugin: WorktimePlugin<Settings> = (userSettings) => (p) => {
         'Should never happen. Prisma plugin should not be installed if no database were chosen in the create workflow'
       )
     }
-    copyGlobalInterface()
     const datasource = renderDatasource(hctx.database)
     await Promise.all([
       fs.appendAsync(
