@@ -3,12 +3,12 @@ import * as Nexus from '@nexus/schema'
 import * as SDK from '@prisma/sdk'
 import * as GQL from 'graphql'
 import stripAnsi from 'strip-ansi'
-import * as NexusPrismaBuilder from '../src/builder'
-import { DmmfDocument } from '../src/dmmf'
-import { transform, TransformOptions } from '../src/dmmf/transformer'
-import { paginationStrategies } from '../src/pagination'
-import { render as renderTypegen } from '../src/typegen'
-import { getEnginePath } from './__ensure-engine'
+import * as NexusPrismaBuilder from '../../src/schema/builder'
+import { DmmfDocument } from '../../src/schema/dmmf'
+import { transform, TransformOptions } from '../../src/schema/dmmf/transformer'
+import { paginationStrategies } from '../../src/schema/pagination'
+import { render as renderTypegen } from '../../src/schema/typegen'
+import { getEnginePath } from '../__ensure-engine'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>

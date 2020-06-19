@@ -5,7 +5,8 @@
     "lib": ["esnext"],
     "noEmit": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["."]
 }

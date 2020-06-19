@@ -1,8 +1,8 @@
-import { DmmfTypes, DmmfDocument } from '../../src/dmmf'
-import { getCrudMappedFields } from '../../src/mapping'
-import { OperationName } from '../../src/naming-strategies'
-import { transformNullsToUndefined } from '../../src/null'
-import { indexBy } from '../../src/utils'
+import { DmmfTypes, DmmfDocument } from '../../../src/schema/dmmf'
+import { getCrudMappedFields } from '../../../src/schema/mapping'
+import { OperationName } from '../../../src/schema/naming-strategies'
+import { transformNullsToUndefined } from '../../../src/schema/null'
+import { indexBy } from '../../../src/schema/utils'
 import { getDmmf } from '../__utils'
 
 const operationToRoot: Record<OperationName, 'Query' | 'Mutation'> = {

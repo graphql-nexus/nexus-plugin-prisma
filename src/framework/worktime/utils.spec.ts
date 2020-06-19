@@ -28,7 +28,7 @@ const ctx = TC.create(TC.tmpDir(), TC.fs(), (ctx) => {
 })
 
 describe('getGenerators', () => {
-  it('scaffolds a prisma client block if not present alredy', async () => {
+  it('scaffolds a prisma client block if not present already', async () => {
     const content =
       stripIndent`
         model Foo {

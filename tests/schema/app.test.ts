@@ -28,13 +28,13 @@ it('integrates together', async () => {
   //
   await Promise.all([
     fs.emptyDir(projectPath('/generated')),
-    fs.emptyDir(projectPath('../../node_modules/@generated')),
+    fs.emptyDir(projectPath('../../../node_modules/@generated')),
   ])
 
   // Run Prisma generation:
   // - Prisma Client JS
   //
-  cp.execSync('../../node_modules/.bin/prisma2 generate', {
+  cp.execSync('../../../node_modules/.bin/prisma2 generate', {
     cwd: projectRoot,
   })
 
@@ -50,7 +50,7 @@ it('integrates together', async () => {
   //
 
   const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
-  const typegenFacadePath = require.resolve('../src/typegen/static')
+  const typegenFacadePath = require.resolve('../../src/schema/typegen/static')
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {

@@ -1,6 +1,6 @@
 import * as Nexus from '@nexus/schema'
-import { addComputedInputs } from '../../src/dmmf/transformer'
-import { GlobalComputedInputs } from '../../src/utils'
+import { addComputedInputs } from '../../../src/schema/dmmf/transformer'
+import { GlobalComputedInputs } from '../../../src/schema/utils'
 import { generateSchemaAndTypes, getDmmf } from '../__utils'
 
 // TODO: Split local and global computedInputs into their own suites

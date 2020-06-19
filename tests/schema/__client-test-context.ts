@@ -10,7 +10,7 @@ import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
 import rimraf from 'rimraf'
-import { getEnginePath, getEngineVersion } from './__ensure-engine'
+import { getEnginePath, getEngineVersion } from '../__ensure-engine'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -48,6 +48,9 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 
   return {
     async getContext({ datamodel, types, plugins, scalars }) {
+
+      console.log({ enginePath:  await getEnginePath('query') })
+
       try {
         // Force query engine binary path
         process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
