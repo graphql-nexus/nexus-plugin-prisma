@@ -8,17 +8,22 @@ if (process.env.INIT_CWD) {
 }
 
 const pwd = process.cwd()
-const from = path.join(pwd, 'node_modules', 'nexus-plugin-prisma', 'global-type.d.ts')
+const nodeModulesFolder = path.join(pwd, 'node_modules')
+const from = path.resolve(nodeModulesFolder, 'nexus-plugin-prisma', 'global-type.d.ts')
 
 if (jetpack.exists(from)) {
-  const destDir = path.join(pwd, '..', '@types', 'nexus-plugin-prisma')
+  const destDir = path.resolve(nodeModulesFolder, '@types', 'nexus-plugin-prisma')
 
   jetpack.dir(destDir)
   jetpack.copy(from, path.join(destDir, 'index.d.ts'), { overwrite: true })
+  console.log('copied typings', {
+    from,
+    to: path.join(destDir, 'index.d.ts'),
+  })
 } else {
   console.log(`could not find typings`, {
     from,
-    pwd
+    pwd,
   })
 }
 
