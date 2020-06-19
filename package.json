@@ -1,5 +1,5 @@
 {
-  "name": "nexus-plugin-prisma-test",
+  "name": "nexus-plugin-prisma",
   "version": "0.0.0-see-git-tags",
   "main": "dist/plugin-entrypoint.js",
   "types": "dist/plugin-entrypoint.d.ts",
