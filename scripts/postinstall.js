@@ -15,6 +15,11 @@ if (jetpack.exists(from)) {
 
   jetpack.dir(destDir)
   jetpack.copy(from, path.join(destDir, 'index.d.ts'), { overwrite: true })
+} else {
+  console.log(`could not find typings`, {
+    from,
+    pwd
+  })
 }
 
 console.log(chalk.bold.yellowBright('----------------------------------'))
