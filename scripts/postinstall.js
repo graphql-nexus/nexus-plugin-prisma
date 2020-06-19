@@ -24,7 +24,7 @@ if (jetpack.exists(from)) {
   console.log(`could not find typings`, {
     from,
     pwd,
-  })
+  });
 }
 
 console.log(chalk.bold.yellowBright('----------------------------------'))
