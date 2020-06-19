@@ -51,7 +51,7 @@ export async function e2eTestPlugin(
 
   // Wait some arbitrary time to make sure typegen has time to be persisted to the filesystem
   // HACK We should be waiting for an explicit log event about generators being done.
-  // Wasted hours debugging in the end a race condition becuase of this (2000ms before)
+  // Wasted hours debugging in the end a race condition because of this (2000ms before)
   // https://github.com/prisma/prisma-client-js/issues/719#issuecomment-640782339
   await new Promise((res) => setTimeout(res, 12000))
 
