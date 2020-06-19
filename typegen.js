@@ -1,1 +1,1 @@
-export * from './dist/typegen/static'
+module.exports = require('./dist/schema/typegen/static')
