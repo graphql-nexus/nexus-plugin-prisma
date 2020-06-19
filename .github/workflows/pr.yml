@@ -3,7 +3,7 @@ name: pr
 on: [pull_request]
 
 jobs:
-  unit-tests:
+  unit-and-schema-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,22 +17,9 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run: yarn -s test:unit
-  schema-tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: yarn --frozen-lockfile
-      - run: yarn build
       - run: yarn -s test:schema
   publish:
-    needs: [unit-tests, schema-tests]
+    needs: [unit-and-schema-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
