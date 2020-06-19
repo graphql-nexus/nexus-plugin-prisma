@@ -1,9 +1,9 @@
 const chalk = require('chalk')
 const jetpack = require('fs-jetpack')
 const path = require('path')
-// process.env.PWD is undefined on Windows https://github.com/mrblueblue/gettext-loader/issues/18
 
 if (process.env.INIT_CWD) {
+  // necessary, because npm chooses __dirname as process.cwd() in the postinstall hook
   process.chdir(process.env.INIT_CWD)
 }
 
