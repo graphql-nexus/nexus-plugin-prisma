@@ -7,7 +7,11 @@ import { GraphQLScalarType } from 'graphql'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
-  constructor(public dmmf: DmmfDocument, public nexusBuilder: Nexus.PluginBuilderLens, public scalars: Record<string, GraphQLScalarType>) {}
+  constructor(
+    public dmmf: DmmfDocument,
+    public nexusBuilder: Nexus.PluginBuilderLens,
+    public scalars: Record<string, GraphQLScalarType>
+  ) {}
 
   inputType(
     customArg: CustomInputArg

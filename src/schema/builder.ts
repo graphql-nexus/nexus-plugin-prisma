@@ -157,7 +157,7 @@ export interface Options {
 export interface InternalOptions extends Options {
   dmmf?: DmmfDocument // For testing
   nexusBuilder: Nexus.PluginBuilderLens
-  nexusPrismaImportId?: string,
+  nexusPrismaImportId?: string
   onUnknownFieldName?: OnUnknownFieldName // For pumpkins
   onUnknownFieldType?: OnUnknownFieldType // For pumpkins
   onUnknownArgName?: OnUnknownArgName // For pumpkins
@@ -250,7 +250,7 @@ export class SchemaBuilder {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
       })
-    this.scalars = options.scalars as any ?? {}
+    this.scalars = (options.scalars as any) ?? {}
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)
     this.unknownFieldsByModel = {}
 
@@ -268,7 +268,7 @@ export class SchemaBuilder {
         prismaClientPath: config.inputs.prismaClient,
         typegenPath: config.outputs.typegen,
         paginationStrategy: this.paginationStrategy,
-        nexusPrismaImportId: options.nexusPrismaImportId
+        nexusPrismaImportId: options.nexusPrismaImportId,
       })
     }
   }

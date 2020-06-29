@@ -136,10 +136,7 @@ export const relayStrategy: PaginationStrategy<RelayPaginationArgs> = {
   },
 }
 
-function resolveTake(
-  first: number | undefined,
-  last: number | undefined,
-): number | undefined {
+function resolveTake(first: number | undefined, last: number | undefined): number | undefined {
   if (first && last) {
     throw new Error(`first and last can't be set simultaneously`)
   }

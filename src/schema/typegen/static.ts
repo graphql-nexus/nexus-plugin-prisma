@@ -67,7 +67,7 @@ type GetSubsetTypes<ModelName extends string> = keyof OmitByValue<
 >
 
 type SubsetTypes<ModelName extends string> = GetSubsetTypes<ModelName> extends never
-  ? 'ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model(\'<ModelName>\')'
+  ? "ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model('<ModelName>')"
   : GetSubsetTypes<ModelName>
 
 type DynamicRequiredType<ReturnType extends string> = ModelNameInGraphQLTypes<ReturnType> extends true

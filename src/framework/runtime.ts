@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import { RuntimePlugin } from 'nexus/plugin'
 import * as Path from 'path'
-import { nexusPrismaPlugin, Options as NexusPrismaOptions } from '../schema'
+import { nexusSchemaPrisma, Options as NexusSchemaPrismaOptions } from '../schema'
 import { suggestionList } from './lib/levenstein'
 import { linkableProjectDir } from './lib/linkable'
 import { printStack } from './lib/print-stack'
@@ -22,7 +22,7 @@ interface UnknownFieldType {
   fieldName: string
 }
 
-interface OptionsWithHook extends NexusPrismaOptions {
+interface OptionsWithHook extends NexusSchemaPrismaOptions {
   onUnknownFieldName: (params: UnknownFieldName) => void
   onUnknownFieldType: (params: UnknownFieldType) => void
 }
@@ -78,7 +78,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
         ],
       },
       plugins: [
-        nexusPrismaPlugin({
+        nexusSchemaPrisma({
           experimentalCRUD: settings?.features?.crud ?? false,
           inputs: {
             prismaClient: prismaClientDir,
@@ -91,7 +91,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
           onUnknownFieldName: (params) => renderUnknownFieldNameError(params),
           onUnknownFieldType: (params) => renderUnknownFieldTypeError(params),
           scalars: project.scalars,
-          nexusPrismaImportId: "nexus-plugin-prisma/typegen"
+          nexusPrismaImportId: 'nexus-plugin-prisma/typegen',
         } as OptionsWithHook),
       ],
     },
