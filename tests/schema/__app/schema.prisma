@@ -1,0 +1,31 @@
+generator prisma_client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/@prisma/client"
+}
+
+model Bubble {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  members   User[]
+}
+
+model User {
+  id        String @id @default(cuid())
+  posts     Post[]
+  firstName String
+  lastName  String
+  // likes     Post[]
+}
+
+model Post {
+  id      Int        @id @default(autoincrement())
+  authors User[]
+  rating  Float
+  status  PostStatus
+  // likers  User[] @relation(references: likers)
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}

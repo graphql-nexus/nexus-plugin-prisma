@@ -11,7 +11,12 @@
     "declaration": true,
     "sourceMap": true,
     "declarationMap": true,
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["./**/*.spec.ts", "tests"]
 }

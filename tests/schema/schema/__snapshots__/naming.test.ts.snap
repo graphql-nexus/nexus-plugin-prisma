@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generates publishers pluralized & camel-cased: schema 1`] = `
+"type BatchPayload {
+  count: Int!
+}
+
+input IntFilter {
+  equals: Int
+  not: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+}
+
+type ModelName {
+  id: Int!
+}
+
+input ModelNameCreateInput {
+  name: String!
+}
+
+input ModelNameUpdateInput {
+  id: Int
+  name: String
+}
+
+input ModelNameUpdateManyMutationInput {
+  id: Int
+  name: String
+}
+
+input ModelNameWhereInput {
+  id: IntFilter
+  name: StringFilter
+  AND: [ModelNameWhereInput!]
+  OR: [ModelNameWhereInput!]
+  NOT: [ModelNameWhereInput!]
+}
+
+input ModelNameWhereUniqueInput {
+  id: Int
+}
+
+type Mutation {
+  createOneModelName(data: ModelNameCreateInput!): ModelName!
+  deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
+  updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
+  upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
+  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
+}
+
+type Query {
+  modelName(where: ModelNameWhereUniqueInput!): ModelName
+  modelNames(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
+}
+
+input StringFilter {
+  equals: String
+  not: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+"
+`;
+
+exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
+"import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  ModelName: Prisma.ModelName
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    modelNames: {
+      filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'name'
+    }
+  },
+  ModelName: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    modelName: 'ModelName'
+    modelNames: 'ModelName'
+  },
+  Mutation: {
+    createOneModelName: 'ModelName'
+    updateOneModelName: 'ModelName'
+    updateManyModelName: 'BatchPayload'
+    deleteOneModelName: 'ModelName'
+    deleteManyModelName: 'BatchPayload'
+    upsertOneModelName: 'ModelName'
+  },
+  ModelName: {
+    id: 'Int'
+    name: 'String'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  ModelName: Typegen.NexusPrismaFields<'ModelName'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

@@ -1,0 +1,275 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`removes global computedInputs from all input types: globallyComputedInputs 1`] = `
+Object {
+  "schema": "type Mutation {
+  createOneUser(data: UserCreateInput!): User!
+  createOneNested(data: NestedCreateInput!): Nested!
+}
+
+type Nested {
+  id: Int!
+  createdWithBrowser: String!
+  name: String!
+}
+
+input NestedCreateInput {
+  name: String!
+  User: UserCreateOneWithoutNestedInput
+}
+
+input NestedCreateManyWithoutUserInput {
+  create: [NestedCreateWithoutUserInput!]
+  connect: [NestedWhereUniqueInput!]
+}
+
+input NestedCreateWithoutUserInput {
+  name: String!
+}
+
+input NestedWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type User {
+  id: Int!
+  name: String!
+  nested(first: Int, last: Int, before: NestedWhereUniqueInput, after: NestedWhereUniqueInput): [Nested!]!
+  createdWithBrowser: String!
+}
+
+input UserCreateInput {
+  name: String!
+  nested: NestedCreateManyWithoutUserInput
+}
+
+input UserCreateOneWithoutNestedInput {
+  create: UserCreateWithoutNestedInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutNestedInput {
+  name: String!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+",
+  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  User: Prisma.User
+  Nested: Prisma.Nested
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+      filtering: 'id' | 'name' | 'nested' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'name'
+    }
+    nesteds: {
+      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+      ordering: 'id' | 'name' | 'userId'
+    }
+  },
+  User: {
+    nested: {
+      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+      ordering: 'id' | 'name' | 'userId'
+    }
+  }
+  Nested: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    user: 'User'
+    users: 'User'
+    nested: 'Nested'
+    nesteds: 'Nested'
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+    createOneNested: 'Nested'
+    updateOneNested: 'Nested'
+    updateManyNested: 'BatchPayload'
+    deleteOneNested: 'Nested'
+    deleteManyNested: 'BatchPayload'
+    upsertOneNested: 'Nested'
+  },
+  User: {
+    id: 'Int'
+    name: 'String'
+    nested: 'Nested'
+    createdWithBrowser: 'String'
+  }
+  Nested: {
+    id: 'Int'
+    name: 'String'
+    createdWithBrowser: 'String'
+    User: 'User'
+    userId: 'Int'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  User: Typegen.NexusPrismaFields<'User'>
+  Nested: Typegen.NexusPrismaFields<'Nested'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  ",
+}
+`;
+
+exports[`removes resolver-level computedInputs from the corresponding input type: locallyComputedInputs 1`] = `
+Object {
+  "schema": "type Mutation {
+  createOneUser(data: UserCreateInput!): User!
+}
+
+type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type User {
+  id: Int!
+  name: String!
+  createdWithBrowser: String!
+}
+
+input UserCreateInput {
+  name: String!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+",
+  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  User: Prisma.User
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+      filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'name' | 'createdWithBrowser'
+    }
+  },
+  User: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    user: 'User'
+    users: 'User'
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+  },
+  User: {
+    id: 'Int'
+    name: 'String'
+    createdWithBrowser: 'String'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  User: Typegen.NexusPrismaFields<'User'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  ",
+}
+`;

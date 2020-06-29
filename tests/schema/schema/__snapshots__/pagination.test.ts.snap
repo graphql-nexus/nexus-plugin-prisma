@@ -1,0 +1,254 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`support prisma pagination: schema 1`] = `
+"type Post {
+  id: Int!
+  title: String!
+}
+
+input PostWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(take: Int, skip: Int, cursor: PostWhereUniqueInput): [Post!]!
+}
+"
+`;
+
+exports[`support prisma pagination: typegen 1`] = `
+"import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  take?: boolean
+  skip?: boolean
+  cursor?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  User: Prisma.User
+  Post: Prisma.Post
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+      filtering: 'id' | 'posts' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id'
+    }
+    posts: {
+      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      ordering: 'id' | 'title' | 'authorId'
+    }
+  },
+  User: {
+    posts: {
+      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      ordering: 'id' | 'title' | 'authorId'
+    }
+  }
+  Post: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    user: 'User'
+    users: 'User'
+    post: 'Post'
+    posts: 'Post'
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+    createOnePost: 'Post'
+    updateOnePost: 'Post'
+    updateManyPost: 'BatchPayload'
+    deleteOnePost: 'Post'
+    deleteManyPost: 'BatchPayload'
+    upsertOnePost: 'Post'
+  },
+  User: {
+    id: 'Int'
+    posts: 'Post'
+  }
+  Post: {
+    id: 'Int'
+    title: 'String'
+    author: 'User'
+    authorId: 'Int'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  User: Typegen.NexusPrismaFields<'User'>
+  Post: Typegen.NexusPrismaFields<'Post'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;
+
+exports[`support relay pagination (default): schema 1`] = `
+"type Post {
+  id: Int!
+  title: String!
+}
+
+input PostWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  ok: Boolean!
+}
+
+type User {
+  id: Int!
+  posts(first: Int, last: Int, before: PostWhereUniqueInput, after: PostWhereUniqueInput): [Post!]!
+}
+"
+`;
+
+exports[`support relay pagination (default): typegen 1`] = `
+"import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  User: Prisma.User
+  Post: Prisma.Post
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    users: {
+      filtering: 'id' | 'posts' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id'
+    }
+    posts: {
+      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      ordering: 'id' | 'title' | 'authorId'
+    }
+  },
+  User: {
+    posts: {
+      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      ordering: 'id' | 'title' | 'authorId'
+    }
+  }
+  Post: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    user: 'User'
+    users: 'User'
+    post: 'Post'
+    posts: 'Post'
+  },
+  Mutation: {
+    createOneUser: 'User'
+    updateOneUser: 'User'
+    updateManyUser: 'BatchPayload'
+    deleteOneUser: 'User'
+    deleteManyUser: 'BatchPayload'
+    upsertOneUser: 'User'
+    createOnePost: 'Post'
+    updateOnePost: 'Post'
+    updateManyPost: 'BatchPayload'
+    deleteOnePost: 'Post'
+    deleteManyPost: 'BatchPayload'
+    upsertOnePost: 'Post'
+  },
+  User: {
+    id: 'Int'
+    posts: 'Post'
+  }
+  Post: {
+    id: 'Int'
+    title: 'String'
+    author: 'User'
+    authorId: 'Int'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  User: Typegen.NexusPrismaFields<'User'>
+  Post: Typegen.NexusPrismaFields<'Post'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

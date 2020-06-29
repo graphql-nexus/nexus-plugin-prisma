@@ -3,19 +3,126 @@ name: pr
 on: [pull_request]
 
 jobs:
-  test:
+  unit-tests:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [10.x, 12.x]
-        # todo https://github.com/graphql-nexus/nexus-future/issues/547
-        os: [macos-latest]
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install Dependencies
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run: yarn -s test:unit
+  schema-tests:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run: yarn -s test:schema
+  publish:
+    needs: [unit-tests, schema-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get all git commits and tags
+        run: git fetch --prune --unshallow --tags
+      - uses: actions/setup-node@v1
+      - name: Install deps
         run: yarn --frozen-lockfile
-      - name: Test
-        run: yarn -s test
+      - name: Make release
+        run: |
+          yarn -s dripip pr --json > result.json
+
+          result=$(cat result.json)
+
+          echo '==> Publish Result'
+          jq '.' <<< $result
+
+          if [ "$(jq -r '.type' <<< $result)" == 'did_not_publish' ]; then
+            echo '==> Stopping workflow because no release was made for this commit'
+            # https://developer.github.com/v3/actions/workflow_runs/#cancel-a-workflow-run
+            curl \
+              --fail \
+              --silent \
+              --show-error \
+              --request POST \
+              --url "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel" \
+              --header "Content-Type: application/json" \
+              --header "Authorization: token ${{ github.token }}"
+          fi
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Save publish result
+        uses: actions/upload-artifact@v1
+        with:
+          name: published
+          path: result.json
+  e2e-tests:
+    needs: [publish]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+        database: [sqlite, postgres, mysql]
+        nexus-version: [next]
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 4567:3306
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load publish result
+        uses: actions/download-artifact@v1
+        with:
+          name: published
+      - run: cat published/result.json | jq -r '.data.release.version'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install deps
+        run: yarn --frozen-lockfile
+      - run: yarn -s build:ci
+      - name: Setup global git user
+        run: |
+          # For nexus create app flow which will make an init commit 
+          git config --global user.name prisma-labs
+          git config --global user.email labs@prisma.io
+      - name: e2e test
+        env:
+          LOG_LEVEL: trace
+        run: |
+          export NEXUS_PLUGIN_PRISMA_VERSION=$(cat published/result.json | jq -r '.data.release.version')
+          if [ $NEXUS_PLUGIN_PRISMA_VERSION == '' ]; then
+            echo "Failed to extract version"
+            exit 1
+          fi
+          export NEXUS_VERSION=${{ matrix.nexus-version }}
+
+          yarn test:framework:${{ matrix.database }}

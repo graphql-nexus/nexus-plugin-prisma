@@ -7,7 +7,7 @@ import * as fs from 'fs-jetpack'
 let contents
 let path
 
-path = 'dist/dmmf/utils.d.ts'
+path = 'dist/schema/dmmf/utils.d.ts'
 contents = fs.read(path)
 
 if (!contents) throw new Error(`No such path: ${path}`)

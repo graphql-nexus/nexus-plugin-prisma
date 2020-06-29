@@ -2,7 +2,7 @@
  * @type {jest.InitialOptions}
  */
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/tests/__setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/tests/schema/__setup.ts'],
   preset: 'ts-jest',
   testEnvironment: 'node',
   watchPlugins: [
