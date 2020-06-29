@@ -1,7 +1,7 @@
 {
   "name": "nexus-prisma",
-  "version": "0.0.0-TODO",
-  "repository": "graphql-nexus/nexus-schema-plugin-prisma",
+  "version": "0.16.0",
+  "repository": "graphql-nexus/nexus-plugin-prisma",
   "main": "index.js",
   "license": "MIT",
   "scripts": {

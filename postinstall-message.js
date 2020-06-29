@@ -1,1 +1,1 @@
-process.stdout.write(require("./message").content);
+process.stdout.write(require('./message').content)

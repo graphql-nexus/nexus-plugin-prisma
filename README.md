@@ -6,14 +6,14 @@
 
 ```
 npm remove nexus-prisma @prisma/client @prisma/cli
-npm add nexus-plugin-prisma@TODO
+npm add nexus-plugin-prisma
 ```
 
 #### Your Imports
 
 ```diff
 - import { nexusPluginPrisma } from 'nexus-prisma'
-+ import { nexusPluginPrisma } from 'nexus-plugin-prisma/schema'
++ import { nexusSchemaPlugin } from 'nexus-plugin-prisma/schema'
 ```
 
 ### Learn More
