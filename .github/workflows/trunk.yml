@@ -21,19 +21,19 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Test
         run: yarn -s test
-  # publish:
-  #   needs: [tests]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
-  #     - uses: actions/setup-node@v1
-  #     - name: Install deps
-  #       run: yarn --frozen-lockfile
-  #     - name: Make release
-  #       id: release
-  #       env:
-  #         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-  #         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  #       run: yarn -s dripip preview
+  publish:
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+      - name: Install deps
+        run: yarn --frozen-lockfile
+      - name: Make release
+        id: release
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: yarn -s dripip preview
