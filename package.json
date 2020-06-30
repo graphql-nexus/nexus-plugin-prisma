@@ -22,7 +22,7 @@
     "release:stable": "dripip stable",
     "release:pr": "dripip pr",
     "clean": "rm -rf dist",
-    "build": "yarn -s clean && yarn -s build:module-facades && tsc && ts-node scripts/post-build",
+    "build": "yarn clean && yarn build:module-facades && tsc && ts-node scripts/post-build",
     "build:module-facades": "node scripts/build-module-facades",
     "build:ci": "tsc",
     "dev": "yarn -s build:module-facades && tsc --watch",
