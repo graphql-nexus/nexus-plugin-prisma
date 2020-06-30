@@ -32,7 +32,7 @@
     "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit",
     "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest src tests/schema --watch",
     "test:unit": "jest src --testTimeout=15000 --forceExit",
-    "test:schema": "yarn test tests/schema",
+    "test:schema": "yarn test --testTimeout=15000 tests/schema",
     "test:framework:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
     "test:framework:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
     "test:framework:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
