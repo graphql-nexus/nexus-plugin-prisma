@@ -14,8 +14,7 @@
     "schema.js",
     "schema.d.ts",
     "client.js",
-    "client.d.ts",
-    "global-type.d.ts"
+    "client.d.ts"
   ],
   "scripts": {
     "release:preview": "dripip preview",
