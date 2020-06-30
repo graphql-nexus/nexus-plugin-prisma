@@ -1,4 +1,3 @@
-//@ts-ignore
 import { core } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
 import { GraphQLResolveInfo } from 'graphql'
