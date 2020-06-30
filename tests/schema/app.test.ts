@@ -49,7 +49,7 @@ it('integrates together', async () => {
   // this part out on their own more or less.
   //
 
-  const nexusPrismaTypegenPath = projectPath(`/generated/nexus-prisma-typegen.d.ts`)
+  const nexusPrismaTypegenPath = projectPath(`/generated/nexus-plugin-prisma-typegen.d.ts`)
   const typegenFacadePath = require.resolve('../../src/schema/typegen/static')
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
@@ -85,7 +85,7 @@ it('integrates together', async () => {
   // learning, and detecting unexpected changes.
   //
   const graphqlSchema = await projectReadFile('/generated/schema.graphql')
-  const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-prisma-typegen.d.ts')
+  const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-plugin-prisma-typegen.d.ts')
   const nexusCoreTypegen = await projectReadFile('/generated/nexus-typegen.d.ts')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
