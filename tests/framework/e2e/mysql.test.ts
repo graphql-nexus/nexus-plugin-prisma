@@ -7,7 +7,7 @@ import { e2eTestPlugin } from '../__helpers/e2e/testing'
 import { bufferOutput, takeUntilServerListening } from '../__helpers/e2e/utils'
 
 const tmpDir = getTmpDir()
-const testProjectDir = Path.join(tmpDir, 'mysql')
+const testProjectDir = Path.join(tmpDir, 'e2e-mysql') // must not be "mysql" or error
 const envPath = Path.join(testProjectDir, 'prisma', '.env')
 const ctx = createE2EContext({
   dir: testProjectDir,
@@ -37,8 +37,8 @@ test('e2e', async () => {
 
   // Update database credentials
   const prismaSchemaContent = FS.read(envPath)!.replace(
-    'mysql://root:<password>@localhost:3306/mysql',
-    'mysql://root:mysql@localhost:4567/mysql'
+    'mysql://root:<password>@localhost:3306/e2e-mysql',
+    'mysql://root:mysql@localhost:4567/e2e-mysql'
   )
 
   FS.write(envPath, prismaSchemaContent)

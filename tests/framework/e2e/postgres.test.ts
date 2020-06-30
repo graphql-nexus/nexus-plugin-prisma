@@ -7,7 +7,7 @@ import { bufferOutput, takeUntilServerListening } from '../__helpers/e2e/utils'
 
 const tmpDir = getTmpDir()
 const ctx = createE2EContext({
-  dir: Path.join(tmpDir, 'postgres'),
+  dir: Path.join(tmpDir, 'e2e-postgres'),
   localNexus: null,
   serverPort: 4001,
 })
