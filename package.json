@@ -22,25 +22,21 @@
     "release:stable": "dripip stable",
     "release:pr": "dripip pr",
     "clean": "rm -rf dist",
-    "build": "ts-node scripts/ensure-prisma2-version && yarn -s clean && yarn -s build:module-facades && tsc && ts-node scripts/post-build",
+    "build": "yarn clean && yarn build:module-facades && tsc && ts-node scripts/post-build",
     "build:module-facades": "node scripts/build-module-facades",
     "build:ci": "tsc",
     "dev": "yarn -s build:module-facades && tsc --watch",
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "postinstall": "node ./scripts/postinstall.js",
-    "test": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest --forceExit",
-    "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest src tests/schema --watch",
+    "test": "ts-node tests/__ensure-engine && jest --forceExit",
+    "test:dev": "ts-node tests/__ensure-engine && jest src tests/schema --watch",
     "test:unit": "jest src --testTimeout=15000 --forceExit",
     "test:schema": "yarn test --testTimeout=15000 tests/schema",
     "test:fw:e2e:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
     "test:fw:e2e:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
     "test:fw:e2e:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
     "test:db:setup": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
-  },
-  "peerDependencies": {
-    "@nexus/schema": "^0.14.0",
-    "graphql": "^14.6.0"
   },
   "dependencies": {
     "@prisma/cli": "2.1.3",

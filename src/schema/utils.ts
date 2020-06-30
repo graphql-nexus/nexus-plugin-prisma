@@ -3,6 +3,7 @@ import * as fs from 'fs-extra'
 import { GraphQLResolveInfo } from 'graphql'
 import * as path from 'path'
 import { isDeepStrictEqual } from 'util'
+import chalk from 'chalk'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -184,4 +185,23 @@ export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
 
 export function keys<A extends object>(a: A): (keyof A)[] {
   return Object.keys(a) as any
+}
+
+export function ensureDepIsInstalled(depName: string) {
+  try {
+    require(depName)
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      console.error(
+        `${chalk.redBright('ERROR:')} When nexus-plugin-prisma is used as a Nexus Schema plugin, ${chalk.greenBright(
+          depName
+        )} must be installed as a dependency. Please run \`${chalk.greenBright(
+          `npm install ${depName}`
+        )}\`.`
+      )
+      process.exit(1)
+    } else {
+      throw err
+    }
+  }
 }
