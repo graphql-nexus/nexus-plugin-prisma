@@ -33,9 +33,9 @@
     "test:dev": "ts-node scripts/ensure-prisma2-version && ts-node tests/__ensure-engine && jest src tests/schema --watch",
     "test:unit": "jest src --testTimeout=15000 --forceExit",
     "test:schema": "yarn test --testTimeout=15000 tests/schema",
-    "test:framework:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
-    "test:framework:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
-    "test:framework:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
+    "test:fw:e2e:mysql": "yarn test --testTimeout=400000 tests/framework/e2e/mysql.test.ts",
+    "test:fw:e2e:postgres": "yarn test --testTimeout=400000 tests/framework/e2e/postgres.test.ts",
+    "test:fw:e2e:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
     "test:db:setup": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "peerDependencies": {
