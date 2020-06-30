@@ -34,7 +34,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
     linkableProjectDir(),
     'node_modules',
     '@types',
-    'typegen-nexus-prisma',
+    'typegen-nexus-plugin-prisma',
     'index.d.ts'
   )
 

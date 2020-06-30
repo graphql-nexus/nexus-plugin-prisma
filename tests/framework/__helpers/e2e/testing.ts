@@ -75,14 +75,12 @@ export async function e2eTestPlugin(
     ctx.dir,
     'node_modules',
     '@types',
-    'typegen-nexus-prisma',
+    'typegen-nexus-plugin-prisma',
     'index.d.ts'
   )
 
-  // Assert that nexus-prisma typegen was created
   expect(fs.exists(nexusPrismaTypegenPath)).toStrictEqual('file')
 
-  // Run nexus build
   const buildOutput = await ctx.nexus(['build']).pipe(refCount(), bufferOutput).toPromise()
 
   expect(buildOutput).toContain('success')

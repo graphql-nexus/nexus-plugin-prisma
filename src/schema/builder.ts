@@ -119,10 +119,15 @@ export interface Options {
   }
   outputs?: {
     /**
-     * Where should nexus-prisma put its typegen on disk? By default matches the
-     * default approach of Nexus typegen which is to emit into `node_modules/@types`.
+     * Where should nexus-prisma put its typegen on disk?
+     *
+     * @default 'node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts'
+     *
+     * @remarks
+     *
      * This configuration will completely go away once Nexus has typeGen plugin
      * support.
+     *
      */
     typegen?: string
   }
@@ -181,9 +186,9 @@ let defaultTypegenPath: string
 if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
   defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
 } else if (process.env.LINK) {
-  defaultTypegenPath = path.join(process.cwd(), 'node_modules/@types/nexus-prisma-typegen/index.d.ts')
+  defaultTypegenPath = path.join(process.cwd(), 'node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts')
 } else {
-  defaultTypegenPath = path.join(__dirname, '../../@types/nexus-prisma-typegen/index.d.ts')
+  defaultTypegenPath = path.join(__dirname, '../../../@types/typegen-nexus-plugin-prisma/index.d.ts')
 }
 
 let defaultClientPath: string

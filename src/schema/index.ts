@@ -3,7 +3,7 @@ import { build as buildNexusPrismaTypes, Options } from './builder'
 import { colors } from './colors'
 
 /**
- * Create a nexus-prisma plugin to be passed into the Nexus plugins array.
+ * Create a nexus-plugin-prisma instance to be passed into the Nexus plugins array.
  *
  * The nexus plugin extends the Nexus DSL with `t.model` and `t.crud`. These
  * allow you to expose data from your Prisma layer and operations against that

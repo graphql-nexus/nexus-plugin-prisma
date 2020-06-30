@@ -3,7 +3,7 @@ import { MigrateEngine } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
-import { GraphQLSchema, GraphQLScalarType } from 'graphql'
+import { GraphQLScalarType, GraphQLSchema } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
 import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
@@ -109,7 +109,7 @@ async function getGraphQLServerAndClient(params: {
 
 async function generateClientFromDatamodel(datamodelString: string) {
   const uniqId = Math.random().toString().slice(2)
-  const tmpDir = path.join(__dirname, `nexus-prisma-tmp-${uniqId}`)
+  const tmpDir = path.join(__dirname, `nexus-plugin-prisma-tmp-${uniqId}`)
 
   fs.mkdirSync(tmpDir, { recursive: true })
 

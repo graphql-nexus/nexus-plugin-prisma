@@ -1,6 +1,26 @@
 import { core } from '@nexus/schema'
+import { PrismaClient } from '@prisma/client'
 import { GraphQLResolveInfo } from 'graphql'
 import * as Helpers from './helpers'
+
+// todo remove framework types from here once
+// https://github.com/graphql-nexus/nexus/issues/1069
+
+/**
+ * Framework-only
+ */
+
+declare global {
+  interface NexusTestContextApp {
+    db: {
+      client: PrismaClient
+    }
+  }
+}
+
+/**
+ * Framework & Library
+ */
 
 export type ModelNameInGraphQLTypes<ReturnType> = ReturnType extends core.GetGen<'objectNames'> ? true : false
 
