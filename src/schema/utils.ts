@@ -1,9 +1,9 @@
 import { core } from '@nexus/schema'
+import chalk from 'chalk'
 import * as fs from 'fs-extra'
 import { GraphQLResolveInfo } from 'graphql'
 import * as path from 'path'
 import { isDeepStrictEqual } from 'util'
-import chalk from 'chalk'
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -12,7 +12,7 @@ import chalk from 'chalk'
  * inside `@types/` packages.
  *
  * For more details that motivated this utility refer to the originating issue
- * https://github.com/prisma-labs/nexus-prisma/issues/453.
+ * https://github.com/graphql-nexus/nexus-plugin-prisma/issues/453.
  */
 export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
   fs
@@ -30,7 +30,7 @@ export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
  * inside `@types/` packages.
  *
  * For more details that motivated this utility refer to the originating issue
- * https://github.com/prisma-labs/nexus-prisma/issues/453.
+ * https://github.com/graphql-nexus/nexus-plugin-prisma/issues/453.
  */
 export const hardWriteFileSync = (filePath: string, data: string): void => {
   fs.mkdirpSync(path.dirname(filePath))
@@ -193,11 +193,11 @@ export function ensureDepIsInstalled(depName: string) {
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.error(
-        `${chalk.redBright('ERROR:')} When nexus-plugin-prisma is used as a Nexus Schema plugin, ${chalk.greenBright(
+        `${chalk.redBright(
+          'ERROR:'
+        )} When nexus-plugin-prisma is used as a Nexus Schema plugin, ${chalk.greenBright(
           depName
-        )} must be installed as a dependency. Please run \`${chalk.greenBright(
-          `npm install ${depName}`
-        )}\`.`
+        )} must be installed as a dependency. Please run \`${chalk.greenBright(`npm install ${depName}`)}\`.`
       )
       process.exit(1)
     } else {

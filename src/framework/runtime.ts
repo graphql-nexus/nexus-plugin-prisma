@@ -69,7 +69,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
     },
     schema: {
       typegenAutoConfig: {
-        // https://github.com/prisma-labs/nexus-prisma/blob/master/examples/hello-world/app.ts#L14
+        // https://github.com/prisma-labs/nexus-plugin-prisma/blob/master/examples/hello-world/app.ts#L14
         sources: [
           {
             source: Path.join(prismaClientDir, 'index.d.ts'),
