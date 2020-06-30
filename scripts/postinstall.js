@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const fs = require('fs-jetpack')
 const path = require('path')
 
