@@ -38,10 +38,6 @@
     "test:framework:sqlite": "yarn test --testTimeout=400000 tests/framework/e2e/sqlite.test.ts",
     "test:db:setup": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
-  "peerDependencies": {
-    "@nexus/schema": "^0.14.0",
-    "graphql": "^14.6.0"
-  },
   "dependencies": {
     "@prisma/cli": "2.0.1",
     "@prisma/client": "2.0.1",
