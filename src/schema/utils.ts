@@ -193,9 +193,9 @@ export function ensureDepIsInstalled(depName: string) {
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.error(
-        `${chalk.redBright('ERROR:')} ${chalk.greenBright(
+        `${chalk.redBright('ERROR:')} When nexus-plugin-prisma is used as a Nexus Schema plugin, ${chalk.greenBright(
           depName
-        )} must be installed for nexus-plugin-prisma to work properly. Please run \`${chalk.greenBright(
+        )} must be installed as a dependency. Please run \`${chalk.greenBright(
           `npm install ${depName}`
         )}\`.`
       )
