@@ -6,7 +6,7 @@ import { takeUntilServerListening } from '../__helpers/e2e/utils'
 
 const tmpDir = getTmpDir()
 const ctx = createE2EContext({
-  dir: Path.join(tmpDir, 'sqlite'),
+  dir: Path.join(tmpDir, 'e2e-sqlite'),
   localNexus: null,
   serverPort: 4002,
 })

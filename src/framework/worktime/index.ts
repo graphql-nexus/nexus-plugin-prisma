@@ -276,6 +276,8 @@ function renderDatasource(database: Database): string {
 const DATABASE_TO_CONNECTION_URI: Record<Database, (projectName: string) => string> = {
   SQLite: (_) => 'file:./dev.db',
   PostgreSQL: (projectName) => `postgresql://postgres:postgres@localhost:5432/${projectName}`,
+  // todo some values for projectName are invalid. For example "mysql" will leading to errors:
+  // https://github.com/prisma/migrate/issues/491
   MySQL: (projectName) => `mysql://root:<password>@localhost:3306/${projectName}`,
 }
 
