@@ -18,7 +18,6 @@
     "global-type.d.ts"
   ],
   "scripts": {
-    "node": "node",
     "release:preview": "dripip preview",
     "release:stable": "dripip stable",
     "release:pr": "dripip pr",
