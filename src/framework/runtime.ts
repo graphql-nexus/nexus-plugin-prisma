@@ -80,6 +80,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
       plugins: [
         nexusSchemaPrisma({
           experimentalCRUD: settings?.features?.crud ?? false,
+          paginationStrategy: settings?.paginationStrategy ?? 'relay',
           inputs: {
             prismaClient: prismaClientDir,
           },

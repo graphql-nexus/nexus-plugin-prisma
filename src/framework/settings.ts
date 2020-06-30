@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaClientOptions as ClientOptions } from '@prisma/client/runtime/getPrismaClient'
+import { Options as NexusSchemaPrismaOptions } from '../schema'
 
 export type PrismaClientOptions = {
   /**
@@ -40,4 +41,14 @@ export type Settings = {
      */
     crud?: boolean
   }
+  /**
+   * Select the pagination strategy.
+   *
+   * 'prisma' strategy results in GraphQL pagination arguments mirroring those of Prisma: skip, cursor, take
+   *
+   * 'relay' strategy results in GraphQL pagination arguments matching those of the [GraphQL Relay specification](https://relay.dev/graphql/connections.htm): before, after, first, last.
+   *
+   * @default 'relay'
+   */
+  paginationStrategy?: NexusSchemaPrismaOptions['paginationStrategy']
 }
