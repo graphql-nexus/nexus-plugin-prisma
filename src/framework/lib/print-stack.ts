@@ -1,7 +1,7 @@
 import chalk from 'chalk'
+import { stripIndents } from 'common-tags'
 import * as stackTraceParser from 'stacktrace-parser'
 import { highlightTS } from './highlight-ts'
-import { stripIndents } from 'common-tags'
 
 function renderN(n: number, max: number): string {
   const wantedLetters = String(max).length
@@ -37,7 +37,7 @@ export const printStack = ({ callsite }: ErrorArgs): PrintStackResult => {
     const stack = stackTraceParser.parse(callsite)
     // TODO: more resilient logic to find the right trace
     // TODO: should not have hard-coded knowledge of prisma here
-    const trace = stack.find((t) => t.file && !t.file.includes('nexus-prisma/src/'))
+    const trace = stack.find((t) => t.file && !t.file.includes('nexus-plugin-prisma/src/'))
     if (process.env.NODE_ENV !== 'production' && trace && trace.file && trace.lineNumber && trace.column) {
       const fileName = trace.file
       const lineNumber = trace.lineNumber
