@@ -16,14 +16,11 @@
   },
   "dependencies": {
     "@nexus/schema": "^0.14.0",
-    "@prisma/client": "2.0.0-beta.4",
     "graphql": "^14.6.0",
     "graphql-yoga": "^1.18.2",
-    "nexus-plugin-prisma": "^0.16.1",
-    "nexus-prisma": "^0.14.0"
+    "nexus-plugin-prisma": "^0.16.1"
   },
   "devDependencies": {
-    "@prisma/cli": "2.0.0-beta.4",
     "@types/faker": "^4.1.12",
     "@types/ws": "^7.2.4",
     "faker": "^4.1.0",

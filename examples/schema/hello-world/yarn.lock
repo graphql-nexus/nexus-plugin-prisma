@@ -67,22 +67,12 @@
   resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.1.3.tgz#f3439781f3f3cf4114183d21cd0bfe486b122cdb"
   integrity sha512-JlLSldk21TFcU8FIORHFd/zR889TJvjnYW3ufUNjOHRwbZTkBrs+KT+aSRb9aAp0vVmEgm+T44O+6V7/iwJUIA==
 
-"@prisma/cli@^2.0.0-beta.4":
-  version "2.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.0.0-beta.4.tgz#4989dab626ba5de0591af1a14f423db4838a5e8c"
-  integrity sha512-z9si4cmn/dN7bxVx3hbdDFL6fQuosTzj45EhVrCYt6VCWcJ5jYn0Fzamr+npZvbR/Gl6eLhexXP1sa7iGe8gjA==
-
 "@prisma/client@2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.1.3.tgz#92bcd81101a8ee939943867c134089d1bb29b2b9"
   integrity sha512-5D8Uty1++j+rvlr0GzFGF98WjaWq61JfVYEdKe4DDubJfo6o85D/Y7TJ9IhmnMveUF3wk4CfPs8yNFt9rS0ZIA==
   dependencies:
     pkg-up "^3.1.0"
-
-"@prisma/client@^2.0.0-beta.4":
-  version "2.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.0.0-beta.4.tgz#fd94c3780108d9886c31526e85eba42369050f0c"
-  integrity sha512-LEtHIQVJrM7Y8H0G288sKxvsFv1od7tG8SiaWQvzv51AZo7IsK+n+wJ8A1/tJ6eL/7UQWHZQjZN7JLgpxetFvw==
 
 "@prisma/debug@2.1.3":
   version "2.1.3"
@@ -1713,16 +1703,6 @@ nexus-plugin-prisma@^0.16.1:
     prismjs "^1.20.0"
     stacktrace-parser "^0.1.10"
 
-nexus-prisma@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/nexus-prisma/-/nexus-prisma-0.14.0.tgz#4d2d1396f92cc9aa8fa1265c194312e8b5f978a1"
-  integrity sha512-dH5rgoyLZGqIE1Y+HZfN9uoq8iZjb7OkJezi5ez+oVip+4smsVk9CmjMZBWlP14Fk5C/O7PKxj5Mytb8isTfRg==
-  dependencies:
-    camelcase "^6.0.0"
-    fs-extra "^9.0.0"
-    outdent "^0.7.1"
-    pluralize "^8.0.0"
-
 node-fetch@2.6.0, node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
@@ -2511,9 +2491,9 @@ typescript@^3.9.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
 
-"undici@github:mcollina/undici":
+undici@mcollina/undici:
   version "1.0.3"
-  resolved "https://codeload.github.com/mcollina/undici/tar.gz/2b0f0fb9b1f9682f5b48a5b504c0a2d493e16d7f"
+  resolved "https://codeload.github.com/mcollina/undici/tar.gz/d7813f4ca42314eae843773e754650bc2a6ad909"
 
 unique-string@^2.0.0:
   version "2.0.0"

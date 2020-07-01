@@ -43,8 +43,8 @@ export const Query = queryType({
       resolve(_root, args, ctx) {
         return ctx.prisma.blog.findMany({
           where: {
-            name: args.name,
-            viewCount: args.viewCount,
+            name: args.name ?? undefined,
+            viewCount: args.viewCount ?? undefined,
           },
         })
       },

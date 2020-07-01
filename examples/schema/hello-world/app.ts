@@ -1,7 +1,7 @@
 import { makeSchema, mutationType, objectType, queryType } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
 import { GraphQLServer } from 'graphql-yoga'
-import { nexusPrismaPlugin } from 'nexus-prisma'
+import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import * as path from 'path'
 
 const prisma = new PrismaClient()
@@ -16,7 +16,11 @@ new GraphQLServer({
     outputs: {
       typegen: path.join(__dirname, 'node_modules/@types/nexus-typegen/index.d.ts'),
     },
-    plugins: [nexusPrismaPlugin()],
+    plugins: [
+      nexusSchemaPrisma({
+        experimentalCRUD: true,
+      }),
+    ],
     types: [
       queryType({
         definition(t) {
