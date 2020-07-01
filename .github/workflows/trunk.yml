@@ -46,24 +46,7 @@ jobs:
       - name: Make release
         run: |
           yarn -s dripip preview --json > result.json
-
-          result=$(cat result.json)
-
-          echo '==> Publish Result'
-          jq '.' <<< $result
-
-          if [ "$(jq -r '.type' <<< $result)" == 'did_not_publish' ]; then
-            echo '==> Stopping workflow because no release was made for this commit'
-            # https://developer.github.com/v3/actions/workflow_runs/#cancel-a-workflow-run
-            curl \
-              --fail \
-              --silent \
-              --show-error \
-              --request POST \
-              --url "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel" \
-              --header "Content-Type: application/json" \
-              --header "Authorization: token ${{ github.token }}"
-          fi
+          jq '.' < result.json
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Save publish result
@@ -103,20 +86,31 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: published
+      - name: Analyze publish result
+        id: release
+        run: |
+          jq -r '.data.release.version' < published/result.json
+          jq -r '.' < published/result.json
+          echo ::set-output name=result::$(jq -r '.type' < published/result.json)
       - run: cat published/result.json | jq -r '.data.release.version'
       - name: Use Node.js ${{ matrix.node-version }}
+        if: steps.release.outputs.result == 'did_publish'
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install deps
+        if: steps.release.outputs.result == 'did_publish'
         run: yarn --frozen-lockfile
       - run: yarn -s build:ci
+        if: steps.release.outputs.result == 'did_publish'
       - name: Setup global git user
+        if: steps.release.outputs.result == 'did_publish'
         run: |
           # For nexus create app flow which will make an init commit 
           git config --global user.name prisma-labs
           git config --global user.email labs@prisma.io
       - name: e2e test
+        if: steps.release.outputs.result == 'did_publish'
         env:
           LOG_LEVEL: trace
         run: |
