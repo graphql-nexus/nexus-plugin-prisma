@@ -6,4 +6,4 @@
 ![trunk](https://github.com/graphql-nexus/nexus-plugin-prisma/workflows/trunk/badge.svg)
 
 [Docs for usage with `nexus`](https://www.nexusjs.org/#/plugins/prisma)  
-[Docs for usgage with `@nexus/schema`](https://nexusjs.org/#/components/schema/plugins/prisma)
+[Docs for usage with `@nexus/schema`](https://nexusjs.org/#/components/schema/plugins/prisma)
