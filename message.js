@@ -22,7 +22,7 @@ exports.content = `
 │                                                                   │
 │   ${boldWhite}Please change your imports:${reset}                                     │
 │                                                                   │
-│   import { ${red}nexusPluginPrisma${reset} } from ${red}'nexus-prisma'${reset}                │
+│   import { ${red}nexusPrismaPlugin${reset} } from ${red}'nexus-prisma'${reset}                │
 │   import { ${green}nexusSchemaPrisma${reset} } from ${green}'nexus-plugin-prisma/schema'${reset}  │
 │                                                                   │
 │-------------------------------------------------------------------│
