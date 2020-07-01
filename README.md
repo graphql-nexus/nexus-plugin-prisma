@@ -13,7 +13,7 @@ npm add nexus-plugin-prisma
 
 ```diff
 - import { nexusPluginPrisma } from 'nexus-prisma'
-+ import { nexusSchemaPlugin } from 'nexus-plugin-prisma/schema'
++ import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 ```
 
 ### Learn More
