@@ -1,6 +1,6 @@
 import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
-import * as fs from 'fs-extra'
+import * as fs from 'fs-jetpack'
 import * as path from 'path'
 import { getImportPathRelativeToOutput } from '../../src/schema/utils'
 import * as types from './__app/main'
@@ -14,8 +14,8 @@ it('integrates together', async () => {
   //
   const projectRoot = path.join(__dirname, '/__app')
 
-  const projectReadFile = (relPath: string): Promise<string> =>
-    fs.readFile(path.join(projectRoot, relPath)).then((b) => b.toString())
+  const projectReadFile = (relPath: string): Promise<string | undefined> =>
+    fs.readAsync(path.join(projectRoot, relPath))
 
   const projectPath = (...paths: string[]): string => path.join(projectRoot, ...paths)
 
@@ -27,8 +27,8 @@ it('integrates together', async () => {
   //   - If it does not, the snapshots will fail + git diff (redundant, though)
   //
   await Promise.all([
-    fs.emptyDir(projectPath('/generated')),
-    fs.emptyDir(projectPath('../../../node_modules/@generated')),
+    fs.removeAsync(projectPath('/generated')),
+    fs.removeAsync(projectPath('../../../node_modules/@generated')),
   ])
 
   // Run Prisma generation:

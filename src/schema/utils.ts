@@ -1,6 +1,6 @@
 import { core } from '@nexus/schema'
 import chalk from 'chalk'
-import * as fs from 'fs-extra'
+import * as fs from 'fs-jetpack'
 import { GraphQLResolveInfo } from 'graphql'
 import * as path from 'path'
 import { isDeepStrictEqual } from 'util'
@@ -16,12 +16,11 @@ import { isDeepStrictEqual } from 'util'
  */
 export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
   fs
-    .unlink(filePath)
+    .removeAsync(filePath)
     .catch((error) => {
       return error.code === 'ENOENT' ? Promise.resolve() : Promise.reject(error)
     })
-    .then(() => fs.mkdirp(path.dirname(filePath)))
-    .then(() => fs.writeFile(filePath, data))
+    .then(() => fs.writeAsync(filePath, data))
 
 /**
  * Write file contents but first delete the file off disk if present. This is a
@@ -33,13 +32,12 @@ export const hardWriteFile = (filePath: string, data: string): Promise<void> =>
  * https://github.com/graphql-nexus/nexus-plugin-prisma/issues/453.
  */
 export const hardWriteFileSync = (filePath: string, data: string): void => {
-  fs.mkdirpSync(path.dirname(filePath))
   try {
-    fs.unlinkSync(filePath)
+    fs.remove(filePath)
   } catch (error) {
     if (error.code !== 'ENOENT') throw error
   }
-  fs.writeFileSync(filePath, data)
+  fs.write(filePath, data)
 }
 
 // TODO `any` should be `unknown` but there is a bug (?)

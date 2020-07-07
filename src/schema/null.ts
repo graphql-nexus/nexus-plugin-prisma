@@ -1,3 +1,4 @@
+import * as Lo from 'lodash'
 import { DmmfDocument, DmmfTypes } from './dmmf'
 
 /**
@@ -29,7 +30,7 @@ export function transformNullsToUndefined(
 
     if (shouldConvertNullToUndefined) {
       graphqlArgs[key] = undefined
-    } else if (isObject(val)) {
+    } else if (Lo.isPlainObject(val)) {
       const nestedPrismaArgs = dmmf.getInputTypeWithIndexedFields(prismaArg.inputType.type).fields
 
       graphqlArgs[key] = transformNullsToUndefined(graphqlArgs[key], nestedPrismaArgs, dmmf)
@@ -39,6 +40,3 @@ export function transformNullsToUndefined(
   return graphqlArgs
 }
 
-function isObject(arg: any): arg is Record<string, any> {
-  return arg && typeof arg === 'object' && Array.isArray(arg) === false
-}

@@ -48,8 +48,6 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 
   return {
     async getContext({ datamodel, types, plugins, scalars }) {
-      console.log({ enginePath: await getEnginePath('query') })
-
       try {
         // Force query engine binary path
         process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
