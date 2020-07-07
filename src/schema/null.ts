@@ -16,6 +16,7 @@ export function transformNullsToUndefined(
   dmmf: DmmfDocument
 ) {
   const keys = Object.keys(graphqlArgs)
+
   for (const key of keys) {
     const val = graphqlArgs[key]
     const prismaArg = prismaArgs[key]
@@ -38,6 +39,6 @@ export function transformNullsToUndefined(
   return graphqlArgs
 }
 
-function isObject(obj: any): boolean {
-  return obj && typeof obj === 'object'
+function isObject(arg: any): arg is Record<string, any> {
+  return arg && typeof arg === 'object' && Array.isArray(arg) === false
 }
