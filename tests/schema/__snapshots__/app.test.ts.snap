@@ -1438,6 +1438,7 @@ Object {
             "name": "id",
           },
         ],
+        "isOneOf": true,
         "name": "BubbleWhereUniqueInput",
       },
       Object {
@@ -1456,6 +1457,7 @@ Object {
             "name": "id",
           },
         ],
+        "isOneOf": true,
         "name": "UserWhereUniqueInput",
       },
       Object {
@@ -1474,6 +1476,7 @@ Object {
             "name": "id",
           },
         ],
+        "isOneOf": true,
         "name": "PostWhereUniqueInput",
       },
       Object {
@@ -1503,6 +1506,7 @@ Object {
             "name": "status",
           },
         ],
+        "isOneOf": false,
         "name": "PostCreateWithoutAuthorsInput",
       },
       Object {
@@ -1532,6 +1536,7 @@ Object {
             "name": "connect",
           },
         ],
+        "isOneOf": false,
         "name": "PostCreateManyWithoutAuthorsInput",
       },
       Object {
@@ -1585,6 +1590,7 @@ Object {
             "name": "posts",
           },
         ],
+        "isOneOf": false,
         "name": "UserCreateWithoutBubbleInput",
       },
       Object {
@@ -1614,6 +1620,7 @@ Object {
             "name": "connect",
           },
         ],
+        "isOneOf": false,
         "name": "UserCreateManyWithoutBubbleInput",
       },
       Object {
@@ -1655,6 +1662,7 @@ Object {
             "name": "members",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleCreateInput",
       },
       Object {
@@ -1696,6 +1704,7 @@ Object {
             "name": "status",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateWithoutAuthorsDataInput",
       },
       Object {
@@ -1725,6 +1734,7 @@ Object {
             "name": "data",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateWithWhereUniqueWithoutAuthorsInput",
       },
       Object {
@@ -1886,6 +1896,7 @@ Object {
             "name": "status",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateManyDataInput",
       },
       Object {
@@ -1915,6 +1926,7 @@ Object {
             "name": "data",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateManyWithWhereNestedInput",
       },
       Object {
@@ -1956,6 +1968,7 @@ Object {
             "name": "create",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpsertWithWhereUniqueWithoutAuthorsInput",
       },
       Object {
@@ -2036,7 +2049,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": true,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "PostUpdateManyWithWhereNestedInput",
@@ -2069,6 +2082,7 @@ Object {
             "name": "upsert",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateManyWithoutAuthorsInput",
       },
       Object {
@@ -2113,7 +2127,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "PostUpdateManyWithoutAuthorsInput",
@@ -2122,6 +2136,7 @@ Object {
             "name": "posts",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateWithoutBubbleDataInput",
       },
       Object {
@@ -2151,6 +2166,7 @@ Object {
             "name": "data",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateWithWhereUniqueWithoutBubbleInput",
       },
       Object {
@@ -2339,6 +2355,7 @@ Object {
             "name": "lastName",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateManyDataInput",
       },
       Object {
@@ -2368,6 +2385,7 @@ Object {
             "name": "data",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateManyWithWhereNestedInput",
       },
       Object {
@@ -2409,6 +2427,7 @@ Object {
             "name": "create",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpsertWithWhereUniqueWithoutBubbleInput",
       },
       Object {
@@ -2489,7 +2508,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": true,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "UserUpdateManyWithWhereNestedInput",
@@ -2522,6 +2541,7 @@ Object {
             "name": "upsert",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateManyWithoutBubbleInput",
       },
       Object {
@@ -2554,7 +2574,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "UserUpdateManyWithoutBubbleInput",
@@ -2563,6 +2583,7 @@ Object {
             "name": "members",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleUpdateInput",
       },
       Object {
@@ -2592,6 +2613,7 @@ Object {
             "name": "createdAt",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleUpdateManyMutationInput",
       },
       Object {
@@ -2621,6 +2643,7 @@ Object {
             "name": "createdAt",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleCreateWithoutMembersInput",
       },
       Object {
@@ -2650,6 +2673,7 @@ Object {
             "name": "connect",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleCreateOneWithoutMembersInput",
       },
       Object {
@@ -2715,6 +2739,7 @@ Object {
             "name": "Bubble",
           },
         ],
+        "isOneOf": false,
         "name": "UserCreateInput",
       },
       Object {
@@ -2744,6 +2769,7 @@ Object {
             "name": "createdAt",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleUpdateWithoutMembersDataInput",
       },
       Object {
@@ -2773,6 +2799,7 @@ Object {
             "name": "create",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleUpsertWithoutMembersInput",
       },
       Object {
@@ -2850,6 +2877,7 @@ Object {
             "name": "upsert",
           },
         ],
+        "isOneOf": false,
         "name": "BubbleUpdateOneWithoutMembersInput",
       },
       Object {
@@ -2894,7 +2922,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "PostUpdateManyWithoutAuthorsInput",
@@ -2906,7 +2934,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "BubbleUpdateOneWithoutMembersInput",
@@ -2915,6 +2943,7 @@ Object {
             "name": "Bubble",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateInput",
       },
       Object {
@@ -2956,6 +2985,7 @@ Object {
             "name": "lastName",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateManyMutationInput",
       },
       Object {
@@ -3009,6 +3039,7 @@ Object {
             "name": "Bubble",
           },
         ],
+        "isOneOf": false,
         "name": "UserCreateWithoutPostsInput",
       },
       Object {
@@ -3038,6 +3069,7 @@ Object {
             "name": "connect",
           },
         ],
+        "isOneOf": false,
         "name": "UserCreateManyWithoutPostsInput",
       },
       Object {
@@ -3079,6 +3111,7 @@ Object {
             "name": "authors",
           },
         ],
+        "isOneOf": false,
         "name": "PostCreateInput",
       },
       Object {
@@ -3123,7 +3156,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "BubbleUpdateOneWithoutMembersInput",
@@ -3132,6 +3165,7 @@ Object {
             "name": "Bubble",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateWithoutPostsDataInput",
       },
       Object {
@@ -3161,6 +3195,7 @@ Object {
             "name": "data",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateWithWhereUniqueWithoutPostsInput",
       },
       Object {
@@ -3202,6 +3237,7 @@ Object {
             "name": "create",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpsertWithWhereUniqueWithoutPostsInput",
       },
       Object {
@@ -3282,7 +3318,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": true,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "UserUpdateManyWithWhereNestedInput",
@@ -3315,6 +3351,7 @@ Object {
             "name": "upsert",
           },
         ],
+        "isOneOf": false,
         "name": "UserUpdateManyWithoutPostsInput",
       },
       Object {
@@ -3359,7 +3396,7 @@ Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": false,
+                "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
                 "type": "UserUpdateManyWithoutPostsInput",
@@ -3368,6 +3405,7 @@ Object {
             "name": "authors",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateInput",
       },
       Object {
@@ -3409,6 +3447,7 @@ Object {
             "name": "status",
           },
         ],
+        "isOneOf": false,
         "name": "PostUpdateManyMutationInput",
       },
       Object {
@@ -4886,68 +4925,7 @@ Object {
       Object {
         "fields": Array [
           Object {
-            "args": Array [
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "BubbleWhereInput",
-                  },
-                ],
-                "name": "where",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "BubbleOrderByInput",
-                  },
-                ],
-                "name": "orderBy",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "BubbleWhereUniqueInput",
-                  },
-                ],
-                "name": "cursor",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "take",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "skip",
-              },
-            ],
+            "args": Array [],
             "name": "count",
             "outputType": Object {
               "isList": false,
@@ -4963,68 +4941,7 @@ Object {
       Object {
         "fields": Array [
           Object {
-            "args": Array [
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "UserWhereInput",
-                  },
-                ],
-                "name": "where",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "UserOrderByInput",
-                  },
-                ],
-                "name": "orderBy",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "UserWhereUniqueInput",
-                  },
-                ],
-                "name": "cursor",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "take",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "skip",
-              },
-            ],
+            "args": Array [],
             "name": "count",
             "outputType": Object {
               "isList": false,
@@ -5040,68 +4957,115 @@ Object {
       Object {
         "fields": Array [
           Object {
-            "args": Array [
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "PostWhereInput",
-                  },
-                ],
-                "name": "where",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "PostOrderByInput",
-                  },
-                ],
-                "name": "orderBy",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "object",
-                    "type": "PostWhereUniqueInput",
-                  },
-                ],
-                "name": "cursor",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "take",
-              },
-              Object {
-                "inputType": Array [
-                  Object {
-                    "isList": false,
-                    "isNullable": false,
-                    "isRequired": false,
-                    "kind": "scalar",
-                    "type": "Int",
-                  },
-                ],
-                "name": "skip",
-              },
-            ],
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "rating",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "PostAvgAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "rating",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "PostSumAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "rating",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "PostMinAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "rating",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "PostMaxAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
             "name": "count",
             "outputType": Object {
               "isList": false,
@@ -5109,6 +5073,50 @@ Object {
               "isRequired": true,
               "kind": "scalar",
               "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "avg",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "PostAvgAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "sum",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "PostSumAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "min",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "PostMinAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "max",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "PostMaxAggregateOutputType",
             },
           },
         ],
@@ -5189,7 +5197,68 @@ Object {
             },
           },
           Object {
-            "args": Array [],
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "BubbleWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "BubbleOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "BubbleWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+            ],
             "name": "aggregateBubble",
             "outputType": Object {
               "isList": false,
@@ -5296,7 +5365,68 @@ Object {
             },
           },
           Object {
-            "args": Array [],
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+            ],
             "name": "aggregateUser",
             "outputType": Object {
               "isList": false,
@@ -5403,7 +5533,68 @@ Object {
             },
           },
           Object {
-            "args": Array [],
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "PostWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "PostOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "PostWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+            ],
             "name": "aggregatePost",
             "outputType": Object {
               "isList": false,
