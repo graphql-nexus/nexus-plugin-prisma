@@ -14,6 +14,21 @@ Object {
 }
 `;
 
+exports[`do not convert args that are arrays 1`] = `
+Object {
+  "where": Object {
+    "OR": Array [
+      Object {
+        "something": true,
+      },
+      Object {
+        "something": false,
+      },
+    ],
+  },
+}
+`;
+
 exports[`findMany: converts nulls to undefined when fields are not nullable 1`] = `
 Object {
   "after": undefined,
