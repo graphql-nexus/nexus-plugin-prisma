@@ -7,7 +7,7 @@ ${colors.yellow('Warning')}: ${colors.green('t.crud')} ${colors.yellow(
       'is an experimental feature with many practical limitations. You must explicitly enable it before using.'
     )}
 Please add ${colors.green(`experimentalCRUD: true`)} in the ${colors.green(
-      'nexusPluginPrisma()'
+      'nexusSchemaPrisma()'
     )} constructor if you still wish to enable it.`)
   },
   framework: () => {
