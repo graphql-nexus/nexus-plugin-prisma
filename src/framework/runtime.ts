@@ -1,31 +1,16 @@
 import chalk from 'chalk'
 import { RuntimePlugin } from 'nexus/plugin'
 import * as Path from 'path'
-import { nexusSchemaPrisma, Options as NexusSchemaPrismaOptions } from '../schema'
+import { nexusSchemaPrisma } from '../schema'
+import { InternalOptions } from '../schema/builder'
+import { OnUnknownArgName, OnUnknownFieldName, OnUnknownFieldType } from '../schema/hooks'
 import { suggestionList } from './lib/levenstein'
 import { linkableProjectDir } from './lib/linkable'
 import { printStack } from './lib/print-stack'
 import { getPrismaClientDir, getPrismaClientInstance } from './lib/prisma-client'
 import { Settings } from './settings'
 
-interface UnknownFieldName {
-  error: Error
-  unknownFieldName: string
-  validFieldNames: string[]
-  typeName: string
-}
-
-interface UnknownFieldType {
-  unknownFieldType: string
-  error: Error
-  typeName: string
-  fieldName: string
-}
-
-interface OptionsWithHook extends NexusSchemaPrismaOptions {
-  onUnknownFieldName: (params: UnknownFieldName) => void
-  onUnknownFieldType: (params: UnknownFieldType) => void
-}
+interface OptionsWithHook extends Omit<InternalOptions, 'nexusBuilder'> {}
 
 export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
   const prismaClientInstance = getPrismaClientInstance(settings?.client, project.log)
@@ -91,6 +76,7 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
           shouldGenerateArtifacts: project.shouldGenerateArtifacts,
           onUnknownFieldName: (params) => renderUnknownFieldNameError(params),
           onUnknownFieldType: (params) => renderUnknownFieldTypeError(params),
+          onUnknownArgName: (params) => renderUnknownArgName(params),
           scalars: project.scalars,
           nexusPrismaImportId: 'nexus-plugin-prisma/typegen',
         } as OptionsWithHook),
@@ -102,18 +88,19 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
 /**
  * TODO ...
  */
-function renderUnknownFieldNameError(params: UnknownFieldName) {
+function renderUnknownFieldNameError(params: Parameters<OnUnknownFieldName>[0]) {
   const { stack, fileLineNumber } = printStack({
     callsite: params.error.stack,
   })
+
   const suggestions = suggestionList(params.unknownFieldName, params.validFieldNames).map((s) =>
     chalk.green(s)
   )
   const suggestionMessage =
     suggestions.length === 0
       ? ''
-      : chalk`{yellow Warning:} Did you mean ${suggestions.map((s) => `"${s}"`).join(', ')} ?`
-  const intro = chalk`{yellow Warning:} ${params.error.message}\n{yellow Warning:} in ${fileLineNumber}\n${suggestionMessage}`
+      : chalk`{yellow Warning:} Did you mean ${suggestions.map((s) => `"${s}"`).join(', ')} ?\n`
+  const intro = chalk`{yellow Warning:} ${params.error.message}\n${suggestionMessage}{yellow Warning:} in ${fileLineNumber}`
 
   // todo use logger once "pretty" api done
   console.log(`${intro}${stack}`)
@@ -122,7 +109,18 @@ function renderUnknownFieldNameError(params: UnknownFieldName) {
 /**
  * TODO ...
  */
-function renderUnknownFieldTypeError(params: UnknownFieldType) {
+function renderUnknownFieldTypeError(params: Parameters<OnUnknownFieldType>[0]) {
+  const { stack, fileLineNumber } = printStack({
+    callsite: params.error.stack,
+  })
+
+  const intro = chalk`{yellow Warning:} ${params.error.message}\n{yellow Warning:} in ${fileLineNumber}`
+
+  // todo use logger once "pretty" api done
+  console.log(`${intro}${stack}`)
+}
+
+function renderUnknownArgName(params: Parameters<OnUnknownArgName>[0]) {
   const { stack, fileLineNumber } = printStack({
     callsite: params.error.stack,
   })
