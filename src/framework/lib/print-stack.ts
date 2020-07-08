@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { stripIndents } from 'common-tags'
+import * as fs from 'fs-jetpack'
 import * as stackTraceParser from 'stacktrace-parser'
 import { highlightTS } from './highlight-ts'
 
@@ -44,15 +44,14 @@ export const printStack = ({ callsite }: ErrorArgs): PrintStackResult => {
       fileLineNumber = callsite
         ? `${chalk.underline(`${trace.file}:${trace.lineNumber}:${trace.column}`)}`
         : ''
-      const start = Math.max(0, lineNumber - 5)
-      const fs = require('fs')
-      if (fs.existsSync(fileName)) {
-        const file = fs.readFileSync(fileName, 'utf-8')
-        const slicedFile = file.split('\n').slice(start, lineNumber).join('\n')
-        const lines = stripIndents(slicedFile).split('\n')
+      if (fs.exists(fileName)) {
+        const file = fs.read(fileName) as string
+        const splitFile = file.split('\n')
+        const start = Math.max(0, lineNumber - 4)
+        const end = Math.min(lineNumber + 3, splitFile.length - 1)
+        const lines = splitFile.slice(start, end)
 
         const theLine = lines[lines.length - 1]
-        //const slicePoint = theLine.indexOf('{')
         const highlightedLines = highlightTS(lines.join('\n')).split('\n')
         prevLines =
           '\n' +
@@ -60,7 +59,7 @@ export const printStack = ({ callsite }: ErrorArgs): PrintStackResult => {
             .map(
               (l, i) => chalk.grey(renderN(i + start + 1, lineNumber + start + 1) + ' ') + chalk.reset() + l
             )
-            .map((l, i, arr) => (i === arr.length - 1 ? `${chalk.red.bold('→')} ${l}` : chalk.dim('  ' + l)))
+            .map((l, i, _arr) => (i === 3 ? `${chalk.red.bold('→')} ${l}` : chalk.dim('  ' + l)))
             .join('\n')
         afterLines = ')'
         indentValue = String(lineNumber + start + 1).length + getIndent(theLine) + 1
