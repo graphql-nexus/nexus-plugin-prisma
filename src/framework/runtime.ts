@@ -2,15 +2,13 @@ import chalk from 'chalk'
 import { RuntimePlugin } from 'nexus/plugin'
 import * as Path from 'path'
 import { nexusSchemaPrisma } from '../schema'
-import { InternalOptions } from '../schema/builder'
+import { InternalPublicOptions } from '../schema/builder'
 import { OnUnknownArgName, OnUnknownFieldName, OnUnknownFieldType } from '../schema/hooks'
 import { suggestionList } from './lib/levenstein'
 import { linkableProjectDir } from './lib/linkable'
 import { printStack } from './lib/print-stack'
 import { getPrismaClientDir, getPrismaClientInstance } from './lib/prisma-client'
 import { Settings } from './settings'
-
-interface OptionsWithHook extends Omit<InternalOptions, 'nexusBuilder'> {}
 
 export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
   const prismaClientInstance = getPrismaClientInstance(settings?.client, project.log)
@@ -79,7 +77,8 @@ export const plugin: RuntimePlugin<Settings> = (settings) => (project) => {
           onUnknownArgName: (params) => renderUnknownArgName(params),
           scalars: project.scalars,
           nexusPrismaImportId: 'nexus-plugin-prisma/typegen',
-        } as OptionsWithHook),
+          initializedByFramework: true,
+        } as InternalPublicOptions),
       ],
     },
   }

@@ -163,11 +163,14 @@ export interface InternalOptions extends Options {
   dmmf?: DmmfDocument // For testing
   nexusBuilder: Nexus.PluginBuilderLens
   nexusPrismaImportId?: string
-  onUnknownFieldName?: OnUnknownFieldName // For pumpkins
-  onUnknownFieldType?: OnUnknownFieldType // For pumpkins
-  onUnknownArgName?: OnUnknownArgName // For pumpkins
-  onUnknownPrismaModelName?: OnUnknownPrismaModelName // For pumpkins
+  onUnknownFieldName?: OnUnknownFieldName // Framework option
+  onUnknownFieldType?: OnUnknownFieldType // Framework option
+  onUnknownArgName?: OnUnknownArgName // Framework option
+  onUnknownPrismaModelName?: OnUnknownPrismaModelName // Framework option
+  initializedByFramework?: boolean // Framework option
 }
+
+export interface InternalPublicOptions extends Omit<InternalOptions, 'nexusBuilder'> {}
 
 export function build(options: InternalOptions) {
   const builder = new SchemaBuilder(options)
