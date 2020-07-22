@@ -136,7 +136,6 @@ enum PostStatus {
 }
 
 input PostUpdateManyMutationInput {
-  id: Int
   rating: Float
   status: PostStatus
 }
@@ -338,7 +337,6 @@ export interface NexusGenInputs {
     status?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
   PostUpdateManyMutationInput: { // input type
-    id?: number | null; // Int
     rating?: number | null; // Float
     status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
@@ -1674,18 +1672,6 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "name": "id",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
                 "type": "Float",
               },
             ],
@@ -1859,18 +1845,6 @@ Object {
       },
       Object {
         "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "name": "id",
-          },
           Object {
             "inputType": Array [
               Object {
@@ -3363,18 +3337,6 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "name": "id",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
                 "type": "Float",
               },
             ],
@@ -3410,18 +3372,6 @@ Object {
       },
       Object {
         "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "name": "id",
-          },
           Object {
             "inputType": Array [
               Object {

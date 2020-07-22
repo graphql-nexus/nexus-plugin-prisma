@@ -103,7 +103,6 @@ export interface NexusGenInputs {
     status?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
   PostUpdateManyMutationInput: { // input type
-    id?: number | null; // Int
     rating?: number | null; // Float
     status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }

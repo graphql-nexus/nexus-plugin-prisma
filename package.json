@@ -38,9 +38,9 @@
     "test:db:setup": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "dependencies": {
-    "@prisma/cli": "2.2.0",
-    "@prisma/client": "2.2.0",
-    "@prisma/sdk": "2.2.0",
+    "@prisma/cli": "2.3.0",
+    "@prisma/client": "2.3.0",
+    "@prisma/sdk": "2.3.0",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
     "common-tags": "^1.8.0",

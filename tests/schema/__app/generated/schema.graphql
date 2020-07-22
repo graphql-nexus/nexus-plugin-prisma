@@ -131,7 +131,6 @@ enum PostStatus {
 }
 
 input PostUpdateManyMutationInput {
-  id: Int
   rating: Float
   status: PostStatus
 }
