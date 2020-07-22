@@ -25,12 +25,10 @@ input ModelNameCreateInput {
 }
 
 input ModelNameUpdateInput {
-  id: Int
   name: String
 }
 
 input ModelNameUpdateManyMutationInput {
-  id: Int
   name: String
 }
 
