@@ -14,7 +14,7 @@ export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
 
   if (!dmmf) {
     throw new Error(`\
-You most likely forgot to initialize the Prisma Client. Please run \`prisma2 generate\` and try to run it again.
+You most likely forgot to initialize the Prisma Client. Please run \`prisma generate\` and try to run it again.
 If that does not solve your problem, please open an issue.`)
   }
 
