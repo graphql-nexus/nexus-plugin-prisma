@@ -37,6 +37,8 @@ ${red}│${reset}
 ${red}│${reset}  Run the following command to fix this issue:
 ${red}│${reset} 
 ${red}│${reset}  ${green}${getPackageManagerBinName()} remove ${foundPrismaDeps.join(' ')}${reset}
+${red}│${reset}  You should also run ${getPackageManagerBinName()} install ${yellow}nexus-plugin-prisma${reset} in
+${red}│${reset}  order to reinstall prisma dependencies.
 ${red}│${reset} 
 ${red}│${reset}  If you absolutely need to control the versions of your
 ${red}│${reset}  ${yellow}@prisma${reset} dependencies then use yarn and its ${yellow}resolutions${reset}
