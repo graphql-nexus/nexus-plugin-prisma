@@ -32,4 +32,4 @@ export const paginationStrategies: PaginationStrategies = {
   prisma: prismaStrategy,
 }
 
-export type PaginationStrategyTypes = typeof relayStrategy | typeof prismaStraegy
+export type PaginationStrategyTypes = typeof relayStrategy | typeof prismaStrategy
