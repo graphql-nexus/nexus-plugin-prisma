@@ -1,6 +1,6 @@
 import { DMMF } from '@prisma/client/runtime'
 import { DmmfTypes } from '../dmmf'
-import { prismaStraegy } from './prisma'
+import { prismaStrategy } from './prisma'
 import { relayStrategy } from './relay'
 
 interface NormalizedPaginationArgs {
@@ -24,12 +24,12 @@ export interface PaginationStrategy<GraphQLPaginationArgs extends object = objec
 // todo remove, but TS error if we do, dont' understand the error message
 interface PaginationStrategies {
   relay: typeof relayStrategy
-  prisma: typeof prismaStraegy
+  prisma: typeof prismaStrategy
 }
 
 export const paginationStrategies: PaginationStrategies = {
   relay: relayStrategy,
-  prisma: prismaStraegy,
+  prisma: prismaStrategy,
 }
 
-export type PaginationStrategyTypes = typeof relayStrategy | typeof prismaStraegy
+export type PaginationStrategyTypes = typeof relayStrategy | typeof prismaStrategy
