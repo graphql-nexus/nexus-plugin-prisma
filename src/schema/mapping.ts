@@ -6,7 +6,7 @@ interface BaseMappedField {
   field: string
   operation: OperationName
   model: string
-  photonAccessor: string
+  prismaClientAccessor: string
 }
 
 export interface MappedField extends Omit<BaseMappedField, 'field'> {
@@ -22,7 +22,7 @@ const buildField = (mapping: DmmfTypes.Mapping, operation: OperationName): BaseM
     operation,
     field: mapping[operation]!,
     model: mapping.model,
-    photonAccessor: lowerFirst(mapping.model),
+    prismaClientAccessor: lowerFirst(mapping.model),
   }
 }
 

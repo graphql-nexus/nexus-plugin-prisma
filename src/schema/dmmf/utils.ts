@@ -1,6 +1,6 @@
 import { DMMF } from '@prisma/client/runtime'
 
-export const getPhotonDmmf = (packagePath: string): DMMF.Document => {
+export const getPrismaClientDmmf = (packagePath: string): DMMF.Document => {
   let dmmf: undefined | DMMF.Document = undefined
 
   try {
