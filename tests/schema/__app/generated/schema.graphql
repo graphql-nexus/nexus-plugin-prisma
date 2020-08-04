@@ -23,7 +23,7 @@ input BubbleCreateWithoutMembersInput {
 }
 
 input BubbleMembersOrderByInput {
-  firstName: OrderByArg
+  firstName: SortOrder
 }
 
 input BubbleMembersWhereInput {
@@ -97,11 +97,6 @@ input NullableStringFilter {
   startsWith: String
 }
 
-enum OrderByArg {
-  asc
-  desc
-}
-
 type Post {
   authors: [User!]!
   status: PostStatus!
@@ -120,9 +115,9 @@ input PostFilter {
 }
 
 input PostOrderByInput {
-  id: OrderByArg
-  rating: OrderByArg
-  status: OrderByArg
+  id: SortOrder
+  rating: SortOrder
+  status: SortOrder
 }
 
 enum PostStatus {
@@ -152,6 +147,11 @@ input PostWhereUniqueInput {
 type Query {
   user(where: UserWhereUniqueInput!): User
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 input StringFilter {
