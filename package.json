@@ -54,7 +54,7 @@
     "stacktrace-parser": "^0.1.10"
   },
   "devDependencies": {
-    "@nexus/schema": "0.14.0",
+    "@nexus/schema": "^0.15.0",
     "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/fetch-engine": "^2.4.0-dev.42",
     "@prisma/get-platform": "^2.4.0-dev.42",
