@@ -54,5 +54,5 @@ export async function getGenerators(nexus: WorktimeLens, schemaPath: string): Pr
  * Check if the thrown error is of NoModelsDefined type.
  */
 function isNoModelsDefinedError(e: Error): boolean {
-  return Boolean(stripAnsi(e.message).match(/.*You don't have defined any model.*/))
+  return Boolean(stripAnsi(e.message).match(/.*You don't have any models defined.*/))
 }
