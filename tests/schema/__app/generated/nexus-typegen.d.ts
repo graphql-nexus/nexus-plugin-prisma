@@ -24,11 +24,11 @@ export interface NexusGenInputs {
     create?: NexusGenInputs['BubbleCreateWithoutMembersInput'] | null; // BubbleCreateWithoutMembersInput
   }
   BubbleCreateWithoutMembersInput: { // input type
-    createdAt?: any | null; // DateTime
+    createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     id?: string | null; // String
   }
   BubbleMembersOrderByInput: { // input type
-    firstName?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    firstName?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   BubbleMembersWhereInput: { // input type
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
@@ -45,14 +45,14 @@ export interface NexusGenInputs {
     id?: string | null; // String
   }
   DateTimeFilter: { // input type
-    equals?: any | null; // DateTime
-    gt?: any | null; // DateTime
-    gte?: any | null; // DateTime
-    in?: any[] | null; // [DateTime!]
-    lt?: any | null; // DateTime
-    lte?: any | null; // DateTime
-    not?: any | null; // DateTime
-    notIn?: any[] | null; // [DateTime!]
+    equals?: NexusGenScalars['DateTime'] | null; // DateTime
+    gt?: NexusGenScalars['DateTime'] | null; // DateTime
+    gte?: NexusGenScalars['DateTime'] | null; // DateTime
+    in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
+    lt?: NexusGenScalars['DateTime'] | null; // DateTime
+    lte?: NexusGenScalars['DateTime'] | null; // DateTime
+    not?: NexusGenScalars['DateTime'] | null; // DateTime
+    notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
   FloatFilter: { // input type
     equals?: number | null; // Float
@@ -98,9 +98,9 @@ export interface NexusGenInputs {
     some?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
   }
   PostOrderByInput: { // input type
-    id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
-    rating?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
-    status?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    rating?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    status?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   PostUpdateManyMutationInput: { // input type
     rating?: number | null; // Float
@@ -132,17 +132,17 @@ export interface NexusGenInputs {
     startsWith?: string | null; // String
   }
   UUIDFilter: { // input type
-    contains?: any | null; // UUID
-    endsWith?: any | null; // UUID
-    equals?: any | null; // UUID
-    gt?: any | null; // UUID
-    gte?: any | null; // UUID
-    in?: any[] | null; // [UUID!]
-    lt?: any | null; // UUID
-    lte?: any | null; // UUID
-    not?: any | null; // UUID
-    notIn?: any[] | null; // [UUID!]
-    startsWith?: any | null; // UUID
+    contains?: NexusGenScalars['UUID'] | null; // UUID
+    endsWith?: NexusGenScalars['UUID'] | null; // UUID
+    equals?: NexusGenScalars['UUID'] | null; // UUID
+    gt?: NexusGenScalars['UUID'] | null; // UUID
+    gte?: NexusGenScalars['UUID'] | null; // UUID
+    in?: NexusGenScalars['UUID'][] | null; // [UUID!]
+    lt?: NexusGenScalars['UUID'] | null; // UUID
+    lte?: NexusGenScalars['UUID'] | null; // UUID
+    not?: NexusGenScalars['UUID'] | null; // UUID
+    notIn?: NexusGenScalars['UUID'][] | null; // [UUID!]
+    startsWith?: NexusGenScalars['UUID'] | null; // UUID
   }
   UserCreateManyWithoutPostsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'][] | null; // [UserWhereUniqueInput!]
@@ -176,8 +176,18 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  OrderByArg: "asc" | "desc"
   PostStatus: "DRAFT" | "PUBLISHED"
+  SortOrder: "asc" | "desc"
+}
+
+export interface NexusGenScalars {
+  String: string
+  Int: number
+  Float: number
+  Boolean: boolean
+  ID: string
+  DateTime: any
+  UUID: any
 }
 
 export interface NexusGenRootTypes {
@@ -185,7 +195,7 @@ export interface NexusGenRootTypes {
     count: number; // Int!
   }
   Bubble: { // root type
-    createdAt: any; // DateTime!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
   }
   Mutation: {};
@@ -197,13 +207,6 @@ export interface NexusGenRootTypes {
     firstName: string; // String!
     id: string; // String!
   }
-  String: string;
-  Int: number;
-  Float: number;
-  Boolean: boolean;
-  ID: string;
-  DateTime: any;
-  UUID: any;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -230,8 +233,15 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   UserFilter: NexusGenInputs['UserFilter'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
-  OrderByArg: NexusGenEnums['OrderByArg'];
   PostStatus: NexusGenEnums['PostStatus'];
+  SortOrder: NexusGenEnums['SortOrder'];
+  String: NexusGenScalars['String'];
+  Int: NexusGenScalars['Int'];
+  Float: NexusGenScalars['Float'];
+  Boolean: NexusGenScalars['Boolean'];
+  ID: NexusGenScalars['ID'];
+  DateTime: NexusGenScalars['DateTime'];
+  UUID: NexusGenScalars['UUID'];
 }
 
 export interface NexusGenFieldTypes {
@@ -239,7 +249,7 @@ export interface NexusGenFieldTypes {
     count: number; // Int!
   }
   Bubble: { // field return type
-    createdAt: any; // DateTime!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
   }
@@ -311,7 +321,7 @@ export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Mutation" | "Post
 
 export type NexusGenInputNames = "BubbleCreateOneWithoutMembersInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "NullableStringFilter" | "PostCreateInput" | "PostFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "PostWhereUniqueInput" | "StringFilter" | "UUIDFilter" | "UserCreateManyWithoutPostsInput" | "UserCreateWithoutPostsInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
-export type NexusGenEnumNames = "OrderByArg" | "PostStatus";
+export type NexusGenEnumNames = "PostStatus" | "SortOrder";
 
 export type NexusGenInterfaceNames = never;
 

@@ -35,8 +35,8 @@ Object {
   "before": undefined,
   "first": 1,
   "orderBy": Object {
-    "birthDate": null,
-    "email": null,
+    "birthDate": undefined,
+    "email": undefined,
     "id": "asc",
   },
   "where": Object {

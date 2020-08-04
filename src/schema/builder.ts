@@ -323,12 +323,12 @@ export class SchemaBuilder {
 
             const originalResolve: GraphQLFieldResolver<any, any, any> = (_root, args, ctx, info) => {
               const prismaClient = this.getPrismaClient(ctx)
+              args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
               if (
                 typeName === 'Mutation' &&
                 (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
                   !isEmptyObject(this.globallyComputedInputs))
               ) {
-                args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                 args = addComputedInputs({
                   inputType,
                   dmmf: this.dmmf,
