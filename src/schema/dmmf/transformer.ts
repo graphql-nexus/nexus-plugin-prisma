@@ -3,7 +3,7 @@ import { paginationStrategies, PaginationStrategy } from '../pagination'
 import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
 import { DmmfDocument } from './DmmfDocument'
 import { DmmfTypes } from './DmmfTypes'
-import { getPhotonDmmf } from './utils'
+import { getPrismaClientDmmf } from './utils'
 
 export type TransformOptions = {
   globallyComputedInputs?: GlobalComputedInputs
@@ -11,9 +11,9 @@ export type TransformOptions = {
 }
 
 export const getTransformedDmmf = (
-  photonClientPackagePath: string,
+  prismaClientPackagePath: string,
   options?: TransformOptions
-): DmmfDocument => new DmmfDocument(transform(getPhotonDmmf(photonClientPackagePath), options))
+): DmmfDocument => new DmmfDocument(transform(getPrismaClientDmmf(prismaClientPackagePath), options))
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
@@ -84,7 +84,7 @@ function transformSchema(
 /**
  * Conversion from a Prisma Client arg type to a GraphQL arg type using
  * heuristics. A conversion is needed because GraphQL does not
- * support union types on args, but Photon does.
+ * support union types on args, but Prisma Client does.
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   // FIXME: *Enum*Filter are currently empty
@@ -222,7 +222,7 @@ function transformInputType(
 }
 
 /**
- * Make the "return type" property type always be a string. In Photon
+ * Make the "return type" property type always be a string. In Prisma Client
  * it is allowed to be a nested structured object but we want only the
  * reference-by-name form.
  *

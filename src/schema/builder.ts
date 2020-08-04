@@ -26,7 +26,7 @@ import { proxifyModelFunction, proxifyPublishers } from './proxifier'
 import { Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
-  assertPhotonInContext,
+  assertPrismaClientInContext,
   GlobalComputedInputs,
   Index,
   indexBy,
@@ -94,10 +94,10 @@ const dmmfListFieldTypeToNexus = (fieldType: DmmfTypes.SchemaField['outputType']
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
 
 export interface Options {
-  // TODO return type should be Photon
+  // TODO return type should be Prisma Client
   /**
    * nexus-prisma will call this to get a reference to an instance of the Prisma Client.
-   * The function is passed the context object. Typically a Photon instance will
+   * The function is passed the context object. Typically a Prisma Client instance will
    * be available on the context to support your custom resolvers. Therefore the
    * default getter returns `ctx.prisma`.
    */
@@ -267,9 +267,9 @@ export class SchemaBuilder {
     this.wasCrudUsedButDisabled = false
 
     this.getPrismaClient = (ctx: any) => {
-      const photon = config.prismaClient(ctx)
-      assertPhotonInContext(photon)
-      return photon
+      const prismaClient = config.prismaClient(ctx)
+      assertPrismaClientInContext(prismaClient)
+      return prismaClient
     }
     if (config.shouldGenerateArtifacts) {
       Typegen.generateSync({
@@ -322,7 +322,7 @@ export class SchemaBuilder {
             const schemaArgsIndex = indexBy(mappedField.field.args, 'name')
 
             const originalResolve: GraphQLFieldResolver<any, any, any> = (_root, args, ctx, info) => {
-              const photon = this.getPrismaClient(ctx)
+              const prismaClient = this.getPrismaClient(ctx)
               if (
                 typeName === 'Mutation' &&
                 (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
@@ -343,7 +343,7 @@ export class SchemaBuilder {
 
               args = this.paginationStrategy.resolve(args)
 
-              return photon[mappedField.photonAccessor][mappedField.operation](args)
+              return prismaClient[mappedField.prismaClientAccessor][mappedField.operation](args)
             }
 
             const fieldConfig = this.buildFieldConfig({
@@ -513,12 +513,12 @@ export class SchemaBuilder {
                   )
                 }
 
-                const photon = this.getPrismaClient(ctx)
+                const prismaClient = this.getPrismaClient(ctx)
 
                 args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                 args = this.paginationStrategy.resolve(args)
 
-                return photon[lowerFirst(mapping.model)]
+                return prismaClient[lowerFirst(mapping.model)]
                   .findOne({
                     where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
                   })
@@ -609,7 +609,7 @@ export class SchemaBuilder {
 
   argsFromMutationField({ publisherConfig, field }: FieldConfigData): CustomInputArg[] {
     return field.args.map((arg) => {
-      const photonInputType = this.dmmf.getInputType(arg.inputType.type)
+      const prismaClientInputType = this.dmmf.getInputType(arg.inputType.type)
       /*
       Since globallyComputedInputs were already filtered during schema transformation,
       at this point we just need to filter at the resolver-level.
@@ -617,10 +617,12 @@ export class SchemaBuilder {
       return {
         arg,
         type: {
-          ...photonInputType,
+          ...prismaClientInputType,
           fields: publisherConfig.locallyComputedInputs
-            ? photonInputType.fields.filter((field) => !(field.name in publisherConfig.locallyComputedInputs))
-            : photonInputType.fields,
+            ? prismaClientInputType.fields.filter(
+                (field) => !(field.name in publisherConfig.locallyComputedInputs)
+              )
+            : prismaClientInputType.fields,
         },
       }
     })
@@ -738,28 +740,28 @@ export class SchemaBuilder {
     fieldName: string,
     graphQLTypeName: string
   ): DmmfTypes.InputType {
-    const photonObject = this.dmmf.getInputType(inputTypeName)
+    const prismaClientObject = this.dmmf.getInputType(inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
     // version as-is.
     //
     if (fieldWhitelist === true) {
-      return photonObject
+      return prismaClientObject
     }
 
     // REFACTOR use an intersection function
     const whitelistedFieldNames = Object.keys(fieldWhitelist)
-    const userExposedObjectFields = photonObject.fields.filter((field) =>
+    const userExposedObjectFields = prismaClientObject.fields.filter((field) =>
       whitelistedFieldNames.includes(field.name)
     )
 
-    const uniqueName = photonObject.isWhereType
+    const uniqueName = prismaClientObject.isWhereType
       ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
       : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
 
     return {
-      ...photonObject,
+      ...prismaClientObject,
       name: uniqueName,
       fields: userExposedObjectFields,
     }
