@@ -44,7 +44,7 @@ const prismaPaginationArgsToDmmfArgs: Record<
   }),
 }
 
-export const prismaStraegy: PaginationStrategy<PrismaPaginationArgs> = {
+export const prismaStrategy: PaginationStrategy<PrismaPaginationArgs> = {
   paginationArgNames: keys(prismaPaginationArgsToDmmfArgs),
   transformDmmfArgs({ paginationArgNames, args, field }) {
     const fieldOutputTypeName = getReturnTypeName(field.outputType.type)

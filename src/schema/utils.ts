@@ -97,7 +97,7 @@ export function dmmfFieldToNexusFieldConfig(param: {
   }
 }
 
-export function assertPhotonInContext(prismaClient: any) {
+export function assertPrismaClientInContext(prismaClient: any) {
   if (!prismaClient) {
     throw new Error('Could not find Prisma Client JS in context (ctx.prisma)')
   }
