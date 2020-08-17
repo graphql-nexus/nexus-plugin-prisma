@@ -343,6 +343,7 @@ export class SchemaBuilder {
 
               args = this.paginationStrategy.resolve(args)
 
+              console.log("346 prismaClient")
               return prismaClient[mappedField.prismaClientAccessor][mappedField.operation](args)
             }
 
@@ -518,11 +519,18 @@ export class SchemaBuilder {
                 args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                 args = this.paginationStrategy.resolve(args)
 
-                return prismaClient[lowerFirst(mapping.model)]
-                  .findOne({
-                    where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
-                  })
-                  [field.name](args)
+                console.log("root: ", root)
+                console.log("mapping.model: ", mapping.model)
+                console.log("field.name: ", field.name)
+                if (root[field.name]) {
+                  return root
+                } else {
+                  return prismaClient[lowerFirst(mapping.model)]
+                    .findOne({
+                      where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
+                    })
+                    [field.name](args)
+                }
               }
             : publisherConfig.alias != field.name
             ? (root) => root[field.name]
