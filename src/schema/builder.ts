@@ -518,11 +518,15 @@ export class SchemaBuilder {
                 args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
                 args = this.paginationStrategy.resolve(args)
 
-                return prismaClient[lowerFirst(mapping.model)]
-                  .findOne({
-                    where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
-                  })
-                  [field.name](args)
+                if (root[field.name]) {
+                  return root
+                } else {
+                  return prismaClient[lowerFirst(mapping.model)]
+                    .findOne({
+                      where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
+                    })
+                    [field.name](args)
+                }
               }
             : publisherConfig.alias != field.name
             ? (root) => root[field.name]
