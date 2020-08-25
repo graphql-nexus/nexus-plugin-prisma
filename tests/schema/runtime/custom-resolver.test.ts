@@ -25,7 +25,7 @@ it('supports custom resolver for t.crud', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         resolve: async (
           root: unknown,
           args: unknown,
@@ -99,7 +99,7 @@ it('supports custom resolver for t.model', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users()
+      t.crud.findManyUser()
     },
   })
 

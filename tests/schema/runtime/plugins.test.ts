@@ -29,7 +29,7 @@ model User {
     objectType({
       name: 'Query',
       definition(t: any) {
-        t.crud.users()
+        t.crud.findManyUser()
       },
     }),
   ]
@@ -74,7 +74,7 @@ it('forwards plugins to t.crud', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         authorize() {
           return new Error('nope')
         },
