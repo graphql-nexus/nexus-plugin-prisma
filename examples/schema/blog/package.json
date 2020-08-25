@@ -1,37 +1,37 @@
 {
-  "name": "example",
-  "private": true,
-  "version": "0.0.0",
-  "main": "dist/main.ts",
-  "scripts": {
-    "clean": "rm -rf dist",
-    "build": "yarn -s clean && yarn -s generate && tsc",
-    "style": "prettier --write 'src/**/*'",
-    "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
-    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c",
-    "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
-    "generate:prisma": "prisma generate",
-    "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
-    "data:inject": "ts-node prisma/fake-data.ts"
-  },
-  "dependencies": {
-    "@nexus/schema": "^0.14.0",
-    "graphql": "^14.6.0",
-    "graphql-yoga": "^1.18.2",
-    "nexus-plugin-prisma": "^0.16.1"
-  },
-  "devDependencies": {
-    "@types/faker": "^4.1.12",
-    "@types/ws": "^7.2.4",
-    "faker": "^4.1.0",
-    "prettier": "^2.0.5",
-    "ts-node": "^8.10.2",
-    "ts-node-dev": "^1.0.0-pre.41",
-    "typescript": "^3.9.3"
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
-  }
+    "name": "example",
+    "private": true,
+    "version": "0.0.0",
+    "main": "dist/main.ts",
+    "scripts": {
+        "clean": "rm -rf dist",
+        "build": "yarn -s clean && yarn -s generate && tsc",
+        "style": "prettier --write 'src/**/*'",
+        "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
+        "dev:migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c",
+        "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
+        "generate:prisma": "prisma generate",
+        "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
+        "data:inject": "ts-node prisma/fake-data.ts"
+    },
+    "dependencies": {
+        "@nexus/schema": "^0.14.0",
+        "graphql": "^14.6.0",
+        "graphql-yoga": "^1.18.2",
+        "nexus-plugin-prisma": "^0.16.1"
+    },
+    "devDependencies": {
+        "@types/faker": "^4.1.12",
+        "@types/ws": "^7.2.4",
+        "faker": "^4.1.0",
+        "prettier": "^2.0.5",
+        "ts-node": "^8.10.2",
+        "ts-node-dev": "^1.0.0-pre.41",
+        "typescript": "^3.9.3"
+    },
+    "prettier": {
+        "semi": false,
+        "singleQuote": true,
+        "trailingComma": "all"
+    }
 }

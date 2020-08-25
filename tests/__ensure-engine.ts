@@ -27,7 +27,7 @@ async function main() {
   const cliEnginePath = await getEnginePath('query')
   const cliEngineDir = Path.dirname(cliEnginePath)
 
-  // Download binary in prisma2
+  // Download binary in prisma
   if (fs.existsSync(cliEngineDir)) {
     download({
       binaries: {

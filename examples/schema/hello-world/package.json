@@ -1,20 +1,20 @@
 {
-  "name": "hello-world",
-  "version": "1.0.0",
-  "license": "MIT",
-  "scripts": {
-    "dev": "ts-node --transpile-only app",
-    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c"
-  },
-  "dependencies": {
-    "@nexus/schema": "^0.14.0",
-    "graphql": "^14.6.0",
-    "graphql-yoga": "^1.18.3",
-    "nexus-plugin-prisma": "^0.16.1"
-  },
-  "devDependencies": {
-    "@types/ws": "^7.2.4",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.3"
-  }
+    "name": "hello-world",
+    "version": "1.0.0",
+    "license": "MIT",
+    "scripts": {
+        "dev": "ts-node --transpile-only app",
+        "dev:migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c"
+    },
+    "dependencies": {
+        "@nexus/schema": "^0.14.0",
+        "graphql": "^14.6.0",
+        "graphql-yoga": "^1.18.3",
+        "nexus-plugin-prisma": "^0.16.1"
+    },
+    "devDependencies": {
+        "@types/ws": "^7.2.4",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.3"
+    }
 }
