@@ -4,17 +4,17 @@ import { generateSchemaAndTypes } from '../__utils'
 it('publishes date and json scalar output types', async () => {
   // datasource defined to postgres to enable Json type
   const datamodel = `
-  datasource db {
-    provider = "postgresql"
-    url      = "postgresql://"
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
 
-  model User {
-    id  Int @id @default(autoincrement())
-    date DateTime
-    json Json
-    optionalJson Json?
-  }
+model User {
+  id  Int @id @default(autoincrement())
+  date DateTime
+  json Json
+  optionalJson Json?
+}
   `
 
   const User = Nexus.objectType({

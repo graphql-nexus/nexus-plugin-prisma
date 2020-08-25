@@ -5,6 +5,11 @@ it('in dev stage, removes filtering or ordering entirely if no arg or wrong args
   process.env.NODE_ENV = 'development'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
     model User {
       id  Int @id @default(autoincrement())
       name String
@@ -22,7 +27,7 @@ it('in dev stage, removes filtering or ordering entirely if no arg or wrong args
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         filtering: { somethingWrong: true },
         ordering: { somethingWrong: true },
       })
@@ -42,10 +47,15 @@ it('in prod stage, throw error if no arg or wrong args are passed', async () => 
   process.env.NODE_ENV = 'production'
 
   const datamodel = `
-    model User {
-      id  Int @id @default(autoincrement())
-      name String
-    }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  name String
+}
   `
 
   const User = objectType({
@@ -59,7 +69,7 @@ it('in prod stage, throw error if no arg or wrong args are passed', async () => 
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         filtering: { somethingWrong: true },
         ordering: { somethingWrong: true },
       })

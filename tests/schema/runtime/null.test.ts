@@ -41,17 +41,22 @@ async function getSchemaArgsForCrud(
 
 test('findMany: converts nulls to undefined when fields are not nullable', async () => {
   const datamodel = `
-  model User {
-    id        String   @default(cuid()) @id
-    email     String?  @unique
-    birthDate DateTime
-    posts     Post[]
-  }
-  
-  model Post {
-    id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id        String   @default(cuid()) @id
+  email     String?  @unique
+  birthDate DateTime
+  posts     Post[]
+}
+
+model Post {
+  id      String @default(cuid()) @id
+  authors User[] @relation(references: [id])
+}
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'findMany')
   const incomingArgs = {
@@ -81,17 +86,22 @@ test('findMany: converts nulls to undefined when fields are not nullable', async
 
 test('create: converts nulls to undefined when fields are not nullable', async () => {
   const datamodel = `
-  model User {
-    id        String   @default(cuid()) @id
-    email     String?  @unique
-    birthDate DateTime
-    posts     Post[]
-  }
-  
-  model Post {
-    id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id        String   @default(cuid()) @id
+  email     String?  @unique
+  birthDate DateTime
+  posts     Post[]
+}
+
+model Post {
+  id      String @default(cuid()) @id
+  authors User[] @relation(references: [id])
+}
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'create')
   const incomingArgs = {
@@ -113,17 +123,22 @@ test('create: converts nulls to undefined when fields are not nullable', async (
 
 test('model filtering: converts nulls to undefined when fields are not nullable', async () => {
   const datamodel = `
-  model User {
-    id        String   @default(cuid()) @id
-    email     String?  @unique
-    birthDate DateTime
-    posts     Post[]
-  }
-  
-  model Post {
-    id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id        String   @default(cuid()) @id
+  email     String?  @unique
+  birthDate DateTime
+  posts     Post[]
+}
+
+model Post {
+  id      String @default(cuid()) @id
+  authors User[] @relation(references: [id])
+}
   `
   const dmmf = await getDmmf(datamodel)
   const schemaArgs = dmmf.getOutputType('User').fields.find((f) => f.name === 'posts')?.args!
@@ -148,17 +163,22 @@ test('model filtering: converts nulls to undefined when fields are not nullable'
 
 test('do not convert args that are arrays', async () => {
   const datamodel = `
-  model User {
-    id        String   @default(cuid()) @id
-    email     String?  @unique
-    birthDate DateTime
-    posts     Post[]
-  }
-  
-  model Post {
-    id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id        String   @default(cuid()) @id
+  email     String?  @unique
+  birthDate DateTime
+  posts     Post[]
+}
+
+model Post {
+  id      String @default(cuid()) @id
+  authors User[] @relation(references: [id])
+}
   `
   const dmmf = await getDmmf(datamodel)
   const schemaArgs = dmmf.getOutputType('User').fields.find((f) => f.name === 'posts')?.args!

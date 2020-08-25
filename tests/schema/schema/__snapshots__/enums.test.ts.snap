@@ -7,7 +7,7 @@ exports[`does not automatically publish input/enum type if already created by us
 }
 
 type Query {
-  users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+  findManyUser(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
@@ -48,8 +48,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'favouriteColor' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'favouriteColor'
       ordering: 'id' | 'favouriteColor'
     }
   },
@@ -61,8 +61,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'
@@ -114,17 +114,28 @@ exports[`does not publish enum twice (from input/output type): schema 1`] = `
 
 input IntFilter {
   equals: Int
-  not: Int
   in: [Int!]
   notIn: [Int!]
   lt: Int
   lte: Int
   gt: Int
   gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }
 
 type Query {
-  users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+  findManyUser(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
@@ -133,11 +144,11 @@ type User {
 }
 
 input UserWhereInput {
-  id: IntFilter
-  favouriteColor: Color
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IntFilter
+  favouriteColor: Color
 }
 
 input UserWhereUniqueInput {
@@ -169,8 +180,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'favouriteColor' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'favouriteColor'
       ordering: 'id' | 'favouriteColor'
     }
   },
@@ -182,8 +193,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'
@@ -267,8 +278,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'favouriteColor' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'favouriteColor'
       ordering: 'id' | 'favouriteColor'
     }
   },
@@ -280,8 +291,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'

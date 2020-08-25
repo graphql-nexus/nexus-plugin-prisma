@@ -4,17 +4,22 @@ import { generateSchemaAndTypes } from '../__utils'
 
 it('support relay pagination (default)', async () => {
   const datamodel = `
-  model User {
-    id Int @id @default(autoincrement())
-    posts  Post[]
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
 
-  model Post {
-    id Int @id @default(autoincrement())
-    title String
-    author  User @relation(fields: [authorId], references: [id])
-    authorId Int
-  }
+model User {
+  id Int @id @default(autoincrement())
+  posts  Post[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  title String
+  author  User @relation(fields: [authorId], references: [id])
+  authorId Int
+}
 `
 
   const User = objectType({
@@ -43,6 +48,11 @@ it('support relay pagination (default)', async () => {
 
 it('support prisma pagination', async () => {
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id Int @id @default(autoincrement())
     posts  Post[]

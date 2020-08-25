@@ -4,11 +4,16 @@ import { createRuntimeTestContext } from '../__client-test-context'
 let ctx = createRuntimeTestContext()
 
 it('forwards plugins to t.model', async () => {
-  const datamodel = `
-    model User {
-      id    Int     @id @default(autoincrement())
-      name  String
-    }
+  const datamodel = `  
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+}
   `
   const types = [
     objectType({

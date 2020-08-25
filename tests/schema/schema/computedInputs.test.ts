@@ -7,15 +7,20 @@ import { generateSchemaAndTypes, getDmmf } from '../__utils'
 
 const resolverTestData = {
   datamodel: `
-  model User {
-    id  Int @id @default(autoincrement())
-    name String
-    createdWithBrowser String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  name String
+  createdWithBrowser String
+}
 `,
   query: Nexus.queryType({
     definition(t: any) {
-      t.crud.user()
+      t.crud.findOneUser()
     },
   }),
   mutation: Nexus.mutationType({
@@ -39,6 +44,11 @@ const resolverTestData = {
 
 const globalTestData = {
   datamodel: `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
     name String
@@ -54,7 +64,7 @@ const globalTestData = {
 `,
   query: Nexus.queryType({
     definition(t: any) {
-      t.crud.user()
+      t.crud.findOneUser()
     },
   }),
   mutation: Nexus.mutationType({

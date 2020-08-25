@@ -2,15 +2,15 @@
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: output 1`] = `
 "
-Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
+Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`findManyUser\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
 
-Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
+Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`findManyUser\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
 "
 `;
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: schema 1`] = `
 "type Query {
-  users(first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+  findManyUser(first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
@@ -47,8 +47,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name'
       ordering: 'id' | 'name'
     }
   },
@@ -60,8 +60,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'
@@ -104,4 +104,4 @@ declare global {
   "
 `;
 
-exports[`in prod stage, throw error if no arg or wrong args are passed: output 1`] = `"Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`"`;
+exports[`in prod stage, throw error if no arg or wrong args are passed: output 1`] = `"Your GraphQL \`Query\` object definition is projecting a relational field \`findManyUser\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`"`;

@@ -5,10 +5,15 @@ it('in dev stage, warns when wrong projected field or crud', async () => {
   process.env.NODE_ENV = 'development'
 
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    username String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  username String
+}
 `
 
   const User = objectType({
@@ -43,10 +48,15 @@ it('in undefined stages, warns when wrong projected field or crud', async () => 
   delete process.env.NODE_ENV
 
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    username String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  username String
+}
 `
 
   const User = objectType({
@@ -81,10 +91,15 @@ it('in other stages, throws error when wrong projected field or crud', async () 
   process.env.NODE_ENV = 'production'
 
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    username String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  username String
+}
 `
 
   const User = objectType({
@@ -113,9 +128,14 @@ it('in production, throws if a wrong arg named is passed to filtering', async ()
   process.env.NODE_ENV = 'production'
 
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+}
 `
 
   const User = objectType({
@@ -128,7 +148,7 @@ it('in production, throws if a wrong arg named is passed to filtering', async ()
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ filtering: { unknownField: true } })
+      t.crud.findManyUser({ filtering: { unknownField: true } })
     },
   })
 
@@ -145,6 +165,11 @@ it('in dev stage, warns if a wrong arg named is passed to filtering', async () =
   process.env.NODE_ENV = 'development'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
     name String
@@ -161,7 +186,7 @@ it('in dev stage, warns if a wrong arg named is passed to filtering', async () =
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ filtering: { unknownField: true } })
+      t.crud.findManyUser({ filtering: { unknownField: true } })
     },
   })
 
@@ -180,6 +205,11 @@ it('in production, throws if a wrong arg named is passed to ordering', async () 
   process.env.NODE_ENV = 'production'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
   }
@@ -195,7 +225,7 @@ it('in production, throws if a wrong arg named is passed to ordering', async () 
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ ordering: { unknownField: true } })
+      t.crud.findManyUser({ ordering: { unknownField: true } })
     },
   })
 
@@ -212,6 +242,11 @@ it('in dev stage, warns if a wrong arg named is passed to ordering', async () =>
   process.env.NODE_ENV = 'development'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
     name String
@@ -228,7 +263,7 @@ it('in dev stage, warns if a wrong arg named is passed to ordering', async () =>
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ ordering: { unknownField: true } })
+      t.crud.findManyUser({ ordering: { unknownField: true } })
     },
   })
 
@@ -247,6 +282,11 @@ it('in dev stage, warns if a graphql typename does not map to a prisma name but 
   process.env.NODE_ENV = 'development'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id   Int @id @default(autoincrement())
     name String
@@ -288,6 +328,11 @@ it('in prod stage, throw error if a graphql typename does not map to a prisma na
   process.env.NODE_ENV = 'production'
 
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id   Int @id @default(autoincrement())
     name String

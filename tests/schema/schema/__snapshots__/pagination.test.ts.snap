@@ -44,18 +44,18 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'posts' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
       ordering: 'id'
     }
-    posts: {
-      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+    findManyPost: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'authorId'
     }
   },
   User: {
     posts: {
-      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'authorId'
     }
   }
@@ -67,10 +67,10 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
-    post: 'Post'
-    posts: 'Post'
+    findOneUser: 'User'
+    findManyUser: 'User'
+    findOnePost: 'Post'
+    findManyPost: 'Post'
   },
   Mutation: {
     createOneUser: 'User'
@@ -171,18 +171,18 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'posts' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
       ordering: 'id'
     }
-    posts: {
-      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+    findManyPost: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'authorId'
     }
   },
   User: {
     posts: {
-      filtering: 'id' | 'title' | 'authorId' | 'AND' | 'OR' | 'NOT' | 'author'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'authorId'
     }
   }
@@ -194,10 +194,10 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
-    post: 'Post'
-    posts: 'Post'
+    findOneUser: 'User'
+    findManyUser: 'User'
+    findOnePost: 'Post'
+    findManyPost: 'Post'
   },
   Mutation: {
     createOneUser: 'User'

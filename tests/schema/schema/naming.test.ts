@@ -1,12 +1,17 @@
 import * as Nexus from '@nexus/schema'
 import { generateSchemaAndTypes } from '../__utils'
 
-it('generates publishers pluralized & camel-cased', async () => {
+it('generates publishers findOne and findMany', async () => {
   const datamodel = `
-  model ModelName {
-    id    Int @id @default(autoincrement())
-    name  String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model ModelName {
+  id    Int @id @default(autoincrement())
+  name  String
+}
 `
 
   const ModelName = Nexus.objectType({
@@ -18,8 +23,8 @@ it('generates publishers pluralized & camel-cased', async () => {
   const Query = Nexus.objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.modelName()
-      t.crud.modelNames()
+      t.crud.findOneModelName()
+      t.crud.findManyModelName()
     },
   })
 
