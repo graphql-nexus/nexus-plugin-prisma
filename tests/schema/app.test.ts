@@ -34,7 +34,7 @@ it('integrates together', async () => {
   // Run Prisma generation:
   // - Prisma Client JS
   //
-  cp.execSync('../../../node_modules/.bin/prisma generate', {
+  cp.execSync('../../../node_modules/.bin/prisma2 generate', {
     cwd: projectRoot,
   })
 
