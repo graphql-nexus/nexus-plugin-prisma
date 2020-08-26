@@ -21,15 +21,12 @@ export const createNexusPrismaInternal = (
   })
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
-  return new DmmfDocument(
-    transform(
-      await PrismaClientGenerator.getDMMF({
-        datamodel,
-        prismaPath: await getEnginePath('query'),
-      }),
-      options
-    )
-  )
+  const prismaPath = await getEnginePath('query')
+  const dmmf = await PrismaClientGenerator.getDMMF({
+    datamodel,
+    prismaPath,
+  })
+  return new DmmfDocument(transform(dmmf, options))
 }
 
 export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {
