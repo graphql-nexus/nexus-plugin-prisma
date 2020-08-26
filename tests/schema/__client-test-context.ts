@@ -154,7 +154,7 @@ async function generateClientFromDatamodel(datamodelString: string) {
     client,
     async teardown() {
       rimraf.sync(tmpDir)
-      await client.disconnect()
+      await client.$disconnect()
     },
   }
 }
