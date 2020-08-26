@@ -16,7 +16,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn build
-      - run: yarn -s test:unit
+      - run: yarn -s test:fw:unit
   schema-tests:
     runs-on: macos-latest
     strategy:
