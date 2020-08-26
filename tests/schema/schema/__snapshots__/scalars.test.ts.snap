@@ -42,7 +42,7 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'id' | 'date' | 'json' | 'optionalJson' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'date' | 'json' | 'optionalJson'
       ordering: 'id' | 'date' | 'json' | 'optionalJson'
     }
   },

@@ -14,7 +14,7 @@ type BatchPayload {
 type Bubble {
   createdAt: DateTime!
   id: String!
-  members(after: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
+  members(after: UserWhereUniqueInput, orderBy: [BubbleMembersOrderByInput!], where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutMembersInput {
@@ -38,8 +38,8 @@ input BubbleMembersWhereInput {
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
-  id: UUIDFilter
-  members: UserFilter
+  id: StringFilter
+  members: UserListRelationFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
 }
@@ -57,7 +57,7 @@ input DateTimeFilter {
   in: [DateTime!]
   lt: DateTime
   lte: DateTime
-  not: DateTime
+  not: NestedDateTimeFilter
   notIn: [DateTime!]
 }
 
@@ -68,7 +68,7 @@ input FloatFilter {
   in: [Float!]
   lt: Float
   lte: Float
-  not: Float
+  not: NestedFloatFilter
   notIn: [Float!]
 }
 
@@ -79,7 +79,7 @@ input IntFilter {
   in: [Int!]
   lt: Int
   lte: Int
-  not: Int
+  not: NestedIntFilter
   notIn: [Int!]
 }
 
@@ -88,7 +88,40 @@ type Mutation {
   updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
 }
 
-input NullableStringFilter {
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedFloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatFilter
+  notIn: [Float!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
   contains: String
   endsWith: String
   equals: String
@@ -97,7 +130,21 @@ input NullableStringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
 }
@@ -113,7 +160,7 @@ input PostCreateInput {
   status: PostStatus!
 }
 
-input PostFilter {
+input PostListRelationFilter {
   every: PostWhereInput
   none: PostWhereInput
   some: PostWhereInput
@@ -137,7 +184,7 @@ input PostUpdateManyMutationInput {
 
 input PostWhereInput {
   AND: [PostWhereInput!]
-  authors: UserFilter
+  authors: UserListRelationFilter
   id: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -168,7 +215,21 @@ input StringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
 }
@@ -176,7 +237,7 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {
@@ -191,7 +252,7 @@ input UserCreateWithoutPostsInput {
   lastName: String!
 }
 
-input UserFilter {
+input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
@@ -200,33 +261,17 @@ input UserFilter {
 input UserWhereInput {
   AND: [UserWhereInput!]
   Bubble: BubbleWhereInput
-  bubbleId: NullableStringFilter
+  bubbleId: StringNullableFilter
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
-  posts: PostFilter
+  posts: PostListRelationFilter
 }
 
 input UserWhereUniqueInput {
   id: String
-}
-
-scalar UUID
-
-input UUIDFilter {
-  contains: UUID
-  endsWith: UUID
-  equals: UUID
-  gt: UUID
-  gte: UUID
-  in: [UUID!]
-  lt: UUID
-  lte: UUID
-  not: UUID
-  notIn: [UUID!]
-  startsWith: UUID
 }
 "
 `;
@@ -270,8 +315,8 @@ export interface NexusGenInputs {
   BubbleWhereInput: { // input type
     AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
-    members?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    members?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
     NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
     OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
   }
@@ -285,7 +330,7 @@ export interface NexusGenInputs {
     in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
     lt?: NexusGenScalars['DateTime'] | null; // DateTime
     lte?: NexusGenScalars['DateTime'] | null; // DateTime
-    not?: NexusGenScalars['DateTime'] | null; // DateTime
+    not?: NexusGenInputs['NestedDateTimeFilter'] | null; // NestedDateTimeFilter
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
   FloatFilter: { // input type
@@ -295,7 +340,7 @@ export interface NexusGenInputs {
     in?: number[] | null; // [Float!]
     lt?: number | null; // Float
     lte?: number | null; // Float
-    not?: number | null; // Float
+    not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
   }
   IntFilter: { // input type
@@ -305,10 +350,40 @@ export interface NexusGenInputs {
     in?: number[] | null; // [Int!]
     lt?: number | null; // Int
     lte?: number | null; // Int
-    not?: number | null; // Int
+    not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
     notIn?: number[] | null; // [Int!]
   }
-  NullableStringFilter: { // input type
+  NestedDateTimeFilter: { // input type
+    equals?: NexusGenScalars['DateTime'] | null; // DateTime
+    gt?: NexusGenScalars['DateTime'] | null; // DateTime
+    gte?: NexusGenScalars['DateTime'] | null; // DateTime
+    in?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
+    lt?: NexusGenScalars['DateTime'] | null; // DateTime
+    lte?: NexusGenScalars['DateTime'] | null; // DateTime
+    not?: NexusGenInputs['NestedDateTimeFilter'] | null; // NestedDateTimeFilter
+    notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
+  }
+  NestedFloatFilter: { // input type
+    equals?: number | null; // Float
+    gt?: number | null; // Float
+    gte?: number | null; // Float
+    in?: number[] | null; // [Float!]
+    lt?: number | null; // Float
+    lte?: number | null; // Float
+    not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
+    notIn?: number[] | null; // [Float!]
+  }
+  NestedIntFilter: { // input type
+    equals?: number | null; // Int
+    gt?: number | null; // Int
+    gte?: number | null; // Int
+    in?: number[] | null; // [Int!]
+    lt?: number | null; // Int
+    lte?: number | null; // Int
+    not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
+    notIn?: number[] | null; // [Int!]
+  }
+  NestedStringFilter: { // input type
     contains?: string | null; // String
     endsWith?: string | null; // String
     equals?: string | null; // String
@@ -317,7 +392,20 @@ export interface NexusGenInputs {
     in?: string[] | null; // [String!]
     lt?: string | null; // String
     lte?: string | null; // String
-    not?: string | null; // String
+    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
+  }
+  NestedStringNullableFilter: { // input type
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: NexusGenInputs['NestedStringNullableFilter'] | null; // NestedStringNullableFilter
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
@@ -326,7 +414,7 @@ export interface NexusGenInputs {
     rating: number; // Float!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
-  PostFilter: { // input type
+  PostListRelationFilter: { // input type
     every?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     none?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     some?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
@@ -342,7 +430,7 @@ export interface NexusGenInputs {
   }
   PostWhereInput: { // input type
     AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
-    authors?: NexusGenInputs['UserFilter'] | null; // UserFilter
+    authors?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
     NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
@@ -361,22 +449,22 @@ export interface NexusGenInputs {
     in?: string[] | null; // [String!]
     lt?: string | null; // String
     lte?: string | null; // String
-    not?: string | null; // String
+    not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
-  UUIDFilter: { // input type
-    contains?: NexusGenScalars['UUID'] | null; // UUID
-    endsWith?: NexusGenScalars['UUID'] | null; // UUID
-    equals?: NexusGenScalars['UUID'] | null; // UUID
-    gt?: NexusGenScalars['UUID'] | null; // UUID
-    gte?: NexusGenScalars['UUID'] | null; // UUID
-    in?: NexusGenScalars['UUID'][] | null; // [UUID!]
-    lt?: NexusGenScalars['UUID'] | null; // UUID
-    lte?: NexusGenScalars['UUID'] | null; // UUID
-    not?: NexusGenScalars['UUID'] | null; // UUID
-    notIn?: NexusGenScalars['UUID'][] | null; // [UUID!]
-    startsWith?: NexusGenScalars['UUID'] | null; // UUID
+  StringNullableFilter: { // input type
+    contains?: string | null; // String
+    endsWith?: string | null; // String
+    equals?: string | null; // String
+    gt?: string | null; // String
+    gte?: string | null; // String
+    in?: string[] | null; // [String!]
+    lt?: string | null; // String
+    lte?: string | null; // String
+    not?: NexusGenInputs['NestedStringNullableFilter'] | null; // NestedStringNullableFilter
+    notIn?: string[] | null; // [String!]
+    startsWith?: string | null; // String
   }
   UserCreateManyWithoutPostsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'][] | null; // [UserWhereUniqueInput!]
@@ -388,7 +476,7 @@ export interface NexusGenInputs {
     id?: string | null; // String
     lastName: string; // String!
   }
-  UserFilter: { // input type
+  UserListRelationFilter: { // input type
     every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     none?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     some?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -396,13 +484,13 @@ export interface NexusGenInputs {
   UserWhereInput: { // input type
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     Bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
-    bubbleId?: NexusGenInputs['NullableStringFilter'] | null; // NullableStringFilter
+    bubbleId?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
     firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    posts?: NexusGenInputs['PostFilter'] | null; // PostFilter
+    posts?: NexusGenInputs['PostListRelationFilter'] | null; // PostListRelationFilter
   }
   UserWhereUniqueInput: { // input type
     id?: string | null; // String
@@ -421,7 +509,6 @@ export interface NexusGenScalars {
   Boolean: boolean
   ID: string
   DateTime: any
-  UUID: any
 }
 
 export interface NexusGenRootTypes {
@@ -453,18 +540,22 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
   FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
-  NullableStringFilter: NexusGenInputs['NullableStringFilter'];
+  NestedDateTimeFilter: NexusGenInputs['NestedDateTimeFilter'];
+  NestedFloatFilter: NexusGenInputs['NestedFloatFilter'];
+  NestedIntFilter: NexusGenInputs['NestedIntFilter'];
+  NestedStringFilter: NexusGenInputs['NestedStringFilter'];
+  NestedStringNullableFilter: NexusGenInputs['NestedStringNullableFilter'];
   PostCreateInput: NexusGenInputs['PostCreateInput'];
-  PostFilter: NexusGenInputs['PostFilter'];
+  PostListRelationFilter: NexusGenInputs['PostListRelationFilter'];
   PostOrderByInput: NexusGenInputs['PostOrderByInput'];
   PostUpdateManyMutationInput: NexusGenInputs['PostUpdateManyMutationInput'];
   PostWhereInput: NexusGenInputs['PostWhereInput'];
   PostWhereUniqueInput: NexusGenInputs['PostWhereUniqueInput'];
   StringFilter: NexusGenInputs['StringFilter'];
-  UUIDFilter: NexusGenInputs['UUIDFilter'];
+  StringNullableFilter: NexusGenInputs['StringNullableFilter'];
   UserCreateManyWithoutPostsInput: NexusGenInputs['UserCreateManyWithoutPostsInput'];
   UserCreateWithoutPostsInput: NexusGenInputs['UserCreateWithoutPostsInput'];
-  UserFilter: NexusGenInputs['UserFilter'];
+  UserListRelationFilter: NexusGenInputs['UserListRelationFilter'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
   PostStatus: NexusGenEnums['PostStatus'];
@@ -475,7 +566,6 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   Boolean: NexusGenScalars['Boolean'];
   ID: NexusGenScalars['ID'];
   DateTime: NexusGenScalars['DateTime'];
-  UUID: NexusGenScalars['UUID'];
 }
 
 export interface NexusGenFieldTypes {
@@ -510,7 +600,7 @@ export interface NexusGenArgTypes {
   Bubble: {
     members: { // args
       after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
-      orderBy?: NexusGenInputs['BubbleMembersOrderByInput'] | null; // BubbleMembersOrderByInput
+      orderBy?: NexusGenInputs['BubbleMembersOrderByInput'][] | null; // [BubbleMembersOrderByInput!]
       where?: NexusGenInputs['BubbleMembersWhereInput'] | null; // BubbleMembersWhereInput
     }
   }
@@ -540,7 +630,7 @@ export interface NexusGenArgTypes {
       before?: NexusGenInputs['PostWhereUniqueInput'] | null; // PostWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
-      orderBy?: NexusGenInputs['PostOrderByInput'] | null; // PostOrderByInput
+      orderBy?: NexusGenInputs['PostOrderByInput'][] | null; // [PostOrderByInput!]
       where?: NexusGenInputs['PostWhereInput'] | null; // PostWhereInput
     }
   }
@@ -553,13 +643,13 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = \\"BatchPayload\\" | \\"Bubble\\" | \\"Mutation\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NullableStringFilter\\" | \\"PostCreateInput\\" | \\"PostFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"UUIDFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
+export type NexusGenInputNames = \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NestedDateTimeFilter\\" | \\"NestedFloatFilter\\" | \\"NestedIntFilter\\" | \\"NestedStringFilter\\" | \\"NestedStringNullableFilter\\" | \\"PostCreateInput\\" | \\"PostListRelationFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"StringNullableFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserListRelationFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
 export type NexusGenEnumNames = \\"PostStatus\\" | \\"SortOrder\\";
 
 export type NexusGenInterfaceNames = never;
 
-export type NexusGenScalarNames = \\"Boolean\\" | \\"DateTime\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\" | \\"UUID\\";
+export type NexusGenScalarNames = \\"Boolean\\" | \\"DateTime\\" | \\"Float\\" | \\"ID\\" | \\"Int\\" | \\"String\\";
 
 export type NexusGenUnionNames = never;
 
@@ -621,33 +711,33 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     bubbles: {
-      filtering: 'id' | 'createdAt' | 'members' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members'
       ordering: 'id' | 'createdAt'
     }
     users: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
     }
   },
   Bubble: {
     members: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
   }
   User: {
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
     }
   }
   Post: {
     authors: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
   }
@@ -1048,11 +1138,1101 @@ Object {
           "desc",
         ],
       },
+      Object {
+        "name": "BubbleDistinctFieldEnum",
+        "values": Array [
+          "id",
+          "createdAt",
+        ],
+      },
+      Object {
+        "name": "UserDistinctFieldEnum",
+        "values": Array [
+          "id",
+          "firstName",
+          "lastName",
+          "bubbleId",
+        ],
+      },
+      Object {
+        "name": "PostDistinctFieldEnum",
+        "values": Array [
+          "id",
+          "rating",
+          "status",
+        ],
+      },
     ],
     "inputTypes": Array [
       Object {
-        "atLeastOne": false,
         "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "contains",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "startsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "endsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedStringFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedStringFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "contains",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "startsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "endsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedStringFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "StringFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedDateTimeFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedDateTimeFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedDateTimeFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "DateTimeFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedIntFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedIntFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedIntFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "IntFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedFloatFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedFloatFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedFloatFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "FloatFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedEnumPostStatusFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedEnumPostStatusFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedEnumPostStatusFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "EnumPostStatusFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "AND",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "OR",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "NOT",
+          },
           Object {
             "inputType": Array [
               Object {
@@ -1070,22 +2250,19 @@ Object {
                 "type": "IntFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "id",
           },
           Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": true,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UserFilter",
+                "type": "UserListRelationFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "authors",
-            "nullEqualsUndefined": true,
           },
           Object {
             "inputType": Array [
@@ -1104,7 +2281,6 @@ Object {
                 "type": "FloatFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "rating",
           },
           Object {
@@ -1121,12 +2297,373 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostStatusFilter",
+                "type": "EnumPostStatusFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "status",
           },
+        ],
+        "isOneOf": false,
+        "isWhereType": true,
+        "name": "PostWhereInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "every",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "some",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostWhereInput",
+              },
+            ],
+            "name": "none",
+          },
+        ],
+        "isOneOf": false,
+        "name": "PostListRelationFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BubbleWhereInput",
+              },
+            ],
+            "name": "is",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BubbleWhereInput",
+              },
+            ],
+            "name": "isNot",
+          },
+        ],
+        "isOneOf": false,
+        "name": "BubbleRelationFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "contains",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "startsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "endsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedStringNullableFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedStringNullableFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "in",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "notIn",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "gte",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "contains",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "startsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "endsWith",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedStringNullableFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "StringNullableFilter",
+      },
+      Object {
+        "fields": Array [
           Object {
             "inputType": Array [
               Object {
@@ -1134,10 +2671,9 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostWhereInput",
+                "type": "UserWhereInput",
               },
             ],
-            "isRelationFilter": true,
             "name": "AND",
           },
           Object {
@@ -1147,10 +2683,9 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostWhereInput",
+                "type": "UserWhereInput",
               },
             ],
-            "isRelationFilter": true,
             "name": "OR",
           },
           Object {
@@ -1160,19 +2695,11 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostWhereInput",
+                "type": "UserWhereInput",
               },
             ],
-            "isRelationFilter": true,
             "name": "NOT",
           },
-        ],
-        "isWhereType": true,
-        "name": "PostWhereInput",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
           Object {
             "inputType": Array [
               Object {
@@ -1190,22 +2717,19 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "id",
           },
           Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": true,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostFilter",
+                "type": "PostListRelationFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "posts",
-            "nullEqualsUndefined": true,
           },
           Object {
             "inputType": Array [
@@ -1224,7 +2748,6 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "firstName",
           },
           Object {
@@ -1244,8 +2767,19 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "lastName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BubbleWhereInput",
+              },
+            ],
+            "name": "Bubble",
           },
           Object {
             "inputType": Array [
@@ -1258,10 +2792,10 @@ Object {
               },
               Object {
                 "isList": false,
-                "isNullable": true,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "NullableStringFilter",
+                "type": "StringNullableFilter",
               },
               Object {
                 "isList": false,
@@ -1271,9 +2805,57 @@ Object {
                 "type": "null",
               },
             ],
-            "isRelationFilter": false,
             "name": "bubbleId",
           },
+        ],
+        "isOneOf": false,
+        "isWhereType": true,
+        "name": "UserWhereInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereInput",
+              },
+            ],
+            "name": "every",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereInput",
+              },
+            ],
+            "name": "some",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereInput",
+              },
+            ],
+            "name": "none",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserListRelationFilter",
+      },
+      Object {
+        "fields": Array [
           Object {
             "inputType": Array [
               Object {
@@ -1281,10 +2863,9 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UserWhereInput",
+                "type": "BubbleWhereInput",
               },
             ],
-            "isRelationFilter": true,
             "name": "AND",
           },
           Object {
@@ -1294,10 +2875,9 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UserWhereInput",
+                "type": "BubbleWhereInput",
               },
             ],
-            "isRelationFilter": true,
             "name": "OR",
           },
           Object {
@@ -1307,32 +2887,11 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UserWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "NOT",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "object",
                 "type": "BubbleWhereInput",
               },
             ],
-            "isRelationFilter": true,
-            "name": "Bubble",
+            "name": "NOT",
           },
-        ],
-        "isWhereType": true,
-        "name": "UserWhereInput",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
           Object {
             "inputType": Array [
               Object {
@@ -1340,17 +2899,16 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
-                "type": "UUID",
+                "type": "String",
               },
               Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UUIDFilter",
+                "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "id",
           },
           Object {
@@ -1370,63 +2928,22 @@ Object {
                 "type": "DateTimeFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "createdAt",
           },
           Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": true,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "UserFilter",
+                "type": "UserListRelationFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "members",
-            "nullEqualsUndefined": true,
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "BubbleWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "AND",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "BubbleWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "OR",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "BubbleWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "NOT",
           },
         ],
+        "isOneOf": false,
         "isWhereType": true,
         "name": "BubbleWhereInput",
       },
@@ -1457,7 +2974,7 @@ Object {
             "name": "createdAt",
           },
         ],
-        "isOneOf": false,
+        "isOneOf": true,
         "isOrderType": true,
         "name": "BubbleOrderByInput",
       },
@@ -1531,7 +3048,7 @@ Object {
             "name": "bubbleId",
           },
         ],
-        "isOneOf": false,
+        "isOneOf": true,
         "isOrderType": true,
         "name": "UserOrderByInput",
       },
@@ -1593,7 +3110,7 @@ Object {
             "name": "status",
           },
         ],
-        "isOneOf": false,
+        "isOneOf": true,
         "isOrderType": true,
         "name": "PostOrderByInput",
       },
@@ -1863,8 +3380,43 @@ Object {
         "name": "PostUpdateWithWhereUniqueWithoutAuthorsInput",
       },
       Object {
-        "atLeastOne": false,
         "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostScalarWhereInput",
+              },
+            ],
+            "name": "AND",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostScalarWhereInput",
+              },
+            ],
+            "name": "OR",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostScalarWhereInput",
+              },
+            ],
+            "name": "NOT",
+          },
           Object {
             "inputType": Array [
               Object {
@@ -1882,22 +3434,7 @@ Object {
                 "type": "IntFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "id",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "authors",
-            "nullEqualsUndefined": true,
           },
           Object {
             "inputType": Array [
@@ -1916,7 +3453,6 @@ Object {
                 "type": "FloatFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "rating",
           },
           Object {
@@ -1933,52 +3469,13 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "PostStatusFilter",
+                "type": "EnumPostStatusFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "status",
           },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "AND",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "OR",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "NOT",
-          },
         ],
+        "isOneOf": false,
         "isWhereType": true,
         "name": "PostScalarWhereInput",
       },
@@ -2283,8 +3780,43 @@ Object {
         "name": "UserUpdateWithWhereUniqueWithoutBubbleInput",
       },
       Object {
-        "atLeastOne": false,
         "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserScalarWhereInput",
+              },
+            ],
+            "name": "AND",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserScalarWhereInput",
+              },
+            ],
+            "name": "OR",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserScalarWhereInput",
+              },
+            ],
+            "name": "NOT",
+          },
           Object {
             "inputType": Array [
               Object {
@@ -2302,27 +3834,12 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "id",
           },
           Object {
             "inputType": Array [
               Object {
                 "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "posts",
-            "nullEqualsUndefined": true,
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
@@ -2336,7 +3853,6 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "firstName",
           },
           Object {
@@ -2356,7 +3872,6 @@ Object {
                 "type": "StringFilter",
               },
             ],
-            "isRelationFilter": false,
             "name": "lastName",
           },
           Object {
@@ -2370,10 +3885,10 @@ Object {
               },
               Object {
                 "isList": false,
-                "isNullable": true,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
-                "type": "NullableStringFilter",
+                "type": "StringNullableFilter",
               },
               Object {
                 "isList": false,
@@ -2383,49 +3898,10 @@ Object {
                 "type": "null",
               },
             ],
-            "isRelationFilter": false,
             "name": "bubbleId",
           },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "AND",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "OR",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserScalarWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "NOT",
-          },
         ],
+        "isOneOf": false,
         "isWhereType": true,
         "name": "UserScalarWhereInput",
       },
@@ -3539,994 +5015,6 @@ Object {
         "isOneOf": false,
         "name": "PostUpdateManyMutationInput",
       },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "IntFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Int",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-        ],
-        "name": "IntFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "every",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "some",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "UserWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "none",
-          },
-        ],
-        "name": "UserFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "FloatFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "Float",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-        ],
-        "name": "FloatFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "enum",
-                "type": "PostStatus",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "enum",
-                "type": "PostStatus",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "enum",
-                "type": "PostStatusFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "enum",
-                "type": "PostStatus",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "enum",
-                "type": "PostStatus",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-        ],
-        "name": "PostStatusFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "StringFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "contains",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "startsWith",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "endsWith",
-          },
-        ],
-        "name": "StringFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "every",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "some",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "object",
-                "type": "PostWhereInput",
-              },
-            ],
-            "isRelationFilter": true,
-            "name": "none",
-          },
-        ],
-        "name": "PostFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "null",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "null",
-              },
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "NullableStringFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "contains",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "startsWith",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": true,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "String",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "endsWith",
-          },
-        ],
-        "name": "NullableStringFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUIDFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "contains",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "startsWith",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "UUID",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "endsWith",
-          },
-        ],
-        "name": "UUIDFilter",
-      },
-      Object {
-        "atLeastOne": false,
-        "fields": Array [
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "equals",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTimeFilter",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "not",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "in",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": true,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "notIn",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "lte",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gt",
-          },
-          Object {
-            "inputType": Array [
-              Object {
-                "isList": false,
-                "isNullable": false,
-                "isRequired": false,
-                "kind": "scalar",
-                "type": "DateTime",
-              },
-            ],
-            "isRelationFilter": false,
-            "name": "gte",
-          },
-        ],
-        "name": "DateTimeFilter",
-      },
     ],
     "outputTypes": Array [
       Object {
@@ -4559,7 +5047,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -4603,6 +5091,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "UserDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "authors",
@@ -4669,7 +5169,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -4713,6 +5213,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "PostDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "posts",
@@ -4812,7 +5324,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -4856,6 +5368,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "UserDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "members",
@@ -5089,7 +5613,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5133,6 +5657,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "BubbleDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "findManyBubble",
@@ -5161,7 +5697,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5205,6 +5741,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "BubbleDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "aggregateBubble",
@@ -5257,7 +5805,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5301,6 +5849,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "UserDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "findManyUser",
@@ -5329,7 +5889,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5373,6 +5933,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "UserDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "aggregateUser",
@@ -5425,7 +5997,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5469,6 +6041,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "PostDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "findManyPost",
@@ -5497,7 +6081,7 @@ Object {
               Object {
                 "inputType": Array [
                   Object {
-                    "isList": false,
+                    "isList": true,
                     "isNullable": false,
                     "isRequired": false,
                     "kind": "object",
@@ -5541,6 +6125,18 @@ Object {
                   },
                 ],
                 "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "PostDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
               },
             ],
             "name": "aggregatePost",

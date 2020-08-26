@@ -5,24 +5,46 @@ exports[`publishes scalars from input types: schema 1`] = `
 
 input DateTimeFilter {
   equals: DateTime
-  not: DateTime
   in: [DateTime!]
   notIn: [DateTime!]
   lt: DateTime
   lte: DateTime
   gt: DateTime
   gte: DateTime
+  not: NestedDateTimeFilter
 }
 
 input IntFilter {
   equals: Int
-  not: Int
   in: [Int!]
   notIn: [Int!]
   lt: Int
   lte: Int
   gt: Int
   gte: Int
+  not: NestedIntFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }
 
 type Query {
@@ -34,11 +56,11 @@ type User {
 }
 
 input UserWhereInput {
-  id: IntFilter
-  date: DateTimeFilter
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IntFilter
+  date: DateTimeFilter
 }
 
 input UserWhereUniqueInput {
@@ -71,7 +93,7 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'id' | 'date' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'date'
       ordering: 'id' | 'date'
     }
   },

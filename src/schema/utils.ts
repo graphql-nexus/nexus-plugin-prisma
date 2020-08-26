@@ -3,7 +3,11 @@ import chalk from 'chalk'
 import * as fs from 'fs-jetpack'
 import { GraphQLResolveInfo } from 'graphql'
 import * as path from 'path'
-import { isDeepStrictEqual } from 'util'
+import { inspect, isDeepStrictEqual } from 'util'
+
+export function dump(x: any) {
+  console.log(inspect(x, { depth: 20 }))
+}
 
 /**
  * Write file contents but first delete the file off disk if present. This is a

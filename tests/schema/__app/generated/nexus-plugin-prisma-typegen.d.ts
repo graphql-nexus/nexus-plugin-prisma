@@ -23,33 +23,33 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     bubbles: {
-      filtering: 'id' | 'createdAt' | 'members' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members'
       ordering: 'id' | 'createdAt'
     }
     users: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
     }
   },
   Bubble: {
     members: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
   }
   User: {
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
     }
   }
   Post: {
     authors: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
     }
   }
