@@ -3,6 +3,11 @@ import { generateSchemaAndTypes } from '../__utils'
 
 it('support models with only one id field (some crud operations are removed)', async () => {
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
   }

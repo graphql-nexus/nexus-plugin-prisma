@@ -4,11 +4,16 @@ import { createRuntimeTestContext } from '../__client-test-context'
 let ctx = createRuntimeTestContext()
 
 it('forwards plugins to t.model', async () => {
-  const datamodel = `
-    model User {
-      id    Int     @id @default(autoincrement())
-      name  String
-    }
+  const datamodel = `  
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+}
   `
   const types = [
     objectType({
@@ -24,7 +29,7 @@ it('forwards plugins to t.model', async () => {
     objectType({
       name: 'Query',
       definition(t: any) {
-        t.crud.users()
+        t.crud.findManyUser()
       },
     }),
   ]
@@ -69,7 +74,7 @@ it('forwards plugins to t.crud', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         authorize() {
           return new Error('nope')
         },

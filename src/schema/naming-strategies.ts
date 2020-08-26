@@ -1,7 +1,5 @@
-import pluralize from 'pluralize'
 import { DmmfTypes } from './dmmf'
 import { upperFirst } from './utils'
-import camelCase from 'camelcase'
 
 export interface ArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string
@@ -26,8 +24,8 @@ export type OperationName = Exclude<keyof DmmfTypes.Mapping, 'model' | 'plural'>
 export type FieldNamingStrategy = Record<OperationName, (fieldName: string, modelName: string) => string>
 
 export const defaultFieldNamingStrategy: FieldNamingStrategy = {
-  findOne: (_, modelName) => camelCase(modelName),
-  findMany: (_, modelName) => camelCase(pluralize(modelName)),
+  findOne: (_, modelName) => `findOne${modelName}`, // camelCase(modelName),
+  findMany: (_, modelName) => `findMany${modelName}`, // camelCase(pluralize(modelName)),
   create: (fieldName) => fieldName,
   update: (fieldName) => fieldName,
   delete: (fieldName) => fieldName,

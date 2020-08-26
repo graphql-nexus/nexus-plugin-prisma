@@ -49,7 +49,6 @@
     "fs-jetpack": "^2.4.0",
     "lodash": "^4.17.19",
     "outdent": "^0.7.1",
-    "pluralize": "^8.0.0",
     "prismjs": "^1.20.0",
     "stacktrace-parser": "^0.1.10"
   },

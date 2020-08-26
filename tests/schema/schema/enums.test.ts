@@ -3,16 +3,21 @@ import { generateSchemaAndTypes } from '../__utils'
 
 it('publishes enum even as output type', async () => {
   const datamodel = `
-    model User {
-      id  Int @id @default(autoincrement())
-      favouriteColor  Color
-    }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
 
-    enum Color {
-      Red
-      Green
-      Blue
-    }
+model User {
+  id  Int @id @default(autoincrement())
+  favouriteColor  Color
+}
+
+enum Color {
+  Red
+  Green
+  Blue
+}
   `
 
   const User = objectType({
@@ -31,6 +36,11 @@ it('publishes enum even as output type', async () => {
 
 it('does not publish enum twice (from input/output type)', async () => {
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
     favouriteColor  Color
@@ -54,7 +64,7 @@ it('does not publish enum twice (from input/output type)', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ filtering: true })
+      t.crud.findManyUser({ filtering: true })
     },
   })
 
@@ -66,6 +76,11 @@ it('does not publish enum twice (from input/output type)', async () => {
 
 it('does not automatically publish input/enum type if already created by user', async () => {
   const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
   model User {
     id  Int @id @default(autoincrement())
     favouriteColor  Color
@@ -94,7 +109,7 @@ it('does not automatically publish input/enum type if already created by user', 
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ filtering: true })
+      t.crud.findManyUser({ filtering: true })
     },
   })
 

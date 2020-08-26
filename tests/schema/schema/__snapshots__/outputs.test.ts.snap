@@ -5,28 +5,50 @@ exports[`publishes scalars from input types: schema 1`] = `
 
 input DateTimeFilter {
   equals: DateTime
-  not: DateTime
   in: [DateTime!]
   notIn: [DateTime!]
   lt: DateTime
   lte: DateTime
   gt: DateTime
   gte: DateTime
+  not: NestedDateTimeFilter
 }
 
 input IntFilter {
   equals: Int
-  not: Int
   in: [Int!]
   notIn: [Int!]
   lt: Int
   lte: Int
   gt: Int
   gte: Int
+  not: NestedIntFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }
 
 type Query {
-  users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+  findManyUser(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
@@ -34,11 +56,11 @@ type User {
 }
 
 input UserWhereInput {
-  id: IntFilter
-  date: DateTimeFilter
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
+  id: IntFilter
+  date: DateTimeFilter
 }
 
 input UserWhereUniqueInput {
@@ -70,8 +92,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'date' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'date'
       ordering: 'id' | 'date'
     }
   },
@@ -83,8 +105,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'

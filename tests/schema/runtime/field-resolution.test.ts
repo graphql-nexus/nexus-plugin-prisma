@@ -5,10 +5,15 @@ let ctx = createRuntimeTestContext()
 
 it('supports camel-cased model name', async () => {
   const datamodel = `
-    model CamelCasedModel {
-      id  Int @id @default(autoincrement())
-      camelCasedField String
-    }
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+  
+  model CamelCasedModel {
+    id  Int @id @default(autoincrement())
+    camelCasedField String
+  }
   `
   const CamelCasedModel = objectType({
     name: 'CamelCasedModel',

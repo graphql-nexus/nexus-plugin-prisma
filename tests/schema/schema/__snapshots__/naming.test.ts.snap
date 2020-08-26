@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`generates publishers pluralized & camel-cased: schema 1`] = `
+exports[`generates publishers findOne and findMany: schema 1`] = `
 "type BatchPayload {
   count: Int!
 }
 
 input IntFilter {
   equals: Int
-  not: Int
   in: [Int!]
   notIn: [Int!]
   lt: Int
   lte: Int
   gt: Int
   gte: Int
+  not: NestedIntFilter
 }
 
 type ModelName {
@@ -33,11 +33,11 @@ input ModelNameUpdateManyMutationInput {
 }
 
 input ModelNameWhereInput {
-  id: IntFilter
-  name: StringFilter
   AND: [ModelNameWhereInput!]
   OR: [ModelNameWhereInput!]
   NOT: [ModelNameWhereInput!]
+  id: IntFilter
+  name: StringFilter
 }
 
 input ModelNameWhereUniqueInput {
@@ -52,14 +52,19 @@ type Mutation {
   updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
 }
 
-type Query {
-  modelName(where: ModelNameWhereUniqueInput!): ModelName
-  modelNames(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }
 
-input StringFilter {
+input NestedStringFilter {
   equals: String
-  not: String
   in: [String!]
   notIn: [String!]
   lt: String
@@ -69,11 +74,31 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  not: NestedStringFilter
+}
+
+type Query {
+  findOneModelName(where: ModelNameWhereUniqueInput!): ModelName
+  findManyModelName(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 "
 `;
 
-exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
+exports[`generates publishers findOne and findMany: typegen 1`] = `
 "import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
@@ -96,8 +121,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    modelNames: {
-      filtering: 'id' | 'name' | 'AND' | 'OR' | 'NOT'
+    findManyModelName: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name'
       ordering: 'id' | 'name'
     }
   },
@@ -109,8 +134,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    modelName: 'ModelName'
-    modelNames: 'ModelName'
+    findOneModelName: 'ModelName'
+    findManyModelName: 'ModelName'
   },
   Mutation: {
     createOneModelName: 'ModelName'

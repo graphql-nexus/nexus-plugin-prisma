@@ -34,8 +34,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id'
       ordering: 'id'
     }
   },
@@ -47,8 +47,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'

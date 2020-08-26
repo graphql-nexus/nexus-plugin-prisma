@@ -3,15 +3,20 @@ import { generateSchemaAndTypes } from '../__utils'
 
 it('only publishes output types that do not map to prisma models', async () => {
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    name String
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  name String
+}
 `
   const Query = Nexus.objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.user()
+      t.crud.findOneUser()
     },
   })
 
@@ -33,10 +38,15 @@ it('only publishes output types that do not map to prisma models', async () => {
 
 it('publishes scalars from input types', async () => {
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    date DateTime
-  }
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://"
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  date DateTime
+}
   `
 
   const User = Nexus.objectType({
@@ -49,7 +59,7 @@ it('publishes scalars from input types', async () => {
   const Query = Nexus.objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({ filtering: true })
+      t.crud.findManyUser({ filtering: true })
     },
   })
 

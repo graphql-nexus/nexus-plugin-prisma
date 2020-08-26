@@ -23,7 +23,7 @@ it('supports custom scalars as output type', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users()
+      t.crud.findManyUser()
     },
   })
 
@@ -76,7 +76,7 @@ it('supports custom scalars as input type', async () => {
   const Query = objectType({
     name: 'Query',
     definition(t: any) {
-      t.crud.users({
+      t.crud.findManyUser({
         filtering: true,
         async resolve(root: any, args: any, ctx: any, info: any, originalResolve: any) {
           before()

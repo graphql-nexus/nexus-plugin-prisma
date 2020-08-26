@@ -32,7 +32,7 @@ input NestedWhereUniqueInput {
 }
 
 type Query {
-  user(where: UserWhereUniqueInput!): User
+  findOneUser(where: UserWhereUniqueInput!): User
 }
 
 type User {
@@ -83,18 +83,18 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'name' | 'nested' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested'
       ordering: 'id' | 'name'
     }
-    nesteds: {
-      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+    findManyNested: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
       ordering: 'id' | 'name' | 'userId'
     }
   },
   User: {
     nested: {
-      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
       ordering: 'id' | 'name' | 'userId'
     }
   }
@@ -106,10 +106,10 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
-    nested: 'Nested'
-    nesteds: 'Nested'
+    findOneUser: 'User'
+    findManyUser: 'User'
+    findOneNested: 'Nested'
+    findManyNested: 'Nested'
   },
   Mutation: {
     createOneUser: 'User'
@@ -176,7 +176,7 @@ Object {
 }
 
 type Query {
-  user(where: UserWhereUniqueInput!): User
+  findOneUser(where: UserWhereUniqueInput!): User
 }
 
 type User {
@@ -215,8 +215,8 @@ interface PrismaModels {
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+    findManyUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'createdWithBrowser'
       ordering: 'id' | 'name' | 'createdWithBrowser'
     }
   },
@@ -228,8 +228,8 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    findOneUser: 'User'
+    findManyUser: 'User'
   },
   Mutation: {
     createOneUser: 'User'

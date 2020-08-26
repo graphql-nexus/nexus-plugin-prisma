@@ -3,8 +3,8 @@ import { mutationType, objectType, queryType } from '@nexus/schema'
 export const Query = queryType({
   definition(t) {
     // ASSERT findOne & findMany
-    t.crud.user()
-    t.crud.users()
+    t.crud.findOneUser()
+    t.crud.findManyUser()
   },
 })
 
