@@ -34,9 +34,11 @@ export interface NexusGenInputs {
   }
   BubbleMembersOrderByInput: { // input type
     firstName?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    locationId?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   BubbleMembersWhereInput: { // input type
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    location?: NexusGenInputs['LocationWhereInput'] | null; // LocationWhereInput
   }
   BubbleWhereInput: { // input type
     AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
@@ -79,6 +81,26 @@ export interface NexusGenInputs {
     lte?: number | null; // Int
     not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
     notIn?: number[] | null; // [Int!]
+  }
+  LocationCreateOneWithoutUserInput: { // input type
+    connect?: NexusGenInputs['LocationWhereUniqueInput'] | null; // LocationWhereUniqueInput
+    create?: NexusGenInputs['LocationCreateWithoutUserInput'] | null; // LocationCreateWithoutUserInput
+  }
+  LocationCreateWithoutUserInput: { // input type
+    city: string; // String!
+    country: string; // String!
+  }
+  LocationWhereInput: { // input type
+    AND?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    city?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    country?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    NOT?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    OR?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    User?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
+  }
+  LocationWhereUniqueInput: { // input type
+    id?: number | null; // Int
   }
   NestedBoolFilter: { // input type
     equals?: boolean | null; // Boolean
@@ -206,6 +228,7 @@ export interface NexusGenInputs {
     firstName: string; // String!
     id?: string | null; // String
     lastName: string; // String!
+    location: NexusGenInputs['LocationCreateOneWithoutUserInput']; // LocationCreateOneWithoutUserInput!
   }
   UserListRelationFilter: { // input type
     every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -219,6 +242,8 @@ export interface NexusGenInputs {
     firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    location?: NexusGenInputs['LocationWhereInput'] | null; // LocationWhereInput
+    locationId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     posts?: NexusGenInputs['PostListRelationFilter'] | null; // PostListRelationFilter
@@ -250,8 +275,14 @@ export interface NexusGenRootTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
   }
+  Location: { // root type
+    city: string; // String!
+    country: string; // String!
+    id: number; // Int!
+  }
   Mutation: {};
   Post: { // root type
+    id: number; // Int!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: {};
@@ -272,6 +303,10 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
   FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
+  LocationCreateOneWithoutUserInput: NexusGenInputs['LocationCreateOneWithoutUserInput'];
+  LocationCreateWithoutUserInput: NexusGenInputs['LocationCreateWithoutUserInput'];
+  LocationWhereInput: NexusGenInputs['LocationWhereInput'];
+  LocationWhereUniqueInput: NexusGenInputs['LocationWhereUniqueInput'];
   NestedBoolFilter: NexusGenInputs['NestedBoolFilter'];
   NestedDateTimeFilter: NexusGenInputs['NestedDateTimeFilter'];
   NestedFloatFilter: NexusGenInputs['NestedFloatFilter'];
@@ -310,12 +345,18 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
   }
+  Location: { // field return type
+    city: string; // String!
+    country: string; // String!
+    id: number; // Int!
+  }
   Mutation: { // field return type
     createOnePost: NexusGenRootTypes['Post']; // Post!
     updateManyPost: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Post: { // field return type
     authors: NexusGenRootTypes['User'][]; // [User!]!
+    id: number; // Int!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: { // field return type
@@ -325,6 +366,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     firstName: string; // String!
     id: string; // String!
+    location: NexusGenRootTypes['Location']; // Location!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
   }
 }
@@ -374,9 +416,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Mutation" | "Post" | "Query" | "User";
+export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Location" | "Mutation" | "Post" | "Query" | "User";
 
-export type NexusGenInputNames = "BoolFilter" | "BubbleCreateOneWithoutMembersInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "NestedBoolFilter" | "NestedDateTimeFilter" | "NestedFloatFilter" | "NestedIntFilter" | "NestedStringFilter" | "NestedStringNullableFilter" | "PostCreateInput" | "PostListRelationFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "PostWhereUniqueInput" | "StringFilter" | "StringNullableFilter" | "UserCreateManyWithoutPostsInput" | "UserCreateWithoutPostsInput" | "UserListRelationFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "BoolFilter" | "BubbleCreateOneWithoutMembersInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "LocationCreateOneWithoutUserInput" | "LocationCreateWithoutUserInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NestedBoolFilter" | "NestedDateTimeFilter" | "NestedFloatFilter" | "NestedIntFilter" | "NestedStringFilter" | "NestedStringNullableFilter" | "PostCreateInput" | "PostListRelationFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "PostWhereUniqueInput" | "StringFilter" | "StringNullableFilter" | "UserCreateManyWithoutPostsInput" | "UserCreateWithoutPostsInput" | "UserListRelationFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "PostStatus" | "SortOrder";
 

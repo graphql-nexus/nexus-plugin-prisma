@@ -25,13 +25,14 @@ export const User = objectType({
     // ASSERT exposes filtering if true
     // ASSERT exposes ordering if true
     t.model.posts({ filtering: true, ordering: true })
+    t.model.location()
   },
 })
 
 export const Post = objectType({
   name: 'Post',
   definition(t) {
-    t.model.id
+    t.model.id()
     // ASSERT pagination disabled
     t.model.authors({ pagination: false })
     // ASSERT enums on models
@@ -48,10 +49,19 @@ export const Bubble = objectType({
     // ASSERT filtering & ordering & pagination for only certain properties
     t.model.members({
       pagination: { after: true, first: false },
-      filtering: { id: true },
-      ordering: { firstName: true },
+      filtering: { id: true, location: true },
+      ordering: { firstName: true, locationId: true },
     })
   },
 })
 
-export const allTypes = [Query, Mutation, User, Post, Bubble]
+export const Location = objectType({
+  name: 'Location',
+  definition(t) {
+    t.model.id()
+    t.model.city()
+    t.model.country()
+  },
+})
+
+export const allTypes = [Query, Mutation, User, Post, Bubble, Location]

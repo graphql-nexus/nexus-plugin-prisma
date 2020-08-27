@@ -16,6 +16,7 @@ type CustomScalars = 'DateTime'
 interface PrismaModels {
   Bubble: Prisma.Bubble
   User: Prisma.User
+  Location: Prisma.Location
   Post: Prisma.Post
 }
 
@@ -27,8 +28,12 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'createdAt' | 'private'
     }
     users: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+    }
+    locations: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
+      ordering: 'id' | 'country' | 'city'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
@@ -37,8 +42,8 @@ interface NexusPrismaInputs {
   },
   Bubble: {
     members: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   User: {
@@ -47,10 +52,16 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'rating' | 'status'
     }
   }
+  Location: {
+    User: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+    }
+  }
   Post: {
     authors: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
 }
@@ -62,6 +73,8 @@ interface NexusPrismaOutputs {
     bubbles: 'Bubble'
     user: 'User'
     users: 'User'
+    location: 'Location'
+    locations: 'Location'
     post: 'Post'
     posts: 'Post'
   },
@@ -78,6 +91,12 @@ interface NexusPrismaOutputs {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
+    createOneLocation: 'Location'
+    updateOneLocation: 'Location'
+    updateManyLocation: 'BatchPayload'
+    deleteOneLocation: 'Location'
+    deleteManyLocation: 'BatchPayload'
+    upsertOneLocation: 'Location'
     createOnePost: 'Post'
     updateOnePost: 'Post'
     updateManyPost: 'BatchPayload'
@@ -96,8 +115,16 @@ interface NexusPrismaOutputs {
     posts: 'Post'
     firstName: 'String'
     lastName: 'String'
+    location: 'Location'
     Bubble: 'Bubble'
     bubbleId: 'String'
+    locationId: 'Int'
+  }
+  Location: {
+    id: 'Int'
+    country: 'String'
+    city: 'String'
+    User: 'User'
   }
   Post: {
     id: 'Int'
@@ -111,6 +138,7 @@ interface NexusPrismaOutputs {
 interface NexusPrismaMethods {
   Bubble: Typegen.NexusPrismaFields<'Bubble'>
   User: Typegen.NexusPrismaFields<'User'>
+  Location: Typegen.NexusPrismaFields<'Location'>
   Post: Typegen.NexusPrismaFields<'Post'>
   Query: Typegen.NexusPrismaFields<'Query'>
   Mutation: Typegen.NexusPrismaFields<'Mutation'>

@@ -35,10 +35,12 @@ input BubbleCreateWithoutMembersInput {
 
 input BubbleMembersOrderByInput {
   firstName: SortOrder
+  locationId: SortOrder
 }
 
 input BubbleMembersWhereInput {
   id: StringFilter
+  location: LocationWhereInput
 }
 
 input BubbleWhereInput {
@@ -88,6 +90,36 @@ input IntFilter {
   lte: Int
   not: NestedIntFilter
   notIn: [Int!]
+}
+
+type Location {
+  city: String!
+  country: String!
+  id: Int!
+}
+
+input LocationCreateOneWithoutUserInput {
+  connect: LocationWhereUniqueInput
+  create: LocationCreateWithoutUserInput
+}
+
+input LocationCreateWithoutUserInput {
+  city: String!
+  country: String!
+}
+
+input LocationWhereInput {
+  AND: [LocationWhereInput!]
+  city: StringFilter
+  country: StringFilter
+  id: IntFilter
+  NOT: [LocationWhereInput!]
+  OR: [LocationWhereInput!]
+  User: UserListRelationFilter
+}
+
+input LocationWhereUniqueInput {
+  id: Int
 }
 
 type Mutation {
@@ -163,6 +195,7 @@ input NestedStringNullableFilter {
 
 type Post {
   authors: [User!]!
+  id: Int!
   status: PostStatus!
 }
 
@@ -249,6 +282,7 @@ input StringNullableFilter {
 type User {
   firstName: String!
   id: String!
+  location: Location!
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
 }
 
@@ -262,6 +296,7 @@ input UserCreateWithoutPostsInput {
   firstName: String!
   id: String
   lastName: String!
+  location: LocationCreateOneWithoutUserInput!
 }
 
 input UserListRelationFilter {
@@ -277,6 +312,8 @@ input UserWhereInput {
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
+  location: LocationWhereInput
+  locationId: IntFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   posts: PostListRelationFilter
@@ -325,9 +362,11 @@ export interface NexusGenInputs {
   }
   BubbleMembersOrderByInput: { // input type
     firstName?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    locationId?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   BubbleMembersWhereInput: { // input type
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    location?: NexusGenInputs['LocationWhereInput'] | null; // LocationWhereInput
   }
   BubbleWhereInput: { // input type
     AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
@@ -370,6 +409,26 @@ export interface NexusGenInputs {
     lte?: number | null; // Int
     not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
     notIn?: number[] | null; // [Int!]
+  }
+  LocationCreateOneWithoutUserInput: { // input type
+    connect?: NexusGenInputs['LocationWhereUniqueInput'] | null; // LocationWhereUniqueInput
+    create?: NexusGenInputs['LocationCreateWithoutUserInput'] | null; // LocationCreateWithoutUserInput
+  }
+  LocationCreateWithoutUserInput: { // input type
+    city: string; // String!
+    country: string; // String!
+  }
+  LocationWhereInput: { // input type
+    AND?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    city?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    country?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    NOT?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    OR?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    User?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
+  }
+  LocationWhereUniqueInput: { // input type
+    id?: number | null; // Int
   }
   NestedBoolFilter: { // input type
     equals?: boolean | null; // Boolean
@@ -497,6 +556,7 @@ export interface NexusGenInputs {
     firstName: string; // String!
     id?: string | null; // String
     lastName: string; // String!
+    location: NexusGenInputs['LocationCreateOneWithoutUserInput']; // LocationCreateOneWithoutUserInput!
   }
   UserListRelationFilter: { // input type
     every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -510,6 +570,8 @@ export interface NexusGenInputs {
     firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    location?: NexusGenInputs['LocationWhereInput'] | null; // LocationWhereInput
+    locationId?: NexusGenInputs['IntFilter'] | null; // IntFilter
     NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
     posts?: NexusGenInputs['PostListRelationFilter'] | null; // PostListRelationFilter
@@ -541,8 +603,14 @@ export interface NexusGenRootTypes {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
   }
+  Location: { // root type
+    city: string; // String!
+    country: string; // String!
+    id: number; // Int!
+  }
   Mutation: {};
   Post: { // root type
+    id: number; // Int!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: {};
@@ -563,6 +631,10 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
   FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
+  LocationCreateOneWithoutUserInput: NexusGenInputs['LocationCreateOneWithoutUserInput'];
+  LocationCreateWithoutUserInput: NexusGenInputs['LocationCreateWithoutUserInput'];
+  LocationWhereInput: NexusGenInputs['LocationWhereInput'];
+  LocationWhereUniqueInput: NexusGenInputs['LocationWhereUniqueInput'];
   NestedBoolFilter: NexusGenInputs['NestedBoolFilter'];
   NestedDateTimeFilter: NexusGenInputs['NestedDateTimeFilter'];
   NestedFloatFilter: NexusGenInputs['NestedFloatFilter'];
@@ -601,12 +673,18 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
   }
+  Location: { // field return type
+    city: string; // String!
+    country: string; // String!
+    id: number; // Int!
+  }
   Mutation: { // field return type
     createOnePost: NexusGenRootTypes['Post']; // Post!
     updateManyPost: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Post: { // field return type
     authors: NexusGenRootTypes['User'][]; // [User!]!
+    id: number; // Int!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
   Query: { // field return type
@@ -616,6 +694,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     firstName: string; // String!
     id: string; // String!
+    location: NexusGenRootTypes['Location']; // Location!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
   }
 }
@@ -665,9 +744,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = \\"BatchPayload\\" | \\"Bubble\\" | \\"Mutation\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
+export type NexusGenObjectNames = \\"BatchPayload\\" | \\"Bubble\\" | \\"Location\\" | \\"Mutation\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = \\"BoolFilter\\" | \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NestedBoolFilter\\" | \\"NestedDateTimeFilter\\" | \\"NestedFloatFilter\\" | \\"NestedIntFilter\\" | \\"NestedStringFilter\\" | \\"NestedStringNullableFilter\\" | \\"PostCreateInput\\" | \\"PostListRelationFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"StringNullableFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserListRelationFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
+export type NexusGenInputNames = \\"BoolFilter\\" | \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"LocationCreateOneWithoutUserInput\\" | \\"LocationCreateWithoutUserInput\\" | \\"LocationWhereInput\\" | \\"LocationWhereUniqueInput\\" | \\"NestedBoolFilter\\" | \\"NestedDateTimeFilter\\" | \\"NestedFloatFilter\\" | \\"NestedIntFilter\\" | \\"NestedStringFilter\\" | \\"NestedStringNullableFilter\\" | \\"PostCreateInput\\" | \\"PostListRelationFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"StringNullableFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserListRelationFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
 export type NexusGenEnumNames = \\"PostStatus\\" | \\"SortOrder\\";
 
@@ -728,6 +807,7 @@ type CustomScalars = 'DateTime'
 interface PrismaModels {
   Bubble: Prisma.Bubble
   User: Prisma.User
+  Location: Prisma.Location
   Post: Prisma.Post
 }
 
@@ -739,8 +819,12 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'createdAt' | 'private'
     }
     users: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+    }
+    locations: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
+      ordering: 'id' | 'country' | 'city'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
@@ -749,8 +833,8 @@ interface NexusPrismaInputs {
   },
   Bubble: {
     members: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   User: {
@@ -759,10 +843,16 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'rating' | 'status'
     }
   }
+  Location: {
+    User: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+    }
+  }
   Post: {
     authors: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
 }
@@ -774,6 +864,8 @@ interface NexusPrismaOutputs {
     bubbles: 'Bubble'
     user: 'User'
     users: 'User'
+    location: 'Location'
+    locations: 'Location'
     post: 'Post'
     posts: 'Post'
   },
@@ -790,6 +882,12 @@ interface NexusPrismaOutputs {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
+    createOneLocation: 'Location'
+    updateOneLocation: 'Location'
+    updateManyLocation: 'BatchPayload'
+    deleteOneLocation: 'Location'
+    deleteManyLocation: 'BatchPayload'
+    upsertOneLocation: 'Location'
     createOnePost: 'Post'
     updateOnePost: 'Post'
     updateManyPost: 'BatchPayload'
@@ -808,8 +906,16 @@ interface NexusPrismaOutputs {
     posts: 'Post'
     firstName: 'String'
     lastName: 'String'
+    location: 'Location'
     Bubble: 'Bubble'
     bubbleId: 'String'
+    locationId: 'Int'
+  }
+  Location: {
+    id: 'Int'
+    country: 'String'
+    city: 'String'
+    User: 'User'
   }
   Post: {
     id: 'Int'
@@ -823,6 +929,7 @@ interface NexusPrismaOutputs {
 interface NexusPrismaMethods {
   Bubble: Typegen.NexusPrismaFields<'Bubble'>
   User: Typegen.NexusPrismaFields<'User'>
+  Location: Typegen.NexusPrismaFields<'Location'>
   Post: Typegen.NexusPrismaFields<'Post'>
   Query: Typegen.NexusPrismaFields<'Query'>
   Mutation: Typegen.NexusPrismaFields<'Mutation'>
@@ -1004,6 +1111,27 @@ Object {
           },
           Object {
             "hasDefaultValue": false,
+            "isGenerated": false,
+            "isId": false,
+            "isList": false,
+            "isReadOnly": false,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "object",
+            "name": "location",
+            "relationFromFields": Array [
+              "locationId",
+            ],
+            "relationName": "LocationToUser",
+            "relationOnDelete": "NONE",
+            "relationToFields": Array [
+              "id",
+            ],
+            "type": "Location",
+          },
+          Object {
+            "hasDefaultValue": false,
             "isGenerated": true,
             "isId": false,
             "isList": false,
@@ -1036,11 +1164,95 @@ Object {
             "name": "bubbleId",
             "type": "String",
           },
+          Object {
+            "hasDefaultValue": false,
+            "isGenerated": false,
+            "isId": false,
+            "isList": false,
+            "isReadOnly": true,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "scalar",
+            "name": "locationId",
+            "type": "Int",
+          },
         ],
         "idFields": Array [],
         "isEmbedded": false,
         "isGenerated": false,
         "name": "User",
+        "uniqueFields": Array [],
+        "uniqueIndexes": Array [],
+      },
+      Object {
+        "dbName": null,
+        "fields": Array [
+          Object {
+            "default": Object {
+              "args": Array [],
+              "name": "autoincrement",
+            },
+            "hasDefaultValue": true,
+            "isGenerated": false,
+            "isId": true,
+            "isList": false,
+            "isReadOnly": false,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "scalar",
+            "name": "id",
+            "type": "Int",
+          },
+          Object {
+            "hasDefaultValue": false,
+            "isGenerated": false,
+            "isId": false,
+            "isList": false,
+            "isReadOnly": false,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "scalar",
+            "name": "country",
+            "type": "String",
+          },
+          Object {
+            "hasDefaultValue": false,
+            "isGenerated": false,
+            "isId": false,
+            "isList": false,
+            "isReadOnly": false,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "scalar",
+            "name": "city",
+            "type": "String",
+          },
+          Object {
+            "hasDefaultValue": false,
+            "isGenerated": true,
+            "isId": false,
+            "isList": true,
+            "isReadOnly": false,
+            "isRequired": false,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "object",
+            "name": "User",
+            "relationFromFields": Array [],
+            "relationName": "LocationToUser",
+            "relationOnDelete": "NONE",
+            "relationToFields": Array [],
+            "type": "User",
+          },
+        ],
+        "idFields": Array [],
+        "isEmbedded": false,
+        "isGenerated": false,
+        "name": "Location",
         "uniqueFields": Array [],
         "uniqueIndexes": Array [],
       },
@@ -1147,6 +1359,19 @@ Object {
       "upsert": "upsertOneUser",
     },
     Object {
+      "aggregate": "aggregateLocation",
+      "create": "createOneLocation",
+      "delete": "deleteOneLocation",
+      "deleteMany": "deleteManyLocation",
+      "findMany": "findManyLocation",
+      "findOne": "findOneLocation",
+      "model": "Location",
+      "plural": "locations",
+      "update": "updateOneLocation",
+      "updateMany": "updateManyLocation",
+      "upsert": "upsertOneLocation",
+    },
+    Object {
       "aggregate": "aggregatePost",
       "create": "createOnePost",
       "delete": "deleteOnePost",
@@ -1191,6 +1416,7 @@ Object {
           "firstName",
           "lastName",
           "bubbleId",
+          "locationId",
         ],
       },
       Object {
@@ -1199,6 +1425,14 @@ Object {
           "id",
           "rating",
           "status",
+        ],
+      },
+      Object {
+        "name": "LocationDistinctFieldEnum",
+        "values": Array [
+          "id",
+          "country",
+          "city",
         ],
       },
     ],
@@ -2393,6 +2627,148 @@ Object {
           Object {
             "inputType": Array [
               Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "AND",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "OR",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "NOT",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "IntFilter",
+              },
+            ],
+            "name": "id",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "StringFilter",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "StringFilter",
+              },
+            ],
+            "name": "city",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserListRelationFilter",
+              },
+            ],
+            "name": "User",
+          },
+        ],
+        "isOneOf": false,
+        "isWhereType": true,
+        "name": "LocationWhereInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "is",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "isNot",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationRelationFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
                 "isList": false,
                 "isNullable": true,
                 "isRequired": false,
@@ -2815,6 +3191,18 @@ Object {
                 "isNullable": true,
                 "isRequired": false,
                 "kind": "object",
+                "type": "LocationWhereInput",
+              },
+            ],
+            "name": "location",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
                 "type": "BubbleWhereInput",
               },
             ],
@@ -2845,6 +3233,25 @@ Object {
               },
             ],
             "name": "bubbleId",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "IntFilter",
+              },
+            ],
+            "name": "locationId",
           },
         ],
         "isOneOf": false,
@@ -3184,6 +3591,18 @@ Object {
             ],
             "name": "bubbleId",
           },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "SortOrder",
+              },
+            ],
+            "name": "locationId",
+          },
         ],
         "isOneOf": true,
         "isOrderType": true,
@@ -3277,6 +3696,68 @@ Object {
               Object {
                 "isList": false,
                 "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "SortOrder",
+              },
+            ],
+            "name": "id",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "SortOrder",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "SortOrder",
+              },
+            ],
+            "name": "city",
+          },
+        ],
+        "isOneOf": true,
+        "isOrderType": true,
+        "name": "LocationOrderByInput",
+      },
+      Object {
+        "atLeastOne": true,
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+            ],
+            "name": "id",
+          },
+        ],
+        "isOneOf": true,
+        "name": "LocationWhereUniqueInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
                 "isRequired": true,
                 "kind": "scalar",
                 "type": "Float",
@@ -3337,6 +3818,66 @@ Object {
               Object {
                 "isList": false,
                 "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "city",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationCreateWithoutUserInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationCreateWithoutUserInput",
+              },
+            ],
+            "name": "create",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereUniqueInput",
+              },
+            ],
+            "name": "connect",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationCreateOneWithoutUserInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "scalar",
                 "type": "String",
@@ -3379,6 +3920,18 @@ Object {
               },
             ],
             "name": "posts",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "LocationCreateOneWithoutUserInput",
+              },
+            ],
+            "name": "location",
           },
         ],
         "isOneOf": false,
@@ -3856,6 +4409,120 @@ Object {
                 "type": "String",
               },
             ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "city",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationUpdateWithoutUserDataInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "LocationUpdateWithoutUserDataInput",
+              },
+            ],
+            "name": "update",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "LocationCreateWithoutUserInput",
+              },
+            ],
+            "name": "create",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationUpsertWithoutUserInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationCreateWithoutUserInput",
+              },
+            ],
+            "name": "create",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationWhereUniqueInput",
+              },
+            ],
+            "name": "connect",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationUpdateWithoutUserDataInput",
+              },
+            ],
+            "name": "update",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationUpsertWithoutUserInput",
+              },
+            ],
+            "name": "upsert",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationUpdateOneRequiredWithoutUserInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
             "name": "id",
           },
           Object {
@@ -3893,6 +4560,18 @@ Object {
               },
             ],
             "name": "posts",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationUpdateOneRequiredWithoutUserInput",
+              },
+            ],
+            "name": "location",
           },
         ],
         "isOneOf": false,
@@ -4048,6 +4727,25 @@ Object {
               },
             ],
             "name": "bubbleId",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "IntFilter",
+              },
+            ],
+            "name": "locationId",
           },
         ],
         "isOneOf": false,
@@ -4505,6 +5203,18 @@ Object {
               Object {
                 "isList": false,
                 "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "LocationCreateOneWithoutUserInput",
+              },
+            ],
+            "name": "location",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
                 "type": "BubbleCreateOneWithoutMembersInput",
@@ -4723,6 +5433,18 @@ Object {
                 "isNullable": false,
                 "isRequired": false,
                 "kind": "object",
+                "type": "LocationUpdateOneRequiredWithoutUserInput",
+              },
+            ],
+            "name": "location",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
                 "type": "BubbleUpdateOneWithoutMembersInput",
               },
             ],
@@ -4811,6 +5533,480 @@ Object {
               },
             ],
             "name": "lastName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostCreateManyWithoutAuthorsInput",
+              },
+            ],
+            "name": "posts",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BubbleCreateOneWithoutMembersInput",
+              },
+            ],
+            "name": "Bubble",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserCreateWithoutLocationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserCreateWithoutLocationInput",
+              },
+            ],
+            "name": "create",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "connect",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserCreateManyWithoutLocationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "city",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserCreateManyWithoutLocationInput",
+              },
+            ],
+            "name": "User",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationCreateInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "id",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "firstName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lastName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "PostUpdateManyWithoutAuthorsInput",
+              },
+            ],
+            "name": "posts",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BubbleUpdateOneWithoutMembersInput",
+              },
+            ],
+            "name": "Bubble",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserUpdateWithoutLocationDataInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "where",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "UserUpdateWithoutLocationDataInput",
+              },
+            ],
+            "name": "data",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserUpdateWithWhereUniqueWithoutLocationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "where",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "UserUpdateWithoutLocationDataInput",
+              },
+            ],
+            "name": "update",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "UserCreateWithoutLocationInput",
+              },
+            ],
+            "name": "create",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserUpsertWithWhereUniqueWithoutLocationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserCreateWithoutLocationInput",
+              },
+            ],
+            "name": "create",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "connect",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "set",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "disconnect",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserWhereUniqueInput",
+              },
+            ],
+            "name": "delete",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserUpdateWithWhereUniqueWithoutLocationInput",
+              },
+            ],
+            "name": "update",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserUpdateManyWithWhereNestedInput",
+              },
+            ],
+            "name": "updateMany",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserScalarWhereInput",
+              },
+            ],
+            "name": "deleteMany",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": true,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserUpsertWithWhereUniqueWithoutLocationInput",
+              },
+            ],
+            "name": "upsert",
+          },
+        ],
+        "isOneOf": false,
+        "name": "UserUpdateManyWithoutLocationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "city",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "UserUpdateManyWithoutLocationInput",
+              },
+            ],
+            "name": "User",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationUpdateInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "country",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "city",
+          },
+        ],
+        "isOneOf": false,
+        "name": "LocationUpdateManyMutationInput",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "id",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "firstName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "String",
+              },
+            ],
+            "name": "lastName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "object",
+                "type": "LocationCreateOneWithoutUserInput",
+              },
+            ],
+            "name": "location",
           },
           Object {
             "inputType": Array [
@@ -4937,6 +6133,18 @@ Object {
               },
             ],
             "name": "lastName",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "LocationUpdateOneRequiredWithoutUserInput",
+              },
+            ],
+            "name": "location",
           },
           Object {
             "inputType": Array [
@@ -5346,6 +6554,128 @@ Object {
               "isNullable": false,
               "isRequired": true,
               "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "country",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "String",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "city",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "String",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "UserWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "UserDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
+              },
+            ],
+            "name": "User",
+            "outputType": Object {
+              "isList": true,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "User",
+            },
+          },
+        ],
+        "name": "Location",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
               "type": "String",
             },
           },
@@ -5457,6 +6787,17 @@ Object {
           },
           Object {
             "args": Array [],
+            "name": "location",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [],
             "name": "Bubble",
             "outputType": Object {
               "isList": false,
@@ -5475,6 +6816,17 @@ Object {
               "isRequired": false,
               "kind": "scalar",
               "type": "String",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "locationId",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
             },
           },
         ],
@@ -5622,7 +6974,23 @@ Object {
         "fields": Array [
           Object {
             "args": Array [],
-            "name": "count",
+            "name": "locationId",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "UserAvgAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "locationId",
             "outputType": Object {
               "isList": false,
               "isNullable": false,
@@ -5632,7 +7000,223 @@ Object {
             },
           },
         ],
+        "name": "UserSumAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "locationId",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+        ],
+        "name": "UserMinAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "locationId",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+        ],
+        "name": "UserMaxAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "count",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "avg",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "UserAvgAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "sum",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "UserSumAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "min",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "UserMinAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "max",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "UserMaxAggregateOutputType",
+            },
+          },
+        ],
         "name": "AggregateUser",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Float",
+            },
+          },
+        ],
+        "name": "LocationAvgAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+        ],
+        "name": "LocationSumAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+        ],
+        "name": "LocationMinAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "id",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+        ],
+        "name": "LocationMaxAggregateOutputType",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "args": Array [],
+            "name": "count",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Int",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "avg",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "LocationAvgAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "sum",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "LocationSumAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "min",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "LocationMinAggregateOutputType",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "max",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "LocationMaxAggregateOutputType",
+            },
+          },
+        ],
+        "name": "AggregateLocation",
       },
       Object {
         "fields": Array [
@@ -6186,6 +7770,198 @@ Object {
               "isRequired": false,
               "kind": "object",
               "type": "User",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "LocationDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
+              },
+            ],
+            "name": "findManyLocation",
+            "outputType": Object {
+              "isList": true,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationOrderByInput",
+                  },
+                ],
+                "name": "orderBy",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "cursor",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "take",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "scalar",
+                    "type": "Int",
+                  },
+                ],
+                "name": "skip",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": true,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "enum",
+                    "type": "LocationDistinctFieldEnum",
+                  },
+                ],
+                "name": "distinct",
+              },
+            ],
+            "name": "aggregateLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "AggregateLocation",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "where",
+              },
+            ],
+            "name": "findOneLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "Location",
             },
           },
           Object {
@@ -6777,6 +8553,198 @@ Object {
               },
             ],
             "name": "deleteManyUser",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "BatchPayload",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationCreateInput",
+                  },
+                ],
+                "name": "data",
+              },
+            ],
+            "name": "createOneLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "where",
+              },
+            ],
+            "name": "deleteOneLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationUpdateInput",
+                  },
+                ],
+                "name": "data",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "where",
+              },
+            ],
+            "name": "updateOneLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": false,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationWhereUniqueInput",
+                  },
+                ],
+                "name": "where",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationCreateInput",
+                  },
+                ],
+                "name": "create",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationUpdateInput",
+                  },
+                ],
+                "name": "update",
+              },
+            ],
+            "name": "upsertOneLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "Location",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": true,
+                    "kind": "object",
+                    "type": "LocationUpdateManyMutationInput",
+                  },
+                ],
+                "name": "data",
+              },
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+            ],
+            "name": "updateManyLocation",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "object",
+              "type": "BatchPayload",
+            },
+          },
+          Object {
+            "args": Array [
+              Object {
+                "inputType": Array [
+                  Object {
+                    "isList": false,
+                    "isNullable": false,
+                    "isRequired": false,
+                    "kind": "object",
+                    "type": "LocationWhereInput",
+                  },
+                ],
+                "name": "where",
+              },
+            ],
+            "name": "deleteManyLocation",
             "outputType": Object {
               "isList": false,
               "isNullable": false,

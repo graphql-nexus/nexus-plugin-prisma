@@ -30,10 +30,12 @@ input BubbleCreateWithoutMembersInput {
 
 input BubbleMembersOrderByInput {
   firstName: SortOrder
+  locationId: SortOrder
 }
 
 input BubbleMembersWhereInput {
   id: StringFilter
+  location: LocationWhereInput
 }
 
 input BubbleWhereInput {
@@ -83,6 +85,36 @@ input IntFilter {
   lte: Int
   not: NestedIntFilter
   notIn: [Int!]
+}
+
+type Location {
+  city: String!
+  country: String!
+  id: Int!
+}
+
+input LocationCreateOneWithoutUserInput {
+  connect: LocationWhereUniqueInput
+  create: LocationCreateWithoutUserInput
+}
+
+input LocationCreateWithoutUserInput {
+  city: String!
+  country: String!
+}
+
+input LocationWhereInput {
+  AND: [LocationWhereInput!]
+  city: StringFilter
+  country: StringFilter
+  id: IntFilter
+  NOT: [LocationWhereInput!]
+  OR: [LocationWhereInput!]
+  User: UserListRelationFilter
+}
+
+input LocationWhereUniqueInput {
+  id: Int
 }
 
 type Mutation {
@@ -158,6 +190,7 @@ input NestedStringNullableFilter {
 
 type Post {
   authors: [User!]!
+  id: Int!
   status: PostStatus!
 }
 
@@ -244,6 +277,7 @@ input StringNullableFilter {
 type User {
   firstName: String!
   id: String!
+  location: Location!
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
 }
 
@@ -257,6 +291,7 @@ input UserCreateWithoutPostsInput {
   firstName: String!
   id: String
   lastName: String!
+  location: LocationCreateOneWithoutUserInput!
 }
 
 input UserListRelationFilter {
@@ -272,6 +307,8 @@ input UserWhereInput {
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
+  location: LocationWhereInput
+  locationId: IntFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   posts: PostListRelationFilter
