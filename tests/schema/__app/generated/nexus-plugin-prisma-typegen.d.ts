@@ -23,8 +23,8 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     bubbles: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members'
-      ordering: 'id' | 'createdAt'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
+      ordering: 'id' | 'createdAt' | 'private'
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
@@ -89,6 +89,7 @@ interface NexusPrismaOutputs {
     id: 'String'
     createdAt: 'DateTime'
     members: 'User'
+    private: 'Boolean'
   }
   User: {
     id: 'String'

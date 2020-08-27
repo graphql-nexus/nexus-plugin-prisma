@@ -11,6 +11,11 @@ type BatchPayload {
   count: Int!
 }
 
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 type Bubble {
   createdAt: DateTime!
   id: String!
@@ -25,6 +30,7 @@ input BubbleCreateOneWithoutMembersInput {
 input BubbleCreateWithoutMembersInput {
   createdAt: DateTime
   id: String
+  private: Boolean!
 }
 
 input BubbleMembersOrderByInput {
@@ -42,6 +48,7 @@ input BubbleWhereInput {
   members: UserListRelationFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
+  private: BoolFilter
 }
 
 input BubbleWhereUniqueInput {
@@ -86,6 +93,11 @@ input IntFilter {
 type Mutation {
   createOnePost(data: PostCreateInput!): Post!
   updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
 input NestedDateTimeFilter {
@@ -298,6 +310,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  BoolFilter: { // input type
+    equals?: boolean | null; // Boolean
+    not?: NexusGenInputs['NestedBoolFilter'] | null; // NestedBoolFilter
+  }
   BubbleCreateOneWithoutMembersInput: { // input type
     connect?: NexusGenInputs['BubbleWhereUniqueInput'] | null; // BubbleWhereUniqueInput
     create?: NexusGenInputs['BubbleCreateWithoutMembersInput'] | null; // BubbleCreateWithoutMembersInput
@@ -305,6 +321,7 @@ export interface NexusGenInputs {
   BubbleCreateWithoutMembersInput: { // input type
     createdAt?: NexusGenScalars['DateTime'] | null; // DateTime
     id?: string | null; // String
+    private: boolean; // Boolean!
   }
   BubbleMembersOrderByInput: { // input type
     firstName?: NexusGenEnums['SortOrder'] | null; // SortOrder
@@ -319,6 +336,7 @@ export interface NexusGenInputs {
     members?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
     NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
     OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    private?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
   }
   BubbleWhereUniqueInput: { // input type
     id?: string | null; // String
@@ -352,6 +370,10 @@ export interface NexusGenInputs {
     lte?: number | null; // Int
     not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
     notIn?: number[] | null; // [Int!]
+  }
+  NestedBoolFilter: { // input type
+    equals?: boolean | null; // Boolean
+    not?: NexusGenInputs['NestedBoolFilter'] | null; // NestedBoolFilter
   }
   NestedDateTimeFilter: { // input type
     equals?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -531,6 +553,7 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  BoolFilter: NexusGenInputs['BoolFilter'];
   BubbleCreateOneWithoutMembersInput: NexusGenInputs['BubbleCreateOneWithoutMembersInput'];
   BubbleCreateWithoutMembersInput: NexusGenInputs['BubbleCreateWithoutMembersInput'];
   BubbleMembersOrderByInput: NexusGenInputs['BubbleMembersOrderByInput'];
@@ -540,6 +563,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
   FloatFilter: NexusGenInputs['FloatFilter'];
   IntFilter: NexusGenInputs['IntFilter'];
+  NestedBoolFilter: NexusGenInputs['NestedBoolFilter'];
   NestedDateTimeFilter: NexusGenInputs['NestedDateTimeFilter'];
   NestedFloatFilter: NexusGenInputs['NestedFloatFilter'];
   NestedIntFilter: NexusGenInputs['NestedIntFilter'];
@@ -643,7 +667,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = \\"BatchPayload\\" | \\"Bubble\\" | \\"Mutation\\" | \\"Post\\" | \\"Query\\" | \\"User\\";
 
-export type NexusGenInputNames = \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NestedDateTimeFilter\\" | \\"NestedFloatFilter\\" | \\"NestedIntFilter\\" | \\"NestedStringFilter\\" | \\"NestedStringNullableFilter\\" | \\"PostCreateInput\\" | \\"PostListRelationFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"StringNullableFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserListRelationFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
+export type NexusGenInputNames = \\"BoolFilter\\" | \\"BubbleCreateOneWithoutMembersInput\\" | \\"BubbleCreateWithoutMembersInput\\" | \\"BubbleMembersOrderByInput\\" | \\"BubbleMembersWhereInput\\" | \\"BubbleWhereInput\\" | \\"BubbleWhereUniqueInput\\" | \\"DateTimeFilter\\" | \\"FloatFilter\\" | \\"IntFilter\\" | \\"NestedBoolFilter\\" | \\"NestedDateTimeFilter\\" | \\"NestedFloatFilter\\" | \\"NestedIntFilter\\" | \\"NestedStringFilter\\" | \\"NestedStringNullableFilter\\" | \\"PostCreateInput\\" | \\"PostListRelationFilter\\" | \\"PostOrderByInput\\" | \\"PostUpdateManyMutationInput\\" | \\"PostWhereInput\\" | \\"PostWhereUniqueInput\\" | \\"StringFilter\\" | \\"StringNullableFilter\\" | \\"UserCreateManyWithoutPostsInput\\" | \\"UserCreateWithoutPostsInput\\" | \\"UserListRelationFilter\\" | \\"UserWhereInput\\" | \\"UserWhereUniqueInput\\";
 
 export type NexusGenEnumNames = \\"PostStatus\\" | \\"SortOrder\\";
 
@@ -711,8 +735,8 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     bubbles: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members'
-      ordering: 'id' | 'createdAt'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
+      ordering: 'id' | 'createdAt' | 'private'
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'Bubble' | 'bubbleId'
@@ -777,6 +801,7 @@ interface NexusPrismaOutputs {
     id: 'String'
     createdAt: 'DateTime'
     members: 'User'
+    private: 'Boolean'
   }
   User: {
     id: 'String'
@@ -890,6 +915,19 @@ Object {
             "relationOnDelete": "NONE",
             "relationToFields": Array [],
             "type": "User",
+          },
+          Object {
+            "hasDefaultValue": false,
+            "isGenerated": false,
+            "isId": false,
+            "isList": false,
+            "isReadOnly": false,
+            "isRequired": true,
+            "isUnique": false,
+            "isUpdatedAt": false,
+            "kind": "scalar",
+            "name": "private",
+            "type": "Boolean",
           },
         ],
         "idFields": Array [],
@@ -1143,6 +1181,7 @@ Object {
         "values": Array [
           "id",
           "createdAt",
+          "private",
         ],
       },
       Object {
@@ -2859,6 +2898,73 @@ Object {
           Object {
             "inputType": Array [
               Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedBoolFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "NestedBoolFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "equals",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+              Object {
+                "isList": false,
+                "isNullable": true,
+                "isRequired": false,
+                "kind": "object",
+                "type": "NestedBoolFilter",
+              },
+            ],
+            "name": "not",
+          },
+        ],
+        "isOneOf": false,
+        "name": "BoolFilter",
+      },
+      Object {
+        "fields": Array [
+          Object {
+            "inputType": Array [
+              Object {
                 "isList": true,
                 "isNullable": false,
                 "isRequired": false,
@@ -2942,6 +3048,25 @@ Object {
             ],
             "name": "members",
           },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "object",
+                "type": "BoolFilter",
+              },
+            ],
+            "name": "private",
+          },
         ],
         "isOneOf": false,
         "isWhereType": true,
@@ -2972,6 +3097,18 @@ Object {
               },
             ],
             "name": "createdAt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "enum",
+                "type": "SortOrder",
+              },
+            ],
+            "name": "private",
           },
         ],
         "isOneOf": true,
@@ -3302,6 +3439,18 @@ Object {
               },
             ],
             "name": "createdAt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "private",
           },
           Object {
             "inputType": Array [
@@ -4165,6 +4314,18 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "private",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "UserUpdateManyWithoutBubbleInput",
               },
@@ -4201,6 +4362,18 @@ Object {
             ],
             "name": "createdAt",
           },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "private",
+          },
         ],
         "isOneOf": false,
         "name": "BubbleUpdateManyMutationInput",
@@ -4230,6 +4403,18 @@ Object {
               },
             ],
             "name": "createdAt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": true,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "private",
           },
         ],
         "isOneOf": false,
@@ -4356,6 +4541,18 @@ Object {
               },
             ],
             "name": "createdAt",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+            ],
+            "name": "private",
           },
         ],
         "isOneOf": false,
@@ -5389,6 +5586,17 @@ Object {
               "isRequired": false,
               "kind": "object",
               "type": "User",
+            },
+          },
+          Object {
+            "args": Array [],
+            "name": "private",
+            "outputType": Object {
+              "isList": false,
+              "isNullable": false,
+              "isRequired": true,
+              "kind": "scalar",
+              "type": "Boolean",
             },
           },
         ],

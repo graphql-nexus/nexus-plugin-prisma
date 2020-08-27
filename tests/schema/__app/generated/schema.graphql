@@ -6,6 +6,11 @@ type BatchPayload {
   count: Int!
 }
 
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 type Bubble {
   createdAt: DateTime!
   id: String!
@@ -20,6 +25,7 @@ input BubbleCreateOneWithoutMembersInput {
 input BubbleCreateWithoutMembersInput {
   createdAt: DateTime
   id: String
+  private: Boolean!
 }
 
 input BubbleMembersOrderByInput {
@@ -37,6 +43,7 @@ input BubbleWhereInput {
   members: UserListRelationFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
+  private: BoolFilter
 }
 
 input BubbleWhereUniqueInput {
@@ -81,6 +88,11 @@ input IntFilter {
 type Mutation {
   createOnePost(data: PostCreateInput!): Post!
   updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
+}
+
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
 }
 
 input NestedDateTimeFilter {
