@@ -7,6 +7,7 @@ model Bubble {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   members   User[]
+  private   Boolean
 }
 
 model User {
@@ -14,7 +15,14 @@ model User {
   posts     Post[]
   firstName String
   lastName  String
+  location  Location
   // likes     Post[]
+}
+
+model Location {
+  id        Int @id @default(autoincrement())
+  country   String
+  city      String
 }
 
 model Post {

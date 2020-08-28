@@ -41,7 +41,7 @@ it('supports nested query with one id field', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, Parent, Child],
   })
@@ -115,7 +115,7 @@ it('supports nested query with compound ids', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, Parent, Child],
   })
@@ -193,7 +193,7 @@ it('supports nested query without id but one unique', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, Parent, Child],
   })
@@ -262,7 +262,7 @@ it('supports nested query without id but multiple uniques', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, Parent, Child],
   })
@@ -340,7 +340,7 @@ it('supports nested query without id but compound uniques', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, Parent, Child],
   })

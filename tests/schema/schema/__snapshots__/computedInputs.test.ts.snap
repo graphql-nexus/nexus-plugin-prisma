@@ -84,17 +84,17 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'id' | 'name' | 'nested' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested'
       ordering: 'id' | 'name'
     }
     nesteds: {
-      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
       ordering: 'id' | 'name' | 'userId'
     }
   },
   User: {
     nested: {
-      filtering: 'id' | 'name' | 'userId' | 'AND' | 'OR' | 'NOT' | 'User'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
       ordering: 'id' | 'name' | 'userId'
     }
   }
@@ -216,7 +216,7 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'id' | 'name' | 'createdWithBrowser' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'createdWithBrowser'
       ordering: 'id' | 'name' | 'createdWithBrowser'
     }
   },

@@ -25,7 +25,7 @@ it('supports camel-cased model name', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, CamelCasedModel],
   })
@@ -76,7 +76,7 @@ it('supports aliased model fields', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, AliasedFieldModel],
   })

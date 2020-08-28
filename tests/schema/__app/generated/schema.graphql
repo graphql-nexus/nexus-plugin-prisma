@@ -6,10 +6,15 @@ type BatchPayload {
   count: Int!
 }
 
+input BoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
 type Bubble {
   createdAt: DateTime!
   id: String!
-  members(after: UserWhereUniqueInput, orderBy: BubbleMembersOrderByInput, where: BubbleMembersWhereInput): [User!]!
+  members(after: UserWhereUniqueInput, orderBy: [BubbleMembersOrderByInput!], where: BubbleMembersWhereInput): [User!]!
 }
 
 input BubbleCreateOneWithoutMembersInput {
@@ -20,23 +25,27 @@ input BubbleCreateOneWithoutMembersInput {
 input BubbleCreateWithoutMembersInput {
   createdAt: DateTime
   id: String
+  private: Boolean!
 }
 
 input BubbleMembersOrderByInput {
   firstName: SortOrder
+  locationId: SortOrder
 }
 
 input BubbleMembersWhereInput {
   id: StringFilter
+  location: LocationWhereInput
 }
 
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
   createdAt: DateTimeFilter
-  id: UUIDFilter
-  members: UserFilter
+  id: StringFilter
+  members: UserListRelationFilter
   NOT: [BubbleWhereInput!]
   OR: [BubbleWhereInput!]
+  private: BoolFilter
 }
 
 input BubbleWhereUniqueInput {
@@ -52,7 +61,7 @@ input DateTimeFilter {
   in: [DateTime!]
   lt: DateTime
   lte: DateTime
-  not: DateTime
+  not: NestedDateTimeFilter
   notIn: [DateTime!]
 }
 
@@ -63,7 +72,7 @@ input FloatFilter {
   in: [Float!]
   lt: Float
   lte: Float
-  not: Float
+  not: NestedFloatFilter
   notIn: [Float!]
 }
 
@@ -74,8 +83,38 @@ input IntFilter {
   in: [Int!]
   lt: Int
   lte: Int
-  not: Int
+  not: NestedIntFilter
   notIn: [Int!]
+}
+
+type Location {
+  city: String!
+  country: String!
+  id: Int!
+}
+
+input LocationCreateOneWithoutUserInput {
+  connect: LocationWhereUniqueInput
+  create: LocationCreateWithoutUserInput
+}
+
+input LocationCreateWithoutUserInput {
+  city: String!
+  country: String!
+}
+
+input LocationWhereInput {
+  AND: [LocationWhereInput!]
+  city: StringFilter
+  country: StringFilter
+  id: IntFilter
+  NOT: [LocationWhereInput!]
+  OR: [LocationWhereInput!]
+  User: UserListRelationFilter
+}
+
+input LocationWhereUniqueInput {
+  id: Int
 }
 
 type Mutation {
@@ -83,7 +122,45 @@ type Mutation {
   updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
 }
 
-input NullableStringFilter {
+input NestedBoolFilter {
+  equals: Boolean
+  not: NestedBoolFilter
+}
+
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedFloatFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatFilter
+  notIn: [Float!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
   contains: String
   endsWith: String
   equals: String
@@ -92,13 +169,28 @@ input NullableStringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
 }
 
 type Post {
   authors: [User!]!
+  id: Int!
   status: PostStatus!
 }
 
@@ -108,7 +200,7 @@ input PostCreateInput {
   status: PostStatus!
 }
 
-input PostFilter {
+input PostListRelationFilter {
   every: PostWhereInput
   none: PostWhereInput
   some: PostWhereInput
@@ -132,7 +224,7 @@ input PostUpdateManyMutationInput {
 
 input PostWhereInput {
   AND: [PostWhereInput!]
-  authors: UserFilter
+  authors: UserListRelationFilter
   id: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -163,7 +255,21 @@ input StringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
 }
@@ -171,7 +277,8 @@ input StringFilter {
 type User {
   firstName: String!
   id: String!
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: PostOrderByInput, where: PostWhereInput): [Post!]!
+  location: Location!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
 }
 
 input UserCreateManyWithoutPostsInput {
@@ -184,9 +291,10 @@ input UserCreateWithoutPostsInput {
   firstName: String!
   id: String
   lastName: String!
+  location: LocationCreateOneWithoutUserInput!
 }
 
-input UserFilter {
+input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
@@ -195,31 +303,17 @@ input UserFilter {
 input UserWhereInput {
   AND: [UserWhereInput!]
   Bubble: BubbleWhereInput
-  bubbleId: NullableStringFilter
+  bubbleId: StringNullableFilter
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
+  location: LocationWhereInput
+  locationId: IntFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
-  posts: PostFilter
+  posts: PostListRelationFilter
 }
 
 input UserWhereUniqueInput {
   id: String
-}
-
-scalar UUID
-
-input UUIDFilter {
-  contains: UUID
-  endsWith: UUID
-  equals: UUID
-  gt: UUID
-  gte: UUID
-  in: [UUID!]
-  lt: UUID
-  lte: UUID
-  not: UUID
-  notIn: [UUID!]
-  startsWith: UUID
 }

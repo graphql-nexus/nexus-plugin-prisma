@@ -29,7 +29,7 @@ it('forwards plugins to t.model', async () => {
     }),
   ]
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types,
     plugins: [fieldAuthorizePlugin()],
@@ -77,7 +77,7 @@ it('forwards plugins to t.crud', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, User],
     plugins: [fieldAuthorizePlugin()],

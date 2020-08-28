@@ -18,7 +18,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn build
-      - run: yarn -s test:unit
+      - run: yarn -s test:fw:unit
   schema-tests:
     runs-on: macos-latest
     strategy:
@@ -32,7 +32,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn build
-      - run: yarn -s test:schema
+      - run: yarn -s test:lib
   publish:
     needs: [unit-tests, schema-tests]
     runs-on: ubuntu-latest

@@ -16,6 +16,7 @@ type CustomScalars = 'DateTime'
 interface PrismaModels {
   Bubble: Prisma.Bubble
   User: Prisma.User
+  Location: Prisma.Location
   Post: Prisma.Post
 }
 
@@ -23,34 +24,44 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     bubbles: {
-      filtering: 'id' | 'createdAt' | 'members' | 'AND' | 'OR' | 'NOT'
-      ordering: 'id' | 'createdAt'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
+      ordering: 'id' | 'createdAt' | 'private'
     }
     users: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+    }
+    locations: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
+      ordering: 'id' | 'country' | 'city'
     }
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
     }
   },
   Bubble: {
     members: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   User: {
     posts: {
-      filtering: 'id' | 'authors' | 'rating' | 'status' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
       ordering: 'id' | 'rating' | 'status'
+    }
+  }
+  Location: {
+    User: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   Post: {
     authors: {
-      filtering: 'id' | 'posts' | 'firstName' | 'lastName' | 'bubbleId' | 'AND' | 'OR' | 'NOT' | 'Bubble'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
 }
@@ -62,6 +73,8 @@ interface NexusPrismaOutputs {
     bubbles: 'Bubble'
     user: 'User'
     users: 'User'
+    location: 'Location'
+    locations: 'Location'
     post: 'Post'
     posts: 'Post'
   },
@@ -78,6 +91,12 @@ interface NexusPrismaOutputs {
     deleteOneUser: 'User'
     deleteManyUser: 'BatchPayload'
     upsertOneUser: 'User'
+    createOneLocation: 'Location'
+    updateOneLocation: 'Location'
+    updateManyLocation: 'BatchPayload'
+    deleteOneLocation: 'Location'
+    deleteManyLocation: 'BatchPayload'
+    upsertOneLocation: 'Location'
     createOnePost: 'Post'
     updateOnePost: 'Post'
     updateManyPost: 'BatchPayload'
@@ -89,14 +108,23 @@ interface NexusPrismaOutputs {
     id: 'String'
     createdAt: 'DateTime'
     members: 'User'
+    private: 'Boolean'
   }
   User: {
     id: 'String'
     posts: 'Post'
     firstName: 'String'
     lastName: 'String'
+    location: 'Location'
     Bubble: 'Bubble'
     bubbleId: 'String'
+    locationId: 'Int'
+  }
+  Location: {
+    id: 'Int'
+    country: 'String'
+    city: 'String'
+    User: 'User'
   }
   Post: {
     id: 'Int'
@@ -110,6 +138,7 @@ interface NexusPrismaOutputs {
 interface NexusPrismaMethods {
   Bubble: Typegen.NexusPrismaFields<'Bubble'>
   User: Typegen.NexusPrismaFields<'User'>
+  Location: Typegen.NexusPrismaFields<'Location'>
   Post: Typegen.NexusPrismaFields<'Post'>
   Query: Typegen.NexusPrismaFields<'Query'>
   Mutation: Typegen.NexusPrismaFields<'Mutation'>

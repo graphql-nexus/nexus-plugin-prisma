@@ -28,6 +28,10 @@ describe('getGenerators', () => {
   it('scaffolds a prisma client block if not present already', async () => {
     const content =
       stripIndent`
+        datasource db {
+          provider = "sqlite"
+          url = "file:./db.sqlite"
+        }
         model Foo {
           id Int @id
         }
@@ -35,7 +39,11 @@ describe('getGenerators', () => {
     ctx.fs.write(ctx.schemaPath, content)
     await getGenerators(ctx.nexus, ctx.schemaPath)
     expect(ctx.fs.read(ctx.schemaPath)).toMatchInlineSnapshot(`
-      "model Foo {
+      "datasource db {
+        provider = \\"sqlite\\"
+        url = \\"file:./db.sqlite\\"
+      }
+      model Foo {
         id Int @id
       }
 
@@ -57,6 +65,10 @@ describe('getGenerators', () => {
   it('scaffolds a model if none present', async () => {
     const content =
       stripIndent`
+        datasource db {
+          provider = "sqlite"
+          url = "file:./db.sqlite"
+        }
         generator prisma_client {
           provider = "prisma-client-js"
         }
@@ -64,7 +76,11 @@ describe('getGenerators', () => {
     ctx.fs.write(ctx.schemaPath, content)
     await getGenerators(ctx.nexus, ctx.schemaPath)
     expect(ctx.fs.read(ctx.schemaPath)).toMatchInlineSnapshot(`
-      "generator prisma_client {
+      "datasource db {
+        provider = \\"sqlite\\"
+        url = \\"file:./db.sqlite\\"
+      }
+      generator prisma_client {
         provider = \\"prisma-client-js\\"
       }
 
@@ -91,10 +107,23 @@ describe('getGenerators', () => {
   })
 
   it('scaffolds both model and generator if none present', async () => {
-    ctx.fs.write(ctx.schemaPath, '')
+    ctx.fs.write(
+      ctx.schemaPath,
+      `
+        datasource db {
+          provider = "sqlite"
+          url = "file:./db.sqlite"
+        }
+      `
+    )
     await getGenerators(ctx.nexus, ctx.schemaPath)
     expect(ctx.fs.read(ctx.schemaPath)).toMatchInlineSnapshot(`
       "
+              datasource db {
+                provider = \\"sqlite\\"
+                url = \\"file:./db.sqlite\\"
+              }
+            
       // This \\"Example\\" model has been generated for you by Nexus.
       // Nexus does this when you do not have any models defined.
       // For more detail and examples of working with your Prisma

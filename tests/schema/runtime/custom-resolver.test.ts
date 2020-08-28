@@ -1,6 +1,6 @@
 import { objectType } from '@nexus/schema'
-import { createRuntimeTestContext } from '../__client-test-context'
 import { GraphQLFieldResolver, GraphQLResolveInfo } from 'graphql'
+import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()
 
@@ -42,7 +42,7 @@ it('supports custom resolver for t.crud', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, User],
   })
@@ -103,7 +103,7 @@ it('supports custom resolver for t.model', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, User],
   })

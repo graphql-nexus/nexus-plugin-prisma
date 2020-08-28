@@ -1,4 +1,4 @@
-import { DmmfTypes, DmmfDocument } from '../../../src/schema/dmmf'
+import { DmmfDocument, DmmfTypes } from '../../../src/schema/dmmf'
 import { getCrudMappedFields } from '../../../src/schema/mapping'
 import { OperationName } from '../../../src/schema/naming-strategies'
 import { transformNullsToUndefined } from '../../../src/schema/null'
@@ -41,17 +41,17 @@ async function getSchemaArgsForCrud(
 
 test('findMany: converts nulls to undefined when fields are not nullable', async () => {
   const datamodel = `
-  model User {
-    id        String   @default(cuid()) @id
-    email     String?  @unique
-    birthDate DateTime
-    posts     Post[]
-  }
-  
-  model Post {
-    id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
-  }
+    model User {
+      id        String   @default(cuid()) @id
+      email     String?  @unique
+      birthDate DateTime
+      posts     Post[]
+    }
+    
+    model Post {
+      id      String @default(cuid()) @id
+      authors User[] @relation(references: [id])
+    }
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'findMany')
   const incomingArgs = {
@@ -165,7 +165,7 @@ test('do not convert args that are arrays', async () => {
   const indexedSchemaArgs = indexBy(schemaArgs, 'name')
   const incomingArgs = {
     where: {
-      OR: [{ something: true }, { something: false }]
+      OR: [{ something: true }, { something: false }],
     },
   }
 

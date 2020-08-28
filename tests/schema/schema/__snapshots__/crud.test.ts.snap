@@ -35,7 +35,7 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'id' | 'AND' | 'OR' | 'NOT'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id'
       ordering: 'id'
     }
   },

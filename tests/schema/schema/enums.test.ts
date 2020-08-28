@@ -31,17 +31,17 @@ it('publishes enum even as output type', async () => {
 
 it('does not publish enum twice (from input/output type)', async () => {
   const datamodel = `
-  model User {
-    id  Int @id @default(autoincrement())
-    favouriteColor  Color
-  }
+    model User {
+      id  Int @id @default(autoincrement())
+      favouriteColor  Color
+    }
 
-  enum Color {
-    Red
-    Green
-    Blue
-  }
-`
+    enum Color {
+      Red
+      Green
+      Blue
+    }
+  `
 
   const User = objectType({
     name: 'User',

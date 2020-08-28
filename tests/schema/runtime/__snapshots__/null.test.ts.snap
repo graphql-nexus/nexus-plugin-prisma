@@ -45,7 +45,7 @@ Object {
       "AND": Object {
         "birthDate": undefined,
       },
-      "posts": null,
+      "posts": undefined,
     },
   },
 }
@@ -57,8 +57,8 @@ Object {
     "authors": Object {
       "every": Object {
         "birthDate": undefined,
-        "email": null,
-        "posts": null,
+        "email": undefined,
+        "posts": undefined,
       },
     },
     "id": undefined,

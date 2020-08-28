@@ -1,24 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`publishes date and json scalar output types: schema 1`] = `
-"scalar DateTime
-
-scalar Json
-
-type Query {
-  ok: Boolean!
+exports[`orderby fields can be allow-listed: schema 1`] = `
+"type Foo {
+  id: Int!
 }
 
-type User {
-  id: Int!
-  date: DateTime!
-  json: Json!
-  optionalJson: Json
+input FooWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  foos(orderBy: [QueryFoosOrderByInput!], first: Int, last: Int, before: FooWhereUniqueInput, after: FooWhereUniqueInput): [Foo!]!
+}
+
+input QueryFoosOrderByInput {
+  b: SortOrder
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 "
 `;
 
-exports[`publishes date and json scalar output types: typegen 1`] = `
+exports[`orderby fields can be allow-listed: typegen 1`] = `
 "import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
@@ -31,22 +37,22 @@ type Pagination = {
 }
 
 // Prisma custom scalar names
-type CustomScalars = 'DateTime' | 'Json'
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
 
 // Prisma model type definitions
 interface PrismaModels {
-  User: Prisma.User
+  Foo: Prisma.Foo
 }
 
 // Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
-    users: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'date' | 'json' | 'optionalJson'
-      ordering: 'id' | 'date' | 'json' | 'optionalJson'
+    foos: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'b' | 'c'
+      ordering: 'id' | 'a' | 'b' | 'c'
     }
   },
-  User: {
+  Foo: {
 
   }
 }
@@ -54,28 +60,28 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
-    users: 'User'
+    foo: 'Foo'
+    foos: 'Foo'
   },
   Mutation: {
-    createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
-    deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
-    upsertOneUser: 'User'
+    createOneFoo: 'Foo'
+    updateOneFoo: 'Foo'
+    updateManyFoo: 'BatchPayload'
+    deleteOneFoo: 'Foo'
+    deleteManyFoo: 'BatchPayload'
+    upsertOneFoo: 'Foo'
   },
-  User: {
+  Foo: {
     id: 'Int'
-    date: 'DateTime'
-    json: 'Json'
-    optionalJson: 'Json'
+    a: 'String'
+    b: 'String'
+    c: 'String'
   }
 }
 
 // Helper to gather all methods relative to a model
 interface NexusPrismaMethods {
-  User: Typegen.NexusPrismaFields<'User'>
+  Foo: Typegen.NexusPrismaFields<'Foo'>
   Query: Typegen.NexusPrismaFields<'Query'>
   Mutation: Typegen.NexusPrismaFields<'Mutation'>
 }
