@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`runs through list of order-by types 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "a": "a",
+      "b": "a",
+      "c": "a",
+      "id": 1,
+      "name": "Foo",
+    },
+    Object {
+      "a": "b",
+      "b": "z",
+      "c": "b",
+      "id": 3,
+      "name": "Bar",
+    },
+    Object {
+      "a": "b",
+      "b": "b",
+      "c": "b",
+      "id": 2,
+      "name": "Qux",
+    },
+  ],
+}
+`;

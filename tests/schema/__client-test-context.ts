@@ -14,7 +14,7 @@ import { getEnginePath, getEngineVersion } from '../__ensure-engine'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
-  getContext: (args: {
+  setup: (args: {
     datamodel: string
     types: any[]
     plugins?: Nexus.core.NexusPlugin[]
@@ -47,7 +47,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   afterEach(teardownCtx)
 
   return {
-    async getContext({ datamodel, types, plugins, scalars }) {
+    async setup({ datamodel, types, plugins, scalars }) {
       try {
         // Force query engine binary path
         process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')

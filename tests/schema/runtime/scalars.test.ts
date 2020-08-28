@@ -1,7 +1,7 @@
 import { objectType } from '@nexus/schema'
-import { createRuntimeTestContext } from '../__client-test-context'
 import { GraphQLScalarType } from 'graphql'
 import { DateTimeResolver } from 'graphql-scalars'
+import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()
 
@@ -27,7 +27,7 @@ it('supports custom scalars as output type', async () => {
     },
   })
 
-  const { graphqlClient, dbClient } = await ctx.getContext({
+  const { graphqlClient, dbClient } = await ctx.setup({
     datamodel,
     types: [Query, User],
     scalars: {
@@ -87,7 +87,7 @@ it('supports custom scalars as input type', async () => {
     },
   })
 
-  const { graphqlClient } = await ctx.getContext({
+  const { graphqlClient } = await ctx.setup({
     datamodel,
     types: [Query, User],
     scalars: {
