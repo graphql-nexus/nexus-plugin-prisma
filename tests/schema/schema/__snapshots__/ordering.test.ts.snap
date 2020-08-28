@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generates publishers pluralized & camel-cased: schema 1`] = `
+"type Foo {
+  id: Int!
+}
+
+input FooWhereUniqueInput {
+  id: Int
+}
+
+type Query {
+  foos(orderBy: [QueryFoosOrderByInput!], first: Int, last: Int, before: FooWhereUniqueInput, after: FooWhereUniqueInput): [Foo!]!
+}
+
+input QueryFoosOrderByInput {
+  b: SortOrder
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+"
+`;
+
+exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
+"import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  Foo: Prisma.Foo
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    foos: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'b' | 'c'
+      ordering: 'id' | 'a' | 'b' | 'c'
+    }
+  },
+  Foo: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    foo: 'Foo'
+    foos: 'Foo'
+  },
+  Mutation: {
+    createOneFoo: 'Foo'
+    updateOneFoo: 'Foo'
+    updateManyFoo: 'BatchPayload'
+    deleteOneFoo: 'Foo'
+    deleteManyFoo: 'BatchPayload'
+    upsertOneFoo: 'Foo'
+  },
+  Foo: {
+    id: 'Int'
+    a: 'String'
+    b: 'String'
+    c: 'String'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  Foo: Typegen.NexusPrismaFields<'Foo'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;

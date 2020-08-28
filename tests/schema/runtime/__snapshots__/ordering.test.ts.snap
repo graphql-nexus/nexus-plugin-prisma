@@ -27,3 +27,31 @@ Object {
   ],
 }
 `;
+
+exports[`with whitelist 1`] = `
+Object {
+  "users": Array [
+    Object {
+      "a": "b",
+      "b": "b",
+      "c": "a",
+      "id": 2,
+      "name": "Qux",
+    },
+    Object {
+      "a": "b",
+      "b": "z",
+      "c": "b",
+      "id": 1,
+      "name": "Bar",
+    },
+    Object {
+      "a": "a",
+      "b": "a",
+      "c": "z",
+      "id": 3,
+      "name": "Foo",
+    },
+  ],
+}
+`;

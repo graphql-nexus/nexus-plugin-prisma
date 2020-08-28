@@ -3,8 +3,7 @@ import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()
 
-it('runs through list of order-by types', async () => {
-  const datamodel = `
+const datamodel = `
     model User {
       id    Int    @id @default(autoincrement())
       name  String
@@ -13,6 +12,57 @@ it('runs through list of order-by types', async () => {
       c     String
     }
   `
+
+const usersForInsert = [
+  { name: 'Foo', a: 'a', b: 'a', c: 'z' },
+  { name: 'Bar', a: 'b', b: 'z', c: 'b' },
+  { name: 'Qux', a: 'b', b: 'b', c: 'a' },
+]
+
+it.only('with whitelist', async () => {
+  const User = objectType({
+    name: 'User',
+    definition(t: any) {
+      t.model.id()
+      t.model.name()
+      t.model.a()
+      t.model.b()
+      t.model.c()
+    },
+  })
+
+  const Query = queryType({
+    definition(t) {
+      // @ts-ignore
+      t.crud.users({ ordering: { c: true } })
+    },
+  })
+
+  const { graphqlClient, dbClient } = await ctx.setup({
+    datamodel,
+    types: [Query, User],
+  })
+
+  await Promise.all(
+    usersForInsert.map(async (userDataForInsert) => {
+      return dbClient.user.create({ data: userDataForInsert })
+    })
+  )
+
+  const result = await graphqlClient.request(`{
+    users(orderBy: [{ c: asc }]) {
+      id
+      name
+      a
+      b
+      c
+    }
+  }`)
+
+  expect(result).toMatchSnapshot()
+})
+
+it('runs through list of order-by types', async () => {
   const User = objectType({
     name: 'User',
     definition(t: any) {
@@ -34,12 +84,6 @@ it('runs through list of order-by types', async () => {
     datamodel,
     types: [Query, User],
   })
-
-  const usersForInsert = [
-    { name: 'Foo', a: 'a', b: 'a', c: 'a' },
-    { name: 'Bar', a: 'b', b: 'z', c: 'b' },
-    { name: 'Qux', a: 'b', b: 'b', c: 'b' },
-  ]
 
   await Promise.all(
     usersForInsert.map(async (userDataForInsert) => {
