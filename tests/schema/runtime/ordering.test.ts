@@ -5,7 +5,7 @@ let ctx = createRuntimeTestContext()
 
 const datamodel = `
     model User {
-      id    Int    @id @default(autoincrement())
+      id    Int    @id
       name  String
       a     String
       b     String
@@ -14,12 +14,12 @@ const datamodel = `
   `
 
 const usersForInsert = [
-  { name: 'Foo', a: 'a', b: 'a', c: 'z' },
-  { name: 'Bar', a: 'b', b: 'z', c: 'b' },
-  { name: 'Qux', a: 'b', b: 'b', c: 'a' },
+  { id: 1, name: 'Foo', a: 'a', b: 'a', c: 'z' },
+  { id: 2, name: 'Bar', a: 'b', b: 'z', c: 'b' },
+  { id: 3, name: 'Qux', a: 'b', b: 'b', c: 'a' },
 ]
 
-it.only('with whitelist', async () => {
+it('with whitelist', async () => {
   const User = objectType({
     name: 'User',
     definition(t: any) {
