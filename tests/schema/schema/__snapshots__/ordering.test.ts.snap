@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`generates publishers pluralized & camel-cased: schema 1`] = `
+exports[`orderby fields can be allow-listed: schema 1`] = `
 "type Foo {
   id: Int!
 }
@@ -24,7 +24,7 @@ enum SortOrder {
 "
 `;
 
-exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
+exports[`orderby fields can be allow-listed: typegen 1`] = `
 "import * as Typegen from 'nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
