@@ -11,6 +11,7 @@ model User {
   id        String   @default(cuid()) @id
   email     String   @unique
   birthDate DateTime
+  metadata  Json
   posts     Post[]
 }
 

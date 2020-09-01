@@ -1,12 +1,14 @@
-import { makeSchema, mutationType, objectType, queryType } from '@nexus/schema'
+import { asNexusMethod, makeSchema, mutationType, objectType, queryType } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
-import { GraphQLServer } from 'graphql-yoga'
+import { ApolloServer } from 'apollo-server-express'
+import express from 'express'
+import { DateTimeResolver, JSONObjectResolver } from 'graphql-scalars'
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import * as path from 'path'
 
 const prisma = new PrismaClient()
 
-new GraphQLServer({
+const apollo = new ApolloServer({
   context: () => ({ prisma }),
   schema: makeSchema({
     typegenAutoConfig: {
@@ -15,6 +17,7 @@ new GraphQLServer({
     },
     outputs: {
       typegen: path.join(__dirname, 'node_modules/@types/nexus-typegen/index.d.ts'),
+      schema: path.join(__dirname, './api.graphql'),
     },
     plugins: [
       nexusSchemaPrisma({
@@ -22,6 +25,8 @@ new GraphQLServer({
       }),
     ],
     types: [
+      asNexusMethod(JSONObjectResolver, 'json'),
+      asNexusMethod(DateTimeResolver, 'date'),
       queryType({
         definition(t) {
           t.crud.user()
@@ -42,6 +47,7 @@ new GraphQLServer({
         name: 'User',
         definition(t) {
           t.model.id()
+          t.model.metadata()
           t.model.email()
           t.model.birthDate()
           t.model.posts()
@@ -56,4 +62,12 @@ new GraphQLServer({
       }),
     ],
   }),
-}).start(() => console.log(`🚀 GraphQL service ready at http://localhost:4000`))
+})
+
+const app = express()
+
+apollo.applyMiddleware({ app })
+
+app.listen(4000, () => {
+  console.log(`🚀 GraphQL service ready at http://localhost:4000/graphql`)
+})

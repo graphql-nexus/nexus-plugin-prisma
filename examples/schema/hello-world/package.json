@@ -3,18 +3,23 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node --transpile-only app",
-    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c"
+    "dev": "ts-node-dev --transpile-only api",
+    "dev:typecheck": "tsc --watch --noEmit",
+    "dev:migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c",
+    "build": "tsc"
   },
   "dependencies": {
-    "@nexus/schema": "^0.14.0",
+    "@nexus/schema": "^0.15.0",
+    "apollo-server-express": "^2.17.0",
+    "express": "^4.17.1",
     "graphql": "^14.6.0",
-    "graphql-yoga": "^1.18.3",
-    "nexus-plugin-prisma": "^0.16.1"
+    "graphql-scalars": "^1.2.6",
+    "nexus-plugin-prisma": "^0.18.0-next.1"
   },
   "devDependencies": {
-    "@types/ws": "^7.2.4",
-    "ts-node": "^8.10.2",
+    "@types/express": "^4.17.7",
+    "ts-node": "^9.0.0",
+    "ts-node-dev": "^1.0.0-pre.61",
     "typescript": "^3.9.3"
   }
 }

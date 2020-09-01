@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "target": "esnext",
     "module": "commonjs",
     "strict": true
-  }
+  },
+  "exclude": ["prisma"]
 }
