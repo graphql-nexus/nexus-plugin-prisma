@@ -36,8 +36,8 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'country' | 'city'
     }
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
-      ordering: 'id' | 'rating' | 'status'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'rating' | 'likes' | 'status'
     }
   },
   Bubble: {
@@ -48,8 +48,8 @@ interface NexusPrismaInputs {
   }
   User: {
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'status'
-      ordering: 'id' | 'rating' | 'status'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'rating' | 'likes' | 'status'
     }
   }
   Location: {
@@ -130,6 +130,7 @@ interface NexusPrismaOutputs {
     id: 'Int'
     authors: 'User'
     rating: 'Float'
+    likes: 'Int'
     status: 'PostStatus'
   }
 }
