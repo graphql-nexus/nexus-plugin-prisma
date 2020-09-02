@@ -65,6 +65,14 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input FloatFieldUpdateOperationsInput {
+  decrement: Float
+  divide: Float
+  increment: Float
+  multiply: Float
+  set: Float
+}
+
 input FloatFilter {
   equals: Float
   gt: Float
@@ -74,6 +82,14 @@ input FloatFilter {
   lte: Float
   not: NestedFloatFilter
   notIn: [Float!]
+}
+
+input IntFieldUpdateOperationsInput {
+  decrement: Int
+  divide: Int
+  increment: Int
+  multiply: Int
+  set: Int
 }
 
 input IntFilter {
@@ -196,6 +212,7 @@ type Post {
 
 input PostCreateInput {
   authors: UserCreateManyWithoutPostsInput
+  likes: Int!
   rating: Float!
   status: PostStatus!
 }
@@ -208,6 +225,7 @@ input PostListRelationFilter {
 
 input PostOrderByInput {
   id: SortOrder
+  likes: SortOrder
   rating: SortOrder
   status: SortOrder
 }
@@ -218,7 +236,8 @@ enum PostStatus {
 }
 
 input PostUpdateManyMutationInput {
-  rating: Float
+  likes: IntFieldUpdateOperationsInput
+  rating: FloatFieldUpdateOperationsInput
   status: PostStatus
 }
 
@@ -226,6 +245,7 @@ input PostWhereInput {
   AND: [PostWhereInput!]
   authors: UserListRelationFilter
   id: IntFilter
+  likes: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   rating: FloatFilter

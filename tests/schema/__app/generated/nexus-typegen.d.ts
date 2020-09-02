@@ -62,6 +62,13 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedDateTimeFilter'] | null; // NestedDateTimeFilter
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
+  FloatFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Float
+    divide?: number | null; // Float
+    increment?: number | null; // Float
+    multiply?: number | null; // Float
+    set?: number | null; // Float
+  }
   FloatFilter: { // input type
     equals?: number | null; // Float
     gt?: number | null; // Float
@@ -71,6 +78,13 @@ export interface NexusGenInputs {
     lte?: number | null; // Float
     not?: NexusGenInputs['NestedFloatFilter'] | null; // NestedFloatFilter
     notIn?: number[] | null; // [Float!]
+  }
+  IntFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Int
+    divide?: number | null; // Int
+    increment?: number | null; // Int
+    multiply?: number | null; // Int
+    set?: number | null; // Int
   }
   IntFilter: { // input type
     equals?: number | null; // Int
@@ -164,6 +178,7 @@ export interface NexusGenInputs {
   }
   PostCreateInput: { // input type
     authors?: NexusGenInputs['UserCreateManyWithoutPostsInput'] | null; // UserCreateManyWithoutPostsInput
+    likes: number; // Int!
     rating: number; // Float!
     status: NexusGenEnums['PostStatus']; // PostStatus!
   }
@@ -174,17 +189,20 @@ export interface NexusGenInputs {
   }
   PostOrderByInput: { // input type
     id?: NexusGenEnums['SortOrder'] | null; // SortOrder
+    likes?: NexusGenEnums['SortOrder'] | null; // SortOrder
     rating?: NexusGenEnums['SortOrder'] | null; // SortOrder
     status?: NexusGenEnums['SortOrder'] | null; // SortOrder
   }
   PostUpdateManyMutationInput: { // input type
-    rating?: number | null; // Float
+    likes?: NexusGenInputs['IntFieldUpdateOperationsInput'] | null; // IntFieldUpdateOperationsInput
+    rating?: NexusGenInputs['FloatFieldUpdateOperationsInput'] | null; // FloatFieldUpdateOperationsInput
     status?: NexusGenEnums['PostStatus'] | null; // PostStatus
   }
   PostWhereInput: { // input type
     AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     authors?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    likes?: NexusGenInputs['IntFilter'] | null; // IntFilter
     NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
     rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
@@ -301,7 +319,9 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   BubbleWhereInput: NexusGenInputs['BubbleWhereInput'];
   BubbleWhereUniqueInput: NexusGenInputs['BubbleWhereUniqueInput'];
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
+  FloatFieldUpdateOperationsInput: NexusGenInputs['FloatFieldUpdateOperationsInput'];
   FloatFilter: NexusGenInputs['FloatFilter'];
+  IntFieldUpdateOperationsInput: NexusGenInputs['IntFieldUpdateOperationsInput'];
   IntFilter: NexusGenInputs['IntFilter'];
   LocationCreateOneWithoutUserInput: NexusGenInputs['LocationCreateOneWithoutUserInput'];
   LocationCreateWithoutUserInput: NexusGenInputs['LocationCreateWithoutUserInput'];
@@ -418,7 +438,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "BatchPayload" | "Bubble" | "Location" | "Mutation" | "Post" | "Query" | "User";
 
-export type NexusGenInputNames = "BoolFilter" | "BubbleCreateOneWithoutMembersInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFilter" | "IntFilter" | "LocationCreateOneWithoutUserInput" | "LocationCreateWithoutUserInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NestedBoolFilter" | "NestedDateTimeFilter" | "NestedFloatFilter" | "NestedIntFilter" | "NestedStringFilter" | "NestedStringNullableFilter" | "PostCreateInput" | "PostListRelationFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "PostWhereUniqueInput" | "StringFilter" | "StringNullableFilter" | "UserCreateManyWithoutPostsInput" | "UserCreateWithoutPostsInput" | "UserListRelationFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "BoolFilter" | "BubbleCreateOneWithoutMembersInput" | "BubbleCreateWithoutMembersInput" | "BubbleMembersOrderByInput" | "BubbleMembersWhereInput" | "BubbleWhereInput" | "BubbleWhereUniqueInput" | "DateTimeFilter" | "FloatFieldUpdateOperationsInput" | "FloatFilter" | "IntFieldUpdateOperationsInput" | "IntFilter" | "LocationCreateOneWithoutUserInput" | "LocationCreateWithoutUserInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NestedBoolFilter" | "NestedDateTimeFilter" | "NestedFloatFilter" | "NestedIntFilter" | "NestedStringFilter" | "NestedStringNullableFilter" | "PostCreateInput" | "PostListRelationFilter" | "PostOrderByInput" | "PostUpdateManyMutationInput" | "PostWhereInput" | "PostWhereUniqueInput" | "StringFilter" | "StringNullableFilter" | "UserCreateManyWithoutPostsInput" | "UserCreateWithoutPostsInput" | "UserListRelationFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "PostStatus" | "SortOrder";
 
