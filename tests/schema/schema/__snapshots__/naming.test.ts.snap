@@ -25,11 +25,11 @@ input ModelNameCreateInput {
 }
 
 input ModelNameUpdateInput {
-  name: String
+  name: StringFieldUpdateOperationsInput
 }
 
 input ModelNameUpdateManyMutationInput {
-  name: String
+  name: StringFieldUpdateOperationsInput
 }
 
 input ModelNameWhereInput {
@@ -80,6 +80,10 @@ input NestedStringFilter {
 type Query {
   modelName(where: ModelNameWhereUniqueInput!): ModelName
   modelNames(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
+}
+
+input StringFieldUpdateOperationsInput {
+  set: String
 }
 
 input StringFilter {

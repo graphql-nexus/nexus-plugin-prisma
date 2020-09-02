@@ -65,6 +65,10 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input FloatFieldUpdateOperationsInput {
+  set: Float
+}
+
 input FloatFilter {
   equals: Float
   gt: Float
@@ -218,7 +222,7 @@ enum PostStatus {
 }
 
 input PostUpdateManyMutationInput {
-  rating: Float
+  rating: FloatFieldUpdateOperationsInput
   status: PostStatus
 }
 
