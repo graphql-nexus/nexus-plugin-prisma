@@ -66,6 +66,10 @@ input DateTimeFilter {
 }
 
 input FloatFieldUpdateOperationsInput {
+  decrement: Float
+  divide: Float
+  increment: Float
+  multiply: Float
   set: Float
 }
 

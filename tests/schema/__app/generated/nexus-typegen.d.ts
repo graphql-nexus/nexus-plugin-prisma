@@ -63,6 +63,10 @@ export interface NexusGenInputs {
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
   FloatFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Float
+    divide?: number | null; // Float
+    increment?: number | null; // Float
+    multiply?: number | null; // Float
     set?: number | null; // Float
   }
   FloatFilter: { // input type

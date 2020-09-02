@@ -71,6 +71,10 @@ input DateTimeFilter {
 }
 
 input FloatFieldUpdateOperationsInput {
+  decrement: Float
+  divide: Float
+  increment: Float
+  multiply: Float
   set: Float
 }
 
@@ -395,6 +399,10 @@ export interface NexusGenInputs {
     notIn?: NexusGenScalars['DateTime'][] | null; // [DateTime!]
   }
   FloatFieldUpdateOperationsInput: { // input type
+    decrement?: number | null; // Float
+    divide?: number | null; // Float
+    increment?: number | null; // Float
+    multiply?: number | null; // Float
     set?: number | null; // Float
   }
   FloatFilter: { // input type
@@ -1140,7 +1148,7 @@ Object {
           },
           Object {
             "hasDefaultValue": false,
-            "isGenerated": true,
+            "isGenerated": false,
             "isId": false,
             "isList": false,
             "isReadOnly": false,
@@ -1241,7 +1249,7 @@ Object {
           },
           Object {
             "hasDefaultValue": false,
-            "isGenerated": true,
+            "isGenerated": false,
             "isId": false,
             "isList": true,
             "isReadOnly": false,
@@ -4541,6 +4549,54 @@ Object {
               },
             ],
             "name": "set",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "increment",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "decrement",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "multiply",
+          },
+          Object {
+            "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+            ],
+            "name": "divide",
           },
         ],
         "isOneOf": true,
