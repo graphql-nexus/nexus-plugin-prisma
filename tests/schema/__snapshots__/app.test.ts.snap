@@ -6245,6 +6245,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6257,6 +6264,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6265,6 +6279,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "LocationUpdateWithoutUserDataInput",
       },
       Object {
@@ -6305,6 +6320,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6313,6 +6335,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "DateTime",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6329,6 +6358,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "Boolean",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "BoolFieldUpdateOperationsInput",
               },
@@ -6337,6 +6373,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "BubbleUpdateWithoutMembersDataInput",
       },
       Object {
@@ -6653,6 +6690,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6665,6 +6709,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6673,6 +6724,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6709,6 +6767,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "UserUpdateWithoutBubbleDataInput",
       },
       Object {
@@ -6719,6 +6778,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6731,6 +6797,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6739,6 +6812,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6751,6 +6831,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "UserUpdateManyDataInput",
       },
       Object {
@@ -6761,6 +6842,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "FloatFieldUpdateOperationsInput",
               },
@@ -6769,6 +6857,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6785,6 +6880,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "EnumPostStatusFieldUpdateOperationsInput",
               },
@@ -6793,6 +6895,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "PostUpdateWithoutAuthorsDataInput",
       },
       Object {
@@ -6803,6 +6906,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "Float",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "FloatFieldUpdateOperationsInput",
               },
@@ -6811,6 +6921,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "Int",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6827,6 +6944,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "enum",
+                "type": "PostStatus",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "EnumPostStatusFieldUpdateOperationsInput",
               },
@@ -6835,12 +6959,20 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "PostUpdateManyDataInput",
       },
       Object {
         "fields": Array [
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6857,6 +6989,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6865,6 +7004,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6901,12 +7047,20 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "UserUpdateWithoutLocationDataInput",
       },
       Object {
         "fields": Array [
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6923,6 +7077,13 @@ Object {
                 "isList": false,
                 "isNullable": false,
                 "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
                 "kind": "object",
                 "type": "StringFieldUpdateOperationsInput",
               },
@@ -6931,6 +7092,13 @@ Object {
           },
           Object {
             "inputType": Array [
+              Object {
+                "isList": false,
+                "isNullable": false,
+                "isRequired": false,
+                "kind": "scalar",
+                "type": "String",
+              },
               Object {
                 "isList": false,
                 "isNullable": false,
@@ -6967,6 +7135,7 @@ Object {
           },
         ],
         "isOneOf": false,
+        "isUpdateType": true,
         "name": "UserUpdateWithoutPostsDataInput",
       },
     ],
