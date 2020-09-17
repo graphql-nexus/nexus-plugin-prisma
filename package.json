@@ -39,9 +39,9 @@
     "test:db:setup": "docker-compose down && rm -rf .mysql-data && rm -rf .postgres-data && docker-compose up -d"
   },
   "dependencies": {
-    "@prisma/cli": "2.6.2",
-    "@prisma/client": "2.6.2",
-    "@prisma/sdk": "2.6.2",
+    "@prisma/cli": "2.7.0",
+    "@prisma/client": "2.7.0",
+    "@prisma/sdk": "2.7.0",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
     "common-tags": "^1.8.0",
@@ -56,9 +56,9 @@
   "devDependencies": {
     "@nexus/schema": "^0.15.0",
     "@prisma-labs/prettier-config": "0.1.0",
-    "@prisma/fetch-engine": "2.6.2",
-    "@prisma/get-platform": "2.6.2",
-    "@prisma/migrate": "2.6.2",
+    "@prisma/fetch-engine": "2.7.0",
+    "@prisma/get-platform": "2.7.0",
+    "@prisma/migrate": "2.7.0",
     "@types/common-tags": "1.8.0",
     "@types/jest": "25.2.3",
     "@types/lodash": "4.14.157",
