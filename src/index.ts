@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import { colors } from './colors'
 
 function ensureDepIsInstalled(depName: string) {
   try {
@@ -6,9 +6,9 @@ function ensureDepIsInstalled(depName: string) {
   } catch (err) {
     if (err.code === 'MODULE_NOT_FOUND') {
       console.error(
-        `${chalk.redBright('ERROR:')} ${chalk.greenBright(
+        `${colors.red('ERROR:')} ${colors.green(
           depName
-        )} must be installed as a dependency. Please run \`${chalk.greenBright(`npm install ${depName}`)}\`.`
+        )} must be installed as a dependency. Please run \`${colors.green(`npm install ${depName}`)}\`.`
       )
       process.exit(1)
     } else {

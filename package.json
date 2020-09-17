@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "camelcase": "^6.0.0",
-    "chalk": "^4.0.0",
     "fs-jetpack": "^2.4.0",
     "lodash": "^4.17.19",
     "outdent": "^0.7.1",
