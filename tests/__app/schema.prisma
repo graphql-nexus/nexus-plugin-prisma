@@ -1,0 +1,45 @@
+generator prisma_client {
+  provider        = "prisma-client-js"
+  output          = "../../node_modules/@prisma/client"
+  previewFeatures = ["atomicNumberOperations"]
+}
+
+model Bubble {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  members   User[]
+  private   Boolean
+}
+
+model User {
+  id         String   @id @default(cuid())
+  posts      Post[]
+  firstName  String
+  lastName   String
+  location   Location @relation(fields: [locationId], references: [id])
+  // likes     Post[]
+  Bubble     Bubble?  @relation(fields: [bubbleId], references: [id])
+  bubbleId   String?
+  locationId Int
+}
+
+model Location {
+  id      Int    @id @default(autoincrement())
+  country String
+  city    String
+  User    User[]
+}
+
+model Post {
+  id      Int        @id @default(autoincrement())
+  authors User[]
+  rating  Float
+  likes   Int
+  status  PostStatus
+  // likers  User[] @relation(references: likers)
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}

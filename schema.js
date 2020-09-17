@@ -1,1 +1,1 @@
-module.exports = require('./dist/schema-entrypoint')
+module.exports = require('./dist')
