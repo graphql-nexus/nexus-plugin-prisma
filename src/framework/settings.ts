@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaClientOptions as ClientOptions } from '@prisma/client/runtime/getPrismaClient'
 import { Options as NexusSchemaPrismaOptions } from '../schema'
 
 export type PrismaClientOptions = {
@@ -7,7 +6,7 @@ export type PrismaClientOptions = {
    * Options to pass to the Prisma Client instantiated by the plugin.
    * If you want to instantiate your own Prisma Client, use `instance` instead.
    */
-  options: ClientOptions
+  options: any // todo https://prisma-company.slack.com/archives/CUXLS0Z6K/p1600349593041500
 }
 
 export type PrismaClientInstance = {
