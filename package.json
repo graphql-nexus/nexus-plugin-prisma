@@ -67,7 +67,7 @@
     "nexus": "0.26.0",
     "node-fetch": "2.6.0",
     "prettier": "2.0.5",
-    "react": "^16.13.1",
+    "react": "16.13.1",
     "rimraf": "3.0.2",
     "rxjs": "6.5.5",
     "strip-ansi": "6.0.0",
