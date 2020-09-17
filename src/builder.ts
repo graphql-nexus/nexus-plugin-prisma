@@ -167,7 +167,6 @@ export interface InternalOptions extends Options {
   onUnknownFieldType?: OnUnknownFieldType // Framework option
   onUnknownArgName?: OnUnknownArgName // Framework option
   onUnknownPrismaModelName?: OnUnknownPrismaModelName // Framework option
-  initializedByFramework?: boolean // Framework option
 }
 
 export interface InternalPublicOptions extends Omit<InternalOptions, 'nexusBuilder'> {}

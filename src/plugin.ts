@@ -1,6 +1,6 @@
 import { plugin } from '@nexus/schema'
-import { build as buildNexusPrismaTypes, Options, InternalPublicOptions } from './builder'
-import { CRUD_NOT_ENABLED } from './warnings'
+import { build as buildNexusPrismaTypes, InternalPublicOptions, Options } from './builder'
+import { colors } from './colors'
 
 /**
  * Create a nexus-plugin-prisma instance to be passed into the Nexus plugins array.
@@ -56,11 +56,13 @@ export function nexusSchemaPrisma(options?: Options) {
     },
     onBeforeBuild() {
       if (wasCrudUsedButDisabled?.() === true) {
-        if (allOptions.initializedByFramework === true) {
-          CRUD_NOT_ENABLED.framework()
-        } else {
-          CRUD_NOT_ENABLED.schema()
-        }
+        console.log(`\
+${colors.yellow('Warning')}: ${colors.green('t.crud')} ${colors.yellow(
+          'is an experimental feature with many practical limitations. You must explicitly enable it before using.'
+        )}
+Please add ${colors.green(`experimentalCRUD: true`)} in the ${colors.green(
+          'nexusSchemaPrisma()'
+        )} constructor if you still wish to enable it.`)
       }
     },
   })
