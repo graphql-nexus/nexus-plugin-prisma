@@ -25,7 +25,7 @@ export class Publisher {
     const typeName = customArg.type.name
 
     // If type is already published, just reference it
-    if (this.isPublished(typeName)) {
+    if (this.isPublished(typeName) || (scalarsNameValues as string[]).includes(typeName)) {
       return Nexus.arg(
         dmmfFieldToNexusFieldConfig({
           ...customArg.arg.inputType,
