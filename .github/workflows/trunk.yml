@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
 
+env:
+  PRISMA_TELEMETRY_INFORMATION: "nexus-plugin-prisma trunk.yml"
+
 jobs:
   schema-tests:
     runs-on: macos-latest
