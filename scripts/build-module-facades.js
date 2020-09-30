@@ -23,8 +23,8 @@ const path = require('path')
 
 // prettier-ignore
 const facades = [
-  ['schema.d.ts',  "export * from './dist'"  + os.EOL],
-  ['schema.js',    "module.exports = require('./dist')" + os.EOL],
+  ['schema.d.ts',  "export { nexusPrisma as nexusSchemaPrisma } from './dist'"  + os.EOL],
+  ['schema.js',    "exports.nexusSchemaPrisma = require('./dist').nexusPrisma" + os.EOL],
 ]
 
 // Write facade files

@@ -36,7 +36,7 @@ import { colors } from './colors'
  * approach. This system will change once the Nexus plugin system has first
  * class support for typegen.
  */
-export function nexusSchemaPrisma(options?: Options) {
+export function nexusPrisma(options?: Options) {
   const allOptions: InternalPublicOptions = options ?? {}
   let wasCrudUsedButDisabled: null | (() => boolean) = null
 

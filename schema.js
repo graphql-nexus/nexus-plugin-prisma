@@ -1,1 +1,1 @@
-module.exports = require('./dist')
+exports.nexusSchemaPrisma = require('./dist').nexusPrisma

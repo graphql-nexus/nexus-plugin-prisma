@@ -8,86 +8,11 @@ const red = '\u001b[1;31m'
 const yellow = '\u001b[33;1m'
 const gray = '\u001b[30;1m'
 
-const path = require('path')
-
-let foundPrismaDeps = []
-
-const pj = getPackageJson()
-
-const deps = pj.dependencies || []
-foundPrismaDeps.push(...Object.keys(deps).filter(isPrismaDep))
-
-const devDeps = pj.devDependencies || []
-foundPrismaDeps.push(
-  ...Object.keys(devDeps)
-    .filter(isPrismaDep)
-    // dedupe
-    .filter((name) => !foundPrismaDeps.includes(name))
-)
-
 const message = `
-${red}│${reset}  ${red}WARNING${reset} from ${boldWhite}nexus-plugin-prisma${reset}
-${red}│${reset}  ${red}WARNING${reset} from ${boldWhite}nexus-plugin-prisma${reset}
-${red}│${reset}  ${red}WARNING${reset} from ${boldWhite}nexus-plugin-prisma${reset}
-${red}│${reset} 
-${red}│${reset}  ${yellow}nexus-plugin-prisma${reset} bundles ${yellow}@prisma${reset} dependencies. So
-${red}│${reset}  please uninstall the ones you have installed or you may
-${red}│${reset}  encounter problems.
-${red}│${reset}  
-${red}│${reset}  Run the following commands to fix this issue
-${red}│${reset}
-${red}│${reset}    1. Remove the deps:
-${red}│${reset} 
-${red}│${reset}       ${green}${getPackageManagerBinName()} remove ${foundPrismaDeps.join(' ')}${reset}
-${red}│${reset}
-${red}│${reset}    2. (Precaution) Reset the node_modules:
-${red}│${reset}
-${red}│${reset}       ${green}rm -rf node_modules${reset}
-${red}│${reset}       ${green}${getPackageManagerBinName()} install${reset}
-${red}│${reset} 
-${red}│${reset}  If you absolutely need to control the versions of your
-${red}│${reset}  ${yellow}@prisma${reset} dependencies then use yarn and its ${yellow}resolutions${reset}
-${red}│${reset}  feature:
-${red}│${reset} 
-${red}│${reset}  ${boldWhite}https://classic.yarnpkg.com/en/docs/selective-version-resolutions${reset}
-${red}│${reset} 
-${red}│${reset}  If you are curious why ${yellow}nexus-plugin-prisma${reset} bundles
-${red}│${reset}  the ${yellow}@prisma${reset} dependencies then take a look at the Nexus
-${red}│${reset}  doc explaining this strategy.
-${red}│${reset} 
-${red}│${reset}  ${boldWhite}https://nxs.li/why/bundle-dependencies${reset}
+Development of Nexus Framework has ended.
+
+Please read our announcement issue at https://nxs.li/unframework/about for details.
+Please follow our migration guide at https://nxs.li/unframework/migrate to start using Nexus Schema.
 `
 
-if (foundPrismaDeps.length > 0) console.log(message)
-
-/**
- * Helpers
- */
-
-function isPrismaDep(name) {
-  return name.startsWith('@prisma/')
-}
-
-function getPackageManagerBinName() {
-  const userAgent = process.env.npm_config_user_agent || ''
-
-  const packageManagerBinName = userAgent.includes('yarn') ? 'yarn' : 'npm'
-  return packageManagerBinName
-}
-
-function getPackageJson() {
-  let data = {}
-  try {
-    data = require(path.join(process.cwd(), 'package.json'))
-  } catch (error) {
-    // ignore
-  }
-
-  if (typeof data !== 'object') {
-    // invalid package json like null
-    // force object for downstream property access
-    data = {}
-  }
-
-  return data
-}
+console.log(message)
