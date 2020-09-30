@@ -1,1 +1,1 @@
-export * from './dist/schema-entrypoint'
+export { nexusPrisma as nexusSchemaPrisma } from './dist'

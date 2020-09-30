@@ -23,12 +23,8 @@ const path = require('path')
 
 // prettier-ignore
 const facades = [
-  ['client.d.ts',  "export * from '@prisma/client'"  + os.EOL],
-  ['client.js',    "module.exports = require('@prisma/client')" + os.EOL],
-  ['schema.d.ts',  "export * from './dist/schema-entrypoint'"  + os.EOL],
-  ['schema.js',    "module.exports = require('./dist/schema-entrypoint')" + os.EOL],
-  ['typegen.js',   "module.exports = require('./dist/schema/typegen/static')" + os.EOL],
-  ['typegen.d.ts', "export * from './dist/schema/typegen/static'" + os.EOL],
+  ['schema.d.ts',  "export { nexusPrisma as nexusSchemaPrisma } from './dist'"  + os.EOL],
+  ['schema.js',    "exports.nexusSchemaPrisma = require('./dist').nexusPrisma" + os.EOL],
 ]
 
 // Write facade files
