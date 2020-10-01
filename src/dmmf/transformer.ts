@@ -88,12 +88,12 @@ function transformSchema(
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   // FIXME: *Enum*Filter are currently empty
-  let inputType = arg.inputType.some((a) => a.kind === 'enum')
-    ? arg.inputType[0]
-    : arg.inputType.find((a) => a.kind === 'object')!
+  let inputType = arg.inputTypes.some((a) => a.kind === 'enum')
+    ? arg.inputTypes[0]
+    : arg.inputTypes.find((a) => a.kind === 'object')!
 
   if (!inputType) {
-    inputType = arg.inputType[0]
+    inputType = arg.inputTypes[0]
   }
 
   return {
