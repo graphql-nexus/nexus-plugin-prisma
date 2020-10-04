@@ -99,6 +99,8 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
   return {
     name: arg.name,
     inputType: {
+      isNullable: arg.isNullable,
+      isRequired: arg.isRequired,
       ...inputType,
       type: getReturnTypeName(inputType.type),
     },
