@@ -25,7 +25,7 @@ input UserWhereUniqueInput {
 `;
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from 'nexus-plugin-prisma/dist/typegen/static'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
