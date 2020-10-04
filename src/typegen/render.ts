@@ -52,7 +52,7 @@ export function render(params: {
   paginationStrategy: PaginationStrategy
 }) {
   return `\
-import * as Typegen from '${params.nexusPrismaImportId ?? 'nexus-plugin-prisma/typegen'}'
+import * as Typegen from '${params.nexusPrismaImportId ?? 'nexus-plugin-prisma/dist/typegen/static'}'
 import * as Prisma from '${params.prismaClientImportId}';
 
 // Pagination type
