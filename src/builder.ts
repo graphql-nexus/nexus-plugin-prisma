@@ -320,7 +320,7 @@ export class SchemaBuilder {
             })
             const schemaArgsIndex = indexBy(mappedField.field.args, 'name')
 
-            const originalResolve: GraphQLFieldResolver<any, any, any> = (_root, args, ctx, info) => {
+            const originalResolve: GraphQLFieldResolver<any, any, any> = async (_root, args, ctx, info) => {
               const prismaClient = this.getPrismaClient(ctx)
               args = transformNullsToUndefined(args, schemaArgsIndex, this.dmmf)
               if (
@@ -328,7 +328,7 @@ export class SchemaBuilder {
                 (!isEmptyObject(publisherConfig.locallyComputedInputs) ||
                   !isEmptyObject(this.globallyComputedInputs))
               ) {
-                args = addComputedInputs({
+                args = await addComputedInputs({
                   inputType,
                   dmmf: this.dmmf,
                   params: {

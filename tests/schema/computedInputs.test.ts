@@ -96,7 +96,7 @@ it('infers the value of resolver-level computedInputs at runtime', async () => {
   const { datamodel } = resolverTestData
   const dmmf = await getDmmf(datamodel)
   expect(
-    addComputedInputs({
+    await addComputedInputs({
       params: {
         info: {} as any,
         args: { data: { name: 'New User' } },
@@ -129,7 +129,7 @@ it('infers the value of global computedInputs at runtime', async () => {
     globallyComputedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
   })
   expect(
-    addComputedInputs({
+    await addComputedInputs({
       params: {
         info: {} as any,
         args: {
@@ -162,7 +162,7 @@ it('handles arrays when recursing for computedInputs', async () => {
   })
 
   expect(
-    addComputedInputs({
+    await addComputedInputs({
       params: {
         info: {} as any,
         args: {
@@ -200,7 +200,7 @@ it('can combine resolver-level (shallow) and global (deep) computed inputs', asy
     globallyComputedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
   })
   expect(
-    addComputedInputs({
+    await addComputedInputs({
       params: {
         info: {} as any,
         // name should be required when creating Nested since the computedInput providing
@@ -234,7 +234,7 @@ it('can use a combination of args, context and info to compute values', async ()
     },
   })
   expect(
-    addComputedInputs({
+    await addComputedInputs({
       params: {
         // Normally this would be GraphQLResolveInfo but using a string for simplicity
         info: 'Yam' as any,
@@ -253,6 +253,53 @@ it('can use a combination of args, context and info to compute values', async ()
       createdWithBrowser: 'i Yam Sam',
       nested: {
         create: { createdWithBrowser: 'i Yam Sam', name: 'Sam' },
+      },
+    },
+  })
+})
+
+it('supports async functions on both global and local computed inputw', async () => {
+  const { datamodel } = globalTestData
+  const dmmf = await getDmmf(datamodel, {
+    // These are applied globally
+    globallyComputedInputs: {
+      createdWithBrowser: async ({ ctx }) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(ctx.browser)
+          }, 0)
+        })
+      },
+    },
+  })
+  expect(
+    await addComputedInputs({
+      params: {
+        info: {} as any,
+        // name should be required when creating Nested since the computedInput providing
+        // it is specific to UserCreateInput and therefore shallow
+        args: { data: { nested: { create: { name: 'Nested Name' } } } },
+        ctx: { browser: 'firefox', name: 'autopopulated' },
+      },
+      inputType: dmmf.getInputType('UserCreateInput'),
+      dmmf,
+      // These are applied only to UserCreateInput
+      locallyComputedInputs: {
+        name: async ({ ctx }) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(ctx.name)
+            }, 0)
+          })
+        },
+      },
+    })
+  ).toStrictEqual({
+    data: {
+      name: 'autopopulated',
+      createdWithBrowser: 'firefox',
+      nested: {
+        create: { createdWithBrowser: 'firefox', name: 'Nested Name' },
       },
     },
   })

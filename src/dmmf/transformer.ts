@@ -123,37 +123,39 @@ type AddDeepComputedInputsArgs = Omit<AddComputedInputParams, 'locallyComputedIn
  * Recursively looks for inputs that need a value from globallyComputedInputs
  * and populates them
  */
-function addGloballyComputedInputs({
+async function addGloballyComputedInputs({
   inputType,
   params,
   dmmf,
   data,
-}: AddDeepComputedInputsArgs): Record<string, any> {
+}: AddDeepComputedInputsArgs): Promise<Record<string, any>> {
   if (Array.isArray(data)) {
-    return data.map((value) =>
-      addGloballyComputedInputs({
-        inputType,
-        dmmf,
-        params,
-        data: value,
-      })
+    return Promise.all(
+      data.map((value) =>
+        addGloballyComputedInputs({
+          inputType,
+          dmmf,
+          params,
+          data: value,
+        })
+      )
     )
   }
   // Get values for computedInputs corresponding to keys that exist in inputType
   const computedInputValues = Object.keys(inputType.computedInputs).reduce(
-    (values, key) => ({
-      ...values,
-      [key]: inputType.computedInputs[key](params),
+    async (values, key) => ({
+      ...(await values),
+      [key]: await inputType.computedInputs[key](params),
     }),
-    {} as Record<string, any>
+    Promise.resolve({} as Record<string, any>)
   )
   // Combine computedInputValues with values provided by the user, recursing to add
   // global computedInputs to nested types
-  return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
+  return Object.keys(data).reduce(async (deeplyComputedData, fieldName) => {
     const field = inputType.fields.find((_) => _.name === fieldName)!
     const fieldValue =
       field.inputType.kind === 'object'
-        ? addGloballyComputedInputs({
+        ? await addGloballyComputedInputs({
             inputType: dmmf.getInputType(field.inputType.type),
             dmmf,
             params,
@@ -161,13 +163,13 @@ function addGloballyComputedInputs({
           })
         : data[fieldName]
     return {
-      ...deeplyComputedData,
+      ...(await deeplyComputedData),
       [fieldName]: fieldValue,
     }
   }, computedInputValues)
 }
 
-export function addComputedInputs({
+export async function addComputedInputs({
   dmmf,
   inputType,
   locallyComputedInputs,
@@ -180,19 +182,19 @@ export function addComputedInputs({
        * Globally computed inputs are attached to the inputType object
        * as 'computedInputs' by the transformInputType function.
        */
-      ...addGloballyComputedInputs({
+      ...(await addGloballyComputedInputs({
         inputType,
         dmmf,
         params,
         data: params.args.data,
-      }),
-      ...Object.entries(locallyComputedInputs).reduce(
-        (args, [fieldName, computeFieldValue]) => ({
-          ...args,
-          [fieldName]: computeFieldValue(params),
+      })),
+      ...(await Object.entries(locallyComputedInputs).reduce(
+        async (args, [fieldName, computeFieldValue]) => ({
+          ...(await args),
+          [fieldName]: await computeFieldValue(params),
         }),
-        {} as Record<string, any>
-      ),
+        Promise.resolve({} as Record<string, any>)
+      )),
     },
   }
 }
