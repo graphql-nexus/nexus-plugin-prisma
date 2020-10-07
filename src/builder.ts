@@ -226,7 +226,7 @@ const defaultOptions = {
 
 export interface CustomInputArg {
   arg: DmmfTypes.SchemaArg
-  type: DmmfTypes.InputType | DmmfTypes.Enum | { name: string } // scalar
+  type: DmmfTypes.InputType | DmmfTypes.SchemaEnum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
@@ -640,12 +640,13 @@ export class SchemaBuilder {
         throw new Error(`Could not find filtering argument for ${typeName}.${field.name}`)
       }
 
-      const inputType = this.handleInputObjectCustomization(
-        publisherConfig.filtering,
-        inputObjectTypeDefName,
-        field.name,
-        typeName
-      )
+      const inputType = this.handleInputObjectCustomization({
+        fieldWhitelist: publisherConfig.filtering,
+        inputTypeName: inputObjectTypeDefName,
+        fieldName: field.name,
+        graphQLTypeName: typeName,
+        isWhereType: true,
+      })
 
       if (inputType.fields.length > 0) {
         args.push({
@@ -665,12 +666,13 @@ export class SchemaBuilder {
         throw new Error(`Could not find ordering argument for ${typeName}.${field.name}`)
       }
 
-      const inputType = this.handleInputObjectCustomization(
-        publisherConfig.ordering,
-        orderByTypeName,
-        field.name,
-        typeName
-      )
+      const inputType = this.handleInputObjectCustomization({
+        fieldWhitelist: publisherConfig.ordering,
+        inputTypeName: orderByTypeName,
+        fieldName: field.name,
+        graphQLTypeName: typeName,
+        isWhereType: false,
+      })
 
       if (inputType.fields.length > 0) {
         args.push({
@@ -733,31 +735,32 @@ export class SchemaBuilder {
    * ...
    * ```
    */
-  protected handleInputObjectCustomization(
-    fieldWhitelist: Record<string, boolean> | boolean,
-    inputTypeName: string,
-    fieldName: string,
+  protected handleInputObjectCustomization(params: {
+    fieldWhitelist: Record<string, boolean> | boolean
+    inputTypeName: string
+    fieldName: string
     graphQLTypeName: string
-  ): DmmfTypes.InputType {
-    const prismaClientObject = this.dmmf.getInputType(inputTypeName)
+    isWhereType: boolean
+  }): DmmfTypes.InputType {
+    const prismaClientObject = this.dmmf.getInputType(params.inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)
     // has not been tailored then we may simply pass through the backing
     // version as-is.
     //
-    if (fieldWhitelist === true) {
+    if (params.fieldWhitelist === true) {
       return prismaClientObject
     }
 
     // REFACTOR use an intersection function
-    const whitelistedFieldNames = Object.keys(fieldWhitelist)
+    const whitelistedFieldNames = Object.keys(params.fieldWhitelist)
     const userExposedObjectFields = prismaClientObject.fields.filter((field) =>
       whitelistedFieldNames.includes(field.name)
     )
 
-    const uniqueName = prismaClientObject.isWhereType
-      ? this.argsNamingStrategy.whereInput(graphQLTypeName, fieldName)
-      : this.argsNamingStrategy.orderByInput(graphQLTypeName, fieldName)
+    const uniqueName = params.isWhereType
+      ? this.argsNamingStrategy.whereInput(params.graphQLTypeName, params.fieldName)
+      : this.argsNamingStrategy.orderByInput(params.graphQLTypeName, params.fieldName)
 
     return {
       ...prismaClientObject,

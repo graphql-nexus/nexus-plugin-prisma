@@ -57,7 +57,7 @@ Object {
     "authors": Object {
       "every": Object {
         "birthDate": undefined,
-        "email": undefined,
+        "email": null,
         "posts": undefined,
       },
     },

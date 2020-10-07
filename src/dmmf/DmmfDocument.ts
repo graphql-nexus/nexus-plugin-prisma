@@ -11,7 +11,7 @@ export class DmmfDocument implements DmmfTypes.Document {
   public outputTypesIndex: Index<DmmfTypes.OutputType> = {}
   public inputTypesIndex: Index<DmmfTypes.InputType>
   public mappingsIndex: Index<DmmfTypes.Mapping>
-  public enumsIndex: Index<DmmfTypes.Enum>
+  public enumsIndex: Index<DmmfTypes.SchemaEnum>
   public modelsIndex: Index<DmmfTypes.Model>
   public inputTypesIndexWithFields: InputTypeIndexWithField
   public customScalars: Array<string>
