@@ -10,7 +10,9 @@
     "src",
     "scripts",
     "schema.js",
-    "schema.d.ts"
+    "schema.d.ts",
+    "typegen.js",
+    "typegen.d.ts"
   ],
   "scripts": {
     "release:preview": "dripip preview",
