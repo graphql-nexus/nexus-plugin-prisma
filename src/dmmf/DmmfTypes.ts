@@ -7,14 +7,23 @@ export declare namespace DmmfTypes {
     schema: Schema
     mappings: Mapping[]
   }
-  interface Enum {
+  interface DatamodelEnum {
+    name: string
+    values: EnumValue[]
+    dbName?: string | null
+    documentation?: string
+  }
+  interface EnumValue {
+    name: string
+    dbName: string | null
+  }
+  interface SchemaEnum {
     name: string
     values: string[]
-    dbName?: string | null
   }
   interface Datamodel {
     models: Model[]
-    enums: Enum[]
+    enums: DatamodelEnum[]
   }
   interface Model {
     name: string
@@ -44,7 +53,7 @@ export declare namespace DmmfTypes {
   interface Schema {
     inputTypes: InputType[]
     outputTypes: OutputType[]
-    enums: Enum[]
+    enums: SchemaEnum[]
   }
   interface QueryOutput {
     name: string
@@ -55,11 +64,11 @@ export declare namespace DmmfTypes {
   interface SchemaArg {
     name: string
     inputType: {
-      isRequired: boolean
-      isList: boolean
-      isNullable: boolean
       type: ArgType
       kind: FieldKind
+      isList: boolean
+      isNullable: boolean
+      isRequired: boolean
     }
     isRelationFilter?: boolean
   }
@@ -72,18 +81,19 @@ export declare namespace DmmfTypes {
     name: string
     outputType: {
       type: core.AllOutputTypes
-      isList: boolean
       isRequired: boolean
+      isNullable?: boolean
+      isList: boolean
       kind: FieldKind
     }
     args: SchemaArg[]
   }
   interface InputType {
     name: string
-    isWhereType?: boolean
-    isOrderType?: boolean
-    atLeastOne?: boolean
-    atMostOne?: boolean
+    constraints: {
+      maxNumFields: number | null
+      minNumFields: number | null
+    }
     fields: SchemaArg[]
     computedInputs: GlobalComputedInputs
   }

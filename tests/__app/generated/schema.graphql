@@ -65,6 +65,17 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+input EnumPostStatusFieldUpdateOperationsInput {
+  set: PostStatus
+}
+
+input EnumPostStatusFilter {
+  equals: PostStatus
+  in: [PostStatus!]
+  not: NestedEnumPostStatusFilter
+  notIn: [PostStatus!]
+}
+
 input FloatFieldUpdateOperationsInput {
   decrement: Float
   divide: Float
@@ -154,6 +165,13 @@ input NestedDateTimeFilter {
   notIn: [DateTime!]
 }
 
+input NestedEnumPostStatusFilter {
+  equals: PostStatus
+  in: [PostStatus!]
+  not: NestedEnumPostStatusFilter
+  notIn: [PostStatus!]
+}
+
 input NestedFloatFilter {
   equals: Float
   gt: Float
@@ -238,7 +256,7 @@ enum PostStatus {
 input PostUpdateManyMutationInput {
   likes: IntFieldUpdateOperationsInput
   rating: FloatFieldUpdateOperationsInput
-  status: PostStatus
+  status: EnumPostStatusFieldUpdateOperationsInput
 }
 
 input PostWhereInput {
@@ -249,7 +267,7 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
   rating: FloatFilter
-  status: PostStatus
+  status: EnumPostStatusFilter
 }
 
 input PostWhereUniqueInput {

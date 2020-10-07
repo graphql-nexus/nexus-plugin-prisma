@@ -68,11 +68,14 @@ function transformSchema(
           }
 
           return {
-            ...f,
+            name: f.name,
             args,
             outputType: {
-              ...f.outputType,
               type: getReturnTypeName(f.outputType.type) as any,
+              kind: f.outputType.kind,
+              isRequired: f.isRequired,
+              isNullable: f.isNullable,
+              isList: f.outputType.isList,
             },
           }
         }),
@@ -87,24 +90,43 @@ function transformSchema(
  * support union types on args, but Prisma Client does.
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
-  // FIXME: *Enum*Filter are currently empty
-  let inputType = arg.inputType.some((a) => a.kind === 'enum')
-    ? arg.inputType[0]
-    : arg.inputType.find((a) => a.kind === 'object')!
-
-  if (!inputType) {
-    inputType = arg.inputType[0]
-  }
+  const inputType = flattenUnionOfSchemaArg(arg.inputTypes)
 
   return {
     name: arg.name,
     inputType: {
-      ...inputType,
       type: getReturnTypeName(inputType.type),
+      isList: inputType.isList,
+      kind: inputType.kind,
+      isNullable: arg.isNullable,
+      isRequired: arg.isRequired,
     },
     // FIXME Why?
     isRelationFilter: undefined,
   }
+}
+
+/**
+ * Prisma Client supports union types but GraphQL doesn't.
+ * Because of that, we need to choose a member of the union type that we'll expose on our GraphQL schema.
+ *
+ * Apart from some exceptions, we're generally trying to pick the broadest member type of the union.
+ */
+function flattenUnionOfSchemaArg(inputTypes: DMMF.SchemaArgInputType[]): DMMF.SchemaArgInputType {
+  return (
+    // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
+    inputTypes.find(
+      (a) => a.kind === 'object' && a.isList == true && getReturnTypeName(a.type).endsWith('WhereInput')
+    ) ??
+    // Same here
+    inputTypes.find((a) => a.kind === 'object' && getReturnTypeName(a.type).endsWith('WhereInput')) ??
+    // [AnyType]
+    inputTypes.find((a) => a.kind === 'object' && a.isList === true) ??
+    // AnyType
+    inputTypes.find((a) => a.kind === 'object') ??
+    // fallback to the first member of the union
+    inputTypes[0]
+  )
 }
 
 type AddComputedInputParams = {
@@ -229,13 +251,7 @@ function transformInputType(
  * reference-by-name form.
  *
  */
-//
-// TODO _why_ is the dmmf like this?
-//
-// FIXME `any` type because this is used by both outputType and inputType
-// and there is currently no generic capturing both ideas.
-//
-export function getReturnTypeName(type: any): string {
+export function getReturnTypeName(type: DMMF.ArgType | DMMF.InputType | DMMF.OutputType): string {
   if (typeof type === 'string') {
     return type
   }
