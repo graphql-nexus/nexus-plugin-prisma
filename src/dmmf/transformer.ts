@@ -107,18 +107,20 @@ function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
 }
 
 /**
- * Trying getting the "broadest" member of the union type
- * Intentionally ignoring the `<Model>RelationFilter` for now and using the `<Model>WhereInput` instead to avoid making a breaking change
+ * Prisma Client supports union types but GraphQL doesn't.
+ * Because of that, we need to choose a member of the union type that we'll expose on our GraphQL schema.
+ *
+ * Apart from some exceptions, we're generally trying to pick the broadest member type of the union.
  */
 function flattenUnionOfSchemaArg(inputTypes: DMMF.SchemaArgInputType[]): DMMF.SchemaArgInputType {
   return (
-    // [<Model>WhereInput]
+    // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
     inputTypes.find(
       (a) => a.kind === 'object' && a.isList == true && getReturnTypeName(a.type).endsWith('WhereInput')
     ) ??
-    // <Model>WhereInput
+    // Same here
     inputTypes.find((a) => a.kind === 'object' && getReturnTypeName(a.type).endsWith('WhereInput')) ??
-    // [<AnyType>]
+    // [AnyType]
     inputTypes.find((a) => a.kind === 'object' && a.isList === true) ??
     // AnyType
     inputTypes.find((a) => a.kind === 'object') ??
