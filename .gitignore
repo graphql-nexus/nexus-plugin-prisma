@@ -12,4 +12,3 @@ yalc.lock
 .vscode
 .postgres-data
 .mysql-data
-tests/__app/generated/
