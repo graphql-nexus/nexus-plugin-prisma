@@ -824,7 +824,7 @@
     strip-ansi "^6.0.0"
     strip-indent "^3.0.0"
 
-"@prisma/sdk@2.9":
+"@prisma/sdk@2.9.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@prisma/sdk/-/sdk-2.9.0.tgz#eb2fedade0d017398dfabc4a9b396a9323be3893"
   integrity sha512-GzcWlzgjhTcBIGhmHpCOO0vKeEbZ6g8ejVe1166hyjhT0mkrfScBmhSwcuatm7UrYYcfJt28SGrJURf5vivoZg==
