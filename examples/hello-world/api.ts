@@ -1,10 +1,20 @@
-import { asNexusMethod, makeSchema, mutationType, objectType, queryType } from '@nexus/schema'
+import {
+  asNexusMethod,
+  makeSchema,
+  mutationType,
+  objectType,
+  queryType,
+  subscriptionType,
+} from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
-import { ApolloServer } from 'apollo-server-express'
+import { ApolloServer, PubSub } from 'apollo-server-express'
 import express from 'express'
 import { DateTimeResolver, JSONObjectResolver } from 'graphql-scalars'
-import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
+import * as HTTP from 'http'
+import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
+
+const pubsub = new PubSub()
 
 const prisma = new PrismaClient()
 
@@ -20,7 +30,7 @@ const apollo = new ApolloServer({
       schema: path.join(__dirname, './api.graphql'),
     },
     plugins: [
-      nexusSchemaPrisma({
+      nexusPrisma({
         experimentalCRUD: true,
       }),
     ],
@@ -37,7 +47,13 @@ const apollo = new ApolloServer({
       }),
       mutationType({
         definition(t) {
-          t.crud.createOneUser()
+          t.crud.createOneUser({
+            async resolve(root, args, ctx, info, originalResolve) {
+              const data = originalResolve(root, args, ctx, info)
+              await pubsub.publish('user_added', { data })
+              return data
+            },
+          })
           t.crud.createOnePost()
           t.crud.deleteOneUser()
           t.crud.deleteOnePost()
@@ -60,14 +76,43 @@ const apollo = new ApolloServer({
           t.model.authors()
         },
       }),
+      subscriptionType({
+        definition(t) {
+          t.boolean('truths', {
+            subscribe() {
+              return (async function* () {
+                while (true) {
+                  await new Promise((res) => setTimeout(res, 1000))
+                  yield Math.random() > 0.5
+                }
+              })() as any
+            },
+            resolve(eventData) {
+              return eventData
+            },
+          })
+          t.field('createOneUserEvents', {
+            type: 'User',
+            subscribe() {
+              return pubsub.asyncIterator('user_added')
+            },
+            async resolve(userPromise) {
+              const user = await userPromise.data
+              return user
+            },
+          })
+        },
+      }),
     ],
   }),
 })
 
 const app = express()
+const http = HTTP.createServer(app)
 
 apollo.applyMiddleware({ app })
+apollo.installSubscriptionHandlers(http)
 
-app.listen(4000, () => {
+http.listen(4000, () => {
   console.log(`🚀 GraphQL service ready at http://localhost:4000/graphql`)
 })

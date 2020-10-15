@@ -9,17 +9,19 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@nexus/schema": "^0.15.0",
-    "apollo-server-express": "^2.17.0",
+    "@nexus/schema": "^0.16.0",
+    "@prisma/client": "2.9",
+    "apollo-server-express": "^2.18.2",
     "express": "^4.17.1",
-    "graphql": "^14.6.0",
-    "graphql-scalars": "^1.2.6",
-    "nexus-plugin-prisma": "^0.18.0-next.1"
+    "graphql": "^15.3.0",
+    "graphql-scalars": "^1.4.0",
+    "nexus-plugin-prisma": "^0.21.0"
   },
   "devDependencies": {
+    "@prisma/cli": "2.9",
     "@types/express": "^4.17.7",
     "ts-node": "^9.0.0",
-    "ts-node-dev": "^1.0.0-pre.61",
-    "typescript": "^3.9.3"
+    "ts-node-dev": "^1.0.0-pre.65",
+    "typescript": "^4.0.3"
   }
 }
