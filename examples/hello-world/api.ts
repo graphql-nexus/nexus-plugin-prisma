@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import { ApolloServer } from 'apollo-server-express'
 import express from 'express'
 import { DateTimeResolver, JSONObjectResolver } from 'graphql-scalars'
-import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
+import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
 
 const prisma = new PrismaClient()
@@ -20,7 +20,7 @@ const apollo = new ApolloServer({
       schema: path.join(__dirname, './api.graphql'),
     },
     plugins: [
-      nexusSchemaPrisma({
+      nexusPrisma({
         experimentalCRUD: true,
       }),
     ],
