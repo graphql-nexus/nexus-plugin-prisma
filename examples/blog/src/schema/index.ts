@@ -1,5 +1,5 @@
 import * as NexusSchema from '@nexus/schema'
-import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
+import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
 import * as Blog from './Blog'
 import * as Mutation from './Mutation'
@@ -11,7 +11,7 @@ import * as User from './User'
 export default NexusSchema.makeSchema({
   types: [Query, Mutation, Blog, Post, User, Tag],
   plugins: [
-    nexusSchemaPrisma({
+    nexusPrisma({
       experimentalCRUD: true,
     }),
   ],
