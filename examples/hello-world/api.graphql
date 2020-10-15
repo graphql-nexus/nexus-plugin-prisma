@@ -126,6 +126,10 @@ input StringFilter {
   startsWith: String
 }
 
+type Subscription {
+  createOneUserEvents: User
+}
+
 type User {
   birthDate: DateTime!
   email: String!
