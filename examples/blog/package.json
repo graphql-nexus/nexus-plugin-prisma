@@ -15,19 +15,21 @@
     "data:inject": "ts-node prisma/fake-data.ts"
   },
   "dependencies": {
-    "@nexus/schema": "^0.14.0",
-    "graphql": "^14.6.0",
+    "@nexus/schema": "^0.16.0",
+    "@prisma/client": "2.9",
+    "graphql": "^15.3.0",
     "graphql-yoga": "^1.18.2",
-    "nexus-plugin-prisma": "^0.16.1"
+    "nexus-plugin-prisma": "^0.21.0"
   },
   "devDependencies": {
-    "@types/faker": "^4.1.12",
-    "@types/ws": "^7.2.4",
-    "faker": "^4.1.0",
-    "prettier": "^2.0.5",
-    "ts-node": "^8.10.2",
-    "ts-node-dev": "^1.0.0-pre.41",
-    "typescript": "^3.9.3"
+    "@prisma/cli": "2.9",
+    "@types/faker": "^5.1.2",
+    "@types/ws": "^7.2.7",
+    "faker": "^5.1.0",
+    "prettier": "^2.1.2",
+    "ts-node": "^9.0.0",
+    "ts-node-dev": "^1.0.0-pre.65",
+    "typescript": "^4.0.3"
   },
   "prettier": {
     "semi": false,
