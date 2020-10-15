@@ -3,8 +3,9 @@
   "extends": ["github>prisma-labs/renovate-config"],
   "packageRules": [
     {
+      "groupName": "Prisma",
       "packagePatterns": ["^@prisma/"],
-      "groupName": "Prisma"
+      "depTypeList": ["peerDependencies", "devDependencies"]
     }
   ]
 }
