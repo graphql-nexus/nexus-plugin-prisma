@@ -128,6 +128,7 @@ input StringFilter {
 
 type Subscription {
   createOneUserEvents: User
+  truths: Boolean
 }
 
 type User {
