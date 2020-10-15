@@ -2,37 +2,13 @@
 
 exports[`removes global computedInputs from all input types: globallyComputedInputs 1`] = `
 Object {
-  "schema": "type Mutation {
+  "schema": "type Query {
+  user(where: UserWhereUniqueInput!): User
+}
+
+type Mutation {
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
-}
-
-type Nested {
-  id: Int!
-  createdWithBrowser: String!
-  name: String!
-}
-
-input NestedCreateInput {
-  name: String!
-  User: UserCreateOneWithoutNestedInput
-}
-
-input NestedCreateManyWithoutUserInput {
-  create: [NestedCreateWithoutUserInput!]
-  connect: [NestedWhereUniqueInput!]
-}
-
-input NestedCreateWithoutUserInput {
-  name: String!
-}
-
-input NestedWhereUniqueInput {
-  id: Int
-}
-
-type Query {
-  user(where: UserWhereUniqueInput!): User
 }
 
 type User {
@@ -42,9 +18,33 @@ type User {
   createdWithBrowser: String!
 }
 
+type Nested {
+  id: Int!
+  createdWithBrowser: String!
+  name: String!
+}
+
+input UserWhereUniqueInput {
+  id: Int
+}
+
 input UserCreateInput {
   name: String!
   nested: NestedCreateManyWithoutUserInput
+}
+
+input NestedCreateInput {
+  name: String!
+  User: UserCreateOneWithoutNestedInput
+}
+
+input NestedWhereUniqueInput {
+  id: Int
+}
+
+input NestedCreateManyWithoutUserInput {
+  create: [NestedCreateWithoutUserInput!]
+  connect: [NestedWhereUniqueInput!]
 }
 
 input UserCreateOneWithoutNestedInput {
@@ -52,12 +52,12 @@ input UserCreateOneWithoutNestedInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutNestedInput {
+input NestedCreateWithoutUserInput {
   name: String!
 }
 
-input UserWhereUniqueInput {
-  id: Int
+input UserCreateWithoutNestedInput {
+  name: String!
 }
 ",
   "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
@@ -171,12 +171,12 @@ declare global {
 
 exports[`removes resolver-level computedInputs from the corresponding input type: locallyComputedInputs 1`] = `
 Object {
-  "schema": "type Mutation {
-  createOneUser(data: UserCreateInput!): User!
+  "schema": "type Query {
+  user(where: UserWhereUniqueInput!): User
 }
 
-type Query {
-  user(where: UserWhereUniqueInput!): User
+type Mutation {
+  createOneUser(data: UserCreateInput!): User!
 }
 
 type User {
@@ -185,12 +185,12 @@ type User {
   createdWithBrowser: String!
 }
 
-input UserCreateInput {
-  name: String!
-}
-
 input UserWhereUniqueInput {
   id: Int
+}
+
+input UserCreateInput {
+  name: String!
 }
 ",
   "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'

@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`does not automatically publish input/enum type if already created by user: schema 1`] = `
-"enum Color {
-  Something
-  Else
-}
-
-type Query {
+"type Query {
   users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type User {
   id: Int!
   favouriteColor: Color!
+}
+
+enum Color {
+  Something
+  Else
 }
 
 input UserWhereInput {
@@ -106,49 +106,7 @@ declare global {
 `;
 
 exports[`does not publish enum twice (from input/output type): schema 1`] = `
-"enum Color {
-  Red
-  Green
-  Blue
-}
-
-input EnumColorFilter {
-  equals: Color
-  in: [Color!]
-  notIn: [Color!]
-  not: NestedEnumColorFilter
-}
-
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
-}
-
-input NestedEnumColorFilter {
-  equals: Color
-  in: [Color!]
-  notIn: [Color!]
-  not: NestedEnumColorFilter
-}
-
-input NestedIntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
-}
-
-type Query {
+"type Query {
   users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
@@ -167,6 +125,48 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: Int
+}
+
+enum Color {
+  Red
+  Green
+  Blue
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input EnumColorFilter {
+  equals: Color
+  in: [Color!]
+  notIn: [Color!]
+  not: NestedEnumColorFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedEnumColorFilter {
+  equals: Color
+  in: [Color!]
+  notIn: [Color!]
+  not: NestedEnumColorFilter
 }
 "
 `;
@@ -252,7 +252,12 @@ declare global {
 `;
 
 exports[`publishes enum even as output type: schema 1`] = `
-"enum Color {
+"type User {
+  id: Int!
+  favouriteColor: Color!
+}
+
+enum Color {
   Red
   Green
   Blue
@@ -260,11 +265,6 @@ exports[`publishes enum even as output type: schema 1`] = `
 
 type Query {
   ok: Boolean!
-}
-
-type User {
-  id: Int!
-  favouriteColor: Color!
 }
 "
 `;

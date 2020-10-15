@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`support models with only one id field (some crud operations are removed): schema 1`] = `
-"type Query {
-  ok: Boolean!
+"type User {
+  id: Int!
 }
 
-type User {
-  id: Int!
+type Query {
+  ok: Boolean!
 }
 "
 `;

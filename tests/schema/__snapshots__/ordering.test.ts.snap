@@ -5,16 +5,16 @@ exports[`orderby fields can be allow-listed: schema 1`] = `
   id: Int!
 }
 
-input FooWhereUniqueInput {
-  id: Int
-}
-
 type Query {
   foos(orderBy: [QueryFoosOrderByInput!], first: Int, last: Int, before: FooWhereUniqueInput, after: FooWhereUniqueInput): [Foo!]!
 }
 
 input QueryFoosOrderByInput {
   b: SortOrder
+}
+
+input FooWhereUniqueInput {
+  id: Int
 }
 
 enum SortOrder {

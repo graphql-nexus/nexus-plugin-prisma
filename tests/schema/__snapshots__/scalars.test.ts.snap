@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`publishes date and json scalar output types: schema 1`] = `
-"scalar DateTime
+"type User {
+  id: Int!
+  date: DateTime!
+  json: Json!
+  optionalJson: Json
+}
+
+scalar DateTime
 
 scalar Json
 
 type Query {
   ok: Boolean!
-}
-
-type User {
-  id: Int!
-  date: DateTime!
-  json: Json!
-  optionalJson: Json
 }
 "
 `;
