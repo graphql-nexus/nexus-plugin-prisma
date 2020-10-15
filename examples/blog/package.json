@@ -8,7 +8,7 @@
     "build": "yarn -s clean && yarn -s generate && tsc",
     "style": "prettier --write 'src/**/*'",
     "dev": "ts-node-dev --tree-kill --no-notify --respawn --transpile-only src/main.ts",
-    "dev:migrate": "prisma2 migrate save --experimental -c && prisma2 migrate up --experimental -c",
+    "dev:migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c",
     "generate": "yarn -s generate:prisma && yarn -s generate:nexus",
     "generate:prisma": "prisma generate",
     "generate:nexus": "NODE_ENV=development ts-node --transpile-only src/schema",
