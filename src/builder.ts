@@ -158,11 +158,16 @@ export interface Options {
   scalars?: Partial<Record<Typegen.GetGen<'scalars', string>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
   /**
-   * Graphql does not support union types, atomic operation are enabled by default for CRUD update and upsert
+   * Enable atomic operations
    *
-   * @default false
+   * @remarks
+   *
+   * GraphQL doesn't support union types. The plugin has to apply a flattening heuristic and pick by default the broadest member of the union.
+   * On update and upsert, the broadest member is the atomic operation, which is not ideal in many cases.
+   *
+   * @default true
    */
-  disableAtomicOperations?: boolean
+  atomicOperations?: boolean
 }
 
 export interface InternalOptions extends Options {
@@ -262,7 +267,7 @@ export class SchemaBuilder {
       getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
-        disableAtomicOperations: config.disableAtomicOperations,
+        atomicOperations: config.atomicOperations,
       })
     this.scalars = (options.scalars as any) ?? {}
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)

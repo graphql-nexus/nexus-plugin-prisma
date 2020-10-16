@@ -6,7 +6,7 @@ import { DmmfTypes } from './DmmfTypes'
 import { getPrismaClientDmmf } from './utils'
 
 export type TransformOptions = {
-  disableAtomicOperations?: boolean
+  atomicOperations?: boolean
   globallyComputedInputs?: GlobalComputedInputs
   paginationStrategy?: PaginationStrategy
 }
@@ -19,7 +19,7 @@ export const getTransformedDmmf = (
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
   paginationStrategy: paginationStrategies.relay,
-  disableAtomicOperations: false,
+  atomicOperations: true,
   ...givenOptions,
 })
 
@@ -48,18 +48,16 @@ const paginationArgNames = ['cursor', 'take', 'skip']
 
 function transformSchema(
   schema: DMMF.Schema,
-  { globallyComputedInputs, paginationStrategy, disableAtomicOperations }: Required<TransformOptions>
+  { globallyComputedInputs, paginationStrategy, atomicOperations }: Required<TransformOptions>
 ): DmmfTypes.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map((_) =>
-      transformInputType(_, globallyComputedInputs, disableAtomicOperations)
-    ),
+    inputTypes: schema.inputTypes.map((_) => transformInputType(_, globallyComputedInputs, atomicOperations)),
     outputTypes: schema.outputTypes.map((o) => {
       return {
         ...o,
         fields: o.fields.map((f) => {
-          let args = f.args.map((_) => transformArg(_, disableAtomicOperations))
+          let args = f.args.map((_) => transformArg(_, atomicOperations))
           const argNames = args.map((a) => a.name)
 
           // If this field has pagination
@@ -93,8 +91,8 @@ function transformSchema(
  * heuristics. A conversion is needed because GraphQL does not
  * support union types on args, but Prisma Client does.
  */
-function transformArg(arg: DMMF.SchemaArg, disableAtomicOperations: boolean): DmmfTypes.SchemaArg {
-  const inputType = flattenUnionOfSchemaArg(arg.inputTypes, disableAtomicOperations)
+function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): DmmfTypes.SchemaArg {
+  const inputType = flattenUnionOfSchemaArg(arg.inputTypes, atomicOperations)
 
   return {
     name: arg.name,
@@ -118,12 +116,12 @@ function transformArg(arg: DMMF.SchemaArg, disableAtomicOperations: boolean): Dm
  */
 function flattenUnionOfSchemaArg(
   inputTypes: DMMF.SchemaArgInputType[],
-  disableAtomicOperations: boolean
+  atomicOperations: boolean
 ): DMMF.SchemaArgInputType {
   // Remove atomic operations if needed
-  const filteredInputTypes = disableAtomicOperations
-    ? inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
-    : inputTypes
+  const filteredInputTypes = atomicOperations
+    ? inputTypes
+    : inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
 
   return (
     // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
@@ -236,7 +234,7 @@ export async function addComputedInputs({
 function transformInputType(
   inputType: DMMF.InputType,
   globallyComputedInputs: GlobalComputedInputs,
-  disableAtomicOperations: boolean
+  atomicOperations: boolean
 ): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map((field) => field.name)
   /**
@@ -255,7 +253,7 @@ function transformInputType(
     ...inputType,
     fields: inputType.fields
       .filter((field) => !(field.name in globallyComputedInputs))
-      .map((_) => transformArg(_, disableAtomicOperations)),
+      .map((_) => transformArg(_, atomicOperations)),
     computedInputs: globallyComputedInputsInType,
   }
 }
