@@ -118,10 +118,10 @@ function transformArg(arg: DMMF.SchemaArg, disableAtomicOperations: boolean): Dm
  */
 function flattenUnionOfSchemaArg(
   inputTypes: DMMF.SchemaArgInputType[],
-  removeAtomicOperations: boolean
+  disableAtomicOperations: boolean
 ): DMMF.SchemaArgInputType {
   // Remove atomic operations if needed
-  const filteredInputTypes = removeAtomicOperations
+  const filteredInputTypes = disableAtomicOperations
     ? inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
     : inputTypes
 
@@ -236,7 +236,7 @@ export async function addComputedInputs({
 function transformInputType(
   inputType: DMMF.InputType,
   globallyComputedInputs: GlobalComputedInputs,
-  removeAtomicOperations: boolean
+  disableAtomicOperations: boolean
 ): DmmfTypes.InputType {
   const fieldNames = inputType.fields.map((field) => field.name)
   /**
@@ -255,7 +255,7 @@ function transformInputType(
     ...inputType,
     fields: inputType.fields
       .filter((field) => !(field.name in globallyComputedInputs))
-      .map((_) => transformArg(_, removeAtomicOperations)),
+      .map((_) => transformArg(_, disableAtomicOperations)),
     computedInputs: globallyComputedInputsInType,
   }
 }
