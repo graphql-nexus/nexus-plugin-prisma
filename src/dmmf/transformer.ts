@@ -119,9 +119,10 @@ function flattenUnionOfSchemaArg(
   atomicOperations: boolean
 ): DMMF.SchemaArgInputType {
   // Remove atomic operations if needed
-  const filteredInputTypes = atomicOperations
-    ? inputTypes
-    : inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
+  const filteredInputTypes =
+    atomicOperations === false
+      ? inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
+      : inputTypes
 
   return (
     // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
