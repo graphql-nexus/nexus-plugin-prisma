@@ -11,7 +11,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysql
   postgres:
-    image: postgres:10.13
+    image: postgres:10.14
     volumes:
       - './.postgres-data/db:/var/lib/postgresql/data'
     restart: always
