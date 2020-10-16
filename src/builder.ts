@@ -226,6 +226,7 @@ const defaultOptions = {
   shouldGenerateArtifacts,
   prismaClient: (ctx: any) => ctx.prisma,
   paginationStrategy: 'relay' as const,
+  atomicOperations: true,
   inputs: {
     prismaClient: defaultClientPath,
   },
