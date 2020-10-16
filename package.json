@@ -59,7 +59,7 @@
     "@types/prettier": "2.1.5",
     "@types/rimraf": "3.0.0",
     "@types/semver": "7.3.4",
-    "dripip": "^0.10.0",
+    "dripip": "0.10.0",
     "get-port": "5.1.1",
     "graphql": "15.3.0",
     "graphql-request": "3.2.0",
