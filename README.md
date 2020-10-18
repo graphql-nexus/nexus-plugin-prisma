@@ -5,5 +5,5 @@
 
 ![trunk](https://github.com/graphql-nexus/nexus-plugin-prisma/workflows/trunk/badge.svg)
 
-[`nexus framework` is abandoned -> explaination](https://github.com/prisma-labs/graphql-framework-experiment/issues/1432)  
+[`nexus framework` is abandoned -> explanation](https://github.com/prisma-labs/graphql-framework-experiment/issues/1432)
 [Docs for usage with `@nexus/schema`](https://nexusjs.org/components-standalone/schema/plugins/prisma)
