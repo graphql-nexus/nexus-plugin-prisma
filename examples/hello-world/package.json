@@ -6,10 +6,11 @@
     "dev": "ts-node-dev --transpile-only api",
     "dev:typecheck": "tsc --watch --noEmit",
     "dev:migrate": "prisma migrate save --experimental -c && prisma migrate up --experimental -c",
-    "build": "tsc"
+    "build": "yarn nexus:reflect && tsc",
+    "nexus:reflect": "NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node --transpile-only api"
   },
   "dependencies": {
-    "@nexus/schema": "^0.16.0",
+    "@nexus/schema": "^0.17.0-next.3",
     "@prisma/client": "2.9",
     "apollo-server-express": "^2.18.2",
     "express": "^4.17.1",

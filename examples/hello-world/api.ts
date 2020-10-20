@@ -21,6 +21,7 @@ const prisma = new PrismaClient()
 const apollo = new ApolloServer({
   context: () => ({ prisma }),
   schema: makeSchema({
+    shouldExitAfterGenerateArtifacts: process.env.NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === 'true',
     typegenAutoConfig: {
       contextType: '{ prisma: PrismaClient.PrismaClient }',
       sources: [{ source: '.prisma/client', alias: 'PrismaClient' }],
