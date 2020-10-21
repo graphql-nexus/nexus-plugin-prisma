@@ -69,7 +69,6 @@
     "jest-watch-typeahead": "0.6.0",
     "node-fetch": "2.6.1",
     "prettier": "2.0.5",
-    "react": "16.13.1",
     "rimraf": "3.0.2",
     "semver": "7.3.2",
     "strip-ansi": "6.0.0",
