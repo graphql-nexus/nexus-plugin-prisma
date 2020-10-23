@@ -30,7 +30,7 @@ export function transformNullsToUndefined(
 
     if (shouldConvertNullToUndefined) {
       graphqlArgs[key] = undefined
-    } else if (Lo.isPlainObject(val)) {
+    } else if (Lo.isPlainObject(val) && prismaArg.inputType.type != 'Json') {
       const nestedPrismaArgs = dmmf.getInputTypeWithIndexedFields(prismaArg.inputType.type).fields
 
       graphqlArgs[key] = transformNullsToUndefined(graphqlArgs[key], nestedPrismaArgs, dmmf)
