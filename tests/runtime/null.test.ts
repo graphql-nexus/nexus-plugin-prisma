@@ -173,3 +173,47 @@ test('do not convert args that are arrays', async () => {
 
   expect(result).toMatchSnapshot()
 })
+
+test('safely transforms json fields', async () => {
+  const datamodel = `
+  datasource db {
+    provider = "postgresql"
+    url      = "postgresql://"
+  }
+
+  model User {
+    id  Int @id @default(autoincrement())
+    json1 Json
+    json2 Json
+    optionalJson1 Json?
+    optionalJson2 Json?
+  }
+  `
+  const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'create')
+
+  const incomingArgs = {
+    data: {
+      json1: null, // not nullable
+      json2: { someRandomJson: 'titi' },
+      optionalJson1: null,
+      optionalJson2: { someRandomJson: 'titi' },
+    },
+  }
+
+  const result = transformNullsToUndefined(incomingArgs, schemaArgs, dmmf)
+
+  expect(result).toMatchInlineSnapshot(`
+    Object {
+      "data": Object {
+        "json1": undefined,
+        "json2": Object {
+          "someRandomJson": "titi",
+        },
+        "optionalJson1": null,
+        "optionalJson2": Object {
+          "someRandomJson": "titi",
+        },
+      },
+    }
+  `)
+})
