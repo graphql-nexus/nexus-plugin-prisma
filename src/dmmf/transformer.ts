@@ -68,11 +68,14 @@ function transformSchema(
           }
 
           return {
-            ...f,
+            name: f.name,
             args,
             outputType: {
-              ...f.outputType,
               type: getReturnTypeName(f.outputType.type) as any,
+              kind: f.outputType.kind,
+              isRequired: f.isRequired,
+              isNullable: f.isNullable,
+              isList: f.outputType.isList,
             },
           }
         }),
@@ -87,24 +90,43 @@ function transformSchema(
  * support union types on args, but Prisma Client does.
  */
 function transformArg(arg: DMMF.SchemaArg): DmmfTypes.SchemaArg {
-  // FIXME: *Enum*Filter are currently empty
-  let inputType = arg.inputType.some((a) => a.kind === 'enum')
-    ? arg.inputType[0]
-    : arg.inputType.find((a) => a.kind === 'object')!
-
-  if (!inputType) {
-    inputType = arg.inputType[0]
-  }
+  const inputType = flattenUnionOfSchemaArg(arg.inputTypes)
 
   return {
     name: arg.name,
     inputType: {
-      ...inputType,
       type: getReturnTypeName(inputType.type),
+      isList: inputType.isList,
+      kind: inputType.kind,
+      isNullable: arg.isNullable,
+      isRequired: arg.isRequired,
     },
     // FIXME Why?
     isRelationFilter: undefined,
   }
+}
+
+/**
+ * Prisma Client supports union types but GraphQL doesn't.
+ * Because of that, we need to choose a member of the union type that we'll expose on our GraphQL schema.
+ *
+ * Apart from some exceptions, we're generally trying to pick the broadest member type of the union.
+ */
+function flattenUnionOfSchemaArg(inputTypes: DMMF.SchemaArgInputType[]): DMMF.SchemaArgInputType {
+  return (
+    // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
+    inputTypes.find(
+      (a) => a.kind === 'object' && a.isList == true && getReturnTypeName(a.type).endsWith('WhereInput')
+    ) ??
+    // Same here
+    inputTypes.find((a) => a.kind === 'object' && getReturnTypeName(a.type).endsWith('WhereInput')) ??
+    // [AnyType]
+    inputTypes.find((a) => a.kind === 'object' && a.isList === true) ??
+    // AnyType
+    inputTypes.find((a) => a.kind === 'object') ??
+    // fallback to the first member of the union
+    inputTypes[0]
+  )
 }
 
 type AddComputedInputParams = {
@@ -123,37 +145,39 @@ type AddDeepComputedInputsArgs = Omit<AddComputedInputParams, 'locallyComputedIn
  * Recursively looks for inputs that need a value from globallyComputedInputs
  * and populates them
  */
-function addGloballyComputedInputs({
+async function addGloballyComputedInputs({
   inputType,
   params,
   dmmf,
   data,
-}: AddDeepComputedInputsArgs): Record<string, any> {
+}: AddDeepComputedInputsArgs): Promise<Record<string, any>> {
   if (Array.isArray(data)) {
-    return data.map((value) =>
-      addGloballyComputedInputs({
-        inputType,
-        dmmf,
-        params,
-        data: value,
-      })
+    return Promise.all(
+      data.map((value) =>
+        addGloballyComputedInputs({
+          inputType,
+          dmmf,
+          params,
+          data: value,
+        })
+      )
     )
   }
   // Get values for computedInputs corresponding to keys that exist in inputType
   const computedInputValues = Object.keys(inputType.computedInputs).reduce(
-    (values, key) => ({
-      ...values,
-      [key]: inputType.computedInputs[key](params),
+    async (values, key) => ({
+      ...(await values),
+      [key]: await inputType.computedInputs[key](params),
     }),
-    {} as Record<string, any>
+    Promise.resolve({} as Record<string, any>)
   )
   // Combine computedInputValues with values provided by the user, recursing to add
   // global computedInputs to nested types
-  return Object.keys(data).reduce((deeplyComputedData, fieldName) => {
+  return Object.keys(data).reduce(async (deeplyComputedData, fieldName) => {
     const field = inputType.fields.find((_) => _.name === fieldName)!
     const fieldValue =
       field.inputType.kind === 'object'
-        ? addGloballyComputedInputs({
+        ? await addGloballyComputedInputs({
             inputType: dmmf.getInputType(field.inputType.type),
             dmmf,
             params,
@@ -161,13 +185,13 @@ function addGloballyComputedInputs({
           })
         : data[fieldName]
     return {
-      ...deeplyComputedData,
+      ...(await deeplyComputedData),
       [fieldName]: fieldValue,
     }
   }, computedInputValues)
 }
 
-export function addComputedInputs({
+export async function addComputedInputs({
   dmmf,
   inputType,
   locallyComputedInputs,
@@ -180,19 +204,19 @@ export function addComputedInputs({
        * Globally computed inputs are attached to the inputType object
        * as 'computedInputs' by the transformInputType function.
        */
-      ...addGloballyComputedInputs({
+      ...(await addGloballyComputedInputs({
         inputType,
         dmmf,
         params,
         data: params.args.data,
-      }),
-      ...Object.entries(locallyComputedInputs).reduce(
-        (args, [fieldName, computeFieldValue]) => ({
-          ...args,
-          [fieldName]: computeFieldValue(params),
+      })),
+      ...(await Object.entries(locallyComputedInputs).reduce(
+        async (args, [fieldName, computeFieldValue]) => ({
+          ...(await args),
+          [fieldName]: await computeFieldValue(params),
         }),
-        {} as Record<string, any>
-      ),
+        Promise.resolve({} as Record<string, any>)
+      )),
     },
   }
 }
@@ -227,13 +251,7 @@ function transformInputType(
  * reference-by-name form.
  *
  */
-//
-// TODO _why_ is the dmmf like this?
-//
-// FIXME `any` type because this is used by both outputType and inputType
-// and there is currently no generic capturing both ideas.
-//
-export function getReturnTypeName(type: any): string {
+export function getReturnTypeName(type: DMMF.ArgType | DMMF.InputType | DMMF.OutputType): string {
   if (typeof type === 'string') {
     return type
   }

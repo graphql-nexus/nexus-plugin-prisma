@@ -1,23 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`generates publishers pluralized & camel-cased: schema 1`] = `
-"type BatchPayload {
-  count: Int!
+"type Query {
+  modelName(where: ModelNameWhereUniqueInput!): ModelName
+  modelNames(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
 }
 
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
+type Mutation {
+  createOneModelName(data: ModelNameCreateInput!): ModelName!
+  deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
+  updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
+  upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
+  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
 }
 
 type ModelName {
   id: Int!
+}
+
+input ModelNameWhereUniqueInput {
+  id: Int
 }
 
 input ModelNameCreateInput {
@@ -26,6 +28,10 @@ input ModelNameCreateInput {
 
 input ModelNameUpdateInput {
   name: StringFieldUpdateOperationsInput
+}
+
+type BatchPayload {
+  count: Int!
 }
 
 input ModelNameUpdateManyMutationInput {
@@ -40,16 +46,33 @@ input ModelNameWhereInput {
   name: StringFilter
 }
 
-input ModelNameWhereUniqueInput {
-  id: Int
+input StringFieldUpdateOperationsInput {
+  set: String
 }
 
-type Mutation {
-  createOneModelName(data: ModelNameCreateInput!): ModelName!
-  deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
-  updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
-  upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
-  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
 input NestedIntFilter {
@@ -64,29 +87,6 @@ input NestedIntFilter {
 }
 
 input NestedStringFilter {
-  equals: String
-  in: [String!]
-  notIn: [String!]
-  lt: String
-  lte: String
-  gt: String
-  gte: String
-  contains: String
-  startsWith: String
-  endsWith: String
-  not: NestedStringFilter
-}
-
-type Query {
-  modelName(where: ModelNameWhereUniqueInput!): ModelName
-  modelNames(first: Int, last: Int, before: ModelNameWhereUniqueInput, after: ModelNameWhereUniqueInput): [ModelName!]!
-}
-
-input StringFieldUpdateOperationsInput {
-  set: String
-}
-
-input StringFilter {
   equals: String
   in: [String!]
   notIn: [String!]

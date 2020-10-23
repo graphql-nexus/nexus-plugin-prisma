@@ -1,6 +1,6 @@
 import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
-import * as fs from 'fs-jetpack'
+import * as fsjp from 'fs-jetpack'
 import * as path from 'path'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'
@@ -10,14 +10,7 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 // - show we gracefully handle case of Prisma Client JS import failing
 
 it('integrates together', async () => {
-  // Setup file system vars & helpers
-  //
-  const projectRoot = path.join(__dirname, '__app')
-
-  const projectReadFile = (relPath: string): Promise<string | undefined> =>
-    fs.readAsync(path.join(projectRoot, relPath))
-
-  const projectPath = (...paths: string[]): string => path.join(projectRoot, ...paths)
+  const fs = fsjp.cwd(path.join(__dirname, '__app'))
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -26,16 +19,14 @@ it('integrates together', async () => {
   //   - The test will produce something identical to what was there before
   //   - If it does not, the snapshots will fail + git diff (redundant, though)
   //
-  await Promise.all([
-    fs.removeAsync(projectPath('/generated')),
-    fs.removeAsync(projectPath('../node_modules/@generated')),
-  ])
+  fs.remove('generated')
+  fs.remove('../node_modules/@generated')
 
   // Run Prisma generation:
   // - Prisma Client JS
   //
-  cp.execSync('../../node_modules/.bin/prisma2 generate', {
-    cwd: projectRoot,
+  cp.execSync('../../node_modules/.bin/prisma generate', {
+    cwd: fs.cwd(),
   })
 
   // Run Nexus generation:
@@ -49,7 +40,7 @@ it('integrates together', async () => {
   // this part out on their own more or less.
   //
 
-  const nexusPrismaTypegenPath = projectPath(`/generated/nexus-plugin-prisma-typegen.d.ts`)
+  const nexusPrismaTypegenPath = fs.path(`generated/nexus-plugin-prisma-typegen.d.ts`)
   const typegenFacadePath = require.resolve('../src/typegen/static')
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
@@ -74,8 +65,8 @@ it('integrates together', async () => {
       plugins: [nexusPrisma],
       shouldGenerateArtifacts: true,
       outputs: {
-        typegen: projectPath(`/generated/nexus-typegen.d.ts`),
-        schema: projectPath(`/generated/schema.graphql`),
+        typegen: fs.path(`generated/nexus-typegen.d.ts`),
+        schema: fs.path(`generated/schema.graphql`),
       },
     })
   })
@@ -84,9 +75,9 @@ it('integrates together', async () => {
   // Generated files from deps are tracked too, for easier debugging,
   // learning, and detecting unexpected changes.
   //
-  const graphqlSchema = await projectReadFile('/generated/schema.graphql')
-  const nexusPrismaTypeGen = await projectReadFile('/generated/nexus-plugin-prisma-typegen.d.ts')
-  const nexusCoreTypegen = await projectReadFile('/generated/nexus-typegen.d.ts')
+  const graphqlSchema = fs.read('generated/schema.graphql')
+  const nexusPrismaTypeGen = fs.read('generated/nexus-plugin-prisma-typegen.d.ts')
+  const nexusCoreTypegen = fs.read('generated/nexus-typegen.d.ts')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
@@ -99,5 +90,5 @@ it('integrates together', async () => {
   // Assert the app type checks. In effect this is testing that our
   // typegen works.
   //
-  expect(projectRoot).toTypeCheck()
+  expect(fs.cwd()).toTypeCheck()
 })

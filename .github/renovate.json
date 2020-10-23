@@ -1,3 +1,19 @@
 {
-  "extends": ["github>prisma-labs/renovate-config"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>prisma-labs/renovate-config"],
+  "packageRules": [
+    {
+      "groupName": "Prisma",
+      "packagePatterns": ["^@prisma/"],
+      "depTypeList": ["peerDependencies", "devDependencies"],
+      "commitMessagePrefix": "feat"
+    },
+    {
+      "groupName": "Prisma Dev",
+      "followTag": "dev",
+      "packagePatterns": ["^@prisma/"],
+      "depTypeList": ["devDependencies"],
+      "commitMessagePrefix": "test"
+    }
+  ]
 }

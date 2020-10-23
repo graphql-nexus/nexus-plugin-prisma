@@ -33,7 +33,7 @@ it('with whitelist', async () => {
 
   const Query = queryType({
     definition(t) {
-      // @ts-ignore
+      // @ts-expect-error
       t.crud.users({ ordering: { c: true } })
     },
   })

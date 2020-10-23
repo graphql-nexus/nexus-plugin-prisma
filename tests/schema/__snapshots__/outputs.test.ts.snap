@@ -1,17 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`publishes scalars from input types: schema 1`] = `
-"scalar DateTime
+"type Query {
+  users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+}
 
-input DateTimeFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: NestedDateTimeFilter
+type User {
+  id: Int!
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  date: DateTimeFilter
+}
+
+input UserWhereUniqueInput {
+  id: Int
 }
 
 input IntFilter {
@@ -25,7 +32,7 @@ input IntFilter {
   not: NestedIntFilter
 }
 
-input NestedDateTimeFilter {
+input DateTimeFilter {
   equals: DateTime
   in: [DateTime!]
   notIn: [DateTime!]
@@ -47,24 +54,17 @@ input NestedIntFilter {
   not: NestedIntFilter
 }
 
-type Query {
-  users(where: UserWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
-}
+scalar DateTime
 
-type User {
-  id: Int!
-}
-
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
-  id: IntFilter
-  date: DateTimeFilter
-}
-
-input UserWhereUniqueInput {
-  id: Int
+input NestedDateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: NestedDateTimeFilter
 }
 "
 `;

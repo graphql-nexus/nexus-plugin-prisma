@@ -25,6 +25,8 @@ const path = require('path')
 const facades = [
   ['schema.d.ts',  "export { nexusPrisma as nexusSchemaPrisma } from './dist'"  + os.EOL],
   ['schema.js',    "exports.nexusSchemaPrisma = require('./dist').nexusPrisma" + os.EOL],
+  ['typegen.js',   "module.exports = require('./dist/typegen/static')" + os.EOL],
+  ['typegen.d.ts', "export * from './dist/typegen/static'" + os.EOL],
 ]
 
 // Write facade files

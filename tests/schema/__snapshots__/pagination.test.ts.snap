@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`support prisma pagination: schema 1`] = `
-"type Post {
+"type User {
+  id: Int!
+  posts(take: Int, skip: Int, cursor: PostWhereUniqueInput): [Post!]!
+}
+
+type Post {
   id: Int!
   title: String!
 }
@@ -12,11 +17,6 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-
-type User {
-  id: Int!
-  posts(take: Int, skip: Int, cursor: PostWhereUniqueInput): [Post!]!
 }
 "
 `;
@@ -127,7 +127,12 @@ declare global {
 `;
 
 exports[`support relay pagination (default): schema 1`] = `
-"type Post {
+"type User {
+  id: Int!
+  posts(first: Int, last: Int, before: PostWhereUniqueInput, after: PostWhereUniqueInput): [Post!]!
+}
+
+type Post {
   id: Int!
   title: String!
 }
@@ -138,11 +143,6 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-
-type User {
-  id: Int!
-  posts(first: Int, last: Int, before: PostWhereUniqueInput, after: PostWhereUniqueInput): [Post!]!
 }
 "
 `;

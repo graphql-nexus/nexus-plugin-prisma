@@ -90,12 +90,12 @@ export function dmmfFieldToNexusFieldConfig(param: {
   isRequired: boolean
 }): {
   type: any
-  list: true | undefined
+  list: true | true[] | undefined
   nullable: boolean
 } {
   return {
     type: param.type,
-    list: param.isList ? true : undefined,
+    list: param.isList ? [true] : undefined,
     nullable: !param.isRequired,
   }
 }

@@ -1,7 +1,7 @@
 import { download } from '@prisma/fetch-engine'
+import { getPlatform } from '@prisma/get-platform'
 import fs from 'fs'
 import Path from 'path'
-import { getPlatform } from '@prisma/get-platform'
 
 type EngineType = 'query' | 'migration' | 'introspection'
 
@@ -27,7 +27,7 @@ async function main() {
   const cliEnginePath = await getEnginePath('query')
   const cliEngineDir = Path.dirname(cliEnginePath)
 
-  // Download binary in prisma2
+  // Download binary in prisma
   if (fs.existsSync(cliEngineDir)) {
     download({
       binaries: {
