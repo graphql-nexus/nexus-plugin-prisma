@@ -31,7 +31,7 @@
     "test:dev": "ts-node tests/__ensure-engine && jest src tests/ --watch"
   },
   "peerDependencies": {
-    "@nexus/schema": "^0.15.0",
+    "@nexus/schema": "^0.15.0 || ^0.16.0",
     "@prisma/client": "2.8.0 || 2.8.1 || 2.9.0",
     "graphql": "^15.3.0"
   },
