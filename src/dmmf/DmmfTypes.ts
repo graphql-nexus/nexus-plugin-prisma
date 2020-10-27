@@ -98,16 +98,18 @@ export declare namespace DmmfTypes {
     computedInputs: GlobalComputedInputs
   }
   interface Mapping {
-    model: string
-    // plural: string
-    findOne?: string
-    findMany?: string
-    create?: string
-    update?: string
-    updateMany?: string
-    upsert?: string
-    delete?: string
-    deleteMany?: string
+    model: string;
+    plural: string;
+    findOne?: string | null;
+    //findFirst?: string | null;
+    findMany?: string | null;
+    create?: string | null;
+    update?: string | null;
+    updateMany?: string | null;
+    upsert?: string | null;
+    delete?: string | null;
+    deleteMany?: string | null;
+    //aggregate?: string | null;
   }
   enum ModelAction {
     findOne = 'findOne',
