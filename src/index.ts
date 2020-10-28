@@ -22,14 +22,23 @@ function ensureDepIsInstalled(depName: string) {
 
 function ensurePeerDepRangeSatisfied(depName: string) {
   try {
-    const installedVersion = require(`${depName}/package.json`).version
+    const installedVersion: string | undefined = require(`${depName}/package.json`).version
 
-	// npm enforces that package manifests have a valid "version" field so this case _should_ never happen under normal circumstances.
+    // npm enforces that package manifests have a valid "version" field so this case _should_ never happen under normal circumstances.
     if (!installedVersion) {
       return
     }
 
-    const supportedRange = pkgJson.peerDependencies[depName]
+    const supportedRange: string | undefined = pkgJson.peerDependencies[depName]
+
+    if (!supportedRange) {
+      console.error(
+        colors.red(
+          `The package "nexus-plugin-prisma" has no such peer dependency for "${depName}". We cannot check if the consumer has satisfied the specified range.`
+        )
+      )
+      return
+    }
 
     if (semver.satisfies(supportedRange, installedVersion)) {
       return
