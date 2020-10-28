@@ -1,4 +1,7 @@
 import { colors } from './colors'
+import * as semver from 'semver'
+
+const pkgJson = require('../package.json')
 
 function ensureDepIsInstalled(depName: string) {
   try {
@@ -17,8 +20,34 @@ function ensureDepIsInstalled(depName: string) {
   }
 }
 
+function ensurePeerDepRangeSatisfied(depName: string) {
+  try {
+    const installedVersion = require(`${depName}/package.json`).version
+
+    if (!installedVersion) {
+      return
+    }
+
+    const supportedRange = pkgJson.peerDependencies[depName]
+
+    if (semver.satisfies(supportedRange, installedVersion)) {
+      return
+    }
+
+    console.warn(
+      colors.yellow(
+        `Warning: nexus-plugin-prisma@${pkgJson.version} does not support ${depName}@${installedVersion}. The supported range is: \`${supportedRange}\`. This could lead to undefined behaviors and bugs.`
+      )
+    )
+  } catch {}
+}
+
 ensureDepIsInstalled('@nexus/schema')
 ensureDepIsInstalled('graphql')
 ensureDepIsInstalled('@prisma/client')
+
+ensurePeerDepRangeSatisfied('@nexus/schema')
+ensurePeerDepRangeSatisfied('graphql')
+ensurePeerDepRangeSatisfied('@prisma/client')
 
 export * from './plugin'
