@@ -24,6 +24,7 @@ function ensurePeerDepRangeSatisfied(depName: string) {
   try {
     const installedVersion = require(`${depName}/package.json`).version
 
+	// npm enforces that package manifests have a valid "version" field so this case _should_ never happen under normal circumstances.
     if (!installedVersion) {
       return
     }
