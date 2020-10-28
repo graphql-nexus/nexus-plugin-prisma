@@ -26,15 +26,20 @@ function ensurePeerDepRangeSatisfied(depName: string) {
 
     // npm enforces that package manifests have a valid "version" field so this case _should_ never happen under normal circumstances.
     if (!installedVersion) {
+      console.warn(
+        colors.yellow(
+          `Warning: No version found for "${depName}". We cannot check if the consumer has satisfied the specified range.`
+        )
+      )
       return
     }
 
     const supportedRange: string | undefined = pkgJson.peerDependencies[depName]
 
     if (!supportedRange) {
-      console.error(
-        colors.red(
-          `The package "nexus-plugin-prisma" has no such peer dependency for "${depName}". We cannot check if the consumer has satisfied the specified range.`
+      console.warn(
+        colors.yellow(
+          `Warning: nexus-plugin-prisma has no such peer dependency for "${depName}". We cannot check if the consumer has satisfied the specified range.`
         )
       )
       return
