@@ -21,10 +21,10 @@ const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformO
   ...givenOptions,
 })
 
-export function transform(document: DMMF.Document, options?: TransformOptions): DmmfTypes.Document {
+export function transform(document: DMMF.Document, options?: TransformOptions): DmmfTypes.Document { 
   return {
     datamodel: transformDatamodel(document.datamodel),
-    mappings: document.mappings as DmmfTypes.Mapping[],
+    mappings: document.mappings.modelOperations,
     schema: transformSchema(document.schema, addDefaultOptions(options)),
   }
 }

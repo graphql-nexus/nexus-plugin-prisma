@@ -28,11 +28,12 @@
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "postinstall": "node ./scripts/postinstall.js",
     "test": "ts-node tests/__ensure-engine && jest --testTimeout=10000 --forceExit",
-    "test:dev": "ts-node tests/__ensure-engine && jest src tests/ --watch"
+    "test:dev": "ts-node tests/__ensure-engine && jest src tests/ --watch",
+    "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
     "@nexus/schema": "^0.15.0 || ^0.16.0",
-    "@prisma/client": "2.8.0 || 2.8.1 || 2.9.0",
+    "@prisma/client": "2.10.0",
     "graphql": "^15.3.0"
   },
   "dependencies": {
@@ -45,12 +46,12 @@
   "devDependencies": {
     "@nexus/schema": "0.15.0",
     "@prisma-labs/prettier-config": "0.1.0",
-    "@prisma/cli": "2.9.0",
-    "@prisma/client": "2.9.0",
-    "@prisma/fetch-engine": "2.9.0",
-    "@prisma/get-platform": "2.9.0",
-    "@prisma/migrate": "2.9.0",
-    "@prisma/sdk": "2.9.0",
+    "@prisma/cli": "2.10.0",
+    "@prisma/client": "2.10.0",
+    "@prisma/fetch-engine": "2.10.0",
+    "@prisma/get-platform": "2.10.0",
+    "@prisma/migrate": "2.10.0",
+    "@prisma/sdk": "2.10.0",
     "@types/jest": "26.0.14",
     "@types/lodash": "4.14.157",
     "@types/node": "13.13.12",
