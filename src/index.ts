@@ -61,8 +61,11 @@ ensureDepIsInstalled('@nexus/schema')
 ensureDepIsInstalled('graphql')
 ensureDepIsInstalled('@prisma/client')
 
-ensurePeerDepRangeSatisfied('@nexus/schema')
-ensurePeerDepRangeSatisfied('graphql')
+// TODO: Bring back peer dep range check for @nexus/schema and graphql once we have proper ranges
+// TODO: They're currently way too conservative
+
+//ensurePeerDepRangeSatisfied('@nexus/schema')
+//ensurePeerDepRangeSatisfied('graphql')
 ensurePeerDepRangeSatisfied('@prisma/client')
 
 export * from './plugin'
