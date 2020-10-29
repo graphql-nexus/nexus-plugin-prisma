@@ -45,7 +45,7 @@ function ensurePeerDepRangeSatisfied(depName: string) {
       return
     }
 
-    if (semver.satisfies(supportedRange, installedVersion)) {
+    if (semver.satisfies(installedVersion, supportedRange)) {
       return
     }
 
