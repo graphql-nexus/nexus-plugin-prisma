@@ -2,10 +2,43 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "groupName": "renovate-meta",
+      "updateTypes": ["lockFileMaintenance", "pin"],
+      "labels": ["type/chore"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "groupName": "dependencies (non-major)",
+      "depTypeList": ["dependencies"],
+      "updateTypes": ["patch", "minor"],
+      "labels": ["type/deps"],
+      "semanticCommitType": "deps"
+    },
+    {
+      "groupName": "devDependencies (major)",
+      "depTypeList": ["devDependencies"],
+      "updateTypes": ["major"],
+      "labels": ["type/chore"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps",
+      "excludePackagePatterns": ["^@prisma/"]
+    },
+    {
+      "groupName": "devDependencies (non-major)",
+      "depTypeList": ["devDependencies"],
+      "updateTypes": ["patch", "minor"],
+      "labels": ["type/chore"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps",
+      "excludePackagePatterns": ["^@prisma/"]
+    },
+    {
       "groupName": "Prisma",
       "packagePatterns": ["^@prisma/"],
       "depTypeList": ["peerDependencies", "devDependencies"],
-      "commitMessagePrefix": "feat:"
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "deps"
     }
   ]
 }
