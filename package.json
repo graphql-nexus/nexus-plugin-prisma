@@ -68,7 +68,7 @@
     "graphql-scalars": "1.2.1",
     "graphql-yoga": "1.18.3",
     "jest": "26.5.3",
-    "jest-watch-typeahead": "0.6.0",
+    "jest-watch-typeahead": "0.6.1",
     "node-fetch": "2.6.1",
     "prettier": "2.0.5",
     "rimraf": "3.0.2",
