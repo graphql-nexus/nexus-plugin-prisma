@@ -16,7 +16,7 @@
     "express": "^4.17.1",
     "graphql": "^15.3.0",
     "graphql-scalars": "^1.4.0",
-    "nexus-plugin-prisma": "^0.21.0"
+    "nexus-plugin-prisma": "^0.23.0"
   },
   "devDependencies": {
     "@prisma/cli": "2.9",
