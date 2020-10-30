@@ -157,6 +157,16 @@ export interface Options {
    */
   scalars?: Partial<Record<Typegen.GetGen<'scalars', string>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
+  /**
+   * Enable atomic operations
+   *
+   * @remarks
+   *
+   * GraphQL [doesn't support union input types](https://github.com/graphql/graphql-spec/pull/733). But Prisma Client atomic operations (e.g. [atomic operations on update for Int and Float fields](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/crud#atomic-operations-on-update)) are modelled as a union input type in TypeScript. By default Nexus Prisma will model this as a nested input object type with runtime validation that only one operation is sent by the client. However, you can configure this. If your API clients do not need the power of all the atomic operations then disable them. When disabled the nested input object is replaced by only one of the possible atomic operations. Disabling removes types from your API schema and thus complexity for your clients.
+   *
+   * @default true
+   */
+  atomicOperations?: boolean
 }
 
 export interface InternalOptions extends Options {
@@ -215,6 +225,7 @@ const defaultOptions = {
   shouldGenerateArtifacts,
   prismaClient: (ctx: any) => ctx.prisma,
   paginationStrategy: 'relay' as const,
+  atomicOperations: true,
   inputs: {
     prismaClient: defaultClientPath,
   },
@@ -256,6 +267,7 @@ export class SchemaBuilder {
       getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
         paginationStrategy: this.paginationStrategy,
+        atomicOperations: config.atomicOperations,
       })
     this.scalars = (options.scalars as any) ?? {}
     this.publisher = new Publisher(this.dmmf, config.nexusBuilder, this.scalars)
