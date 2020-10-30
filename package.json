@@ -54,7 +54,7 @@
     "@prisma/migrate": "2.10.0",
     "@prisma/sdk": "2.10.0",
     "@types/jest": "26.0.14",
-    "@types/lodash": "4.14.157",
+    "@types/lodash": "4.14.164",
     "@types/node": "13.13.12",
     "@types/node-fetch": "2.5.7",
     "@types/pluralize": "0.0.29",
