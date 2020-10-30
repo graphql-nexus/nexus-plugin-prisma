@@ -233,6 +233,10 @@ input StringFieldUpdateOperationsInput {
 
 input IntFieldUpdateOperationsInput {
   set: Int
+  increment: Int
+  decrement: Int
+  multiply: Int
+  divide: Int
 }
 
 input IntFilter {
