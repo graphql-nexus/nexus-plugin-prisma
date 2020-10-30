@@ -65,7 +65,7 @@
     "get-port": "5.1.1",
     "graphql": "15.3.0",
     "graphql-request": "3.2.0",
-    "graphql-scalars": "1.2.1",
+    "graphql-scalars": "1.4.1",
     "graphql-yoga": "1.18.3",
     "jest": "26.5.3",
     "jest-watch-typeahead": "0.6.0",
