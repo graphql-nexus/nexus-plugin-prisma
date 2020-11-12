@@ -32,7 +32,7 @@
     "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
-    "@nexus/schema": "^0.15.0 || ^0.16.0 || ^0.17.0",
+    "@nexus/schema": "^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0",
     "@prisma/client": "2.10.0",
     "graphql": "^15.3.0"
   },
@@ -45,7 +45,7 @@
     "semver": "^7.3.2"
   },
   "devDependencies": {
-    "@nexus/schema": "0.15.0",
+    "@nexus/schema": "0.18.0",
     "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/cli": "2.10.0",
     "@prisma/client": "2.10.0",

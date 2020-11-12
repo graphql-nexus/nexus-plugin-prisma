@@ -409,6 +409,41 @@ export interface NexusGenFieldTypes {
   }
 }
 
+export interface NexusGenFieldTypeNames {
+  BatchPayload: { // field return type name
+    count: 'Int'
+  }
+  Bubble: { // field return type name
+    createdAt: 'DateTime'
+    id: 'String'
+    members: 'User'
+  }
+  Location: { // field return type name
+    city: 'String'
+    country: 'String'
+    id: 'Int'
+  }
+  Mutation: { // field return type name
+    createOnePost: 'Post'
+    updateManyPost: 'BatchPayload'
+  }
+  Post: { // field return type name
+    authors: 'User'
+    id: 'Int'
+    status: 'PostStatus'
+  }
+  Query: { // field return type name
+    user: 'User'
+    users: 'User'
+  }
+  User: { // field return type name
+    firstName: 'String'
+    id: 'String'
+    location: 'Location'
+    posts: 'Post'
+  }
+}
+
 export interface NexusGenArgTypes {
   Bubble: {
     members: { // args
@@ -472,6 +507,7 @@ export interface NexusGenTypes {
   rootTypes: NexusGenRootTypes;
   argTypes: NexusGenArgTypes;
   fieldTypes: NexusGenFieldTypes;
+  fieldTypeNames: NexusGenFieldTypeNames;
   allTypes: NexusGenAllTypes;
   inheritedFields: NexusGenInheritedFields;
   objectNames: NexusGenObjectNames;
