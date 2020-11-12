@@ -19,7 +19,7 @@
     "nexus-plugin-prisma": "^0.21.0"
   },
   "devDependencies": {
-    "@prisma/cli": "2.9",
+    "@prisma/cli": "2.11",
     "@types/express": "^4.17.7",
     "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0-pre.65",
