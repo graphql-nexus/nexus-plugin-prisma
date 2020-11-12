@@ -1,10 +1,13 @@
-import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as fsjp from 'fs-jetpack'
 import * as path from 'path'
+import * as nexusBuilder from '@nexus/schema/dist/builder'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'
-import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
+import {
+  createNexusPrismaInternal,
+  mockConsoleLog
+} from './__utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
@@ -59,7 +62,7 @@ it('integrates together', async () => {
 
   process.env.NODE_ENV = 'development'
 
-  const { $output } = await mockConsoleLog(async () => {
+  await mockConsoleLog(async () => {
     await nexusBuilder.generateSchema({
       types,
       plugins: [nexusPrisma],
@@ -85,7 +88,6 @@ it('integrates together', async () => {
   // For convenience
   expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
   expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
-  expect($output).toMatchSnapshot('console.log output')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.

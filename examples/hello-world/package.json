@@ -10,13 +10,13 @@
     "nexus:reflect": "NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS=true ts-node --transpile-only api"
   },
   "dependencies": {
-    "@nexus/schema": "^0.17.0-next.3",
-    "@prisma/client": "2.9",
+    "@nexus/schema": "^0.18.0",
+    "@prisma/client": "2.11",
     "apollo-server-express": "^2.18.2",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
     "graphql-scalars": "^1.4.0",
-    "nexus-plugin-prisma": "^0.21.0"
+    "nexus-plugin-prisma": "^0.23.1"
   },
   "devDependencies": {
     "@prisma/cli": "2.11",

@@ -45,19 +45,31 @@ input NestedWhereUniqueInput {
 input NestedCreateManyWithoutUserInput {
   create: [NestedCreateWithoutUserInput!]
   connect: [NestedWhereUniqueInput!]
+  connectOrCreate: [NestedCreateOrConnectWithoutUserInput!]
 }
 
 input UserCreateOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
   connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutnestedInput
 }
 
 input NestedCreateWithoutUserInput {
   name: String!
 }
 
+input NestedCreateOrConnectWithoutUserInput {
+  where: NestedWhereUniqueInput!
+  create: NestedCreateWithoutUserInput!
+}
+
 input UserCreateWithoutNestedInput {
   name: String!
+}
+
+input UserCreateOrConnectWithoutnestedInput {
+  where: UserWhereUniqueInput!
+  create: UserCreateWithoutNestedInput!
 }
 ",
   "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'

@@ -19,7 +19,13 @@ type Bubble {
 
 input BubbleCreateOneWithoutMembersInput {
   connect: BubbleWhereUniqueInput
+  connectOrCreate: BubbleCreateOrConnectWithoutmembersInput
   create: BubbleCreateWithoutMembersInput
+}
+
+input BubbleCreateOrConnectWithoutmembersInput {
+  create: BubbleCreateWithoutMembersInput!
+  where: BubbleWhereUniqueInput!
 }
 
 input BubbleCreateWithoutMembersInput {
@@ -122,7 +128,13 @@ type Location {
 
 input LocationCreateOneWithoutUserInput {
   connect: LocationWhereUniqueInput
+  connectOrCreate: LocationCreateOrConnectWithoutUserInput
   create: LocationCreateWithoutUserInput
+}
+
+input LocationCreateOrConnectWithoutUserInput {
+  create: LocationCreateWithoutUserInput!
+  where: LocationWhereUniqueInput!
 }
 
 input LocationCreateWithoutUserInput {
@@ -321,7 +333,13 @@ type User {
 
 input UserCreateManyWithoutPostsInput {
   connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
   create: [UserCreateWithoutPostsInput!]
+}
+
+input UserCreateOrConnectWithoutpostsInput {
+  create: UserCreateWithoutPostsInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserCreateWithoutPostsInput {

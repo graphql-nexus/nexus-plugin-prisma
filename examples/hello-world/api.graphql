@@ -7,18 +7,16 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-input DateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
 }
-
-scalar Json
 
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
@@ -32,15 +30,15 @@ type Mutation {
   deleteOneUser(where: UserWhereUniqueInput!): User
 }
 
-input NestedDateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: NestedDateTimeFilter
-  notIn: [DateTime!]
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
 }
 
 input NestedStringFilter {
@@ -58,22 +56,31 @@ input NestedStringFilter {
 }
 
 type Post {
-  authors(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
-  id: String!
+  id: Int!
 }
 
 input PostCreateInput {
-  authors: UserCreateManyWithoutPostsInput
-  id: String
+  author: UserCreateOneWithoutPostsInput!
+  body: String!
+  id: Int!
+  title: String!
 }
 
-input PostCreateManyWithoutAuthorsInput {
+input PostCreateManyWithoutAuthorInput {
   connect: [PostWhereUniqueInput!]
-  create: [PostCreateWithoutAuthorsInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutauthorInput!]
+  create: [PostCreateWithoutAuthorInput!]
 }
 
-input PostCreateWithoutAuthorsInput {
-  id: String
+input PostCreateOrConnectWithoutauthorInput {
+  create: PostCreateWithoutAuthorInput!
+  where: PostWhereUniqueInput!
+}
+
+input PostCreateWithoutAuthorInput {
+  body: String!
+  id: Int!
+  title: String!
 }
 
 input PostListRelationFilter {
@@ -84,14 +91,18 @@ input PostListRelationFilter {
 
 input PostWhereInput {
   AND: [PostWhereInput!]
-  authors: UserListRelationFilter
-  id: StringFilter
+  author: UserWhereInput
+  body: StringFilter
+  id: IntFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
+  title: StringFilter
+  userId: IntFilter
 }
 
 input PostWhereUniqueInput {
-  id: String
+  id: Int
+  title: String
 }
 
 type Query {
@@ -132,51 +143,42 @@ type Subscription {
 }
 
 type User {
-  birthDate: DateTime!
   email: String!
-  id: String!
-  metadata: Json!
+  id: Int!
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int): [Post!]!
 }
 
 input UserCreateInput {
-  birthDate: DateTime!
   email: String!
-  id: String
-  metadata: Json!
-  posts: PostCreateManyWithoutAuthorsInput
+  id: Int!
+  posts: PostCreateManyWithoutAuthorInput
 }
 
-input UserCreateManyWithoutPostsInput {
-  connect: [UserWhereUniqueInput!]
-  create: [UserCreateWithoutPostsInput!]
+input UserCreateOneWithoutPostsInput {
+  connect: UserWhereUniqueInput
+  connectOrCreate: UserCreateOrConnectWithoutpostsInput
+  create: UserCreateWithoutPostsInput
+}
+
+input UserCreateOrConnectWithoutpostsInput {
+  create: UserCreateWithoutPostsInput!
+  where: UserWhereUniqueInput!
 }
 
 input UserCreateWithoutPostsInput {
-  birthDate: DateTime!
   email: String!
-  id: String
-  metadata: Json!
-}
-
-input UserListRelationFilter {
-  every: UserWhereInput
-  none: UserWhereInput
-  some: UserWhereInput
+  id: Int!
 }
 
 input UserOrderByInput {
-  birthDate: SortOrder
   email: SortOrder
   id: SortOrder
-  metadata: SortOrder
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  birthDate: DateTimeFilter
   email: StringFilter
-  id: StringFilter
+  id: IntFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   posts: PostListRelationFilter
@@ -184,5 +186,5 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   email: String
-  id: String
+  id: Int
 }
