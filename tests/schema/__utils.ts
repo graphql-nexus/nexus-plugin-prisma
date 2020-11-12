@@ -1,14 +1,17 @@
-const PrismaClientGenerator = require('@prisma/client/generator-build')
-import * as Nexus from '@nexus/schema'
-import * as SDK from '@prisma/sdk'
 import * as GQL from 'graphql'
 import stripAnsi from 'strip-ansi'
+import * as Nexus from '@nexus/schema'
+import * as SDK from '@prisma/sdk'
 import * as NexusPrismaBuilder from '../../src/builder'
 import { DmmfDocument } from '../../src/dmmf'
-import { transform, TransformOptions } from '../../src/dmmf/transformer'
+import {
+  transform,
+  TransformOptions
+} from '../../src/dmmf/transformer'
 import { paginationStrategies } from '../../src/pagination'
 import { render as renderTypegen } from '../../src/typegen'
-import { getEnginePath } from '../__ensure-engine'
+
+const PrismaClientGenerator = require('@prisma/client/generator-build')
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>
@@ -21,10 +24,8 @@ export const createNexusPrismaInternal = (
   })
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
-  const prismaPath = await getEnginePath('query')
   const dmmf = await PrismaClientGenerator.getDMMF({
     datamodel,
-    prismaPath,
   })
   return new DmmfDocument(transform(dmmf, options))
 }
@@ -32,14 +33,12 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
 export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {
   return SDK.getDMMF({
     datamodelPath,
-    prismaPath: await getEnginePath('query'),
   })
 }
 
 export async function getPinnedDmmfFromSchema(datamodel: string) {
   return SDK.getDMMF({
     datamodel,
-    prismaPath: await getEnginePath('query'),
   })
 }
 

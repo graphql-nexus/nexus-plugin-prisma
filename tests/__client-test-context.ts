@@ -1,16 +1,18 @@
-import * as Nexus from '@nexus/schema'
-import { MigrateEngine } from '@prisma/migrate'
-import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
-import { GraphQLScalarType, GraphQLSchema } from 'graphql'
+import {
+  GraphQLScalarType,
+  GraphQLSchema
+} from 'graphql'
 import { GraphQLClient } from 'graphql-request'
 import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
 import rimraf from 'rimraf'
-import { getEnginePath, getEngineVersion } from './__ensure-engine'
+import * as Nexus from '@nexus/schema'
+import { MigrateEngine } from '@prisma/migrate'
+import { getGenerator } from '@prisma/sdk'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -49,9 +51,6 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   return {
     async setup({ datamodel, types, plugins, scalars }) {
       try {
-        // Force query engine binary path
-        process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
-
         const prismaClient = await generateClientFromDatamodel(datamodel)
         generatedClient = prismaClient
 
@@ -141,7 +140,6 @@ async function generateClientFromDatamodel(datamodelString: string) {
     schemaPath,
     printDownloadProgress: false,
     baseDir: tmpDir,
-    version: getEngineVersion(),
   })
 
   await generator.generate()
@@ -174,7 +172,6 @@ async function migrateLift({
   const lift = new MigrateEngine({
     projectDir,
     schemaPath,
-    binaryPath: await getEnginePath('migration'),
   })
 
   /* Get migration. */
