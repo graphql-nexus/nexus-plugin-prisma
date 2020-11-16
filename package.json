@@ -27,8 +27,8 @@
     "prepublishOnly": "yarn -s build",
     "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts' 'examples/**/*.ts'",
     "postinstall": "node ./scripts/postinstall.js",
-    "test": "ts-node tests/__ensure-engine && jest --testTimeout=10000 --forceExit",
-    "test:dev": "ts-node tests/__ensure-engine && jest src tests/ --watch",
+    "test": "jest --testTimeout=10000 --forceExit",
+    "test:dev": "jest src tests/ --watch",
     "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
@@ -49,6 +49,7 @@
     "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/cli": "2.11.0",
     "@prisma/client": "2.11.0",
+    "@prisma/engines": "2.11.0-10.58369335532e47bdcec77a2f1e7c1fb83a463918",
     "@prisma/fetch-engine": "2.11.0",
     "@prisma/get-platform": "2.11.0",
     "@prisma/migrate": "2.11.0",
@@ -78,9 +79,6 @@
     "ts-node": "9.0.0",
     "tslib": "2.0.0",
     "typescript": "4.0.3"
-  },
-  "prisma": {
-    "version": "de2bc1cbdb5561ad73d2f08463fa2eec48993f56"
   },
   "prettier": "@prisma-labs/prettier-config"
 }

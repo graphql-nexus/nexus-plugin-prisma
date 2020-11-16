@@ -32,7 +32,6 @@ it('in dev stage, warns when wrong projected field or crud', async () => {
 
   expect($output).toMatchInlineSnapshot(`
     "
-    [object Object]
     Warning: Your GraphQL \`Query\` object definition is attempting to expose a Prisma model field called \`userss\`, but your Prisma model \`Query\` has no such field
 
     Warning: Your GraphQL \`User\` object definition is attempting to expose a Prisma model field called \`userName\`, but your Prisma model \`User\` has no such field

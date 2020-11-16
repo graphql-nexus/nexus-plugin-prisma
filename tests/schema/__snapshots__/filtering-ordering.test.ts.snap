@@ -2,7 +2,6 @@
 
 exports[`in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error: output 1`] = `
 "
-[object Object]
 Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to filter by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
 
 Warning: Your GraphQL \`Query\` object definition is projecting a relational field \`users\`. On it, you are declaring that clients be able to order by Prisma \`User\` model field \`somethingWrong\`. However, your Prisma model \`User\` model has no such field \`somethingWrong\`
