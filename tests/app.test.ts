@@ -4,10 +4,7 @@ import * as path from 'path'
 import * as nexusBuilder from '@nexus/schema/dist/builder'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'
-import {
-  createNexusPrismaInternal,
-  mockConsoleLog
-} from './__utils'
+import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
@@ -81,7 +78,7 @@ it('integrates together', async () => {
   const graphqlSchema = fs.read('generated/schema.graphql')
   const nexusPrismaTypeGen = fs.read('generated/nexus-plugin-prisma-typegen.d.ts')
 
-  expect(graphqlSchema).toMatchSnapshot('graphql schema')
+  expect(removeNexusHeader(graphqlSchema)).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
 
   // For convenience
@@ -92,3 +89,14 @@ it('integrates together', async () => {
   //
   expect(fs.cwd()).toTypeCheck()
 })
+
+function removeNexusHeader(schema: string | undefined) {
+  if (!schema) {
+    return schema
+  }
+
+  return schema
+    .split('\n')
+    .filter((line) => line.startsWith('###') === false)
+    .join('\n')
+}
