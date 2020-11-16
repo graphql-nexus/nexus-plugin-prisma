@@ -3,7 +3,7 @@ name: pr
 on: [pull_request]
 
 env:
-  PRISMA_TELEMETRY_INFORMATION: "nexus-plugin-prisma pr.yml"
+  PRISMA_TELEMETRY_INFORMATION: 'nexus-plugin-prisma pr.yml'
 
 jobs:
   schema-tests:
@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x]
+        nexus-schema-version: [^0.13.0, ^0.14.0, ^0.15.0, ^0.16.0, ^0.17.0, ^0.18.0]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -18,5 +19,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
+      - run: yarn add @nexus/schema@${{ matrix.nexus-schema-version }}
       - run: yarn build
       - run: yarn -s test
