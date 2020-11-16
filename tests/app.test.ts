@@ -80,13 +80,11 @@ it('integrates together', async () => {
   //
   const graphqlSchema = fs.read('generated/schema.graphql')
   const nexusPrismaTypeGen = fs.read('generated/nexus-plugin-prisma-typegen.d.ts')
-  const nexusCoreTypegen = fs.read('generated/nexus-typegen.d.ts')
 
   expect(graphqlSchema).toMatchSnapshot('graphql schema')
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
 
   // For convenience
-  expect(nexusCoreTypegen).toMatchSnapshot('nexus core typegen')
   expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
 
   // Assert the app type checks. In effect this is testing that our
