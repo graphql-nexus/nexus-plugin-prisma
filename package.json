@@ -32,8 +32,8 @@
     "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
-    "@nexus/schema": "^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0",
-    "@prisma/client": "2.11.0",
+    "@nexus/schema": "^0.13.0 || ^0.14.0 || ^0.15.0 || ^0.16.0 || ^0.17.0 || ^0.18.0",
+    "@prisma/client": "^2.10.0 || ^2.11.0",
     "graphql": "^15.3.0"
   },
   "dependencies": {
