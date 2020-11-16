@@ -52,12 +52,12 @@ function transformSchema(
 ): DmmfTypes.Schema {
   return {
     enums: schema.enums,
-    inputTypes: schema.inputTypes.map((_) => transformInputType(_, globallyComputedInputs, atomicOperations)),
+    inputTypes: schema.inputTypes.map((type) => transformInputType(type, globallyComputedInputs, atomicOperations)),
     outputTypes: schema.outputTypes.map((o) => {
       return {
         ...o,
         fields: o.fields.map((f) => {
-          let args = f.args.map((_) => transformArg(_, atomicOperations))
+          let args = f.args.map((arg) => transformArg(arg, atomicOperations))
           const argNames = args.map((a) => a.name)
 
           // If this field has pagination

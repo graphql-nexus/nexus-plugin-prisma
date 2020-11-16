@@ -8,7 +8,7 @@ import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { paginationStrategies } from '../src/pagination'
 import { render as renderTypegen } from '../src/typegen'
-import { getEnginePath } from './__ensure-engine'
+import { getEnginePath } from './__engines-path'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>

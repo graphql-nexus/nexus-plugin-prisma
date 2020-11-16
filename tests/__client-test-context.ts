@@ -1,5 +1,5 @@
 import * as Nexus from '@nexus/schema'
-import { MigrateEngine } from '@prisma/migrate'
+import { Migrate } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
 import * as fs from 'fs'
 import getPort from 'get-port'
@@ -10,7 +10,7 @@ import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
 import rimraf from 'rimraf'
-import { getEnginePath, getEngineVersion } from './__ensure-engine'
+import { getEnginePath, getEngineVersion } from './__engines-path'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -49,18 +49,22 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   return {
     async setup({ datamodel, types, plugins, scalars }) {
       try {
+        const metadata = getTestMetadata(datamodel)
+
+        fs.mkdirSync(metadata.tmpDir, { recursive: true })
+
         // Force query engine binary path
         process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
 
-        const prismaClient = await generateClientFromDatamodel(datamodel)
+        const prismaClient = await generateClientFromDatamodel(metadata)
         generatedClient = prismaClient
 
         const serverAndClient = await getGraphQLServerAndClient({
-          datamodel,
+          datamodel: metadata.datamodel,
           types,
           prismaClient,
-          plugins: plugins ?? [],
-          scalars: scalars ?? {},
+          plugins,
+          scalars,
         })
         httpServer = serverAndClient.httpServer
 
@@ -81,8 +85,8 @@ export function createRuntimeTestContext(): RuntimeTestContext {
 async function getGraphQLServerAndClient(params: {
   datamodel: string
   types: any[]
-  plugins: Nexus.core.NexusPlugin[]
-  scalars: Record<string, GraphQLScalarType>
+  plugins?: Nexus.core.NexusPlugin[]
+  scalars?: Record<string, GraphQLScalarType>
   prismaClient: {
     client: any
     teardown(): Promise<void>
@@ -105,110 +109,71 @@ async function getGraphQLServerAndClient(params: {
   return { client, httpServer, schema, schemaString }
 }
 
-async function generateClientFromDatamodel(datamodelString: string) {
-  const uniqId = Math.random().toString().slice(2)
-  const tmpDir = path.join(__dirname, `nexus-plugin-prisma-tmp-${uniqId}`)
+async function generateClientFromDatamodel(metadata: Metadata) {
+  fs.writeFileSync(metadata.schemaPath, metadata.datamodel)
 
-  fs.mkdirSync(tmpDir, { recursive: true })
-
-  const clientDir = path.join(tmpDir, 'client')
-  const projectDir = path.join(__dirname, '..')
-  const datamodel = outdent`
-    datasource db {
-      provider = "sqlite"
-      url      = "file:${tmpDir}/dev.db"
-    }
-
-    generator client {
-      provider = "prisma-client-js"
-      output   = "${clientDir}"
-    }
-
-    ${datamodelString}
-  `
-  const schemaPath = path.join(tmpDir, 'schema.prisma')
-
-  fs.writeFileSync(schemaPath, datamodel)
-
-  await migrateLift({
-    projectDir,
-    schemaPath,
-    migrationId: 'init',
-    datamodel,
-  })
+  await migrateLift(metadata.schemaPath)
 
   const generator = await getGenerator({
-    schemaPath,
+    schemaPath: metadata.schemaPath,
     printDownloadProgress: false,
-    baseDir: tmpDir,
+    baseDir: metadata.tmpDir,
     version: getEngineVersion(),
   })
 
   await generator.generate()
   generator.stop()
 
-  const { PrismaClient } = require(path.join(clientDir, 'index.js'))
+  const { PrismaClient } = require(path.join(metadata.clientDir, 'index.js'))
   const client = new PrismaClient()
 
   return {
     client,
     async teardown() {
-      rimraf.sync(tmpDir)
+      rimraf.sync(metadata.tmpDir)
       await client.$disconnect()
     },
   }
 }
 
-async function migrateLift({
-  projectDir,
-  schemaPath,
-  migrationId,
-  datamodel,
-}: {
+async function migrateLift(schemaPath: string): Promise<void> {
+  const migrate = new Migrate(schemaPath, ['nativeTypes'])
+
+  await migrate.push({ force: true })
+}
+
+type Metadata = {
+  tmpDir: string
+  clientDir: string
   projectDir: string
   schemaPath: string
-  migrationId: string
   datamodel: string
-}): Promise<void> {
-  /* Init Lift. */
-  const lift = new MigrateEngine({
+}
+
+function getTestMetadata(datamodelString: string): Metadata {
+  const uniqId = Math.random().toString().slice(2)
+  const tmpDir = path.join(__dirname, `nexus-plugin-prisma-tmp-${uniqId}`)
+  const clientDir = path.join(tmpDir, 'client')
+  const projectDir = path.join(__dirname, '..')
+  const schemaPath = path.join(tmpDir, 'schema.prisma')
+  const datamodel = outdent`
+  datasource db {
+    provider = "sqlite"
+    url      = "file:${tmpDir}/dev.db"
+  }
+
+  generator client {
+    provider = "prisma-client-js"
+    output   = "${clientDir}"
+  }
+
+${datamodelString}
+`
+  return {
+    tmpDir,
+    clientDir,
     projectDir,
     schemaPath,
-    binaryPath: await getEnginePath('migration'),
-  })
-
-  /* Get migration. */
-  const { datamodelSteps, errors: stepErrors } = await lift.inferMigrationSteps({
-    migrationId,
     datamodel,
-    assumeToBeApplied: [],
-    sourceConfig: datamodel,
-  })
-
-  if (stepErrors.length > 0) {
-    throw stepErrors
   }
-
-  const { errors } = await lift.applyMigration({
-    force: true,
-    migrationId,
-    steps: datamodelSteps,
-    sourceConfig: datamodel,
-  })
-
-  if (errors.length > 0) {
-    throw errors
-  }
-
-  const progress = () =>
-    lift.migrationProgess({
-      migrationId,
-      sourceConfig: datamodel,
-    })
-
-  while ((await progress()).status !== 'MigrationSuccess') {
-    /* Just wait */
-  }
-
-  lift.stop()
 }
