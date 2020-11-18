@@ -1,6 +1,33 @@
-import { intArg, queryType, stringArg } from '@nexus/schema'
+import { extendType, intArg, objectType, stringArg } from '@nexus/schema'
 
-export const Query = queryType({
+export const Blog = objectType({
+  name: 'Blog',
+  definition(t) {
+    t.model.id()
+    t.model.name()
+    t.model.createdAt()
+    t.model.updatedAt()
+    t.model.posts({
+      type: 'CustomPost',
+      pagination: false,
+      ordering: true,
+      filtering: { title: true },
+    })
+    t.model.viewCount()
+    t.model.authors()
+  },
+})
+
+export const Mutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.crud.createOneBlog()
+    t.crud.updateManyBlog()
+  },
+})
+
+export const Query = extendType({
+  type: 'Query',
   definition(t) {
     t.crud.blogs({
       pagination: false,
