@@ -14,7 +14,7 @@ module.exports = {
         // typegen.
         warnOnly: !process.env.CI,
       },
-      tsConfig: 'tests/tsconfig.json',
+      tsconfig: 'tests/tsconfig.json',
     },
   },
 }
