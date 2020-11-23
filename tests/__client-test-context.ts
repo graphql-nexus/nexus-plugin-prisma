@@ -1,7 +1,7 @@
 import * as Nexus from '@nexus/schema'
 import { Migrate } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
-import * as fs from 'fs'
+import * as fs from 'fs-jetpack'
 import getPort from 'get-port'
 import { GraphQLScalarType, GraphQLSchema } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
@@ -9,7 +9,6 @@ import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
-import rimraf from 'rimraf'
 import { getEnginePath, getEngineVersion } from './__engines-path'
 import { generateSchemaAndTypes } from './__utils'
 
@@ -51,7 +50,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
       try {
         const metadata = getTestMetadata(datamodel)
 
-        fs.mkdirSync(metadata.tmpDir, { recursive: true })
+        await fs.dirAsync(metadata.tmpDir)
 
         // Force query engine binary path
         process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
@@ -110,7 +109,7 @@ async function getGraphQLServerAndClient(params: {
 }
 
 async function generateClientFromDatamodel(metadata: Metadata) {
-  fs.writeFileSync(metadata.schemaPath, metadata.datamodel)
+  await fs.writeAsync(metadata.schemaPath, metadata.datamodel)
 
   await migrateLift(metadata.schemaPath)
 
@@ -130,7 +129,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
   return {
     client,
     async teardown() {
-      rimraf.sync(metadata.tmpDir)
+      await fs.removeAsync(metadata.tmpDir)
       await client.$disconnect()
     },
   }
