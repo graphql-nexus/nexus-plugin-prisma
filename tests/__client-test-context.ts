@@ -152,7 +152,7 @@ type Metadata = {
 
 function getTestMetadata(datamodelString: string): Metadata {
   const uniqId = Math.random().toString().slice(2)
-  const tmpDir = path.join(__dirname, `nexus-plugin-prisma-tmp-${uniqId}`)
+  const tmpDir = path.join(__dirname, `tmp/${uniqId}`)
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
   const schemaPath = path.join(tmpDir, 'schema.prisma')
