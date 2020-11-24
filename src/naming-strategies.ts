@@ -26,7 +26,7 @@ export type OperationName = Exclude<keyof InternalDMMF.Mapping, 'model' | 'plura
 export type FieldNamingStrategy = Record<OperationName, (fieldName: string, modelName: string) => string>
 
 export const defaultFieldNamingStrategy: FieldNamingStrategy = {
-  findOne: (_, modelName) => camelCase(modelName),
+  findUnique: (_, modelName) => camelCase(modelName),
   findMany: (_, modelName) => camelCase(pluralize(modelName)),
   create: (fieldName) => fieldName,
   update: (fieldName) => fieldName,

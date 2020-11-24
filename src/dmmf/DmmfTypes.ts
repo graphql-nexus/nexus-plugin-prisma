@@ -15,7 +15,6 @@ export declare namespace InternalDMMF {
   }
   interface EnumValue {
     name: string
-    dbName: string | null
   }
   interface SchemaEnum {
     name: string
@@ -70,7 +69,6 @@ export declare namespace InternalDMMF {
       isNullable: boolean
       isRequired: boolean
     }
-    isRelationFilter?: boolean
   }
   interface OutputType {
     name: string
@@ -100,7 +98,7 @@ export declare namespace InternalDMMF {
   interface Mapping {
     model: string
     plural: string
-    findOne?: string | null
+    findUnique?: string | null
     //findFirst?: string | null;
     findMany?: string | null
     create?: string | null

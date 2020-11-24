@@ -1,12 +1,20 @@
 import { core } from '@nexus/schema'
+import { writeFileSync } from 'fs'
 import * as fs from 'fs-jetpack'
 import { GraphQLResolveInfo } from 'graphql'
 import * as path from 'path'
 import { inspect, isDeepStrictEqual } from 'util'
 
-export function dump(x: any) {
-  const fence = '---------------------------------------------------------'
+export function dump(x: any, name?: string) {
+  const fence = (name ?? '') + '---------------------------------------------------------'
   console.error(fence + '\n' + inspect(x, { depth: 20 }) + '\n' + fence)
+}
+
+/**
+ * Dump JSONified representation of the data to a debug.json file (or named to what you give as the second parameter).
+ */
+export function dumpToFile(x: any, name?: string) {
+  writeFileSync(`debug${name ? '-' + name : ''}.json`, JSON.stringify(x, null, 2))
 }
 
 /**

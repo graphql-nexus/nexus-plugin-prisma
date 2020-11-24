@@ -530,7 +530,7 @@ export class SchemaBuilder {
                 args = this.paginationStrategy.resolve(args)
 
                 return prismaClient[lowerFirst(mapping.model)]
-                  .findOne({
+                  .findUnique({
                     where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
                   })
                   [field.name](args)
@@ -608,7 +608,7 @@ export class SchemaBuilder {
   determineArgs(config: FieldConfigData): CustomInputArg[] {
     if (config.typeName === 'Mutation') {
       return this.argsFromMutationField(config)
-    } else if (config.operation === 'findOne') {
+    } else if (config.operation === 'findUnique') {
       return config.field.args.map((arg) => ({
         arg,
         type: this.dmmf.getInputType(arg.inputType.type),

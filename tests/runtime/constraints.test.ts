@@ -8,13 +8,12 @@ it('supports nested query with one id field', async () => {
   const datamodel = `
   model Parent {
     idField Int     @id
-    child       Child
+    child       Child?
   }
   
   model Child {
     idField Int    @id
     parent      Parent @relation(fields: [parentId], references: [idField])
-  
     parentId Int
   }
 `
@@ -74,19 +73,16 @@ it('supports nested query with compound ids', async () => {
   model Parent {
     idField1 Int
     idField2 Int
-    child        Child
-  
+    child    Child?
     @@id([idField1, idField2])
   }
   
   model Child {
-    idField1 Int
-    idField2 Int
-  
-    parent        Parent @relation(fields: [parentId1, parentId2], references: [idField1, idField2])
+    idField1  Int
+    idField2  Int
+    parent    Parent @relation(fields: [parentId1, parentId2], references: [idField1, idField2])
     parentId1 Int
     parentId2 Int
-  
     @@id([idField1, idField2])
   }
 `
@@ -160,14 +156,13 @@ it('supports nested query without id but one unique', async () => {
   const datamodel = `
   model Parent {
     uniqueField Int     @unique
-    child       Child
+    child       Child?
   }
   
   model Child {
     uniqueField Int    @unique
     parent      Parent @relation(fields: [parentId], references: [uniqueField])
-  
-    parentId Int
+    parentId    Int
   }
 `
 
@@ -226,15 +221,14 @@ it('supports nested query without id but multiple uniques', async () => {
   model Parent {
     uniqueField1 Int   @unique
     uniqueField2 Int   @unique
-    child        Child
+    child        Child?
   }
   
   model Child {
-    uniqueField1 Int @unique
-    uniqueField2 Int @unique
-  
-    parent   Parent @relation(fields: [parentId], references: uniqueField1)
-    parentId Int
+    uniqueField1 Int    @unique
+    uniqueField2 Int    @unique
+    parent       Parent @relation(fields: [parentId], references: uniqueField1)
+    parentId     Int
   }
 `
 
@@ -299,19 +293,16 @@ it('supports nested query without id but compound uniques', async () => {
   model Parent {
     uniqueField1 Int
     uniqueField2 Int
-    child        Child
-  
+    child        Child?
     @@unique([uniqueField1, uniqueField2])
   }
   
   model Child {
     uniqueField1 Int
     uniqueField2 Int
-  
     parent        Parent @relation(fields: [parentUnique1, parentUnique2], references: [uniqueField1, uniqueField2])
     parentUnique1 Int
     parentUnique2 Int
-  
     @@unique([uniqueField1, uniqueField2])
   }
 `

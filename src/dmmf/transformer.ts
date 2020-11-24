@@ -1,10 +1,10 @@
 import { DMMF } from '@prisma/client/runtime'
 import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
-import { dump, GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
+import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
 import { DmmfDocument } from './DmmfDocument'
 import { InternalDMMF } from './DmmfTypes'
-import { getTypeName, isEnumValue, isInputObject, isOutputType } from './helpers'
+import { getTypeName } from './helpers'
 import { getPrismaClientDmmf } from './utils'
 
 export type TransformOptions = {
@@ -26,12 +26,12 @@ const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformO
 })
 
 export function transform(document: DMMF.Document, options?: TransformOptions): InternalDMMF.Document {
-  dump(Object.keys(document.schema))
-  return {
+  const result = {
     datamodel: transformDatamodel(document.datamodel),
     schema: transformSchema(document.schema, addDefaultOptions(options)),
     operations: document.mappings.modelOperations,
   }
+  return result
 }
 
 function transformDatamodel(datamodel: DMMF.Datamodel): InternalDMMF.Datamodel {
@@ -52,7 +52,7 @@ const paginationArgNames = ['cursor', 'take', 'skip']
 type TransformConfig = Required<TransformOptions>
 
 function transformSchema(schema: DMMF.Schema, options: TransformConfig): InternalDMMF.Schema {
-  const enums = schema.enumTypes.model ?? []
+  const enumTypes = schema.enumTypes.model ?? []
 
   const inputTypes =
     schema.inputObjectTypes.model?.map((type) =>
@@ -64,8 +64,24 @@ function transformSchema(schema: DMMF.Schema, options: TransformConfig): Interna
       return transformOutputType(type, options)
     }) ?? []
 
+  // todo review if we want to keep model & prisma separated or not
+  // since Prisma 2.12
+
+  enumTypes.push(...schema.enumTypes.prisma)
+
+  inputTypes.push(
+    ...schema.inputObjectTypes.prisma.map((type) => {
+      return transformInputType(type, options.globallyComputedInputs, options.atomicOperations)
+    })
+  )
+  outputTypes.push(
+    ...schema.outputObjectTypes.prisma.map((type) => {
+      return transformOutputType(type, options)
+    })
+  )
+
   return {
-    enums,
+    enums: enumTypes,
     inputTypes,
     outputTypes,
   }
@@ -92,7 +108,7 @@ function transformOutputType(type: DMMF.OutputType, options: TransformConfig) {
         args,
         outputType: {
           type: getTypeName(field.outputType.type),
-          kind: getFieldKind(field.outputType.type),
+          kind: getKind(field.outputType),
           isRequired: field.isRequired,
           isNullable: field.isNullable,
           isList: field.outputType.isList,
@@ -115,12 +131,10 @@ function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): InternalD
     inputType: {
       type: getTypeName(inputType.type),
       isList: inputType.isList,
-      kind: getArgKind(inputType),
+      kind: getKind(inputType),
       isNullable: arg.isNullable,
       isRequired: arg.isRequired,
     },
-    // FIXME Why?
-    isRelationFilter: undefined,
   }
 }
 
@@ -140,25 +154,30 @@ function argTypeUnionToArgType(
       ? argTypeContexts.filter((argTypeCtx) => !getTypeName(argTypeCtx.type).endsWith('OperationsInput'))
       : argTypeContexts
 
-  return (
+  const result =
     // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
     filteredArgTypeContexts.find(
       (argTypeCtx) =>
-        isInputObject(argTypeCtx.type) &&
+        isInputObjectType(argTypeCtx) &&
         argTypeCtx.isList &&
         getTypeName(argTypeCtx.type).endsWith('WhereInput')
     ) ??
     // Same here
     filteredArgTypeContexts.find(
-      (argTypeCtx) => isInputObject(argTypeCtx.type) && getTypeName(argTypeCtx.type).endsWith('WhereInput')
+      (argTypeCtx) => isInputObjectType(argTypeCtx) && getTypeName(argTypeCtx.type).endsWith('WhereInput')
     ) ??
     // [AnyType]
-    filteredArgTypeContexts.find((argTypeCtx) => isInputObject(argTypeCtx.type) && argTypeCtx.isList) ??
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx) && argTypeCtx.isList) ??
     // AnyType
-    filteredArgTypeContexts.find((argTypeCtx) => isInputObject(argTypeCtx.type)) ??
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx)) ??
     // fallback to the first member of the union
     argTypeContexts[0]
-  )
+
+  return result
+
+  function isInputObjectType(argTypeCtx: any) {
+    return argTypeCtx.location === 'inputObjectTypes'
+  }
 }
 
 type AddComputedInputParams = {
@@ -275,39 +294,28 @@ function transformInputType(
     ...inputType,
     fields: inputType.fields
       .filter((field) => !(field.name in globallyComputedInputs))
-      .map((_) => transformArg(_, atomicOperations)),
+      .map((field) => transformArg(field, atomicOperations)),
     computedInputs: globallyComputedInputsInType,
   }
 }
 
-function getFieldKind(type: string | DMMF.SchemaEnum | DMMF.OutputType): InternalDMMF.FieldKind {
-  if (typeof type === 'string') {
-    return 'scalar'
-  }
-  if (isEnumValue(type)) {
-    return 'enum'
-  }
-  if (isOutputType(type)) {
-    return 'object'
-  }
-
-  throw new Error(
-    `Failed to transform DMMF into internal DMMF because cannot get field kind for given type because it is unknown or malformed. The type data is:\n\n${inspect(
-      type
-    )}`
-  )
-}
-
-function getArgKind(arg: DMMF.SchemaArgInputType): InternalDMMF.FieldKind {
+function getKind(arg: DMMF.SchemaArgInputType | DMMF.SchemaField['outputType']): InternalDMMF.FieldKind {
   const type = arg.type
-  if (typeof type === 'string') {
+
+  if (arg.location === 'scalar') {
     return 'scalar'
   }
-  if (isInputObject(type)) {
+
+  if (arg.location === 'enumTypes') {
+    return 'enum'
+  }
+
+  if (arg.location === 'inputObjectTypes') {
     return 'object'
   }
-  if (isEnumValue(type)) {
-    return 'enum'
+
+  if (arg.location === 'outputObjectTypes') {
+    return 'object'
   }
 
   throw new Error(

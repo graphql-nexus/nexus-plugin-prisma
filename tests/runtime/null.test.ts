@@ -6,7 +6,7 @@ import { indexBy } from '../../src/utils'
 import { getDmmf } from '../__utils'
 
 const operationToRoot: Record<OperationName, 'Query' | 'Mutation'> = {
-  findOne: 'Query',
+  findUnique: 'Query',
   findMany: 'Query',
   create: 'Mutation',
   delete: 'Mutation',

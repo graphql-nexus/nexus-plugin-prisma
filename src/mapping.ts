@@ -27,7 +27,7 @@ const buildField = (mapping: InternalDMMF.Mapping, operation: OperationName): Ba
 }
 
 const CRUD_MAPPED_FIELDS: Record<string, (m: InternalDMMF.Mapping) => (BaseMappedField | null)[]> = {
-  Query: (m) => [buildField(m, 'findOne'), buildField(m, 'findMany')],
+  Query: (m) => [buildField(m, 'findUnique'), buildField(m, 'findMany')],
   Mutation: (m) => [
     buildField(m, 'create'),
     buildField(m, 'update'),
@@ -47,11 +47,13 @@ export const getCrudMappedFields = (
     (mappedField) => mappedField !== null
   ) as BaseMappedField[]
 
-  return mappedFields.map((mappedField) => ({
+  const result = mappedFields.map((mappedField) => ({
     ...mappedField,
     field: {
       ...dmmf.getOutputType(typeName).getField(mappedField.field),
       name: namingStrategy[mappedField.operation](mappedField.field, mappedField.model),
     },
   }))
+
+  return result
 }
