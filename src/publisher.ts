@@ -1,9 +1,9 @@
 import * as Nexus from '@nexus/schema'
+import { GraphQLScalarType } from 'graphql'
 import { CustomInputArg } from './builder'
 import { DmmfDocument, DmmfTypes } from './dmmf'
 import { scalarsNameValues } from './graphql'
-import { dmmfFieldToNexusFieldConfig, Index } from './utils'
-import { GraphQLScalarType } from 'graphql'
+import { apply, Index } from './utils'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
@@ -26,12 +26,9 @@ export class Publisher {
 
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
-      return Nexus.arg(
-        dmmfFieldToNexusFieldConfig({
-          ...customArg.arg.inputType,
-          type: customArg.type.name,
-        })
-      )
+      return Nexus.arg({
+        type: getNexusTypesPipelineForInput(customArg.arg.inputType).reduce(apply, customArg.type.name),
+      })
     }
 
     if (customArg.arg.inputType.kind === 'scalar') {
@@ -84,7 +81,9 @@ export class Publisher {
       name,
       definition: (t) => {
         for (const field of dmmfObject.fields) {
-          t.field(field.name, dmmfFieldToNexusFieldConfig(field.outputType))
+          t.field(field.name, {
+            type: getNexusTypesPipelineForOutput(field.outputType).reduce(apply, field.outputType.type),
+          })
         }
       },
     })
@@ -126,33 +125,28 @@ export class Publisher {
     return Nexus.inputObjectType({
       name: inputType.name,
       definition: (t) => {
-        inputType.fields
-          .map((field) => {
-            // TODO: Do not filter JsonFilter once Prisma implements them
-            // https://github.com/prisma/prisma/issues/2563
-            if (['JsonFilter', 'NullableJsonFilter'].includes(field.inputType.type)) {
-              return null
-            }
+        inputType.fields.forEach((field) => {
+          // TODO: Do not filter JsonFilter once Prisma implements them
+          // https://github.com/prisma/prisma/issues/2563
+          if (['JsonFilter', 'NullableJsonFilter'].includes(field.inputType.type)) {
+            return
+          }
 
-            return {
-              ...field,
-              inputType: {
-                ...field.inputType,
-                type: this.isPublished(field.inputType.type)
-                  ? // Simply reference the field input type if it's already been visited, otherwise create it
-                    field.inputType.type
-                  : this.inputType({
-                      arg: field,
-                      type: this.getTypeFromArg(field),
-                    }),
-              },
-            }
+          // Simply reference the field input type if it's already been visited, otherwise create it
+          let fieldType
+          if (this.isPublished(field.inputType.type)) {
+            fieldType = field.inputType.type
+          } else {
+            fieldType = this.inputType({
+              arg: field,
+              type: this.getTypeFromArg(field),
+            })
+          }
+
+          t.field(field.name, {
+            type: getNexusTypesPipelineForInput(field.inputType).reduce(apply, fieldType) as any,
           })
-          .forEach((field) => {
-            if (field) {
-              t.field(field.name, dmmfFieldToNexusFieldConfig(field.inputType))
-            }
-          })
+        })
       },
     })
   }
@@ -178,4 +172,40 @@ export class Publisher {
   markTypeAsPublished(typeName: string) {
     this.typesPublished[typeName] = true
   }
+}
+
+/**
+ * Get the pipeline of Nexus type def functions that will match the nullability and list types of the Prisma field type.
+ *
+ * For example { isList:true, isRequired: true } would result in array of funcs: [nonNull, list, nonNull]
+ */
+export const getNexusTypesPipelineForInput = (fieldType: DmmfTypes.SchemaArg['inputType']) => {
+  const nexusTypes = []
+
+  if (fieldType.isList) {
+    nexusTypes.push(Nexus.nonNull)
+    nexusTypes.push(Nexus.list)
+  } else if (fieldType.isRequired === true) {
+    nexusTypes.push(Nexus.nonNull)
+  } else if (fieldType.isRequired === false) {
+    nexusTypes.push(Nexus.nullable)
+  }
+
+  return nexusTypes
+}
+
+export const getNexusTypesPipelineForOutput = (fieldType: DmmfTypes.SchemaField['outputType']) => {
+  const nexusTypes = []
+
+  if (fieldType.isList) {
+    nexusTypes.push(Nexus.nonNull)
+    nexusTypes.push(Nexus.list)
+    nexusTypes.push(Nexus.nonNull)
+  } else if (fieldType.isRequired === true) {
+    nexusTypes.push(Nexus.nonNull)
+  } else if (fieldType.isRequired === false) {
+    nexusTypes.push(Nexus.nullable)
+  }
+
+  return nexusTypes
 }

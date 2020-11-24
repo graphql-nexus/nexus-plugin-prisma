@@ -23,9 +23,10 @@ import {
 import { transformNullsToUndefined } from './null'
 import { paginationStrategies, PaginationStrategyTypes } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
-import { Publisher } from './publisher'
+import { getNexusTypesPipelineForOutput, Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
+  apply,
   assertPrismaClientInContext,
   GlobalComputedInputs,
   Index,
@@ -588,8 +589,12 @@ export class SchemaBuilder {
 
     return {
       ...additionalExternalPropsSuchAsPlugins,
-      type: this.publisher.outputType(config.publisherConfig.type, config.field),
-      ...dmmfListFieldTypeToNexus(config.field.outputType),
+      type: getNexusTypesPipelineForOutput(config.field.outputType).reduce(
+        apply,
+        this.publisher.outputType(config.publisherConfig.type, config.field)
+      ),
+      // type: this.publisher.outputType(config.publisherConfig.type, config.field),
+      // ...dmmfListFieldTypeToNexus(config.field.outputType),
       args: this.buildArgsFromField(config),
       resolve: config.resolve,
     }
