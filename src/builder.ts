@@ -3,7 +3,7 @@ import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import { defaultFieldResolver, GraphQLFieldResolver, GraphQLScalarType } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
-import { addComputedInputs, DmmfDocument, DmmfTypes, getTransformedDmmf } from './dmmf'
+import { addComputedInputs, DmmfDocument, getTransformedDmmf, InternalDMMF } from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -62,11 +62,11 @@ type ResolvedFieldPublisherConfig = Omit<
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
 type PublisherConfigData = {
-  field: DmmfTypes.SchemaField
+  field: InternalDMMF.SchemaField
   givenConfig?: FieldPublisherConfig
 }
 type FieldConfigData = {
-  field: DmmfTypes.SchemaField
+  field: InternalDMMF.SchemaField
   publisherConfig: ResolvedFieldPublisherConfig
   typeName: string
   operation?: OperationName | null
@@ -80,7 +80,7 @@ type FieldConfigData = {
  * For Prisma Client JS' part, it will never return null for list type fields nor will it
  * ever return null value list members.
  */
-const dmmfListFieldTypeToNexus = (fieldType: DmmfTypes.SchemaField['outputType']) => {
+const dmmfListFieldTypeToNexus = (fieldType: InternalDMMF.SchemaField['outputType']) => {
   return fieldType.isList
     ? {
         list: [true],
@@ -236,8 +236,8 @@ const defaultOptions = {
 }
 
 export interface CustomInputArg {
-  arg: DmmfTypes.SchemaArg
-  type: DmmfTypes.InputType | DmmfTypes.SchemaEnum | { name: string } // scalar
+  arg: InternalDMMF.SchemaArg
+  type: InternalDMMF.InputType | InternalDMMF.SchemaEnum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
@@ -753,7 +753,7 @@ export class SchemaBuilder {
     fieldName: string
     graphQLTypeName: string
     isWhereType: boolean
-  }): DmmfTypes.InputType {
+  }): InternalDMMF.InputType {
     const prismaClientObject = this.dmmf.getInputType(params.inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)

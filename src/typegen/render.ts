@@ -1,6 +1,6 @@
 import { outdent } from 'outdent'
 import * as Path from 'path'
-import { DmmfDocument, DmmfTypes } from '../dmmf'
+import { DmmfDocument, InternalDMMF } from '../dmmf'
 import { getTransformedDmmf } from '../dmmf/transformer'
 import { getCrudMappedFields } from '../mapping'
 import { defaultFieldNamingStrategy } from '../naming-strategies'
@@ -175,8 +175,8 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
         string,
         {
           fieldName: string
-          filtering: DmmfTypes.InputType
-          ordering: DmmfTypes.InputType
+          filtering: InternalDMMF.InputType
+          ordering: InternalDMMF.InputType
         }[]
       >
     >((acc, type) => {
@@ -203,8 +203,8 @@ function renderNexusPrismaInputs(dmmf: DmmfDocument) {
   const renderNexusPrismaInput = (
     input: {
       fieldName: string
-      filtering: DmmfTypes.InputType
-      ordering: DmmfTypes.InputType
+      filtering: InternalDMMF.InputType
+      ordering: InternalDMMF.InputType
     }[]
   ): string => `\
 ${input

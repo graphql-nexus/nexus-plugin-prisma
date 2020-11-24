@@ -1,9 +1,9 @@
 import * as Nexus from '@nexus/schema'
+import { GraphQLScalarType } from 'graphql'
 import { CustomInputArg } from './builder'
-import { DmmfDocument, DmmfTypes } from './dmmf'
+import { DmmfDocument, InternalDMMF } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { dmmfFieldToNexusFieldConfig, Index } from './utils'
-import { GraphQLScalarType } from 'graphql'
 
 export class Publisher {
   typesPublished: Index<boolean> = {}
@@ -42,13 +42,13 @@ export class Publisher {
       return this.publishEnum(customArg.type.name)
     }
 
-    const inputType = customArg.type as DmmfTypes.InputType
+    const inputType = customArg.type as InternalDMMF.InputType
 
     return this.publishInputObjectType(inputType)
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  public outputType(outputTypeName: string, field: DmmfTypes.SchemaField): any {
+  public outputType(outputTypeName: string, field: InternalDMMF.SchemaField): any {
     /**
      * Rules:
      * - If outputTypeName is already published
@@ -120,7 +120,7 @@ export class Publisher {
     })
   }
 
-  publishInputObjectType(inputType: DmmfTypes.InputType) {
+  publishInputObjectType(inputType: InternalDMMF.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
@@ -157,7 +157,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DmmfTypes.SchemaArg): CustomInputArg['type'] {
+  protected getTypeFromArg(arg: InternalDMMF.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: typeName,

@@ -1,5 +1,5 @@
 import { PaginationStrategy } from '.'
-import { DmmfTypes, getReturnTypeName } from '../dmmf'
+import { Helpers as DMMFHelpers, InternalDMMF } from '../dmmf'
 import { keys } from '../utils'
 
 interface PrismaPaginationArgs {
@@ -10,7 +10,7 @@ interface PrismaPaginationArgs {
 
 const prismaPaginationArgsToDmmfArgs: Record<
   'take' | 'skip' | 'cursor',
-  (typeName: string) => DmmfTypes.SchemaArg
+  (typeName: string) => InternalDMMF.SchemaArg
 > = {
   take: () => ({
     name: 'take',
@@ -47,7 +47,8 @@ const prismaPaginationArgsToDmmfArgs: Record<
 export const prismaStrategy: PaginationStrategy<PrismaPaginationArgs> = {
   paginationArgNames: keys(prismaPaginationArgsToDmmfArgs),
   transformDmmfArgs({ paginationArgNames, args, field }) {
-    const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
+    // todo why not using internal dmmf here?
+    const fieldOutputTypeName = DMMFHelpers.getTypeName(field.outputType.type)
 
     // Remove old pagination args
     args = args.filter((dmmfArg) => !paginationArgNames.includes(dmmfArg.name))

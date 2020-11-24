@@ -1,8 +1,10 @@
 import { DMMF } from '@prisma/client/runtime'
+import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
-import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
+import { dump, GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
 import { DmmfDocument } from './DmmfDocument'
-import { DmmfTypes } from './DmmfTypes'
+import { InternalDMMF } from './DmmfTypes'
+import { getTypeName, isEnumValue, isInputObject, isOutputType } from './helpers'
 import { getPrismaClientDmmf } from './utils'
 
 export type TransformOptions = {
@@ -23,15 +25,16 @@ const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformO
   ...givenOptions,
 })
 
-export function transform(document: DMMF.Document, options?: TransformOptions): DmmfTypes.Document { 
+export function transform(document: DMMF.Document, options?: TransformOptions): InternalDMMF.Document {
+  dump(Object.keys(document.schema))
   return {
     datamodel: transformDatamodel(document.datamodel),
-    mappings: document.mappings.modelOperations,
     schema: transformSchema(document.schema, addDefaultOptions(options)),
+    operations: document.mappings.modelOperations,
   }
 }
 
-function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
+function transformDatamodel(datamodel: DMMF.Datamodel): InternalDMMF.Datamodel {
   return {
     enums: datamodel.enums,
     models: datamodel.models.map((model) => ({
@@ -46,41 +49,54 @@ function transformDatamodel(datamodel: DMMF.Datamodel): DmmfTypes.Datamodel {
 
 const paginationArgNames = ['cursor', 'take', 'skip']
 
-function transformSchema(
-  schema: DMMF.Schema,
-  { globallyComputedInputs, paginationStrategy, atomicOperations }: Required<TransformOptions>
-): DmmfTypes.Schema {
+type TransformConfig = Required<TransformOptions>
+
+function transformSchema(schema: DMMF.Schema, options: TransformConfig): InternalDMMF.Schema {
+  const enums = schema.enumTypes.model ?? []
+
+  const inputTypes =
+    schema.inputObjectTypes.model?.map((type) =>
+      transformInputType(type, options.globallyComputedInputs, options.atomicOperations)
+    ) ?? []
+
+  const outputTypes =
+    schema.outputObjectTypes.model?.map((type) => {
+      return transformOutputType(type, options)
+    }) ?? []
+
   return {
-    enums: schema.enums,
-    inputTypes: schema.inputTypes.map((type) => transformInputType(type, globallyComputedInputs, atomicOperations)),
-    outputTypes: schema.outputTypes.map((o) => {
+    enums,
+    inputTypes,
+    outputTypes,
+  }
+}
+
+function transformOutputType(type: DMMF.OutputType, options: TransformConfig) {
+  return {
+    ...type,
+    fields: type.fields.map((field) => {
+      let args = field.args.map((arg) => transformArg(arg, options.atomicOperations))
+      const argNames = args.map((a) => a.name)
+
+      // If this field has pagination
+      if (paginationArgNames.every((paginationArgName) => argNames.includes(paginationArgName))) {
+        args = options.paginationStrategy.transformDmmfArgs({
+          args,
+          paginationArgNames,
+          field,
+        })
+      }
+
       return {
-        ...o,
-        fields: o.fields.map((f) => {
-          let args = f.args.map((arg) => transformArg(arg, atomicOperations))
-          const argNames = args.map((a) => a.name)
-
-          // If this field has pagination
-          if (paginationArgNames.every((paginationArgName) => argNames.includes(paginationArgName))) {
-            args = paginationStrategy.transformDmmfArgs({
-              args,
-              paginationArgNames,
-              field: f,
-            })
-          }
-
-          return {
-            name: f.name,
-            args,
-            outputType: {
-              type: getReturnTypeName(f.outputType.type) as any,
-              kind: f.outputType.kind,
-              isRequired: f.isRequired,
-              isNullable: f.isNullable,
-              isList: f.outputType.isList,
-            },
-          }
-        }),
+        name: field.name,
+        args,
+        outputType: {
+          type: getTypeName(field.outputType.type),
+          kind: getFieldKind(field.outputType.type),
+          isRequired: field.isRequired,
+          isNullable: field.isNullable,
+          isList: field.outputType.isList,
+        },
       }
     }),
   }
@@ -91,15 +107,15 @@ function transformSchema(
  * heuristics. A conversion is needed because GraphQL does not
  * support union types on args, but Prisma Client does.
  */
-function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): DmmfTypes.SchemaArg {
-  const inputType = flattenUnionOfSchemaArg(arg.inputTypes, atomicOperations)
+function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): InternalDMMF.SchemaArg {
+  const inputType = argTypeUnionToArgType(arg.inputTypes, atomicOperations)
 
   return {
     name: arg.name,
     inputType: {
-      type: getReturnTypeName(inputType.type),
+      type: getTypeName(inputType.type),
       isList: inputType.isList,
-      kind: inputType.kind,
+      kind: getArgKind(inputType),
       isNullable: arg.isNullable,
       isRequired: arg.isRequired,
     },
@@ -114,34 +130,39 @@ function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): DmmfTypes
  *
  * Apart from some exceptions, we're generally trying to pick the broadest member type of the union.
  */
-function flattenUnionOfSchemaArg(
-  inputTypes: DMMF.SchemaArgInputType[],
+function argTypeUnionToArgType(
+  argTypeContexts: DMMF.SchemaArgInputType[],
   atomicOperations: boolean
 ): DMMF.SchemaArgInputType {
   // Remove atomic operations if needed
-  const filteredInputTypes =
+  const filteredArgTypeContexts =
     atomicOperations === false
-      ? inputTypes.filter((a) => !getReturnTypeName(a.type).endsWith('OperationsInput'))
-      : inputTypes
+      ? argTypeContexts.filter((argTypeCtx) => !getTypeName(argTypeCtx.type).endsWith('OperationsInput'))
+      : argTypeContexts
 
   return (
     // We're intentionally ignoring the `<Model>RelationFilter` member of some union type for now and using the `<Model>WhereInput` instead to avoid making a breaking change
-    filteredInputTypes.find(
-      (a) => a.kind === 'object' && a.isList == true && getReturnTypeName(a.type).endsWith('WhereInput')
+    filteredArgTypeContexts.find(
+      (argTypeCtx) =>
+        isInputObject(argTypeCtx.type) &&
+        argTypeCtx.isList &&
+        getTypeName(argTypeCtx.type).endsWith('WhereInput')
     ) ??
     // Same here
-    filteredInputTypes.find((a) => a.kind === 'object' && getReturnTypeName(a.type).endsWith('WhereInput')) ??
+    filteredArgTypeContexts.find(
+      (argTypeCtx) => isInputObject(argTypeCtx.type) && getTypeName(argTypeCtx.type).endsWith('WhereInput')
+    ) ??
     // [AnyType]
-    filteredInputTypes.find((a) => a.kind === 'object' && a.isList === true) ??
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObject(argTypeCtx.type) && argTypeCtx.isList) ??
     // AnyType
-    filteredInputTypes.find((a) => a.kind === 'object') ??
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObject(argTypeCtx.type)) ??
     // fallback to the first member of the union
-    inputTypes[0]
+    argTypeContexts[0]
   )
 }
 
 type AddComputedInputParams = {
-  inputType: DmmfTypes.InputType
+  inputType: InternalDMMF.InputType
   params: GlobalMutationResolverParams
   dmmf: DmmfDocument
   locallyComputedInputs: LocalComputedInputs<any>
@@ -236,7 +257,7 @@ function transformInputType(
   inputType: DMMF.InputType,
   globallyComputedInputs: GlobalComputedInputs,
   atomicOperations: boolean
-): DmmfTypes.InputType {
+): InternalDMMF.InputType {
   const fieldNames = inputType.fields.map((field) => field.name)
   /**
    * Only global computed inputs are removed during schema transform.
@@ -259,16 +280,39 @@ function transformInputType(
   }
 }
 
-/**
- * Make the "return type" property type always be a string. In Prisma Client
- * it is allowed to be a nested structured object but we want only the
- * reference-by-name form.
- *
- */
-export function getReturnTypeName(type: DMMF.ArgType | DMMF.InputType | DMMF.OutputType): string {
+function getFieldKind(type: string | DMMF.SchemaEnum | DMMF.OutputType): InternalDMMF.FieldKind {
   if (typeof type === 'string') {
-    return type
+    return 'scalar'
+  }
+  if (isEnumValue(type)) {
+    return 'enum'
+  }
+  if (isOutputType(type)) {
+    return 'object'
   }
 
-  return type.name
+  throw new Error(
+    `Failed to transform DMMF into internal DMMF because cannot get field kind for given type because it is unknown or malformed. The type data is:\n\n${inspect(
+      type
+    )}`
+  )
+}
+
+function getArgKind(arg: DMMF.SchemaArgInputType): InternalDMMF.FieldKind {
+  const type = arg.type
+  if (typeof type === 'string') {
+    return 'scalar'
+  }
+  if (isInputObject(type)) {
+    return 'object'
+  }
+  if (isEnumValue(type)) {
+    return 'enum'
+  }
+
+  throw new Error(
+    `Failed to transform DMMF into internal DMMF because cannot get arg kind for given type because it is unknown or malformed. The type data is:\n\n${inspect(
+      type
+    )}`
+  )
 }

@@ -1,4 +1,4 @@
-import { DmmfDocument, DmmfTypes } from './dmmf'
+import { DmmfDocument, InternalDMMF } from './dmmf'
 import { defaultFieldNamingStrategy, FieldNamingStrategy, OperationName } from './naming-strategies'
 import { flatMap, lowerFirst } from './utils'
 
@@ -10,10 +10,10 @@ interface BaseMappedField {
 }
 
 export interface MappedField extends Omit<BaseMappedField, 'field'> {
-  field: DmmfTypes.SchemaField
+  field: InternalDMMF.SchemaField
 }
 
-const buildField = (mapping: DmmfTypes.Mapping, operation: OperationName): BaseMappedField | null => {
+const buildField = (mapping: InternalDMMF.Mapping, operation: OperationName): BaseMappedField | null => {
   if (mapping[operation] === undefined) {
     return null
   }
@@ -26,7 +26,7 @@ const buildField = (mapping: DmmfTypes.Mapping, operation: OperationName): BaseM
   }
 }
 
-const CRUD_MAPPED_FIELDS: Record<string, (m: DmmfTypes.Mapping) => (BaseMappedField | null)[]> = {
+const CRUD_MAPPED_FIELDS: Record<string, (m: InternalDMMF.Mapping) => (BaseMappedField | null)[]> = {
   Query: (m) => [buildField(m, 'findOne'), buildField(m, 'findMany')],
   Mutation: (m) => [
     buildField(m, 'create'),
@@ -43,7 +43,7 @@ export const getCrudMappedFields = (
   dmmf: DmmfDocument,
   namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy
 ): MappedField[] => {
-  const mappedFields = flatMap(dmmf.mappings, (m) => CRUD_MAPPED_FIELDS[typeName](m)).filter(
+  const mappedFields = flatMap(dmmf.operations, (m) => CRUD_MAPPED_FIELDS[typeName](m)).filter(
     (mappedField) => mappedField !== null
   ) as BaseMappedField[]
 

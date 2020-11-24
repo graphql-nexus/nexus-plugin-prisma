@@ -1,6 +1,6 @@
-import { DmmfTypes, getReturnTypeName } from '../dmmf'
-import { keys } from '../utils'
 import { PaginationStrategy } from '.'
+import { Helpers as DMMFHelpers, InternalDMMF } from '../dmmf'
+import { keys } from '../utils'
 
 interface RelayPaginationArgs {
   first?: number
@@ -11,7 +11,7 @@ interface RelayPaginationArgs {
 
 const relayPaginationArgsToDmmfArgs: Record<
   'first' | 'last' | 'before' | 'after',
-  (typeName: string) => DmmfTypes.SchemaArg
+  (typeName: string) => InternalDMMF.SchemaArg
 > = {
   first: () => ({
     name: 'first',
@@ -58,7 +58,8 @@ const relayPaginationArgsToDmmfArgs: Record<
 export const relayStrategy: PaginationStrategy<RelayPaginationArgs> = {
   paginationArgNames: keys(relayPaginationArgsToDmmfArgs),
   transformDmmfArgs({ paginationArgNames, args, field }) {
-    const fieldOutputTypeName = getReturnTypeName(field.outputType.type)
+    // todo why not using internal dmmf here?
+    const fieldOutputTypeName = DMMFHelpers.getTypeName(field.outputType.type)
 
     // Remove old pagination args
     args = args.filter((dmmfArg) => !paginationArgNames.includes(dmmfArg.name))

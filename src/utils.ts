@@ -5,7 +5,8 @@ import * as path from 'path'
 import { inspect, isDeepStrictEqual } from 'util'
 
 export function dump(x: any) {
-  console.log(inspect(x, { depth: 20 }))
+  const fence = '---------------------------------------------------------'
+  console.error(fence + '\n' + inspect(x, { depth: 20 }) + '\n' + fence)
 }
 
 /**

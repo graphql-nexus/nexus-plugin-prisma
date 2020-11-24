@@ -1,11 +1,11 @@
 import { core } from '@nexus/schema'
 import { GlobalComputedInputs } from '../utils'
 
-export declare namespace DmmfTypes {
+export declare namespace InternalDMMF {
   interface Document {
     datamodel: Datamodel
     schema: Schema
-    mappings: Mapping[]
+    operations: Mapping[]
   }
   interface DatamodelEnum {
     name: string
@@ -34,7 +34,7 @@ export declare namespace DmmfTypes {
     isEmbedded: boolean
     uniqueFields: Array<string[]>
   }
-  type FieldKind = 'scalar' | 'object' | 'enum'
+  export type FieldKind = 'scalar' | 'object' | 'enum'
   type DatamodelFieldKind = 'scalar' | 'relation' | 'enum'
   interface Field {
     kind: DatamodelFieldKind
@@ -98,17 +98,17 @@ export declare namespace DmmfTypes {
     computedInputs: GlobalComputedInputs
   }
   interface Mapping {
-    model: string;
-    plural: string;
-    findOne?: string | null;
+    model: string
+    plural: string
+    findOne?: string | null
     //findFirst?: string | null;
-    findMany?: string | null;
-    create?: string | null;
-    update?: string | null;
-    updateMany?: string | null;
-    upsert?: string | null;
-    delete?: string | null;
-    deleteMany?: string | null;
+    findMany?: string | null
+    create?: string | null
+    update?: string | null
+    updateMany?: string | null
+    upsert?: string | null
+    delete?: string | null
+    deleteMany?: string | null
     //aggregate?: string | null;
   }
   enum ModelAction {

@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType, queryType } from '@nexus/schema'
 import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error', async () => {
@@ -6,31 +6,31 @@ it('in dev stage, removes filtering or ordering entirely if no arg or wrong args
 
   const datamodel = `
     model User {
-      id  Int @id @default(autoincrement())
+      id   Int    @id @default(autoincrement())
       name String
     }
   `
 
-  const User = objectType({
-    name: 'User',
-    definition(t: any) {
-      t.model.id()
-      t.model.name()
-    },
-  })
-
-  const Query = objectType({
-    name: 'Query',
-    definition(t: any) {
-      t.crud.users({
-        filtering: { somethingWrong: true },
-        ordering: { somethingWrong: true },
-      })
-    },
-  })
+  const typeDefs = [
+    queryType({
+      definition(t: any) {
+        t.crud.users({
+          filtering: { somethingWrong: true },
+          ordering: { somethingWrong: true },
+        })
+      },
+    }),
+    objectType({
+      name: 'User',
+      definition(t: any) {
+        t.model.id()
+        t.model.name()
+      },
+    }),
+  ]
 
   const { schemaString: schema, $output, typegen } = await mockConsoleLog(async () => {
-    return generateSchemaAndTypes(datamodel, [Query, User])
+    return generateSchemaAndTypes(datamodel, typeDefs)
   })
 
   expect(schema).toMatchSnapshot('schema')

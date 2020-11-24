@@ -1,7 +1,7 @@
-import pluralize from 'pluralize'
-import { DmmfTypes } from './dmmf'
-import { upperFirst } from './utils'
 import camelCase from 'camelcase'
+import pluralize from 'pluralize'
+import { InternalDMMF } from './dmmf'
+import { upperFirst } from './utils'
 
 export interface ArgsNamingStrategy {
   whereInput: (typeName: string, fieldName: string) => string
@@ -21,7 +21,7 @@ export const defaultArgsNamingStrategy: ArgsNamingStrategy = {
   },
 }
 
-export type OperationName = Exclude<keyof DmmfTypes.Mapping, 'model' | 'plural'>
+export type OperationName = Exclude<keyof InternalDMMF.Mapping, 'model' | 'plural'>
 
 export type FieldNamingStrategy = Record<OperationName, (fieldName: string, modelName: string) => string>
 

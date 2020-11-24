@@ -1,4 +1,4 @@
-import { DmmfDocument, DmmfTypes } from '../../src/dmmf'
+import { DmmfDocument, InternalDMMF } from '../../src/dmmf'
 import { getCrudMappedFields } from '../../src/mapping'
 import { OperationName } from '../../src/naming-strategies'
 import { transformNullsToUndefined } from '../../src/null'
@@ -21,7 +21,7 @@ async function getSchemaArgsForCrud(
   model: string,
   operation: OperationName
 ): Promise<{
-  schemaArgs: Record<string, DmmfTypes.SchemaArg>
+  schemaArgs: Record<string, InternalDMMF.SchemaArg>
   dmmf: DmmfDocument
 }> {
   const dmmf = await getDmmf(datamodel)

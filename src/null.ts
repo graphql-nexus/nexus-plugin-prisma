@@ -1,5 +1,5 @@
 import * as Lo from 'lodash'
-import { DmmfDocument, DmmfTypes } from './dmmf'
+import { DmmfDocument, InternalDMMF } from './dmmf'
 
 /**
  * Take the incoming GraphQL args of a resolver and replaces all `null` values
@@ -13,7 +13,7 @@ import { DmmfDocument, DmmfTypes } from './dmmf'
  */
 export function transformNullsToUndefined(
   graphqlArgs: Record<string, any>,
-  prismaArgs: Record<string, DmmfTypes.SchemaArg>,
+  prismaArgs: Record<string, InternalDMMF.SchemaArg>,
   dmmf: DmmfDocument
 ) {
   const keys = Object.keys(graphqlArgs)
