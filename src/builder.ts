@@ -23,7 +23,7 @@ import {
 import { transformNullsToUndefined } from './null'
 import { paginationStrategies, PaginationStrategyTypes } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
-import { getNexusTypesPipelineForOutput, Publisher } from './publisher'
+import { getNexusTypesCompositionForOutput, Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
   apply,
@@ -572,7 +572,7 @@ export class SchemaBuilder {
     return {
       ...additionalExternalPropsSuchAsPlugins,
       args: this.buildArgsFromField(config),
-      type: getNexusTypesPipelineForOutput(config.field.outputType).reduce(
+      type: getNexusTypesCompositionForOutput(config.field.outputType).reduceRight(
         apply,
         this.publisher.outputType(config.publisherConfig.type, config.field)
       ),

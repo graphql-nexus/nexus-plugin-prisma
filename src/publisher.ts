@@ -27,7 +27,10 @@ export class Publisher {
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
       return Nexus.arg({
-        type: getNexusTypesPipelineForInput(customArg.arg.inputType).reduce(apply, customArg.type.name),
+        type: getNexusTypesCompositionForInput(customArg.arg.inputType).reduceRight(
+          apply,
+          customArg.type.name
+        ),
       })
     }
 
@@ -82,7 +85,10 @@ export class Publisher {
       definition: (t) => {
         for (const field of dmmfObject.fields) {
           t.field(field.name, {
-            type: getNexusTypesPipelineForOutput(field.outputType).reduce(apply, field.outputType.type),
+            type: getNexusTypesCompositionForOutput(field.outputType).reduceRight(
+              apply,
+              field.outputType.type
+            ),
           })
         }
       },
@@ -144,7 +150,7 @@ export class Publisher {
           }
 
           t.field(field.name, {
-            type: getNexusTypesPipelineForInput(field.inputType).reduce(apply, fieldType) as any,
+            type: getNexusTypesCompositionForInput(field.inputType).reduceRight(apply, fieldType) as any,
           })
         })
       },
@@ -175,37 +181,30 @@ export class Publisher {
 }
 
 /**
- * Get the pipeline of Nexus type def functions that will match the nullability and list types of the Prisma field type.
+ * Get the composition-order pipeline of Nexus type def functions that will match the nullability and list types of the Prisma field type.
  *
  * For example { isList:true, isRequired: true } would result in array of funcs: [nonNull, list, nonNull]
  */
-export const getNexusTypesPipelineForInput = (fieldType: DmmfTypes.SchemaArg['inputType']) => {
-  const nexusTypes = []
-
+export const getNexusTypesCompositionForInput = (fieldType: DmmfTypes.SchemaArg['inputType']) => {
   if (fieldType.isList) {
-    nexusTypes.push(Nexus.nonNull)
-    nexusTypes.push(Nexus.list)
+    return [Nexus.list, Nexus.nonNull]
   } else if (fieldType.isRequired === true) {
-    nexusTypes.push(Nexus.nonNull)
+    return [Nexus.nonNull]
   } else if (fieldType.isRequired === false) {
-    nexusTypes.push(Nexus.nullable)
+    return [Nexus.nullable]
   }
 
-  return nexusTypes
+  return [] as Function[]
 }
 
-export const getNexusTypesPipelineForOutput = (fieldType: DmmfTypes.SchemaField['outputType']) => {
-  const nexusTypes = []
-
+export const getNexusTypesCompositionForOutput = (fieldType: DmmfTypes.SchemaField['outputType']) => {
   if (fieldType.isList) {
-    nexusTypes.push(Nexus.nonNull)
-    nexusTypes.push(Nexus.list)
-    nexusTypes.push(Nexus.nonNull)
+    return [Nexus.nonNull, Nexus.list, Nexus.nonNull]
   } else if (fieldType.isRequired === true) {
-    nexusTypes.push(Nexus.nonNull)
+    return [Nexus.nonNull]
   } else if (fieldType.isRequired === false) {
-    nexusTypes.push(Nexus.nullable)
+    return [Nexus.nullable]
   }
 
-  return nexusTypes
+  return [] as Function[]
 }
