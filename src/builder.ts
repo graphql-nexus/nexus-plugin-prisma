@@ -74,24 +74,6 @@ type FieldConfigData = {
   resolve?: Nexus.FieldResolver<any, string>
 }
 
-/**
- * When dealing with list types we rely on the list type zero value (empty-list)
- * to represent the idea of null.
- *
- * For Prisma Client JS' part, it will never return null for list type fields nor will it
- * ever return null value list members.
- */
-const dmmfListFieldTypeToNexus = (fieldType: DmmfTypes.SchemaField['outputType']) => {
-  return fieldType.isList
-    ? {
-        list: [true],
-        nullable: false,
-      }
-    : {
-        nullable: !fieldType.isRequired,
-      }
-}
-
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
 
 export interface Options {
@@ -589,13 +571,11 @@ export class SchemaBuilder {
 
     return {
       ...additionalExternalPropsSuchAsPlugins,
+      args: this.buildArgsFromField(config),
       type: getNexusTypesPipelineForOutput(config.field.outputType).reduce(
         apply,
         this.publisher.outputType(config.publisherConfig.type, config.field)
       ),
-      // type: this.publisher.outputType(config.publisherConfig.type, config.field),
-      // ...dmmfListFieldTypeToNexus(config.field.outputType),
-      args: this.buildArgsFromField(config),
       resolve: config.resolve,
     }
   }
