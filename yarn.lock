@@ -819,11 +819,6 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.12.0-11.27db1c55cd118b091170f883f58cc7cd1754c97b.tgz#c4da45b31f67dc54062199df6f325d5f362d853f"
   integrity sha512-6SbTorCnBl5c/vrJZYDuNnDPJC7KcgXzRafDvV1qr58UAddBxcriN+WHqjT+AUn8jMfcjHclunCAvZH4B9twkg==
 
-"@prisma/engines@^2.12.0-12.6e06be7985b0adfd8361fde118550fbe9c4f4059":
-  version "2.12.0-12.6e06be7985b0adfd8361fde118550fbe9c4f4059"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.12.0-12.6e06be7985b0adfd8361fde118550fbe9c4f4059.tgz#4940017f3e36ae726f59afea9ef66a2b740c2571"
-  integrity sha512-IUaM0kvynUa80Dbf381YMtlOzUiFl2YjlUG6o8MQmTSapFq3vmlCYE2sg+GxEoPhqfCbWRZ37Og2DDQj1aQ4dA==
-
 "@prisma/fetch-engine@2.12.0-dev.49", "@prisma/fetch-engine@^2.12.0-dev.49":
   version "2.12.0-dev.49"
   resolved "https://registry.yarnpkg.com/@prisma/fetch-engine/-/fetch-engine-2.12.0-dev.49.tgz#eee2da81c1c927f9ce8a1b223c1c7c4a1eef4675"

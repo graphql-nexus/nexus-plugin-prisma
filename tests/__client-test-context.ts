@@ -10,7 +10,6 @@ import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
 import rimraf from 'rimraf'
-import { getEnginePath, getEngineVersion } from './__engines-path'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -52,9 +51,6 @@ export function createRuntimeTestContext(): RuntimeTestContext {
         const metadata = getTestMetadata(datamodel)
 
         fs.mkdirSync(metadata.tmpDir, { recursive: true })
-
-        // Force query engine binary path
-        process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
 
         const prismaClient = await generateClientFromDatamodel(metadata)
         generatedClient = prismaClient
@@ -118,7 +114,6 @@ async function generateClientFromDatamodel(metadata: Metadata) {
     schemaPath: metadata.schemaPath,
     printDownloadProgress: false,
     baseDir: metadata.tmpDir,
-    version: getEngineVersion(),
   })
 
   await generator.generate()

@@ -12,4 +12,4 @@ yalc.lock
 .vscode
 .postgres-data
 .mysql-data
-tets/tmp
+tests/tmp
