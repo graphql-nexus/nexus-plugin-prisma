@@ -1,7 +1,7 @@
-import * as cp from 'child_process'
-import * as fsjp from 'fs-jetpack'
-import * as path from 'path'
 import * as nexusBuilder from '@nexus/schema/dist/builder'
+import * as cp from 'child_process'
+import * as FS from 'fs-jetpack'
+import * as Path from 'path'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'
 import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
@@ -10,7 +10,7 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 // - show we gracefully handle case of Prisma Client JS import failing
 
 it('integrates together', async () => {
-  const fs = fsjp.cwd(path.join(__dirname, '__app'))
+  const fs = FS.cwd(Path.join(__dirname, '__app'))
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -52,7 +52,7 @@ it('integrates together', async () => {
      * Import nexus-prisma from the local typegen.d.ts file, as nexus-prisma is not installed
      */
     nexusPrismaImportId: getImportPathRelativeToOutput(
-      path.dirname(nexusPrismaTypegenPath),
+      Path.dirname(nexusPrismaTypegenPath),
       typegenFacadePath
     ),
   })
