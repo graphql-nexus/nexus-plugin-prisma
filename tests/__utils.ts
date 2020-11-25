@@ -14,9 +14,9 @@ export const createNexusPrismaInternal = (
 ) =>
   Nexus.createPlugin({
     name: 'nexus-plugin-prisma-internal',
-    onInstall: (nexusBuilder) => ({
-      types: NexusPrismaBuilder.build({ ...options, nexusBuilder }).types,
-    }),
+    onInstall: (nexusBuilder) => {
+      NexusPrismaBuilder.build({ ...options, nexusBuilder }).types.forEach(nexusBuilder.addType)
+    },
   })
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {

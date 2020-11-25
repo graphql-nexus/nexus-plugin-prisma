@@ -10,7 +10,7 @@ import {
   OnUnknownFieldName,
   OnUnknownFieldType,
   OnUnknownPrismaModelName,
-  raiseErrorOrTriggerHook,
+  raiseErrorOrTriggerHook
 } from './hooks'
 import { getCrudMappedFields } from './mapping'
 import {
@@ -18,21 +18,22 @@ import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
-  OperationName,
+  OperationName
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
 import { paginationStrategies, PaginationStrategyTypes } from './pagination'
 import { proxifyModelFunction, proxifyPublishers } from './proxifier'
-import { Publisher } from './publisher'
+import { getNexusTypesCompositionForOutput, Publisher } from './publisher'
 import * as Typegen from './typegen'
 import {
+  apply,
   assertPrismaClientInContext,
   GlobalComputedInputs,
   Index,
   indexBy,
   isEmptyObject,
   LocalComputedInputs,
-  lowerFirst,
+  lowerFirst
 } from './utils'
 
 interface FieldPublisherConfig {
@@ -71,24 +72,6 @@ type FieldConfigData = {
   typeName: string
   operation?: OperationName | null
   resolve?: Nexus.FieldResolver<any, string>
-}
-
-/**
- * When dealing with list types we rely on the list type zero value (empty-list)
- * to represent the idea of null.
- *
- * For Prisma Client JS' part, it will never return null for list type fields nor will it
- * ever return null value list members.
- */
-const dmmfListFieldTypeToNexus = (fieldType: InternalDMMF.SchemaField['outputType']) => {
-  return fieldType.isList
-    ? {
-        list: [true],
-        nullable: false,
-      }
-    : {
-        nullable: !fieldType.isRequired,
-      }
 }
 
 type PrismaClientFetcher = (ctx: Nexus.core.GetGen<'context'>) => any
@@ -588,9 +571,11 @@ export class SchemaBuilder {
 
     return {
       ...additionalExternalPropsSuchAsPlugins,
-      type: this.publisher.outputType(config.publisherConfig.type, config.field),
-      ...dmmfListFieldTypeToNexus(config.field.outputType),
       args: this.buildArgsFromField(config),
+      type: getNexusTypesCompositionForOutput(config.field.outputType).reduceRight(
+        apply,
+        this.publisher.outputType(config.publisherConfig.type, config.field)
+      ),
       resolve: config.resolve,
     }
   }

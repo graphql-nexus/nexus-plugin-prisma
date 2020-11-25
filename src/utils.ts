@@ -93,22 +93,6 @@ export function flatMap<T, U>(array: T[], callbackfn: (value: T, index: number, 
   return Array.prototype.concat(...array.map(callbackfn))
 }
 
-export function dmmfFieldToNexusFieldConfig(param: {
-  type: string | object
-  isList: boolean
-  isRequired: boolean
-}): {
-  type: any
-  list: true | true[] | undefined
-  nullable: boolean
-} {
-  return {
-    type: param.type,
-    list: param.isList ? [true] : undefined,
-    nullable: !param.isRequired,
-  }
-}
-
 export function assertPrismaClientInContext(prismaClient: any) {
   if (!prismaClient) {
     throw new Error('Could not find Prisma Client JS in context (ctx.prisma)')
@@ -195,4 +179,8 @@ export const isEmptyObject = (o: any) => isDeepStrictEqual(o, {})
 
 export function keys<A extends object>(a: A): (keyof A)[] {
   return Object.keys(a) as any
+}
+
+export function apply<T, F extends Function = (x: T) => any>(val: T, fn: F): any {
+  return fn(val)
 }
