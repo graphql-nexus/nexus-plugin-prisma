@@ -8,7 +8,6 @@ import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { paginationStrategies } from '../src/pagination'
 import { render as renderTypegen } from '../src/typegen'
-import { getEnginePath } from './__engines-path'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>
@@ -21,25 +20,22 @@ export const createNexusPrismaInternal = (
   })
 
 export async function getDmmf(datamodel: string, options?: TransformOptions) {
-  const prismaPath = await getEnginePath('query')
-  const dmmf = await PrismaClientGenerator.getDMMF({
+  const originalDmmf = await SDK.getDMMF({
     datamodel,
-    prismaPath,
   })
-  return new DmmfDocument(transform(dmmf, options))
+  const clientDmmf = PrismaClientGenerator.externalToInternalDmmf(originalDmmf)
+  return new DmmfDocument(transform(clientDmmf, options))
 }
 
 export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {
   return SDK.getDMMF({
     datamodelPath,
-    prismaPath: await getEnginePath('query'),
   })
 }
 
 export async function getPinnedDmmfFromSchema(datamodel: string) {
   return SDK.getDMMF({
     datamodel,
-    prismaPath: await getEnginePath('query'),
   })
 }
 

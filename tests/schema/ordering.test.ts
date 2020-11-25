@@ -1,4 +1,4 @@
-import * as Nexus from '@nexus/schema'
+import { objectType } from '@nexus/schema'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('orderby fields can be allow-listed', async () => {
@@ -12,13 +12,13 @@ it('orderby fields can be allow-listed', async () => {
   `
 
   const { schemaString: schema, typegen } = await generateSchemaAndTypes(datamodel, [
-    Nexus.objectType({
+    objectType({
       name: 'Foo',
       definition(t: any) {
         t.model.id()
       },
     }),
-    Nexus.objectType({
+    objectType({
       name: 'Query',
       definition(t: any) {
         t.crud.foos({ ordering: { b: true } })

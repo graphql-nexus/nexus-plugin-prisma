@@ -1,33 +1,33 @@
-import { DmmfTypes } from './DmmfTypes'
-import { indexBy, Index } from '../utils'
 import { scalarsNameValues } from '../graphql'
+import { Index, indexBy } from '../utils'
+import { InternalDMMF } from './DmmfTypes'
 
-export class DmmfDocument implements DmmfTypes.Document {
-  public datamodel: DmmfTypes.Datamodel
-  public schema: DmmfTypes.Schema
-  public mappings: DmmfTypes.Mapping[]
+export class DmmfDocument implements InternalDMMF.Document {
+  public datamodel: InternalDMMF.Datamodel
+  public schema: InternalDMMF.Schema
+  public operations: InternalDMMF.Mapping[]
   public queryObject: OutputType
   public mutationObject: OutputType
-  public outputTypesIndex: Index<DmmfTypes.OutputType> = {}
-  public inputTypesIndex: Index<DmmfTypes.InputType>
-  public mappingsIndex: Index<DmmfTypes.Mapping>
-  public enumsIndex: Index<DmmfTypes.SchemaEnum>
-  public modelsIndex: Index<DmmfTypes.Model>
+  public outputTypesIndex: Index<InternalDMMF.OutputType> = {}
+  public inputTypesIndex: Index<InternalDMMF.InputType>
+  public mappingsIndex: Index<InternalDMMF.Mapping>
+  public enumsIndex: Index<InternalDMMF.SchemaEnum>
+  public modelsIndex: Index<InternalDMMF.Model>
   public inputTypesIndexWithFields: InputTypeIndexWithField
   public customScalars: Array<string>
 
-  constructor({ datamodel, schema, mappings }: DmmfTypes.Document) {
+  constructor({ datamodel, schema, operations }: InternalDMMF.Document) {
     // ExternalDMMF
     this.datamodel = datamodel
     this.schema = schema
-    this.mappings = mappings
+    this.operations = operations
 
     // Indices
     this.modelsIndex = indexBy(datamodel.models, 'name')
     this.enumsIndex = indexBy(schema.enums, 'name')
     this.inputTypesIndex = indexBy(schema.inputTypes, 'name')
     this.outputTypesIndex = indexBy(schema.outputTypes, 'name')
-    this.mappingsIndex = indexBy(mappings, 'model')
+    this.mappingsIndex = indexBy(operations, 'model')
     this.inputTypesIndexWithFields = indexInputTypeWithFields(schema.inputTypes)
     this.customScalars = findCustomScalars(datamodel.models)
 
@@ -129,10 +129,10 @@ export class DmmfDocument implements DmmfTypes.Document {
 
 export class OutputType {
   public name: string
-  public fields: DmmfTypes.SchemaField[]
+  public fields: InternalDMMF.SchemaField[]
   public isEmbedded?: boolean
 
-  constructor(protected outputType: DmmfTypes.OutputType) {
+  constructor(protected outputType: InternalDMMF.OutputType) {
     this.name = outputType.name
     this.fields = outputType.fields
     this.isEmbedded = outputType.isEmbedded
@@ -152,12 +152,12 @@ export class OutputType {
 }
 
 type InputTypeIndexWithField = Index<
-  Omit<DmmfTypes.InputType, 'fields'> & {
-    fields: Index<DmmfTypes.SchemaArg>
+  Omit<InternalDMMF.InputType, 'fields'> & {
+    fields: Index<InternalDMMF.SchemaArg>
   }
 >
 
-function indexInputTypeWithFields(inputTypes: DmmfTypes.InputType[]) {
+function indexInputTypeWithFields(inputTypes: InternalDMMF.InputType[]) {
   const indexedInputTypes: InputTypeIndexWithField = {}
 
   for (const inputType of inputTypes) {
@@ -172,7 +172,7 @@ function indexInputTypeWithFields(inputTypes: DmmfTypes.InputType[]) {
   return indexedInputTypes
 }
 
-function findCustomScalars(models: DmmfTypes.Model[]): Array<string> {
+function findCustomScalars(models: InternalDMMF.Model[]): Array<string> {
   const customScalars = new Set<string>()
 
   for (const model of models) {

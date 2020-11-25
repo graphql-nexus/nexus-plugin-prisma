@@ -1,5 +1,5 @@
 import { DMMF } from '@prisma/client/runtime'
-import { DmmfTypes } from '../dmmf'
+import { InternalDMMF } from '../dmmf'
 import { prismaStrategy } from './prisma'
 import { relayStrategy } from './relay'
 
@@ -14,10 +14,10 @@ interface NormalizedPaginationArgs {
 export interface PaginationStrategy<GraphQLPaginationArgs extends object = object> {
   paginationArgNames: (keyof GraphQLPaginationArgs)[]
   transformDmmfArgs(params: {
-    args: DmmfTypes.SchemaArg[]
+    args: InternalDMMF.SchemaArg[]
     paginationArgNames: string[]
     field: DMMF.SchemaField
-  }): DmmfTypes.SchemaArg[]
+  }): InternalDMMF.SchemaArg[]
   resolve(args: GraphQLPaginationArgs): NormalizedPaginationArgs
 }
 

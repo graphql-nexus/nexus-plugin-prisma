@@ -3,7 +3,7 @@ import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import { defaultFieldResolver, GraphQLFieldResolver, GraphQLScalarType } from 'graphql'
 import * as path from 'path'
 import * as Constraints from './constraints'
-import { addComputedInputs, DmmfDocument, DmmfTypes, getTransformedDmmf } from './dmmf'
+import { addComputedInputs, DmmfDocument, getTransformedDmmf, InternalDMMF } from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -38,7 +38,7 @@ import {
 
 interface FieldPublisherConfig {
   alias?: string
-  type?: Nexus.core.AllOutputTypes
+  type?: string
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
@@ -63,11 +63,11 @@ type ResolvedFieldPublisherConfig = Omit<
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
 type PublisherConfigData = {
-  field: DmmfTypes.SchemaField
+  field: InternalDMMF.SchemaField
   givenConfig?: FieldPublisherConfig
 }
 type FieldConfigData = {
-  field: DmmfTypes.SchemaField
+  field: InternalDMMF.SchemaField
   publisherConfig: ResolvedFieldPublisherConfig
   typeName: string
   operation?: OperationName | null
@@ -219,8 +219,8 @@ const defaultOptions = {
 }
 
 export interface CustomInputArg {
-  arg: DmmfTypes.SchemaArg
-  type: DmmfTypes.InputType | DmmfTypes.SchemaEnum | { name: string } // scalar
+  arg: InternalDMMF.SchemaArg
+  type: InternalDMMF.InputType | InternalDMMF.SchemaEnum | { name: string } // scalar
 }
 
 export class SchemaBuilder {
@@ -513,7 +513,7 @@ export class SchemaBuilder {
                 args = this.paginationStrategy.resolve(args)
 
                 return prismaClient[lowerFirst(mapping.model)]
-                  .findOne({
+                  .findUnique({
                     where: Constraints.buildWhereUniqueInput(root, uniqueIdentifiers),
                   })
                   [field.name](args)
@@ -593,7 +593,7 @@ export class SchemaBuilder {
   determineArgs(config: FieldConfigData): CustomInputArg[] {
     if (config.typeName === 'Mutation') {
       return this.argsFromMutationField(config)
-    } else if (config.operation === 'findOne') {
+    } else if (config.operation === 'findUnique') {
       return config.field.args.map((arg) => ({
         arg,
         type: this.dmmf.getInputType(arg.inputType.type),
@@ -738,7 +738,7 @@ export class SchemaBuilder {
     fieldName: string
     graphQLTypeName: string
     isWhereType: boolean
-  }): DmmfTypes.InputType {
+  }): InternalDMMF.InputType {
     const prismaClientObject = this.dmmf.getInputType(params.inputTypeName)
 
     // If the publishing for this field feature (filtering, ordering, ...)

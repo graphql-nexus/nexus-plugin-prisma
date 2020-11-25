@@ -9,7 +9,6 @@ import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import { outdent } from 'outdent'
 import * as path from 'path'
-import { getEnginePath, getEngineVersion } from './__engines-path'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -51,9 +50,6 @@ export function createRuntimeTestContext(): RuntimeTestContext {
         const metadata = getTestMetadata(datamodel)
 
         await fs.dirAsync(metadata.tmpDir)
-
-        // Force query engine binary path
-        process.env.PRISMA_QUERY_ENGINE_BINARY = await getEnginePath('query')
 
         const prismaClient = await generateClientFromDatamodel(metadata)
         generatedClient = prismaClient
@@ -117,7 +113,6 @@ async function generateClientFromDatamodel(metadata: Metadata) {
     schemaPath: metadata.schemaPath,
     printDownloadProgress: false,
     baseDir: metadata.tmpDir,
-    version: getEngineVersion(),
   })
 
   await generator.generate()
@@ -151,7 +146,7 @@ type Metadata = {
 
 function getTestMetadata(datamodelString: string): Metadata {
   const uniqId = Math.random().toString().slice(2)
-  const tmpDir = path.join(__dirname, `nexus-plugin-prisma-tmp-${uniqId}`)
+  const tmpDir = path.join(__dirname, `tmp/${uniqId}`)
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
   const schemaPath = path.join(tmpDir, 'schema.prisma')

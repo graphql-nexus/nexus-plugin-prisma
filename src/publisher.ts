@@ -1,7 +1,7 @@
 import * as Nexus from '@nexus/schema'
 import { GraphQLScalarType } from 'graphql'
 import { CustomInputArg } from './builder'
-import { DmmfDocument, DmmfTypes } from './dmmf'
+import { DmmfDocument, InternalDMMF } from './dmmf'
 import { scalarsNameValues } from './graphql'
 import { apply, Index } from './utils'
 
@@ -44,13 +44,13 @@ export class Publisher {
       return this.publishEnum(customArg.type.name)
     }
 
-    const inputType = customArg.type as DmmfTypes.InputType
+    const inputType = customArg.type as InternalDMMF.InputType
 
     return this.publishInputObjectType(inputType)
   }
 
   // Return type of 'any' to prevent a type mismatch with `type` property of nexus
-  public outputType(outputTypeName: string, field: DmmfTypes.SchemaField): any {
+  public outputType(outputTypeName: string, field: InternalDMMF.SchemaField): any {
     /**
      * Rules:
      * - If outputTypeName is already published
@@ -86,11 +86,13 @@ export class Publisher {
       name,
       definition: (t) => {
         for (const field of dmmfObject.fields) {
+          // Cast any to avoid typegen errors
+          // https://github.com/graphql-nexus/nexus-plugin-prisma/pull/960/checks?check_run_id=1454008781#step:7:48
           t.field(field.name, {
             type: getNexusTypesCompositionForOutput(field.outputType).reduceRight(
               apply,
               field.outputType.type
-            ),
+            ) as any,
           })
         }
       },
@@ -127,7 +129,7 @@ export class Publisher {
     })
   }
 
-  publishInputObjectType(inputType: DmmfTypes.InputType) {
+  publishInputObjectType(inputType: InternalDMMF.InputType) {
     this.markTypeAsPublished(inputType.name)
 
     return Nexus.inputObjectType({
@@ -159,7 +161,7 @@ export class Publisher {
     })
   }
 
-  protected getTypeFromArg(arg: DmmfTypes.SchemaArg): CustomInputArg['type'] {
+  protected getTypeFromArg(arg: InternalDMMF.SchemaArg): CustomInputArg['type'] {
     const kindToType = {
       scalar: (typeName: string) => ({
         name: typeName,
@@ -187,7 +189,7 @@ export class Publisher {
  *
  * For example { isList:true, isRequired: true } would result in array of funcs: [nonNull, list, nonNull]
  */
-export const getNexusTypesCompositionForInput = (fieldType: DmmfTypes.SchemaArg['inputType']) => {
+export const getNexusTypesCompositionForInput = (fieldType: InternalDMMF.SchemaArg['inputType']) => {
   if (fieldType.isList) {
     return [Nexus.list, Nexus.nonNull]
   } else if (fieldType.isRequired === true) {
@@ -199,7 +201,7 @@ export const getNexusTypesCompositionForInput = (fieldType: DmmfTypes.SchemaArg[
   return [] as Function[]
 }
 
-export const getNexusTypesCompositionForOutput = (fieldType: DmmfTypes.SchemaField['outputType']) => {
+export const getNexusTypesCompositionForOutput = (fieldType: InternalDMMF.SchemaField['outputType']) => {
   if (fieldType.isList) {
     return [Nexus.nonNull, Nexus.list, Nexus.nonNull]
   } else if (fieldType.isRequired === true) {

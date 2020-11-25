@@ -20,6 +20,4 @@ if (invalidDeps.length > 0) {
     invalidDeps.map(([name, ver]) => `${name}@${ver}`).join(', ')
   )
   process.exit(1)
-} else {
-  console.log('All prisma deps are in sync')
 }
