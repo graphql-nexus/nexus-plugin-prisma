@@ -26,11 +26,13 @@ export class Publisher {
 
     // If type is already published, just reference it
     if (this.isPublished(typeName)) {
+      // NOTE the any cast is to get around this error in CI:
+      // https://github.com/graphql-nexus/nexus-plugin-prisma/runs/1453859042#step:7:9
       return Nexus.arg({
         type: getNexusTypesCompositionForInput(customArg.arg.inputType).reduceRight(
           apply,
           customArg.type.name
-        ),
+        ) as any,
       })
     }
 
