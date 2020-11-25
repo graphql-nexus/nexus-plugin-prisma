@@ -10,7 +10,7 @@ import {
   OnUnknownFieldName,
   OnUnknownFieldType,
   OnUnknownPrismaModelName,
-  raiseErrorOrTriggerHook
+  raiseErrorOrTriggerHook,
 } from './hooks'
 import { getCrudMappedFields } from './mapping'
 import {
@@ -18,7 +18,7 @@ import {
   defaultArgsNamingStrategy,
   defaultFieldNamingStrategy,
   FieldNamingStrategy,
-  OperationName
+  OperationName,
 } from './naming-strategies'
 import { transformNullsToUndefined } from './null'
 import { paginationStrategies, PaginationStrategyTypes } from './pagination'
@@ -33,12 +33,12 @@ import {
   indexBy,
   isEmptyObject,
   LocalComputedInputs,
-  lowerFirst
+  lowerFirst,
 } from './utils'
 
 interface FieldPublisherConfig {
   alias?: string
-  type?: Nexus.core.AllOutputTypes
+  type?: string
   pagination?: boolean | Record<string, boolean>
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>

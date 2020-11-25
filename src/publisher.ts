@@ -86,11 +86,13 @@ export class Publisher {
       name,
       definition: (t) => {
         for (const field of dmmfObject.fields) {
+          // Cast any to avoid typegen errors
+          // https://github.com/graphql-nexus/nexus-plugin-prisma/pull/960/checks?check_run_id=1454008781#step:7:48
           t.field(field.name, {
             type: getNexusTypesCompositionForOutput(field.outputType).reduceRight(
               apply,
               field.outputType.type
-            ),
+            ) as any,
           })
         }
       },
