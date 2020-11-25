@@ -50,9 +50,8 @@ export const Query = queryField((t) => {
     },
   })
 
-  t.field('blogsLike', {
+  t.list.field('blogsLike', {
     type: 'Blog',
-    list: true,
     args: {
       name: stringArg(),
       viewCount: intArg(),

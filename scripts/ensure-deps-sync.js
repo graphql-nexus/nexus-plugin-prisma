@@ -8,21 +8,18 @@ const prismaDeps = [
   .filter(([depName]) => depName.startsWith('@prisma/'))
   .filter(([depName]) => depName !== '@prisma/engines')
 
-const versionRange = packageJson.peerDependencies['@prisma/client']
+const validVersionRange = packageJson.peerDependencies['@prisma/client']
 
-const invalidDeps = prismaDeps.filter(([, version]) => semver.satisfies(version, versionRange) === false)
+const invalidDeps = prismaDeps.filter(
+  ([, prismaDepVersion]) => !semver.satisfies(prismaDepVersion, validVersionRange)
+)
 
 if (invalidDeps.length > 0) {
-  console.log('Some of your prisma dependencies are not in sync. ', invalidDeps.join(', '))
+  console.log(
+    `Some of your Prisma dependencies are not in sync with the supported version range ${validVersionRange}\n\n`,
+    invalidDeps.map(([name, ver]) => `${name}@${ver}`).join(', ')
+  )
   process.exit(1)
 } else {
   console.log('All prisma deps are in sync')
-}
-
-function stripCaret(version) {
-  if (version.startsWith('^')) {
-    return version.substring(1)
-  }
-
-  return version
 }

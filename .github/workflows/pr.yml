@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x]
-        nexus-schema-version: [^0.13.0, ^0.14.0, ^0.15.0, ^0.16.0, ^0.17.0, ^0.18.0]
+        nexus-schema-version: [^0.19.0]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
