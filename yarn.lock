@@ -512,10 +512,10 @@
   resolved "https://registry.yarnpkg.com/@kwsites/promise-deferred/-/promise-deferred-1.1.1.tgz#8ace5259254426ccef57f3175bc64ed7095ed919"
   integrity sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==
 
-"@nexus/schema@^0.19.0-next.6":
-  version "0.19.0-next.6"
-  resolved "https://registry.yarnpkg.com/@nexus/schema/-/schema-0.19.0-next.6.tgz#f2805a85039cbd3001cbbb90dcab5217a1babc40"
-  integrity sha512-TRbyC40Kb81qyqUsQ+w0aQFBn4Ff3AsIf7oszoNe8hFMnHU2X7kHRKR56id3O/CwBfM4P0N5KJIf/40Oid1cGw==
+"@nexus/schema@0.19.0":
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/@nexus/schema/-/schema-0.19.0.tgz#b4823b7ea8616c780df6f547e1e68aea099afa85"
+  integrity sha512-zroislaCFT50ywsS515q3drRhEpucidv6zgRIP1zoQBnBVpNTgmgTlJfSSFiWAPG/wjSZcvBdFL9EBj1dHyOsg==
   dependencies:
     iterall "^1.3.0"
     tslib "^2.0.3"
