@@ -1,4 +1,3 @@
-import { core } from '@nexus/schema'
 import { GlobalComputedInputs } from '../utils'
 
 export declare namespace InternalDMMF {
@@ -78,7 +77,7 @@ export declare namespace InternalDMMF {
   interface SchemaField {
     name: string
     outputType: {
-      type: core.AllOutputTypes
+      type: string
       isRequired: boolean
       isNullable?: boolean
       isList: boolean
