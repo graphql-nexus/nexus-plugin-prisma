@@ -78,12 +78,13 @@ const schema = makeSchema({
       definition(t) {
         t.boolean('truths', {
           subscribe() {
-            return (async function* () {
+            async function* createTruthsStream() {
               while (true) {
                 await new Promise((res) => setTimeout(res, 1000))
                 yield Math.random() > 0.5
               }
-            })() as any
+            }
+            return createTruthsStream()
           },
           resolve(eventData) {
             return eventData
