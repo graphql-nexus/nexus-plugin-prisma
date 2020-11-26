@@ -7,16 +7,18 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
+input DateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
 }
+
+scalar Json
 
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
@@ -30,15 +32,15 @@ type Mutation {
   deleteOneUser(where: UserWhereUniqueInput!): User
 }
 
-input NestedIntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: NestedIntFilter
-  notIn: [Int!]
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
 }
 
 input NestedStringFilter {
@@ -56,31 +58,28 @@ input NestedStringFilter {
 }
 
 type Post {
-  id: Int!
+  authors(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
+  id: String!
 }
 
 input PostCreateInput {
-  author: UserCreateOneWithoutPostsInput!
-  body: String!
-  id: Int!
-  title: String!
+  authors: UserCreateManyWithoutPostsInput
+  id: String
 }
 
-input PostCreateManyWithoutAuthorInput {
+input PostCreateManyWithoutAuthorsInput {
   connect: [PostWhereUniqueInput!]
-  connectOrCreate: [PostCreateOrConnectWithoutauthorInput!]
-  create: [PostCreateWithoutAuthorInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutauthorsInput!]
+  create: [PostCreateWithoutAuthorsInput!]
 }
 
-input PostCreateOrConnectWithoutauthorInput {
-  create: PostCreateWithoutAuthorInput!
+input PostCreateOrConnectWithoutauthorsInput {
+  create: PostCreateWithoutAuthorsInput!
   where: PostWhereUniqueInput!
 }
 
-input PostCreateWithoutAuthorInput {
-  body: String!
-  id: Int!
-  title: String!
+input PostCreateWithoutAuthorsInput {
+  id: String
 }
 
 input PostListRelationFilter {
@@ -91,18 +90,14 @@ input PostListRelationFilter {
 
 input PostWhereInput {
   AND: [PostWhereInput!]
-  author: UserWhereInput
-  body: StringFilter
-  id: IntFilter
+  authors: UserListRelationFilter
+  id: StringFilter
   NOT: [PostWhereInput!]
   OR: [PostWhereInput!]
-  title: StringFilter
-  userId: IntFilter
 }
 
 input PostWhereUniqueInput {
-  id: Int
-  title: String
+  id: String
 }
 
 type Query {
@@ -143,21 +138,25 @@ type Subscription {
 }
 
 type User {
+  birthDate: DateTime!
   email: String!
-  id: Int!
+  id: String!
+  metadata: Json!
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int): [Post!]!
 }
 
 input UserCreateInput {
+  birthDate: DateTime!
   email: String!
-  id: Int!
-  posts: PostCreateManyWithoutAuthorInput
+  id: String
+  metadata: Json!
+  posts: PostCreateManyWithoutAuthorsInput
 }
 
-input UserCreateOneWithoutPostsInput {
-  connect: UserWhereUniqueInput
-  connectOrCreate: UserCreateOrConnectWithoutpostsInput
-  create: UserCreateWithoutPostsInput
+input UserCreateManyWithoutPostsInput {
+  connect: [UserWhereUniqueInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
+  create: [UserCreateWithoutPostsInput!]
 }
 
 input UserCreateOrConnectWithoutpostsInput {
@@ -166,19 +165,30 @@ input UserCreateOrConnectWithoutpostsInput {
 }
 
 input UserCreateWithoutPostsInput {
+  birthDate: DateTime!
   email: String!
-  id: Int!
+  id: String
+  metadata: Json!
+}
+
+input UserListRelationFilter {
+  every: UserWhereInput
+  none: UserWhereInput
+  some: UserWhereInput
 }
 
 input UserOrderByInput {
+  birthDate: SortOrder
   email: SortOrder
   id: SortOrder
+  metadata: SortOrder
 }
 
 input UserWhereInput {
   AND: [UserWhereInput!]
+  birthDate: DateTimeFilter
   email: StringFilter
-  id: IntFilter
+  id: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   posts: PostListRelationFilter
@@ -186,5 +196,5 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   email: String
-  id: Int
+  id: String
 }

@@ -1,24 +1,18 @@
 import {
-  ApolloServer,
-  PubSub
-} from 'apollo-server-express'
-import express from 'express'
-import {
-  DateTimeResolver,
-  JSONObjectResolver
-} from 'graphql-scalars'
-import * as HTTP from 'http'
-import { nexusPrisma } from 'nexus-plugin-prisma'
-import * as path from 'path'
-import {
   asNexusMethod,
   makeSchema,
   mutationType,
   objectType,
   queryType,
-  subscriptionType
+  subscriptionType,
 } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
+import { ApolloServer, PubSub } from 'apollo-server-express'
+import express from 'express'
+import { DateTimeResolver, JSONObjectResolver } from 'graphql-scalars'
+import * as HTTP from 'http'
+import { nexusPrisma } from 'nexus-plugin-prisma'
+import * as path from 'path'
 
 const pubsub = new PubSub()
 const prisma = new PrismaClient()
