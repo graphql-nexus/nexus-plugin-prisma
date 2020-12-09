@@ -1018,7 +1018,7 @@ Object {
           ],
         },
         Object {
-          "name": "BubbleDistinctFieldEnum",
+          "name": "BubbleScalarFieldEnum",
           "values": Array [
             "id",
             "createdAt",
@@ -1026,7 +1026,7 @@ Object {
           ],
         },
         Object {
-          "name": "UserDistinctFieldEnum",
+          "name": "UserScalarFieldEnum",
           "values": Array [
             "id",
             "firstName",
@@ -1036,7 +1036,7 @@ Object {
           ],
         },
         Object {
-          "name": "LocationDistinctFieldEnum",
+          "name": "LocationScalarFieldEnum",
           "values": Array [
             "id",
             "country",
@@ -1044,7 +1044,7 @@ Object {
           ],
         },
         Object {
-          "name": "PostDistinctFieldEnum",
+          "name": "PostScalarFieldEnum",
           "values": Array [
             "id",
             "rating",
@@ -1060,7 +1060,7 @@ Object {
           ],
         },
         Object {
-          "name": "BubbleDistinctFieldEnum",
+          "name": "BubbleScalarFieldEnum",
           "values": Array [
             "id",
             "createdAt",
@@ -1068,7 +1068,7 @@ Object {
           ],
         },
         Object {
-          "name": "UserDistinctFieldEnum",
+          "name": "UserScalarFieldEnum",
           "values": Array [
             "id",
             "firstName",
@@ -1078,7 +1078,7 @@ Object {
           ],
         },
         Object {
-          "name": "LocationDistinctFieldEnum",
+          "name": "LocationScalarFieldEnum",
           "values": Array [
             "id",
             "country",
@@ -1086,7 +1086,7 @@ Object {
           ],
         },
         Object {
-          "name": "PostDistinctFieldEnum",
+          "name": "PostScalarFieldEnum",
           "values": Array [
             "id",
             "rating",
@@ -1104,7 +1104,7 @@ Object {
       ],
       "prisma": Array [
         Object {
-          "name": "BubbleDistinctFieldEnum",
+          "name": "BubbleScalarFieldEnum",
           "values": Array [
             "id",
             "createdAt",
@@ -1112,7 +1112,7 @@ Object {
           ],
         },
         Object {
-          "name": "UserDistinctFieldEnum",
+          "name": "UserScalarFieldEnum",
           "values": Array [
             "id",
             "firstName",
@@ -1122,7 +1122,7 @@ Object {
           ],
         },
         Object {
-          "name": "LocationDistinctFieldEnum",
+          "name": "LocationScalarFieldEnum",
           "values": Array [
             "id",
             "country",
@@ -1130,7 +1130,7 @@ Object {
           ],
         },
         Object {
-          "name": "PostDistinctFieldEnum",
+          "name": "PostScalarFieldEnum",
           "values": Array [
             "id",
             "rating",
@@ -8060,7 +8060,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
+                      "type": "UserScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8182,7 +8182,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "PostDistinctFieldEnum",
+                      "type": "PostScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8383,7 +8383,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
+                      "type": "UserScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8494,7 +8494,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
+                      "type": "UserScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8630,7 +8630,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "BubbleDistinctFieldEnum",
+                      "type": "BubbleScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8725,7 +8725,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "BubbleDistinctFieldEnum",
+                      "type": "BubbleScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -8813,19 +8813,6 @@ Object {
                   "isNullable": false,
                   "isRequired": false,
                   "name": "skip",
-                },
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": true,
-                      "location": "enumTypes",
-                      "namespace": "prisma",
-                      "type": "BubbleDistinctFieldEnum",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": false,
-                  "name": "distinct",
                 },
               ],
               "isNullable": false,
@@ -8941,7 +8928,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
+                      "type": "UserScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9036,7 +9023,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
+                      "type": "UserScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9124,19 +9111,6 @@ Object {
                   "isNullable": false,
                   "isRequired": false,
                   "name": "skip",
-                },
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": true,
-                      "location": "enumTypes",
-                      "namespace": "prisma",
-                      "type": "UserDistinctFieldEnum",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": false,
-                  "name": "distinct",
                 },
               ],
               "isNullable": false,
@@ -9252,7 +9226,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "LocationDistinctFieldEnum",
+                      "type": "LocationScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9347,7 +9321,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "LocationDistinctFieldEnum",
+                      "type": "LocationScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9435,19 +9409,6 @@ Object {
                   "isNullable": false,
                   "isRequired": false,
                   "name": "skip",
-                },
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": true,
-                      "location": "enumTypes",
-                      "namespace": "prisma",
-                      "type": "LocationDistinctFieldEnum",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": false,
-                  "name": "distinct",
                 },
               ],
               "isNullable": false,
@@ -9563,7 +9524,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "PostDistinctFieldEnum",
+                      "type": "PostScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9658,7 +9619,7 @@ Object {
                       "isList": true,
                       "location": "enumTypes",
                       "namespace": "prisma",
-                      "type": "PostDistinctFieldEnum",
+                      "type": "PostScalarFieldEnum",
                     },
                   ],
                   "isNullable": false,
@@ -9746,19 +9707,6 @@ Object {
                   "isNullable": false,
                   "isRequired": false,
                   "name": "skip",
-                },
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": true,
-                      "location": "enumTypes",
-                      "namespace": "prisma",
-                      "type": "PostDistinctFieldEnum",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": false,
-                  "name": "distinct",
                 },
               ],
               "isNullable": false,
@@ -10713,13 +10661,38 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
-              "isNullable": false,
-              "isRequired": true,
+              "isNullable": true,
+              "isRequired": false,
               "name": "count",
               "outputType": Object {
                 "isList": false,
-                "location": "scalar",
-                "type": "Int",
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "BubbleCountAggregateOutputType",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "min",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "BubbleMinAggregateOutputType",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "max",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "BubbleMaxAggregateOutputType",
               },
             },
           ],
@@ -10729,13 +10702,14 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
-              "isNullable": false,
-              "isRequired": true,
+              "isNullable": true,
+              "isRequired": false,
               "name": "count",
               "outputType": Object {
                 "isList": false,
-                "location": "scalar",
-                "type": "Int",
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "UserCountAggregateOutputType",
               },
             },
             Object {
@@ -10793,13 +10767,14 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
-              "isNullable": false,
-              "isRequired": true,
+              "isNullable": true,
+              "isRequired": false,
               "name": "count",
               "outputType": Object {
                 "isList": false,
-                "location": "scalar",
-                "type": "Int",
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "LocationCountAggregateOutputType",
               },
             },
             Object {
@@ -10857,13 +10832,14 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
-              "isNullable": false,
-              "isRequired": true,
+              "isNullable": true,
+              "isRequired": false,
               "name": "count",
               "outputType": Object {
                 "isList": false,
-                "location": "scalar",
-                "type": "Int",
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "PostCountAggregateOutputType",
               },
             },
             Object {
@@ -10937,6 +10913,202 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "createdAt",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "private",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "_all",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "BubbleCountAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "createdAt",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "DateTime",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "private",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Boolean",
+              },
+            },
+          ],
+          "name": "BubbleMinAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "createdAt",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "DateTime",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "private",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Boolean",
+              },
+            },
+          ],
+          "name": "BubbleMaxAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "firstName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "lastName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "bubbleId",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "locationId",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "_all",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "UserCountAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
               "isNullable": false,
               "isRequired": true,
               "name": "locationId",
@@ -10969,6 +11141,50 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "firstName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "lastName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "bubbleId",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
               "isNullable": false,
               "isRequired": true,
               "name": "locationId",
@@ -10985,6 +11201,50 @@ Object {
           "fields": Array [
             Object {
               "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "firstName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "lastName",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "bubbleId",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
               "isNullable": false,
               "isRequired": true,
               "name": "locationId",
@@ -10996,6 +11256,55 @@ Object {
             },
           ],
           "name": "UserMaxAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "country",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "city",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "_all",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "LocationCountAggregateOutputType",
         },
         Object {
           "fields": Array [
@@ -11042,6 +11351,28 @@ Object {
                 "type": "Int",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "country",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "city",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
           ],
           "name": "LocationMinAggregateOutputType",
         },
@@ -11058,8 +11389,90 @@ Object {
                 "type": "Int",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "country",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "city",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "String",
+              },
+            },
           ],
           "name": "LocationMaxAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "id",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "rating",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "likes",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "status",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "isRequired": true,
+              "name": "_all",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "PostCountAggregateOutputType",
         },
         Object {
           "fields": Array [
@@ -11172,6 +11585,18 @@ Object {
                 "type": "Int",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "status",
+              "outputType": Object {
+                "isList": false,
+                "location": "enumTypes",
+                "namespace": "model",
+                "type": "PostStatus",
+              },
+            },
           ],
           "name": "PostMinAggregateOutputType",
         },
@@ -11208,6 +11633,18 @@ Object {
                 "isList": false,
                 "location": "scalar",
                 "type": "Int",
+              },
+            },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "isRequired": false,
+              "name": "status",
+              "outputType": Object {
+                "isList": false,
+                "location": "enumTypes",
+                "namespace": "model",
+                "type": "PostStatus",
               },
             },
           ],
