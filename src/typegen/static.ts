@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { GraphQLResolveInfo } from 'graphql'
 import { core } from 'nexus'
+import { CommonFieldConfig } from 'nexus/dist/core'
 import * as Helpers from './helpers'
 
 // todo remove framework types from here once
@@ -61,7 +62,8 @@ type NexusPrismaScalarOpts<
    * ```
    */
   resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
-} & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias>
+} & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias> &
+  CommonFieldConfig
 
 type RootObjectTypes = Pick<core.GetGen<'rootTypes'>, core.GetGen<'objectNames'>>
 
