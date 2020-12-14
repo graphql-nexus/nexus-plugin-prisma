@@ -1,4 +1,4 @@
-import { plugin } from '@nexus/schema'
+import { plugin } from 'nexus'
 import { build as buildNexusPrismaTypes, InternalPublicOptions, Options } from './builder'
 import { colors } from './colors'
 

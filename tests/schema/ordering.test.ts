@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType } from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('orderby fields can be allow-listed', async () => {

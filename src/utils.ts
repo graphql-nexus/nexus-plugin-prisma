@@ -1,7 +1,7 @@
-import { core } from '@nexus/schema'
 import { writeFileSync } from 'fs'
 import * as fs from 'fs-jetpack'
 import { GraphQLResolveInfo } from 'graphql'
+import { core } from 'nexus'
 import * as path from 'path'
 import { inspect, isDeepStrictEqual } from 'util'
 

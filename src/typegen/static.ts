@@ -1,6 +1,6 @@
-import { core } from '@nexus/schema'
 import { PrismaClient } from '@prisma/client'
 import { GraphQLResolveInfo } from 'graphql'
+import { core } from 'nexus'
 import * as Helpers from './helpers'
 
 // todo remove framework types from here once
@@ -25,7 +25,7 @@ declare global {
 export type ModelNameInGraphQLTypes<ReturnType> = ReturnType extends core.GetGen<'objectNames'> ? true : false
 
 export type CustomFieldResolver<TypeName extends string, FieldName extends string> = (
-  root: core.RootValue<TypeName>,
+  root: core.RootValueField<TypeName, FieldName>,
   args: core.ArgsValue<TypeName, FieldName>,
   context: core.GetGen<'context'>,
   info: GraphQLResolveInfo,

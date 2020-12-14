@@ -1,4 +1,4 @@
-import { objectType, queryType } from '@nexus/schema'
+import { objectType, queryType } from 'nexus'
 import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, removes filtering or ordering entirely if no arg or wrong args are passed and log error', async () => {

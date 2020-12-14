@@ -1,5 +1,5 @@
-import { objectType } from '@nexus/schema'
 import { GraphQLFieldResolver, GraphQLResolveInfo } from 'graphql'
+import { objectType } from 'nexus'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()

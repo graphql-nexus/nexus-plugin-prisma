@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
 import { GraphQLScalarType } from 'graphql'
 import { DateTimeResolver } from 'graphql-scalars'
+import { objectType } from 'nexus'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()

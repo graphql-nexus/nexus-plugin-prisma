@@ -1,5 +1,5 @@
-import * as Nexus from '@nexus/schema'
 import { GraphQLScalarType } from 'graphql'
+import * as Nexus from 'nexus'
 import { CustomInputArg } from './builder'
 import { DmmfDocument, InternalDMMF } from './dmmf'
 import { scalarsNameValues } from './graphql'

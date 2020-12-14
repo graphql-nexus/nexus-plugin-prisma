@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType } from 'nexus'
 import { generateSchemaAndTypes, mockConsoleLog } from '../__utils'
 
 it('in dev stage, warns when wrong projected field or crud', async () => {

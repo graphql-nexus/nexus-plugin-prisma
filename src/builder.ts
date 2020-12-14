@@ -1,6 +1,6 @@
-import * as Nexus from '@nexus/schema'
-import { DynamicOutputPropertyDef } from '@nexus/schema/dist/dynamicProperty'
 import { defaultFieldResolver, GraphQLFieldResolver, GraphQLScalarType } from 'graphql'
+import * as Nexus from 'nexus'
+import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as Constraints from './constraints'
 import { addComputedInputs, DmmfDocument, getTransformedDmmf, InternalDMMF } from './dmmf'
