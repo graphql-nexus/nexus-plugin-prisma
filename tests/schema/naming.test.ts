@@ -1,4 +1,4 @@
-import * as Nexus from '@nexus/schema'
+import * as Nexus from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('generates publishers pluralized & camel-cased', async () => {

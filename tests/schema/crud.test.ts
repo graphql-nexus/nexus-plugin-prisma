@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType } from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('support models with only one id field (some crud operations are removed)', async () => {

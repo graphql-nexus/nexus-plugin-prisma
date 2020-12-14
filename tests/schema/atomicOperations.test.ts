@@ -1,5 +1,4 @@
-import { objectType } from '@nexus/schema'
-import { paginationStrategies } from '../../src/pagination'
+import { objectType } from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('support atomic operations (default)', async () => {

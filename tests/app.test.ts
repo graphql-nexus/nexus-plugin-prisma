@@ -1,6 +1,6 @@
-import * as nexusBuilder from '@nexus/schema/dist/builder'
 import * as cp from 'child_process'
 import * as FS from 'fs-jetpack'
+import * as nexusBuilder from 'nexus/dist/builder'
 import * as Path from 'path'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'

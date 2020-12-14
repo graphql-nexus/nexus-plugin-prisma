@@ -1,4 +1,4 @@
-import * as Nexus from '@nexus/schema'
+import * as Nexus from 'nexus'
 import { addComputedInputs } from '../../src/dmmf/transformer'
 import { GlobalComputedInputs } from '../../src/utils'
 import { generateSchemaAndTypes, getDmmf } from '../__utils'

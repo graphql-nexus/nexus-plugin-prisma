@@ -1,4 +1,4 @@
-import { objectType, queryType } from '@nexus/schema'
+import { objectType, queryType } from 'nexus'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()

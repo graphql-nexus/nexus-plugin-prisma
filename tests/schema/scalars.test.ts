@@ -1,4 +1,4 @@
-import * as Nexus from '@nexus/schema'
+import * as Nexus from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('publishes date and json scalar output types', async () => {

@@ -1,4 +1,4 @@
-import { fieldAuthorizePlugin, objectType } from '@nexus/schema'
+import { fieldAuthorizePlugin, objectType } from 'nexus'
 import { createRuntimeTestContext } from '../__client-test-context'
 
 let ctx = createRuntimeTestContext()

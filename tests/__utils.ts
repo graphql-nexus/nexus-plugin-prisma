@@ -1,7 +1,7 @@
 const PrismaClientGenerator = require('@prisma/client/generator-build')
-import * as Nexus from '@nexus/schema'
 import * as SDK from '@prisma/sdk'
 import * as GQL from 'graphql'
+import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'
 import * as NexusPrismaBuilder from '../src/builder'
 import { DmmfDocument } from '../src/dmmf'

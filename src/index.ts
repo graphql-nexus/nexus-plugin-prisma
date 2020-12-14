@@ -1,5 +1,5 @@
-import { colors } from './colors'
 import * as semver from 'semver'
+import { colors } from './colors'
 
 const pkgJson = require('../package.json')
 
@@ -57,15 +57,15 @@ function ensurePeerDepRangeSatisfied(depName: string) {
   } catch {}
 }
 
-ensureDepIsInstalled('@nexus/schema')
+ensureDepIsInstalled('nexus')
 ensureDepIsInstalled('graphql')
 ensureDepIsInstalled('@prisma/client')
 
-// TODO: Bring back peer dep range check for @nexus/schema and graphql once we have proper ranges
+// TODO: Bring back peer dep range check for graphql once we have proper ranges
 // TODO: They're currently way too conservative
 
 //ensurePeerDepRangeSatisfied('graphql')
-ensurePeerDepRangeSatisfied('@nexus/schema')
+ensurePeerDepRangeSatisfied('nexus')
 ensurePeerDepRangeSatisfied('@prisma/client')
 
 export * from './plugin'

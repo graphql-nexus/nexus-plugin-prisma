@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType } from 'nexus'
 import { paginationStrategies } from '../../src/pagination'
 import { generateSchemaAndTypes } from '../__utils'
 
