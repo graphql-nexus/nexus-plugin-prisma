@@ -1,31 +1,36 @@
-import {
-  asNexusMethod,
-  makeSchema,
-  mutationType,
-  objectType,
-  queryType,
-  subscriptionType,
-} from '@nexus/schema'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
 import { ApolloServer, PubSub } from 'apollo-server-express'
 import express from 'express'
 import { DateTimeResolver, JSONObjectResolver } from 'graphql-scalars'
 import * as HTTP from 'http'
+import { asNexusMethod, makeSchema, mutationType, objectType, queryType, subscriptionType } from 'nexus'
 import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
 
 const pubsub = new PubSub()
 const prisma = new PrismaClient()
 
+type Event<T> = {
+  data: T
+}
+
 const schema = makeSchema({
   shouldExitAfterGenerateArtifacts: process.env.NEXUS_SHOULD_EXIT_AFTER_GENERATE_ARTIFACTS === 'true',
-  typegenAutoConfig: {
-    contextType: '{ prisma: PrismaClient.PrismaClient }',
-    sources: [{ source: '.prisma/client', alias: 'PrismaClient' }],
+  contextType: {
+    module: require.resolve('.prisma/client/index.d.ts'),
+    export: 'PrismaClient',
+  },
+  sourceTypes: {
+    modules: [
+      {
+        module: require.resolve('.prisma/client/index.d.ts'),
+        alias: 'PrismaClient',
+      },
+    ],
   },
   outputs: {
     typegen: path.join(__dirname, 'node_modules/@types/typegen-nexus/index.d.ts'),
-    schema: path.join(__dirname, './api.graphql'),
+    schema: path.join(__dirname, './schema.graphql'),
   },
   plugins: [
     nexusPrisma({
@@ -95,8 +100,8 @@ const schema = makeSchema({
           subscribe() {
             return pubsub.asyncIterator('user_added')
           },
-          async resolve(userPromise) {
-            const user = await userPromise.data
+          async resolve(userPromise: Promise<Event<User>>) {
+            const user = (await userPromise).data
             return user
           },
         })

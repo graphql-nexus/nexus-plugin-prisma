@@ -1,4 +1,4 @@
-import { intArg, objectType, queryField, stringArg } from '@nexus/schema'
+import { intArg, nonNull, objectType, queryField, stringArg } from 'nexus'
 
 export const Blog = objectType({
   name: 'Blog',
@@ -32,7 +32,7 @@ export const Query = queryField((t) => {
   t.field('blog', {
     type: 'Blog',
     args: {
-      id: intArg({ required: true }),
+      id: nonNull(intArg()),
     },
     resolve(_root, args, ctx) {
       return ctx.prisma.blog

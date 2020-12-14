@@ -1,4 +1,4 @@
-import * as NexusSchema from '@nexus/schema'
+import * as NexusSchema from 'nexus'
 import { nexusPrisma } from 'nexus-plugin-prisma'
 import * as path from 'path'
 import * as types from './types'
@@ -16,16 +16,15 @@ export default NexusSchema.makeSchema({
       '../../node_modules/@types/nexus-typegen/index.d.ts',
     ),
   },
-  typegenAutoConfig: {
-    contextType: 'Context.Context',
-    sources: [
+  contextType: {
+    module: require.resolve('../context'),
+    export: 'Context',
+  },
+  sourceTypes: {
+    modules: [
       {
-        source: '.prisma/client',
+        module: require.resolve('.prisma/client/index.d.ts'),
         alias: 'prisma',
-      },
-      {
-        source: require.resolve('../context'),
-        alias: 'Context',
       },
     ],
   },
