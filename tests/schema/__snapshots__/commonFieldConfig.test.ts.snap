@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`forwards common fields on scalars: commonFieldsOutput 1`] = `
+exports[`forwards description & deprecation on all field types: commonFieldsOutput 1`] = `
 "type User {
   \\"\\"\\"The unique id\\"\\"\\"
   id: Int! @deprecated(reason: \\"never\\")

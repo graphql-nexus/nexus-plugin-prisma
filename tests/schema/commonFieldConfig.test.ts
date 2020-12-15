@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import * as Nexus from 'nexus'
 import { generateSchemaAndTypes } from '../__utils'
 
 it('forwards description & deprecation on all field types', async () => {
@@ -31,14 +31,14 @@ it('forwards description & deprecation on all field types', async () => {
     }
   `
 
-  const Post = objectType({
+  const Post = Nexus.objectType({
     name: 'Post',
-    definition(t) {
+    definition(t: any) {
       t.model.id()
     },
   })
 
-  const User = objectType({
+  const User = Nexus.objectType({
     name: 'User',
     definition(t: any) {
       t.model.id({ description: 'The unique id', deprecation: 'never' })
