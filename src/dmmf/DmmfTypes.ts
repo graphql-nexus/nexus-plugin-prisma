@@ -109,7 +109,7 @@ export declare namespace InternalDMMF {
     //aggregate?: string | null;
   }
   enum ModelAction {
-    findOne = 'findOne',
+    findOne = 'findUnique',
     findMany = 'findMany',
     create = 'create',
     update = 'update',
