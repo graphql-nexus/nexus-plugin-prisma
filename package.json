@@ -33,7 +33,7 @@
   },
   "peerDependencies": {
     "nexus": "^1.0.0",
-    "@prisma/client": "2.13.x",
+    "@prisma/client": "2.14.x",
     "graphql": "^15.3.0"
   },
   "dependencies": {
@@ -46,12 +46,12 @@
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
-    "@prisma/cli": "2.13.0",
-    "@prisma/client": "2.13.0",
-    "@prisma/fetch-engine": "2.13.0",
-    "@prisma/get-platform": "2.13.0",
-    "@prisma/migrate": "2.13.0",
-    "@prisma/sdk": "2.13.0",
+    "@prisma/cli": "2.14.0",
+    "@prisma/client": "2.14.0",
+    "@prisma/fetch-engine": "2.14.0",
+    "@prisma/get-platform": "2.14.0",
+    "@prisma/migrate": "2.14.0",
+    "@prisma/sdk": "2.14.0",
     "@types/jest": "26.0.19",
     "@types/lodash": "4.14.167",
     "@types/node": "14.14.20",

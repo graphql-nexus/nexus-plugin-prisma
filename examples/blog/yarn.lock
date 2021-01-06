@@ -7,13 +7,13 @@
   resolved "https://registry.yarnpkg.com/@prisma/bar/-/bar-0.0.1.tgz#088c4fbbb79c588391437ade9fd3a85527e753b3"
   integrity sha512-FVLhwVkbfhXlBhroWfIXMLi+3Jh9IEzYp+9z+MUUiw3ZsbcoAil7CN9/QIjHc4/TcCRyRfuSmT7qCnn4O+TjJw==
 
-"@prisma/cli@2.13.0":
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.13.0.tgz#ab90152c78a28251c44be1d47a2d06b00578de71"
-  integrity sha512-1hTj9H6gVIH5J5GPQVfeHiYFxUv09HVoThGr0Z2ds4JkVMRw///ZXll7pQJvaF7DUheg7dCNf+AXvwmpfm75tg==
+"@prisma/cli@2.14.0":
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.14.0.tgz#6aa298a389fb899730ee68d3487633e19677d416"
+  integrity sha512-zKYiOGlc/Y0VVRQew0jMR2sGSFnKnNGlgY4ToB5K1JMv7jCg51w+FJe2FwTOF4uWv+0Yp2KC1b0TAP8KUbNJ3A==
   dependencies:
     "@prisma/bar" "^0.0.1"
-    "@prisma/engines" "2.13.0-32.833ab05d2a20e822f6736a39a27de4fc8f6b3e49"
+    "@prisma/engines" "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
 
 "@prisma/client@2.13.0":
   version "2.13.0"
@@ -27,10 +27,10 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.13.0-32.833ab05d2a20e822f6736a39a27de4fc8f6b3e49.tgz#e2c25298269a0a89fe0931720695a0fd979fd6f6"
   integrity sha512-OsToEhPo8OKOW2RmfjrQs1WRWX6omTsrBVMQLYKR7p3ijNBXFjCw9fk4x5xcnLZvADYR/rUIxjEK2YR+r/RK3w==
 
-"@prisma/engines@2.13.0-32.833ab05d2a20e822f6736a39a27de4fc8f6b3e49":
-  version "2.13.0-32.833ab05d2a20e822f6736a39a27de4fc8f6b3e49"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.13.0-32.833ab05d2a20e822f6736a39a27de4fc8f6b3e49.tgz#458a4c8d7f1afcaa538d34e34da161fd7b7735dd"
-  integrity sha512-BntRdj/uJQMPRXzcYJv80+NtMq+m6f+PIcCTzOUqKerEo53+ynm4bHo2ocLRLS4XtWovGummDlVgZxgWTRhkAw==
+"@prisma/engines@2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1":
+  version "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
+  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1.tgz#dee16f1c648cd291540937ad5d69062526368946"
+  integrity sha512-t5/Mq0VtL7khYQtbap8myr7RwyIvmruCFxsph6oTi8QZaklmuxSp7FAC2DWBz8r/KoZFngMpmliKfDrWN7uwzQ==
 
 "@types/aws-lambda@8.10.13":
   version "8.10.13"
