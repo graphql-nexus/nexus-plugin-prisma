@@ -11,13 +11,13 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x]
-        nexus-schema-version: [^1.0.0]
+        nexus: [nexus@^1.0.0]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
-      - run: yarn add nexus@${{ matrix.nexus-schema-version }}
+      - run: yarn add ${{ matrix.nexus }}
       - run: yarn build
       - run: yarn -s test
