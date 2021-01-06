@@ -32,7 +32,7 @@
     "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
-    "@prisma/client": "2.13.x",
+    "@prisma/client": "2.14.x",
     "graphql": "^15.3.0",
     "nexus": "^1.0.0"
   },
@@ -46,12 +46,12 @@
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
-    "@prisma/cli": "2.13.0",
-    "@prisma/client": "2.13.0",
-    "@prisma/fetch-engine": "2.13.0",
-    "@prisma/get-platform": "2.13.0",
-    "@prisma/migrate": "2.13.0",
-    "@prisma/sdk": "2.13.0",
+    "@prisma/cli": "2.14.0",
+    "@prisma/client": "2.14.0",
+    "@prisma/fetch-engine": "2.14.0",
+    "@prisma/get-platform": "2.14.0",
+    "@prisma/migrate": "2.14.0",
+    "@prisma/sdk": "2.14.0",
     "@types/jest": "26.0.19",
     "@types/lodash": "4.14.167",
     "@types/node": "14.14.20",
@@ -60,6 +60,7 @@
     "@types/prettier": "2.1.6",
     "@types/semver": "7.3.4",
     "dripip": "0.10.0",
+    "execa": "^5.0.0",
     "get-port": "5.1.1",
     "graphql": "15.4.0",
     "graphql-request": "3.4.0",

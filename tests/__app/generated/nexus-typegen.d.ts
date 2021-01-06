@@ -245,6 +245,7 @@ export interface NexusGenInputs {
     in?: string[] | null; // [String!]
     lt?: string | null; // String
     lte?: string | null; // String
+    mode?: NexusGenEnums['QueryMode'] | null; // QueryMode
     not?: NexusGenInputs['NestedStringFilter'] | null; // NestedStringFilter
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
@@ -258,6 +259,7 @@ export interface NexusGenInputs {
     in?: string[] | null; // [String!]
     lt?: string | null; // String
     lte?: string | null; // String
+    mode?: NexusGenEnums['QueryMode'] | null; // QueryMode
     not?: NexusGenInputs['NestedStringNullableFilter'] | null; // NestedStringNullableFilter
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
@@ -303,6 +305,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   PostStatus: "DRAFT" | "PUBLISHED"
+  QueryMode: "default" | "insensitive"
   SortOrder: "asc" | "desc"
 }
 

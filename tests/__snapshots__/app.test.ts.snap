@@ -292,6 +292,11 @@ type Query {
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
+enum QueryMode {
+  default
+  insensitive
+}
+
 enum SortOrder {
   asc
   desc
@@ -306,6 +311,7 @@ input StringFilter {
   in: [String!]
   lt: String
   lte: String
+  mode: QueryMode
   not: NestedStringFilter
   notIn: [String!]
   startsWith: String
@@ -320,6 +326,7 @@ input StringNullableFilter {
   in: [String!]
   lt: String
   lte: String
+  mode: QueryMode
   not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
@@ -1060,6 +1067,13 @@ Object {
           ],
         },
         Object {
+          "name": "QueryMode",
+          "values": Array [
+            "default",
+            "insensitive",
+          ],
+        },
+        Object {
           "name": "BubbleScalarFieldEnum",
           "values": Array [
             "id",
@@ -1099,6 +1113,13 @@ Object {
           "values": Array [
             "asc",
             "desc",
+          ],
+        },
+        Object {
+          "name": "QueryMode",
+          "values": Array [
+            "default",
+            "insensitive",
           ],
         },
       ],
@@ -1143,6 +1164,13 @@ Object {
           "values": Array [
             "asc",
             "desc",
+          ],
+        },
+        Object {
+          "name": "QueryMode",
+          "values": Array [
+            "default",
+            "insensitive",
           ],
         },
       ],
@@ -3024,6 +3052,19 @@ Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "QueryMode",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "mode",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
                   "location": "scalar",
                   "type": "String",
                 },
@@ -3507,6 +3548,19 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "endsWith",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "QueryMode",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "mode",
             },
             Object {
               "inputTypes": Array [

@@ -1,4 +1,4 @@
-import * as cp from 'child_process'
+import execa from 'execa'
 import * as FS from 'fs-jetpack'
 import * as nexusBuilder from 'nexus/dist/builder'
 import * as Path from 'path'
@@ -25,7 +25,7 @@ it('integrates together', async () => {
   // Run Prisma generation:
   // - Prisma Client JS
   //
-  cp.execSync('../../node_modules/.bin/prisma generate', {
+  execa.sync('prisma', ['generate'], {
     cwd: fs.cwd(),
   })
 

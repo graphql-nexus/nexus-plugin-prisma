@@ -1,6 +1,12 @@
 generator prisma_client {
-  provider        = "prisma-client-js"
-  output          = "../../node_modules/@prisma/client"
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/client"
+}
+
+datasource db {
+  provider = "postgres"
+  // Unused by test suite. Here to satisfy Prisma project requirements.
+  url      = env("DB_URL")
 }
 
 model Bubble {
