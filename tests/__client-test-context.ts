@@ -1,5 +1,6 @@
 import { Migrate } from '@prisma/migrate'
 import { getGenerator } from '@prisma/sdk'
+import endent from 'endent'
 import * as fs from 'fs-jetpack'
 import getPort from 'get-port'
 import { GraphQLScalarType, GraphQLSchema } from 'graphql'
@@ -7,7 +8,6 @@ import { GraphQLClient } from 'graphql-request'
 import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import * as Nexus from 'nexus'
-import { outdent } from 'outdent'
 import * as path from 'path'
 import { generateSchemaAndTypes } from './__utils'
 
@@ -150,19 +150,19 @@ function getTestMetadata(datamodelString: string): Metadata {
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
   const schemaPath = path.join(tmpDir, 'schema.prisma')
-  const datamodel = outdent`
-  datasource db {
-    provider = "sqlite"
-    url      = "file:${tmpDir}/dev.db"
-  }
+  const datamodel = endent`
+    datasource db {
+      provider = "sqlite"
+      url      = "file:${tmpDir}/dev.db"
+    }
 
-  generator client {
-    provider = "prisma-client-js"
-    output   = "${clientDir}"
-  }
+    generator client {
+      provider = "prisma-client-js"
+      output   = "${clientDir}"
+    }
 
-${datamodelString}
-`
+    ${datamodelString}
+  `
   return {
     tmpDir,
     clientDir,

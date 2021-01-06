@@ -32,17 +32,17 @@
     "upgrade-prisma-dev": "yarn add @prisma/cli@dev @prisma/client@dev @prisma/fetch-engine@dev @prisma/get-platform@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
-    "nexus": "^1.0.0",
     "@prisma/client": "2.13.x",
-    "graphql": "^15.3.0"
+    "graphql": "^15.3.0",
+    "nexus": "^1.0.0"
   },
   "dependencies": {
-    "camelcase": "^6.0.0",
-    "fs-jetpack": "^4.0.0",
+    "camelcase": "^6.2.0",
+    "endent": "^2.0.1",
+    "fs-jetpack": "^4.1.0",
     "lodash": "^4.17.20",
-    "outdent": "^0.7.1",
     "pluralize": "^8.0.0",
-    "semver": "^7.3.2"
+    "semver": "^7.3.4"
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",

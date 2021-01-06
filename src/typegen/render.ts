@@ -1,4 +1,4 @@
-import { outdent } from 'outdent'
+import endent from 'endent'
 import * as Path from 'path'
 import { DmmfDocument, InternalDMMF } from '../dmmf'
 import { getTransformedDmmf } from '../dmmf/transformer'
@@ -241,10 +241,11 @@ ${dmmf.datamodel.models.map((m) => `  ${m.name}: Typegen.NexusPrismaFields<'${m.
 }
 
 function renderPaginationType(paginationStrategy: PaginationStrategy) {
-  return outdent`
+  return endent`
     type Pagination = {
-    ${paginationStrategy.paginationArgNames.map((argName) => `  ${argName}?: boolean`).join('\n')}
-    }`
+      ${paginationStrategy.paginationArgNames.map((argName) => `  ${argName}?: boolean`).join('\n')}
+    }
+  `
 }
 
 function renderCustomScalars(dmmf: DmmfDocument) {
@@ -252,6 +253,7 @@ function renderCustomScalars(dmmf: DmmfDocument) {
     return `type CustomScalars = 'No custom scalars are used in your Prisma Schema.'`
   }
 
-  return outdent`
-    type CustomScalars = ${dmmf.customScalars.map((s) => `'${s}'`).join(' | ')}`
+  return endent`
+    type CustomScalars = ${dmmf.customScalars.map((s) => `'${s}'`).join(' | ')}
+  `
 }
