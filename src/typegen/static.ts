@@ -26,7 +26,7 @@ declare global {
 export type ModelNameInGraphQLTypes<ReturnType> = ReturnType extends core.GetGen<'objectNames'> ? true : false
 
 export type CustomFieldResolver<TypeName extends string, FieldName extends string> = (
-  root: core.RootValueField<TypeName, FieldName>,
+  root: core.RootValue<TypeName>,
   args: core.ArgsValue<TypeName, FieldName>,
   context: core.GetGen<'context'>,
   info: GraphQLResolveInfo,
