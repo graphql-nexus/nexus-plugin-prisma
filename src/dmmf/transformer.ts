@@ -109,7 +109,7 @@ function transformOutputType(type: DMMF.OutputType, options: TransformConfig) {
         outputType: {
           type: getTypeName(field.outputType.type),
           kind: getKind(field.outputType),
-          isRequired: field.isRequired,
+          isRequired: !field.isNullable,
           isNullable: field.isNullable,
           isList: field.outputType.isList,
         },
