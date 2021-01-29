@@ -131,7 +131,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
 }
 
 async function migrateLift(schemaPath: string): Promise<void> {
-  const migrate = new Migrate(schemaPath, ['nativeTypes'])
+  const migrate = new Migrate(schemaPath)
 
   await migrate.push({ force: true })
 }

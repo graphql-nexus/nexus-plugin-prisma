@@ -35,35 +35,29 @@
   dependencies:
     xss "^1.0.6"
 
-"@prisma/bar@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@prisma/bar/-/bar-0.0.1.tgz#088c4fbbb79c588391437ade9fd3a85527e753b3"
-  integrity sha512-FVLhwVkbfhXlBhroWfIXMLi+3Jh9IEzYp+9z+MUUiw3ZsbcoAil7CN9/QIjHc4/TcCRyRfuSmT7qCnn4O+TjJw==
-
-"@prisma/cli@2.14.0":
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.14.0.tgz#6aa298a389fb899730ee68d3487633e19677d416"
-  integrity sha512-zKYiOGlc/Y0VVRQew0jMR2sGSFnKnNGlgY4ToB5K1JMv7jCg51w+FJe2FwTOF4uWv+0Yp2KC1b0TAP8KUbNJ3A==
+"@prisma/cli@2.15.0":
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/@prisma/cli/-/cli-2.15.0.tgz#a979a67dbd606a966cf475686170128562590713"
+  integrity sha512-sF2mgn5oH5fL9/CKxS0tqojf0rK2BKODlEUqL+2s3YZqvJRSt4iFpiyjgajyd0wyTyv1k9LDHTV0yOD1mXDBsA==
   dependencies:
-    "@prisma/bar" "^0.0.1"
-    "@prisma/engines" "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
+    "@prisma/engines" "2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54"
 
-"@prisma/client@^2.14.0":
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.14.0.tgz#a57ef8f3c41127f84ebe5f69bd01a966b204cdc2"
-  integrity sha512-0PiiZ2maM9OP/G5mynzftvD4DFrtibeyvZf5U7Be360mtSvgLHQhZ/CHbChb0BVeWeyJuTmAqqni98LcdVgttw==
+"@prisma/client@^2.15.0":
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.15.0.tgz#41ee22c60778b54aec0f6d4832c2d35fbf9eb423"
+  integrity sha512-3j4OoLpAGF104KAenUFJM9sU2+4jRP+RlrlYssBHkwBf+/5+2ihSpcmFiWIw1vXNRdmZtivjwhjcVtmjZPJktw==
   dependencies:
-    "@prisma/engines-version" "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
+    "@prisma/engines-version" "2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54"
 
-"@prisma/engines-version@2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1":
-  version "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1.tgz#ffd22601a18d74040653f6f8f518026cbc1bee3e"
-  integrity sha512-Oz3yNV//9UTJ+ral5tF6Ryb/MLfOE3+2F3/bH4waTbNRDd/zXKoS3jTI3ViU8yRQ1AsOQa9/pV/kXSlxgtAh8Q==
+"@prisma/engines-version@2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54":
+  version "2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54"
+  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54.tgz#d9c887bc8f30d1f107c9021b2565a8672d62622d"
+  integrity sha512-KDxk7Zsc9tDoShCE7v+O1SnCUTUkMdfezjbuz9CBvdEBGMtYLgyHaZAO8M038uqy8KjgwV9PzyoLqvVfzfsngg==
 
-"@prisma/engines@2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1":
-  version "2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1"
-  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.14.0-28.5d491261d382a2a5ffdc71de17072b0e409f1cc1.tgz#dee16f1c648cd291540937ad5d69062526368946"
-  integrity sha512-t5/Mq0VtL7khYQtbap8myr7RwyIvmruCFxsph6oTi8QZaklmuxSp7FAC2DWBz8r/KoZFngMpmliKfDrWN7uwzQ==
+"@prisma/engines@2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54":
+  version "2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54"
+  resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-2.15.0-25.e51dc3b5a9ee790a07104bec1c9477d51740fe54.tgz#3093ace7c09cf694214727c4e67109f2a2d8855a"
+  integrity sha512-AgPxAWtwYhhTNEEsV4lK63HTe9z0GAGL3ofMr2B0TncACmzi9lhdun9TTNie38Oy/3DLfr71TUHKUpV8QjOKUw==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
