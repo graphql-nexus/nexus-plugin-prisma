@@ -2,7 +2,7 @@
 ### Do not make changes to this file directly
 
 
-type BatchPayload {
+type AffectedRowsOutput {
   count: Int!
 }
 
@@ -17,7 +17,7 @@ type Bubble {
   members(after: UserWhereUniqueInput, orderBy: [BubbleMembersOrderByInput!], where: BubbleMembersWhereInput): [User!]!
 }
 
-input BubbleCreateOneWithoutMembersInput {
+input BubbleCreateNestedOneWithoutMembersInput {
   connect: BubbleWhereUniqueInput
   connectOrCreate: BubbleCreateOrConnectWithoutmembersInput
   create: BubbleCreateWithoutMembersInput
@@ -126,7 +126,7 @@ type Location {
   id: Int!
 }
 
-input LocationCreateOneWithoutUserInput {
+input LocationCreateNestedOneWithoutUserInput {
   connect: LocationWhereUniqueInput
   connectOrCreate: LocationCreateOrConnectWithoutUserInput
   create: LocationCreateWithoutUserInput
@@ -158,7 +158,7 @@ input LocationWhereUniqueInput {
 
 type Mutation {
   createOnePost(data: PostCreateInput!): Post!
-  updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
+  updateManyPost(data: PostUpdateManyMutationInput!, where: PostWhereInput): AffectedRowsOutput!
 }
 
 input NestedBoolFilter {
@@ -241,7 +241,7 @@ type Post {
 }
 
 input PostCreateInput {
-  authors: UserCreateManyWithoutPostsInput
+  authors: UserCreateNestedManyWithoutPostsInput
   likes: Int!
   rating: Float!
   status: PostStatus!
@@ -338,7 +338,7 @@ type User {
   posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
 }
 
-input UserCreateManyWithoutPostsInput {
+input UserCreateNestedManyWithoutPostsInput {
   connect: [UserWhereUniqueInput!]
   connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
   create: [UserCreateWithoutPostsInput!]
@@ -350,11 +350,11 @@ input UserCreateOrConnectWithoutpostsInput {
 }
 
 input UserCreateWithoutPostsInput {
-  Bubble: BubbleCreateOneWithoutMembersInput
+  Bubble: BubbleCreateNestedOneWithoutMembersInput
   firstName: String!
   id: String
   lastName: String!
-  location: LocationCreateOneWithoutUserInput!
+  location: LocationCreateNestedOneWithoutUserInput!
 }
 
 input UserListRelationFilter {

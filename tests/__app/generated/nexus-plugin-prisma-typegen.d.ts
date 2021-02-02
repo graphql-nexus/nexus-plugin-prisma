@@ -29,7 +29,7 @@ interface NexusPrismaInputs {
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
@@ -43,7 +43,7 @@ interface NexusPrismaInputs {
   Bubble: {
     members: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   User: {
@@ -55,13 +55,13 @@ interface NexusPrismaInputs {
   Location: {
     User: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   Post: {
     authors: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
 }
@@ -81,27 +81,27 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneBubble: 'Bubble'
     updateOneBubble: 'Bubble'
-    updateManyBubble: 'BatchPayload'
+    updateManyBubble: 'AffectedRowsOutput'
     deleteOneBubble: 'Bubble'
-    deleteManyBubble: 'BatchPayload'
+    deleteManyBubble: 'AffectedRowsOutput'
     upsertOneBubble: 'Bubble'
     createOneUser: 'User'
     updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
+    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
+    deleteManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOneLocation: 'Location'
     updateOneLocation: 'Location'
-    updateManyLocation: 'BatchPayload'
+    updateManyLocation: 'AffectedRowsOutput'
     deleteOneLocation: 'Location'
-    deleteManyLocation: 'BatchPayload'
+    deleteManyLocation: 'AffectedRowsOutput'
     upsertOneLocation: 'Location'
     createOnePost: 'Post'
     updateOnePost: 'Post'
-    updateManyPost: 'BatchPayload'
+    updateManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
-    deleteManyPost: 'BatchPayload'
+    deleteManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   Bubble: {

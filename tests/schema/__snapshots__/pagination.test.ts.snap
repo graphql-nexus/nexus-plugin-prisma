@@ -50,13 +50,13 @@ interface NexusPrismaInputs {
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   }
   Post: {
@@ -75,15 +75,15 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneUser: 'User'
     updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
+    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
+    deleteManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOnePost: 'Post'
     updateOnePost: 'Post'
-    updateManyPost: 'BatchPayload'
+    updateManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
-    deleteManyPost: 'BatchPayload'
+    deleteManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   User: {
@@ -177,13 +177,13 @@ interface NexusPrismaInputs {
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   }
   Post: {
@@ -202,15 +202,15 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneUser: 'User'
     updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
+    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
+    deleteManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOnePost: 'Post'
     updateOnePost: 'Post'
-    updateManyPost: 'BatchPayload'
+    updateManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
-    deleteManyPost: 'BatchPayload'
+    deleteManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   User: {

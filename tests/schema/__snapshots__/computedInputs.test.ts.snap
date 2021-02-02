@@ -30,28 +30,28 @@ input UserWhereUniqueInput {
 
 input UserCreateInput {
   name: String!
-  nested: NestedCreateManyWithoutUserInput
+  nested: NestedCreateNestedManyWithoutUserInput
 }
 
 input NestedCreateInput {
   name: String!
-  User: UserCreateOneWithoutNestedInput
+  User: UserCreateNestedOneWithoutNestedInput
 }
 
 input NestedWhereUniqueInput {
   id: Int
 }
 
-input NestedCreateManyWithoutUserInput {
+input NestedCreateNestedManyWithoutUserInput {
   create: [NestedCreateWithoutUserInput!]
-  connect: [NestedWhereUniqueInput!]
   connectOrCreate: [NestedCreateOrConnectWithoutUserInput!]
+  connect: [NestedWhereUniqueInput!]
 }
 
-input UserCreateOneWithoutNestedInput {
+input UserCreateNestedOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
-  connect: UserWhereUniqueInput
   connectOrCreate: UserCreateOrConnectWithoutnestedInput
+  connect: UserWhereUniqueInput
 }
 
 input NestedCreateWithoutUserInput {
@@ -101,13 +101,13 @@ interface NexusPrismaInputs {
     }
     nesteds: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
-      ordering: 'id' | 'name' | 'userId'
+      ordering: 'id' | 'name' | 'User' | 'userId'
     }
   },
   User: {
     nested: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
-      ordering: 'id' | 'name' | 'userId'
+      ordering: 'id' | 'name' | 'User' | 'userId'
     }
   }
   Nested: {
@@ -126,15 +126,15 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneUser: 'User'
     updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
+    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
+    deleteManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOneNested: 'Nested'
     updateOneNested: 'Nested'
-    updateManyNested: 'BatchPayload'
+    updateManyNested: 'AffectedRowsOutput'
     deleteOneNested: 'Nested'
-    deleteManyNested: 'BatchPayload'
+    deleteManyNested: 'AffectedRowsOutput'
     upsertOneNested: 'Nested'
   },
   User: {
@@ -246,9 +246,9 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneUser: 'User'
     updateOneUser: 'User'
-    updateManyUser: 'BatchPayload'
+    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
-    deleteManyUser: 'BatchPayload'
+    deleteManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
   },
   User: {
