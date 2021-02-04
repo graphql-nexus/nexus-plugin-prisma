@@ -23,7 +23,7 @@ export interface NexusGenInputs {
     equals?: boolean | null; // Boolean
     not?: NexusGenInputs['NestedBoolFilter'] | null; // NestedBoolFilter
   }
-  BubbleCreateOneWithoutMembersInput: { // input type
+  BubbleCreateNestedOneWithoutMembersInput: { // input type
     connect?: NexusGenInputs['BubbleWhereUniqueInput'] | null; // BubbleWhereUniqueInput
     connectOrCreate?: NexusGenInputs['BubbleCreateOrConnectWithoutmembersInput'] | null; // BubbleCreateOrConnectWithoutmembersInput
     create?: NexusGenInputs['BubbleCreateWithoutMembersInput'] | null; // BubbleCreateWithoutMembersInput
@@ -110,7 +110,7 @@ export interface NexusGenInputs {
     not?: NexusGenInputs['NestedIntFilter'] | null; // NestedIntFilter
     notIn?: number[] | null; // [Int!]
   }
-  LocationCreateOneWithoutUserInput: { // input type
+  LocationCreateNestedOneWithoutUserInput: { // input type
     connect?: NexusGenInputs['LocationWhereUniqueInput'] | null; // LocationWhereUniqueInput
     connectOrCreate?: NexusGenInputs['LocationCreateOrConnectWithoutUserInput'] | null; // LocationCreateOrConnectWithoutUserInput
     create?: NexusGenInputs['LocationCreateWithoutUserInput'] | null; // LocationCreateWithoutUserInput
@@ -202,7 +202,7 @@ export interface NexusGenInputs {
     startsWith?: string | null; // String
   }
   PostCreateInput: { // input type
-    authors?: NexusGenInputs['UserCreateManyWithoutPostsInput'] | null; // UserCreateManyWithoutPostsInput
+    authors?: NexusGenInputs['UserCreateNestedManyWithoutPostsInput'] | null; // UserCreateNestedManyWithoutPostsInput
     likes: number; // Int!
     rating: number; // Float!
     status: NexusGenEnums['PostStatus']; // PostStatus!
@@ -264,7 +264,7 @@ export interface NexusGenInputs {
     notIn?: string[] | null; // [String!]
     startsWith?: string | null; // String
   }
-  UserCreateManyWithoutPostsInput: { // input type
+  UserCreateNestedManyWithoutPostsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'][] | null; // [UserWhereUniqueInput!]
     connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutpostsInput'][] | null; // [UserCreateOrConnectWithoutpostsInput!]
     create?: NexusGenInputs['UserCreateWithoutPostsInput'][] | null; // [UserCreateWithoutPostsInput!]
@@ -274,11 +274,11 @@ export interface NexusGenInputs {
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
   }
   UserCreateWithoutPostsInput: { // input type
-    Bubble?: NexusGenInputs['BubbleCreateOneWithoutMembersInput'] | null; // BubbleCreateOneWithoutMembersInput
+    Bubble?: NexusGenInputs['BubbleCreateNestedOneWithoutMembersInput'] | null; // BubbleCreateNestedOneWithoutMembersInput
     firstName: string; // String!
     id?: string | null; // String
     lastName: string; // String!
-    location: NexusGenInputs['LocationCreateOneWithoutUserInput']; // LocationCreateOneWithoutUserInput!
+    location: NexusGenInputs['LocationCreateNestedOneWithoutUserInput']; // LocationCreateNestedOneWithoutUserInput!
   }
   UserListRelationFilter: { // input type
     every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -319,7 +319,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
-  BatchPayload: { // root type
+  AffectedRowsOutput: { // root type
     count: number; // Int!
   }
   Bubble: { // root type
@@ -354,7 +354,7 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
-  BatchPayload: { // field return type
+  AffectedRowsOutput: { // field return type
     count: number; // Int!
   }
   Bubble: { // field return type
@@ -369,7 +369,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createOnePost: NexusGenRootTypes['Post']; // Post!
-    updateManyPost: NexusGenRootTypes['BatchPayload']; // BatchPayload!
+    updateManyPost: NexusGenRootTypes['AffectedRowsOutput']; // AffectedRowsOutput!
   }
   Post: { // field return type
     authors: NexusGenRootTypes['User'][]; // [User!]!
@@ -389,7 +389,7 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
-  BatchPayload: { // field return type name
+  AffectedRowsOutput: { // field return type name
     count: 'Int'
   }
   Bubble: { // field return type name
@@ -404,7 +404,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createOnePost: 'Post'
-    updateManyPost: 'BatchPayload'
+    updateManyPost: 'AffectedRowsOutput'
   }
   Post: { // field return type name
     authors: 'User'

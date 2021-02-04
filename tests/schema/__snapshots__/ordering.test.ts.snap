@@ -66,9 +66,9 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneFoo: 'Foo'
     updateOneFoo: 'Foo'
-    updateManyFoo: 'BatchPayload'
+    updateManyFoo: 'AffectedRowsOutput'
     deleteOneFoo: 'Foo'
-    deleteManyFoo: 'BatchPayload'
+    deleteManyFoo: 'AffectedRowsOutput'
     upsertOneFoo: 'Foo'
   },
   Foo: {

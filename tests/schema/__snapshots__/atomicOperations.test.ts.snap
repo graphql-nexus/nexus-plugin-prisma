@@ -6,7 +6,7 @@ exports[`disable atomic operations: schema 1`] = `
   deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
   updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
   upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
-  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
+  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): AffectedRowsOutput!
 }
 
 type ModelName {
@@ -27,7 +27,7 @@ input ModelNameUpdateInput {
   amount: Int
 }
 
-type BatchPayload {
+type AffectedRowsOutput {
   count: Int!
 }
 
@@ -143,9 +143,9 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneModelName: 'ModelName'
     updateOneModelName: 'ModelName'
-    updateManyModelName: 'BatchPayload'
+    updateManyModelName: 'AffectedRowsOutput'
     deleteOneModelName: 'ModelName'
-    deleteManyModelName: 'BatchPayload'
+    deleteManyModelName: 'AffectedRowsOutput'
     upsertOneModelName: 'ModelName'
   },
   ModelName: {
@@ -188,7 +188,7 @@ exports[`support atomic operations (default): schema 1`] = `
   deleteOneModelName(where: ModelNameWhereUniqueInput!): ModelName
   updateOneModelName(data: ModelNameUpdateInput!, where: ModelNameWhereUniqueInput!): ModelName
   upsertOneModelName(where: ModelNameWhereUniqueInput!, create: ModelNameCreateInput!, update: ModelNameUpdateInput!): ModelName!
-  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): BatchPayload!
+  updateManyModelName(data: ModelNameUpdateManyMutationInput!, where: ModelNameWhereInput): AffectedRowsOutput!
 }
 
 type ModelName {
@@ -209,7 +209,7 @@ input ModelNameUpdateInput {
   amount: IntFieldUpdateOperationsInput
 }
 
-type BatchPayload {
+type AffectedRowsOutput {
   count: Int!
 }
 
@@ -337,9 +337,9 @@ interface NexusPrismaOutputs {
   Mutation: {
     createOneModelName: 'ModelName'
     updateOneModelName: 'ModelName'
-    updateManyModelName: 'BatchPayload'
+    updateManyModelName: 'AffectedRowsOutput'
     deleteOneModelName: 'ModelName'
-    deleteManyModelName: 'BatchPayload'
+    deleteManyModelName: 'AffectedRowsOutput'
     upsertOneModelName: 'ModelName'
   },
   ModelName: {
