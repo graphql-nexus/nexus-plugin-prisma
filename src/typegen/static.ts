@@ -140,7 +140,7 @@ export type LocalMutationResolverParams<MethodName extends string> = BaseMutatio
 
 export type Context = core.GetGen<'context'>
 
-type BaseRelationOptions<
+export type BaseRelationOptions<
   TypeName extends string,
   MethodName extends string,
   Alias extends string | undefined,
