@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@prisma/client@2.16.0":
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.16.0.tgz#811dcb8310544876b88a0bbd230a2f65c58a9c01"
-  integrity sha512-q02/IKwUIN+9Kl+Oayfb6x38NQ4ROvLoPSE+V0DRlJehTAJoxgRUWuPwaiOkksVnnmK4XHvKS/TR5EmQHUVxYw==
+"@prisma/client@2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.17.0.tgz#e38462796c2e824504763416f5e3a7219d70652d"
+  integrity sha512-tzsBxtx9J1epOGCiBeXur1tEz81UIdWg2G/HpDmflXKcv/MJb+KCWSKSsEW49eXcvVwRgxNyxLoCO6CwvjQKcg==
   dependencies:
-    "@prisma/engines-version" "2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1"
+    "@prisma/engines-version" "2.17.0-35.3c463ebd78b1d21d8fdacdd27899e280cf686223"
 
-"@prisma/engines-version@2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1":
-  version "2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1.tgz#6df1a9a9f4c711e18861be2de4c4f0e363d0aae9"
-  integrity sha512-/gcqWJDXoo0vsYi7fhdhdyjfMXxJPjKl8K7oc/k2BH7IQuXUB1A+ZnFgqRcT/rKuyU4xH8+N+l+C4boWlqYvgQ==
+"@prisma/engines-version@2.17.0-35.3c463ebd78b1d21d8fdacdd27899e280cf686223":
+  version "2.17.0-35.3c463ebd78b1d21d8fdacdd27899e280cf686223"
+  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.17.0-35.3c463ebd78b1d21d8fdacdd27899e280cf686223.tgz#9ae6ed4467a0febff8afaf216c1bb67225f51b84"
+  integrity sha512-9idv5blqPUlvUPVT48eVi3T0RS/NBklUcjrla3jWyV8AYfB2BdaG/Zci7H5ajyYLnfZZHG9tBpP0LcveQCFH8A==
 
 "@prisma/engines@2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1":
   version "2.16.0-44.854c8ba7f0dce66f115af36af24e66989a8c02a1"
@@ -1048,10 +1048,10 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-plugin-prisma@^0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/nexus-plugin-prisma/-/nexus-plugin-prisma-0.29.0.tgz#a0a30346d93bb86812677bc47a52486aa621c7c1"
-  integrity sha512-NwHFTwSPdShGPjS9qqN71iiJwHVIE3lxOdHeYzU3oti1eNWsSMh4oiLZ2KDd7tKjlZ5nKHaYZfCqQVgqlfAc8g==
+nexus-plugin-prisma@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.yarnpkg.com/nexus-plugin-prisma/-/nexus-plugin-prisma-0.30.0.tgz#6860328ee09c80f16bbc359864415b8358084111"
+  integrity sha512-/Slypcty4fLVnN8k0ifsav0zY/xHWHzBpCboAmLs3eINxy++oYNUurpEv9C1dJ/2kTOBGSE1kpWMYt1SjUyHNg==
   dependencies:
     camelcase "^6.2.0"
     endent "^2.0.1"
