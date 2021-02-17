@@ -20,11 +20,11 @@ type Bubble {
 
 input BubbleCreateNestedOneWithoutMembersInput {
   connect: BubbleWhereUniqueInput
-  connectOrCreate: BubbleCreateOrConnectWithoutmembersInput
+  connectOrCreate: BubbleCreateOrConnectWithoutMembersInput
   create: BubbleCreateWithoutMembersInput
 }
 
-input BubbleCreateOrConnectWithoutmembersInput {
+input BubbleCreateOrConnectWithoutMembersInput {
   create: BubbleCreateWithoutMembersInput!
   where: BubbleWhereUniqueInput!
 }
@@ -341,11 +341,11 @@ type User {
 
 input UserCreateNestedManyWithoutPostsInput {
   connect: [UserWhereUniqueInput!]
-  connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutPostsInput!]
   create: [UserCreateWithoutPostsInput!]
 }
 
-input UserCreateOrConnectWithoutpostsInput {
+input UserCreateOrConnectWithoutPostsInput {
   create: UserCreateWithoutPostsInput!
   where: UserWhereUniqueInput!
 }
@@ -5461,13 +5461,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "PostCreateOrConnectWithoutauthorsInput",
+                  "type": "PostCreateOrConnectWithoutAuthorsInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "PostCreateOrConnectWithoutauthorsInput",
+                  "type": "PostCreateOrConnectWithoutAuthorsInput",
                 },
               ],
               "isNullable": false,
@@ -5581,7 +5581,7 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "BubbleCreateOrConnectWithoutmembersInput",
+                  "type": "BubbleCreateOrConnectWithoutMembersInput",
                 },
               ],
               "isNullable": false,
@@ -5647,13 +5647,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "PostCreateOrConnectWithoutauthorsInput",
+                  "type": "PostCreateOrConnectWithoutAuthorsInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "PostCreateOrConnectWithoutauthorsInput",
+                  "type": "PostCreateOrConnectWithoutAuthorsInput",
                 },
               ],
               "isNullable": false,
@@ -5932,7 +5932,7 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "BubbleCreateOrConnectWithoutmembersInput",
+                  "type": "BubbleCreateOrConnectWithoutMembersInput",
                 },
               ],
               "isNullable": false,
@@ -6149,13 +6149,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
               ],
               "isNullable": false,
@@ -6227,13 +6227,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
               ],
               "isNullable": false,
@@ -6305,13 +6305,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
               ],
               "isNullable": false,
@@ -6516,13 +6516,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutlocationInput",
+                  "type": "UserCreateOrConnectWithoutLocationInput",
                 },
               ],
               "isNullable": false,
@@ -6727,13 +6727,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutpostsInput",
+                  "type": "UserCreateOrConnectWithoutPostsInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutpostsInput",
+                  "type": "UserCreateOrConnectWithoutPostsInput",
                 },
               ],
               "isNullable": false,
@@ -6896,13 +6896,13 @@ Object {
                   "isList": false,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutpostsInput",
+                  "type": "UserCreateOrConnectWithoutPostsInput",
                 },
                 Object {
                   "isList": true,
                   "location": "inputObjectTypes",
                   "namespace": "prisma",
-                  "type": "UserCreateOrConnectWithoutpostsInput",
+                  "type": "UserCreateOrConnectWithoutPostsInput",
                 },
               ],
               "isNullable": false,
@@ -8426,7 +8426,7 @@ Object {
               "name": "create",
             },
           ],
-          "name": "PostCreateOrConnectWithoutauthorsInput",
+          "name": "PostCreateOrConnectWithoutAuthorsInput",
         },
         Object {
           "constraints": Object {
@@ -8676,7 +8676,7 @@ Object {
               "name": "create",
             },
           ],
-          "name": "BubbleCreateOrConnectWithoutmembersInput",
+          "name": "BubbleCreateOrConnectWithoutMembersInput",
         },
         Object {
           "constraints": Object {
@@ -9453,7 +9453,7 @@ Object {
               "name": "create",
             },
           ],
-          "name": "UserCreateOrConnectWithoutlocationInput",
+          "name": "UserCreateOrConnectWithoutLocationInput",
         },
         Object {
           "constraints": Object {
@@ -9781,7 +9781,7 @@ Object {
               "name": "create",
             },
           ],
-          "name": "UserCreateOrConnectWithoutpostsInput",
+          "name": "UserCreateOrConnectWithoutPostsInput",
         },
         Object {
           "constraints": Object {
@@ -11824,36 +11824,6 @@ Object {
                   "name": "where",
                 },
               ],
-              "deprecation": Object {
-                "plannedRemovalVersion": "2.15",
-                "reason": "The \`findOne\` query has been deprecated and replaced with \`findUnique\`.",
-                "sinceVersion": "2.14",
-              },
-              "isNullable": true,
-              "name": "findOneBubble",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "model",
-                "type": "Bubble",
-              },
-            },
-            Object {
-              "args": Array [
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": false,
-                      "location": "inputObjectTypes",
-                      "namespace": "prisma",
-                      "type": "BubbleWhereUniqueInput",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": true,
-                  "name": "where",
-                },
-              ],
               "isNullable": true,
               "name": "findUniqueBubble",
               "outputType": Object {
@@ -12130,36 +12100,6 @@ Object {
                 "location": "outputObjectTypes",
                 "namespace": "prisma",
                 "type": "AggregateUser",
-              },
-            },
-            Object {
-              "args": Array [
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": false,
-                      "location": "inputObjectTypes",
-                      "namespace": "prisma",
-                      "type": "UserWhereUniqueInput",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": true,
-                  "name": "where",
-                },
-              ],
-              "deprecation": Object {
-                "plannedRemovalVersion": "2.15",
-                "reason": "The \`findOne\` query has been deprecated and replaced with \`findUnique\`.",
-                "sinceVersion": "2.14",
-              },
-              "isNullable": true,
-              "name": "findOneUser",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "model",
-                "type": "User",
               },
             },
             Object {
@@ -12472,36 +12412,6 @@ Object {
                   "name": "where",
                 },
               ],
-              "deprecation": Object {
-                "plannedRemovalVersion": "2.15",
-                "reason": "The \`findOne\` query has been deprecated and replaced with \`findUnique\`.",
-                "sinceVersion": "2.14",
-              },
-              "isNullable": true,
-              "name": "findOneLocation",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "model",
-                "type": "Location",
-              },
-            },
-            Object {
-              "args": Array [
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": false,
-                      "location": "inputObjectTypes",
-                      "namespace": "prisma",
-                      "type": "LocationWhereUniqueInput",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": true,
-                  "name": "where",
-                },
-              ],
               "isNullable": true,
               "name": "findUniqueLocation",
               "outputType": Object {
@@ -12778,36 +12688,6 @@ Object {
                 "location": "outputObjectTypes",
                 "namespace": "prisma",
                 "type": "AggregatePost",
-              },
-            },
-            Object {
-              "args": Array [
-                Object {
-                  "inputTypes": Array [
-                    Object {
-                      "isList": false,
-                      "location": "inputObjectTypes",
-                      "namespace": "prisma",
-                      "type": "PostWhereUniqueInput",
-                    },
-                  ],
-                  "isNullable": false,
-                  "isRequired": true,
-                  "name": "where",
-                },
-              ],
-              "deprecation": Object {
-                "plannedRemovalVersion": "2.15",
-                "reason": "The \`findOne\` query has been deprecated and replaced with \`findUnique\`.",
-                "sinceVersion": "2.14",
-              },
-              "isNullable": true,
-              "name": "findOnePost",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "model",
-                "type": "Post",
               },
             },
             Object {

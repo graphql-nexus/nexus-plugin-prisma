@@ -19,11 +19,11 @@ type Bubble {
 
 input BubbleCreateNestedOneWithoutMembersInput {
   connect: BubbleWhereUniqueInput
-  connectOrCreate: BubbleCreateOrConnectWithoutmembersInput
+  connectOrCreate: BubbleCreateOrConnectWithoutMembersInput
   create: BubbleCreateWithoutMembersInput
 }
 
-input BubbleCreateOrConnectWithoutmembersInput {
+input BubbleCreateOrConnectWithoutMembersInput {
   create: BubbleCreateWithoutMembersInput!
   where: BubbleWhereUniqueInput!
 }
@@ -340,11 +340,11 @@ type User {
 
 input UserCreateNestedManyWithoutPostsInput {
   connect: [UserWhereUniqueInput!]
-  connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutPostsInput!]
   create: [UserCreateWithoutPostsInput!]
 }
 
-input UserCreateOrConnectWithoutpostsInput {
+input UserCreateOrConnectWithoutPostsInput {
   create: UserCreateWithoutPostsInput!
   where: UserWhereUniqueInput!
 }

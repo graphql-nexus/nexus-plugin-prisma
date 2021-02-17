@@ -50,7 +50,7 @@ input NestedCreateNestedManyWithoutUserInput {
 
 input UserCreateNestedOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
-  connectOrCreate: UserCreateOrConnectWithoutnestedInput
+  connectOrCreate: UserCreateOrConnectWithoutNestedInput
   connect: UserWhereUniqueInput
 }
 
@@ -67,7 +67,7 @@ input UserCreateWithoutNestedInput {
   name: String!
 }
 
-input UserCreateOrConnectWithoutnestedInput {
+input UserCreateOrConnectWithoutNestedInput {
   where: UserWhereUniqueInput!
   create: UserCreateWithoutNestedInput!
 }
