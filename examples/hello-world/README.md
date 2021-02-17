@@ -7,10 +7,8 @@ docker run --detach --publish 5432:5432 -e POSTGRES_PASSWORD=postgres --name 'ne
 ```
 
 ```
-yarn -s prisma migrate save --experimental
-yarn -s prisma migrate up --experimental
 yarn -s prisma generate
-yarn -s ts-node prisma/seed.ts
+yarn -s prisma migrate reset --preview-feature
 ```
 
 ```

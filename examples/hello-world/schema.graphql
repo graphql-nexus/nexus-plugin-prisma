@@ -63,17 +63,17 @@ type Post {
 }
 
 input PostCreateInput {
-  authors: UserCreateManyWithoutPostsInput
+  authors: UserCreateNestedManyWithoutPostsInput
   id: String
 }
 
-input PostCreateManyWithoutAuthorsInput {
+input PostCreateNestedManyWithoutAuthorsInput {
   connect: [PostWhereUniqueInput!]
-  connectOrCreate: [PostCreateOrConnectWithoutauthorsInput!]
+  connectOrCreate: [PostCreateOrConnectWithoutAuthorsInput!]
   create: [PostCreateWithoutAuthorsInput!]
 }
 
-input PostCreateOrConnectWithoutauthorsInput {
+input PostCreateOrConnectWithoutAuthorsInput {
   create: PostCreateWithoutAuthorsInput!
   where: PostWhereUniqueInput!
 }
@@ -150,16 +150,16 @@ input UserCreateInput {
   email: String!
   id: String
   metadata: Json!
-  posts: PostCreateManyWithoutAuthorsInput
+  posts: PostCreateNestedManyWithoutAuthorsInput
 }
 
-input UserCreateManyWithoutPostsInput {
+input UserCreateNestedManyWithoutPostsInput {
   connect: [UserWhereUniqueInput!]
-  connectOrCreate: [UserCreateOrConnectWithoutpostsInput!]
+  connectOrCreate: [UserCreateOrConnectWithoutPostsInput!]
   create: [UserCreateWithoutPostsInput!]
 }
 
-input UserCreateOrConnectWithoutpostsInput {
+input UserCreateOrConnectWithoutPostsInput {
   create: UserCreateWithoutPostsInput!
   where: UserWhereUniqueInput!
 }
