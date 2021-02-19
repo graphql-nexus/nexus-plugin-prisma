@@ -7,15 +7,19 @@ async function seed() {
     data: {
       email: 'foo@bar.com',
       birthDate: new Date(),
+      metadata: {},
       posts: {
-        create: [{}, {}],
+        create: [
+          { title: 'post 1', status: 'DRAFT' },
+          { title: 'post 2', status: 'DRAFT' },
+        ],
       },
     },
   })
 
   console.log(res)
 
-  await prisma.disconnect()
+  await prisma.$disconnect()
 }
 
 seed()

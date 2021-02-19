@@ -25,10 +25,10 @@ export interface NexusGenInputs {
   }
   BubbleCreateNestedOneWithoutMembersInput: { // input type
     connect?: NexusGenInputs['BubbleWhereUniqueInput'] | null; // BubbleWhereUniqueInput
-    connectOrCreate?: NexusGenInputs['BubbleCreateOrConnectWithoutmembersInput'] | null; // BubbleCreateOrConnectWithoutmembersInput
+    connectOrCreate?: NexusGenInputs['BubbleCreateOrConnectWithoutMembersInput'] | null; // BubbleCreateOrConnectWithoutMembersInput
     create?: NexusGenInputs['BubbleCreateWithoutMembersInput'] | null; // BubbleCreateWithoutMembersInput
   }
-  BubbleCreateOrConnectWithoutmembersInput: { // input type
+  BubbleCreateOrConnectWithoutMembersInput: { // input type
     create: NexusGenInputs['BubbleCreateWithoutMembersInput']; // BubbleCreateWithoutMembersInput!
     where: NexusGenInputs['BubbleWhereUniqueInput']; // BubbleWhereUniqueInput!
   }
@@ -266,10 +266,10 @@ export interface NexusGenInputs {
   }
   UserCreateNestedManyWithoutPostsInput: { // input type
     connect?: NexusGenInputs['UserWhereUniqueInput'][] | null; // [UserWhereUniqueInput!]
-    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutpostsInput'][] | null; // [UserCreateOrConnectWithoutpostsInput!]
+    connectOrCreate?: NexusGenInputs['UserCreateOrConnectWithoutPostsInput'][] | null; // [UserCreateOrConnectWithoutPostsInput!]
     create?: NexusGenInputs['UserCreateWithoutPostsInput'][] | null; // [UserCreateWithoutPostsInput!]
   }
-  UserCreateOrConnectWithoutpostsInput: { // input type
+  UserCreateOrConnectWithoutPostsInput: { // input type
     create: NexusGenInputs['UserCreateWithoutPostsInput']; // UserCreateWithoutPostsInput!
     where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
   }

@@ -8,7 +8,7 @@ generator prisma_client {
 }
 
 model Blog {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String
@@ -18,7 +18,7 @@ model Blog {
 }
 
 model User {
-  id        Int      @default(autoincrement()) @id
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String?
@@ -35,7 +35,7 @@ enum UserRole {
 }
 
 model Post {
-  id     Int        @default(autoincrement()) @id
+  id     Int        @id @default(autoincrement())
   title  String
   tags   Tag[]
   blogId Int?
@@ -51,7 +51,7 @@ enum PostStatus {
 }
 
 model Tag {
-  id     Int    @default(autoincrement()) @id
+  id     Int    @id @default(autoincrement())
   value  String
   postId Int?
   post   Post?  @relation(fields: [postId], references: [id])

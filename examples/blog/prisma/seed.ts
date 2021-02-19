@@ -28,5 +28,5 @@ async function main() {
   })
 
   console.log('added blog with author:\n', blogWithAuthor)
-  await prisma.disconnect()
+  await prisma.$disconnect()
 }

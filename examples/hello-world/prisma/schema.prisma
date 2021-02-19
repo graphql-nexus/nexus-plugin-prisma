@@ -8,7 +8,7 @@ generator prisma_client {
 }
 
 model User {
-  id        String   @default(cuid()) @id
+  id        String   @id @default(cuid())
   email     String   @unique
   birthDate DateTime
   metadata  Json
@@ -16,6 +16,6 @@ model User {
 }
 
 model Post {
-  id      String @default(cuid()) @id
+  id      String @id @default(cuid())
   authors User[] @relation(references: [id])
 }
