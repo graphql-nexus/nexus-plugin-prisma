@@ -1361,10 +1361,10 @@ negotiator@0.6.2:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-nexus-plugin-prisma@^0.30.0:
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/nexus-plugin-prisma/-/nexus-plugin-prisma-0.30.0.tgz#6860328ee09c80f16bbc359864415b8358084111"
-  integrity sha512-/Slypcty4fLVnN8k0ifsav0zY/xHWHzBpCboAmLs3eINxy++oYNUurpEv9C1dJ/2kTOBGSE1kpWMYt1SjUyHNg==
+nexus-plugin-prisma@^0.31.0:
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/nexus-plugin-prisma/-/nexus-plugin-prisma-0.31.0.tgz#f9ca88b393848a545d22e50c41716f242da60ff2"
+  integrity sha512-zo4fr/DE6oi5cmZk80csd9svAIVixgY9BB9xZVVTxg4jootOQSOXGn3OP8A6dGQj6/nzlakB72CAiUeRgDmzHQ==
   dependencies:
     camelcase "^6.2.0"
     endent "^2.0.1"

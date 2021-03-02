@@ -16,7 +16,7 @@
     "graphql": "^15.4.0",
     "graphql-scalars": "^1.7.0",
     "nexus": "^1.0.0",
-    "nexus-plugin-prisma": "^0.30.0"
+    "nexus-plugin-prisma": "^0.31.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.9",
