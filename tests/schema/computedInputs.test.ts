@@ -50,6 +50,8 @@ const globalTestData = {
     id Int @id @default(autoincrement())
     name String
     createdWithBrowser String
+    userId Int
+    user User @relation(fields: [userId], references: [id])
   }
 `,
   query: Nexus.queryType({

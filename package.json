@@ -70,7 +70,7 @@
     "nexus": "^1.0.0",
     "node-fetch": "2.6.1",
     "prettier": "2.2.1",
-    "prisma": "^2.16.0",
+    "prisma": "^2.18.0",
     "strip-ansi": "6.0.0",
     "ts-jest": "26.4.4",
     "ts-morph": "9.1.0",

@@ -13,8 +13,9 @@ it('forwards description & deprecation on all field types', async () => {
 
       favouriteColor  Color
 
-      latestPost Post? @relation("latestPostId")
-      posts Post[] @relation("userId")
+      latestPostId Int?
+      latestPost Post?  @relation("latestPost", fields: [latestPostId], references: [id])
+      posts Post[] @relation("posts")
     }
 
     enum Color {
@@ -27,7 +28,9 @@ it('forwards description & deprecation on all field types', async () => {
       id  Int @id @default(autoincrement())
       title String
       body String
-      user User @relation("userId")
+      userId Int
+      user User @relation("posts", fields: [userId], references: [id])
+      latestPostUsers User[] @relation("latestPost")
     }
   `
 
