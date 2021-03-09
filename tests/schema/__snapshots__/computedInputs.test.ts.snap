@@ -35,7 +35,7 @@ input UserCreateInput {
 
 input NestedCreateInput {
   name: String!
-  User: UserCreateNestedOneWithoutNestedInput
+  user: UserCreateNestedOneWithoutNestedInput!
 }
 
 input NestedWhereUniqueInput {
@@ -100,14 +100,14 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'name'
     }
     nesteds: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
-      ordering: 'id' | 'name' | 'User' | 'userId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
+      ordering: 'id' | 'name' | 'userId' | 'user'
     }
   },
   User: {
     nested: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'User' | 'userId'
-      ordering: 'id' | 'name' | 'User' | 'userId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
+      ordering: 'id' | 'name' | 'userId' | 'user'
     }
   }
   Nested: {
@@ -147,8 +147,8 @@ interface NexusPrismaOutputs {
     id: 'Int'
     name: 'String'
     createdWithBrowser: 'String'
-    User: 'User'
     userId: 'Int'
+    user: 'User'
   }
 }
 
