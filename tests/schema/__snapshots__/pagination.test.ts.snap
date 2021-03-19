@@ -50,13 +50,13 @@ interface NexusPrismaInputs {
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId'
     }
   }
   Post: {
@@ -177,13 +177,13 @@ interface NexusPrismaInputs {
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId'
     }
   }
   Post: {

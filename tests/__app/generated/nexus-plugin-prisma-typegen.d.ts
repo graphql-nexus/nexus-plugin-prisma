@@ -29,7 +29,7 @@ interface NexusPrismaInputs {
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
@@ -43,7 +43,7 @@ interface NexusPrismaInputs {
   Bubble: {
     members: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   User: {
@@ -55,13 +55,13 @@ interface NexusPrismaInputs {
   Location: {
     User: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
   Post: {
     authors: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
     }
   }
 }
