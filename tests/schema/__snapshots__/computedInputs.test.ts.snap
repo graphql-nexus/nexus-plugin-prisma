@@ -101,13 +101,13 @@ interface NexusPrismaInputs {
     }
     nesteds: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
-      ordering: 'id' | 'name' | 'userId' | 'user'
+      ordering: 'id' | 'name' | 'userId'
     }
   },
   User: {
     nested: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
-      ordering: 'id' | 'name' | 'userId' | 'user'
+      ordering: 'id' | 'name' | 'userId'
     }
   }
   Nested: {
