@@ -50,7 +50,7 @@
     "@prisma/fetch-engine": "2.19.0",
     "@prisma/get-platform": "2.19.0",
     "@prisma/migrate": "2.19.0",
-    "@prisma/sdk": "2.19.0",
+    "@prisma/sdk": "2.20.0",
     "@types/jest": "26.0.20",
     "@types/lodash": "4.14.167",
     "@types/node": "14.14.20",
