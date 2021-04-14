@@ -655,9 +655,13 @@ export class SchemaBuilder {
 
     if (publisherConfig.ordering) {
       const orderByTypeName = `${field.outputType.type}OrderByInput`
+      const orderByTypeNamePreviewFeature = `${field.outputType.type}OrderByWithRelationInput`
       const orderByArg = field.args.find(
-        (arg) => arg.inputType.type === orderByTypeName && arg.name === 'orderBy'
-      )
+        (arg) =>
+          (arg.inputType.type === orderByTypeName ||
+            arg.inputType.type === orderByTypeNamePreviewFeature) &&
+          arg.name === 'orderBy'
+      );
 
       if (!orderByArg) {
         throw new Error(`Could not find ordering argument for ${typeName}.${field.name}`)
@@ -665,7 +669,7 @@ export class SchemaBuilder {
 
       const inputType = this.handleInputObjectCustomization({
         fieldWhitelist: publisherConfig.ordering,
-        inputTypeName: orderByTypeName,
+        inputTypeName: orderByArg.inputType.type,
         fieldName: field.name,
         graphQLTypeName: typeName,
         isWhereType: false,
