@@ -175,27 +175,6 @@ export function build(options: InternalOptions) {
   }
 }
 
-// The @types default is based on the privileged given to such
-// packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
-let defaultTypegenPath: string
-if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
-  defaultTypegenPath = process.env.NEXUS_PRISMA_TYPEGEN_PATH
-} else if (process.env.LINK) {
-  defaultTypegenPath = path.join(process.cwd(), 'node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts')
-} else {
-  defaultTypegenPath = path.join(__dirname, '../../@types/typegen-nexus-plugin-prisma/index.d.ts')
-}
-
-let defaultClientPath: string
-
-if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
-  defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
-} else if (process.env.LINK) {
-  defaultClientPath = eval("path.join(process.cwd(), '/node_modules/@prisma/client')")
-} else {
-  defaultClientPath = '@prisma/client'
-}
-
 // NOTE This will be replaced by Nexus plugins once typegen integration is available.
 const shouldGenerateArtifacts =
   process.env.NEXUS_SHOULD_GENERATE_ARTIFACTS === 'true'
@@ -210,10 +189,12 @@ const defaultOptions = {
   paginationStrategy: 'relay' as const,
   atomicOperations: true,
   inputs: {
-    prismaClient: defaultClientPath,
+    prismaClient: `@prisma/client`,
   },
   outputs: {
-    typegen: defaultTypegenPath,
+    // The @types default is based on the privileged given to such
+    // packages by TypeScript. For details refer to https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#types-typeroots-and-types
+    typegen: path.join(__dirname, '../../@types/typegen-nexus-plugin-prisma/index.d.ts'),
   },
   computedInputs: {},
 }
@@ -658,10 +639,9 @@ export class SchemaBuilder {
       const orderByTypeNamePreviewFeature = `${field.outputType.type}OrderByWithRelationInput`
       const orderByArg = field.args.find(
         (arg) =>
-          (arg.inputType.type === orderByTypeName ||
-            arg.inputType.type === orderByTypeNamePreviewFeature) &&
+          (arg.inputType.type === orderByTypeName || arg.inputType.type === orderByTypeNamePreviewFeature) &&
           arg.name === 'orderBy'
-      );
+      )
 
       if (!orderByArg) {
         throw new Error(`Could not find ordering argument for ${typeName}.${field.name}`)
