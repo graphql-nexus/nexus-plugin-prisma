@@ -191,7 +191,7 @@ let defaultClientPath: string
 if (process.env.NEXUS_PRISMA_CLIENT_PATH) {
   defaultClientPath = process.env.NEXUS_PRISMA_CLIENT_PATH
 } else if (process.env.LINK) {
-  defaultClientPath = path.join(process.cwd(), '/node_modules/@prisma/client')
+  defaultClientPath = eval("path.join(process.cwd(), '/node_modules/@prisma/client')")
 } else {
   defaultClientPath = '@prisma/client'
 }
