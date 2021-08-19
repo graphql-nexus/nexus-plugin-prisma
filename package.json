@@ -47,8 +47,8 @@
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
     "@prisma/client": "2.29.1",
-    "@prisma/fetch-engine": "2.26.0",
-    "@prisma/get-platform": "2.26.0",
+    "@prisma/fetch-engine": "2.29.0",
+    "@prisma/get-platform": "2.29.0",
     "@prisma/migrate": "2.29.1",
     "@prisma/sdk": "2.29.1",
     "@types/jest": "26.0.20",
