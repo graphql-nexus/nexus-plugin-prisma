@@ -23,12 +23,16 @@ export declare namespace InternalDMMF {
     models: Model[]
     enums: DatamodelEnum[]
   }
+  interface PrimaryKey {
+    name: string | null
+    fields: string[]
+  }
   interface Model {
     name: string
     dbName: string | null
     documentation?: string
     fields: Field[]
-    idFields: string[]
+    primaryKey: PrimaryKey | null
     isEmbedded: boolean
     uniqueFields: Array<string[]>
   }

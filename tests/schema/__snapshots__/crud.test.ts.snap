@@ -56,7 +56,6 @@ interface NexusPrismaOutputs {
     updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
-    upsertOneUser: 'User'
   },
   User: {
     id: 'Int'

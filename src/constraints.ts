@@ -20,8 +20,8 @@ export function resolveUniqueIdentifiers(typeName: string, dmmf: DmmfDocument): 
   }
 
   // Try finding 2.
-  if (model.idFields && model.idFields.length > 0) {
-    return model.idFields
+  if (model.primaryKey && model.primaryKey.fields.length > 0) {
+    return model.primaryKey.fields;
   }
 
   const singleUniqueField = model.fields.find((f) => f.isUnique)
