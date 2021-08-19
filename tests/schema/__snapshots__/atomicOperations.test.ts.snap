@@ -102,7 +102,7 @@ type Query {
 `;
 
 exports[`disable atomic operations: typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -296,7 +296,7 @@ type Query {
 `;
 
 exports[`support atomic operations (default): typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type

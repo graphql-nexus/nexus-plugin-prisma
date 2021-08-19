@@ -26,7 +26,7 @@ input UserWhereUniqueInput {
 `;
 
 exports[`does not automatically publish input/enum type if already created by user: typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -172,7 +172,7 @@ input NestedEnumColorFilter {
 `;
 
 exports[`does not publish enum twice (from input/output type): typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -270,7 +270,7 @@ type Query {
 `;
 
 exports[`publishes enum even as output type: typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type

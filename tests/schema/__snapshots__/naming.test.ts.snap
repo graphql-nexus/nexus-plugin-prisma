@@ -103,7 +103,7 @@ input NestedStringFilter {
 `;
 
 exports[`generates publishers pluralized & camel-cased: typegen 1`] = `
-"import * as Typegen from 'nexus-plugin-prisma/typegen'
+"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type

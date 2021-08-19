@@ -72,7 +72,7 @@ input UserCreateOrConnectWithoutNestedInput {
   create: UserCreateWithoutNestedInput!
 }
 ",
-  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
+  "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -205,7 +205,7 @@ input UserCreateInput {
   name: String!
 }
 ",
-  "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
+  "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
