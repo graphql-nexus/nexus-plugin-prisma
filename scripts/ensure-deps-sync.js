@@ -6,12 +6,11 @@ const prismaDeps = [
   ...Object.entries(packageJson.devDependencies),
 ]
   .filter(([depName]) => depName.startsWith('@prisma/'))
-  .filter(([depName]) => depName !== '@prisma/engines')
 
 const validVersionRange = packageJson.peerDependencies['@prisma/client']
 
 const invalidDeps = prismaDeps.filter(
-  ([, prismaDepVersion]) => !semver.satisfies(prismaDepVersion, validVersionRange)
+  ([, prismaDepVersion]) => !semver.satisfies(prismaDepVersion.split('-')[0], validVersionRange)
 )
 
 if (invalidDeps.length > 0) {
