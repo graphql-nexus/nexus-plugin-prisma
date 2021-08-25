@@ -15,9 +15,7 @@
     "typegen.d.ts"
   ],
   "scripts": {
-    "release:preview": "dripip preview",
-    "release:stable": "dripip stable",
-    "release:pr": "dripip pr",
+    "release": "npm config -L project set @kenchi:registry=https://npm.pkg.github.com/ && yarn publish && npm config -L project delete @kenchi:registry && yarn publish",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn build:deps-sync && yarn build:module-facades && tsc",
     "build:deps-sync": "node scripts/ensure-deps-sync",
@@ -57,7 +55,6 @@
     "@types/pluralize": "0.0.29",
     "@types/prettier": "2.1.6",
     "@types/semver": "7.3.4",
-    "dripip": "0.10.0",
     "execa": "^5.0.0",
     "get-port": "5.1.1",
     "graphql": "15.4.0",
