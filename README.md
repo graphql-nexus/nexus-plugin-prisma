@@ -13,14 +13,6 @@ You can find the [documentation on the Nexus website](https://nexusjs.org/docs/p
 
 ## Installation
 
-This package is hosted on Github, so you must add the following to an `.npmrc` file, usually at the root of your project:
-
-```
-@kenchi:registry=https://npm.pkg.github.com/
-```
-
-Then you can install the package as you normally would:
-
 ```
 npm install @kenchi/nexus-plugin-prisma
 # OR
