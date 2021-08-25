@@ -10,7 +10,7 @@ const prismaDeps = [
 const validVersionRange = packageJson.peerDependencies['@prisma/client']
 
 const invalidDeps = prismaDeps.filter(
-  ([, prismaDepVersion]) => !semver.satisfies(prismaDepVersion.split('-')[0], validVersionRange)
+  ([, prismaDepVersion]) => !semver.satisfies(prismaDepVersion, validVersionRange)
 )
 
 if (invalidDeps.length > 0) {
