@@ -183,7 +183,7 @@ if (process.env.NEXUS_PRISMA_TYPEGEN_PATH) {
 } else if (process.env.LINK) {
   defaultTypegenPath = path.join(process.cwd(), 'node_modules/@types/typegen-nexus-plugin-prisma/index.d.ts')
 } else {
-  defaultTypegenPath = path.join(__dirname, '../../@types/typegen-nexus-plugin-prisma/index.d.ts')
+  defaultTypegenPath = path.join(__dirname, '../../../@types/typegen-nexus-plugin-prisma/index.d.ts')
 }
 
 let defaultClientPath: string
