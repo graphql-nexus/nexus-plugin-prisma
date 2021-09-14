@@ -1,4 +1,4 @@
-import { GlobalComputedInputs } from '../utils'
+import { GlobalComputedInputs, GlobalComputedWhereInputs } from '../utils'
 
 export declare namespace InternalDMMF {
   interface Document {
@@ -93,6 +93,7 @@ export declare namespace InternalDMMF {
     }
     fields: SchemaArg[]
     computedInputs: GlobalComputedInputs
+    computedWhereInputs: GlobalComputedWhereInputs
   }
   interface Mapping {
     model: string

@@ -48,9 +48,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
     async setup({ datamodel, types, plugins, scalars }) {
       try {
         const metadata = getTestMetadata(datamodel)
-
         await fs.dirAsync(metadata.tmpDir)
-
         const prismaClient = await generateClientFromDatamodel(metadata)
         generatedClient = prismaClient
 

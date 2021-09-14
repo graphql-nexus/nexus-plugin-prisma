@@ -1,7 +1,14 @@
 import { DMMF } from '@prisma/client/runtime'
 import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
-import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
+import {
+  GlobalComputedInputs,
+  GlobalComputedWhereInputs,
+  GlobalMutationResolverParams,
+  GlobalQueryResolverParams,
+  LocalComputedInputs,
+  LocalComputedWhereInputs,
+} from '../utils'
 import { DmmfDocument } from './DmmfDocument'
 import { InternalDMMF } from './DmmfTypes'
 import { getTypeName } from './helpers'
@@ -10,6 +17,7 @@ import { getPrismaClientDmmf } from './utils'
 export type TransformOptions = {
   atomicOperations?: boolean
   globallyComputedInputs?: GlobalComputedInputs
+  globallyComputedWhereInputs?: GlobalComputedWhereInputs
   paginationStrategy?: PaginationStrategy
 }
 
@@ -20,6 +28,7 @@ export const getTransformedDmmf = (
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
+  globallyComputedWhereInputs: {},
   paginationStrategy: paginationStrategies.relay,
   atomicOperations: true,
   ...givenOptions,
@@ -56,7 +65,12 @@ function transformSchema(schema: DMMF.Schema, options: TransformConfig): Interna
 
   const inputTypes =
     schema.inputObjectTypes.model?.map((type) =>
-      transformInputType(type, options.globallyComputedInputs, options.atomicOperations)
+      transformInputType(
+        type,
+        options.globallyComputedInputs,
+        options.globallyComputedWhereInputs,
+        options.atomicOperations
+      )
     ) ?? []
 
   const outputTypes =
@@ -71,7 +85,12 @@ function transformSchema(schema: DMMF.Schema, options: TransformConfig): Interna
 
   inputTypes.push(
     ...schema.inputObjectTypes.prisma.map((type) => {
-      return transformInputType(type, options.globallyComputedInputs, options.atomicOperations)
+      return transformInputType(
+        type,
+        options.globallyComputedInputs,
+        options.globallyComputedWhereInputs,
+        options.atomicOperations
+      )
     })
   )
   outputTypes.push(
@@ -272,9 +291,109 @@ export async function addComputedInputs({
   }
 }
 
+type AddComputedWhereInputParams = {
+  argType: InternalDMMF.ArgType
+  inputType: InternalDMMF.InputType
+  params: GlobalQueryResolverParams
+  dmmf: DmmfDocument
+  locallyComputedWhereInputs: LocalComputedWhereInputs<any>
+}
+
+/** Resolver-level computed inputs aren't recursive so aren't
+ *  needed for deep computed inputs.
+ */
+type AddDeepComputedWhereInputsArgs = Omit<AddComputedWhereInputParams, 'locallyComputedWhereInputs'> & {
+  where?: any
+} // Used to recurse through the input object
+
+/**
+ * Recursively looks for inputs that need a value from globallyComputedInputs
+ * and populates them
+ */
+async function addGloballyComputedWhereInputs({
+  argType,
+  inputType,
+  params,
+  dmmf,
+  where = {},
+}: AddDeepComputedWhereInputsArgs): Promise<Record<string, any>> {
+  // Get values for computedInputs corresponding to keys that exist in inputType
+  const computedInputValues = Object.keys(inputType.computedWhereInputs).reduce(async (values, key) => {
+    if (
+      argType.includes('Where') &&
+      !argType.includes('Unique') &&
+      inputType.fields.find((field) => field.name === key)
+    ) {
+      return {
+        ...(await values),
+        [key]: await inputType.computedWhereInputs[key](params),
+      }
+    } else {
+      return {
+        ...(await values),
+      }
+    }
+  }, Promise.resolve({} as Record<string, any>))
+
+  const test = await Object.keys(where).reduce(async (deeplyComputedData, fieldName) => {
+    const field = inputType.fields.find((_) => _.name === fieldName)!
+    const fieldValue =
+      field.inputType.kind === 'object' && typeof where[fieldName] === 'object' && where[fieldName] !== null
+        ? await addGloballyComputedWhereInputs({
+            argType: field.inputType.type,
+            inputType: dmmf.getInputType(field.inputType.type),
+            dmmf,
+            params,
+            where: where[fieldName],
+          })
+        : where[fieldName]
+
+    return {
+      [fieldName]: fieldValue,
+      ...(await deeplyComputedData),
+    }
+  }, computedInputValues)
+  // Combine computedInputValues with values provided by the user, recursing to add
+  // global computedInputs to nested types
+  return test
+}
+
+export async function addComputedWhereInputs({
+  argType,
+  dmmf,
+  inputType,
+  locallyComputedWhereInputs,
+  params,
+}: AddComputedWhereInputParams) {
+  return {
+    ...params.args,
+    where: {
+      /**
+       * Globally computed inputs are attached to the inputType object
+       * as 'computedInputs' by the transformInputType function.
+       */
+      ...(await addGloballyComputedWhereInputs({
+        argType,
+        inputType,
+        dmmf,
+        params,
+        where: params.args.where,
+      })),
+      ...(await Object.entries(locallyComputedWhereInputs).reduce(
+        async (args, [fieldName, computeFieldValue]) => ({
+          ...(await args),
+          [fieldName]: await computeFieldValue(params),
+        }),
+        Promise.resolve({} as Record<string, any>)
+      )),
+    },
+  }
+}
+
 function transformInputType(
   inputType: DMMF.InputType,
   globallyComputedInputs: GlobalComputedInputs,
+  globallyComputedWhereInputs: GlobalComputedWhereInputs,
   atomicOperations: boolean
 ): InternalDMMF.InputType {
   const fieldNames = inputType.fields.map((field) => field.name)
@@ -296,6 +415,7 @@ function transformInputType(
       .filter((field) => !(field.name in globallyComputedInputs))
       .map((field) => transformArg(field, atomicOperations)),
     computedInputs: globallyComputedInputsInType,
+    computedWhereInputs: globallyComputedWhereInputs,
   }
 }
 
