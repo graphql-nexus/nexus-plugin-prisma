@@ -359,7 +359,7 @@ export class SchemaBuilder {
                 whereArgs &&
                 whereInputType &&
                 (!isEmptyObject(publisherConfig.locallyComputedWhereInputs) ||
-                  !isEmptyObject(this.globallyComputedInputs))
+                  !isEmptyObject(this.globallyComputedWhereInputs))
               ) {
                 args = await addComputedWhereInputs({
                   argType: whereArgs.inputType.type,

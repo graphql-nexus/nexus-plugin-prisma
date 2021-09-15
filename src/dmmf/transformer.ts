@@ -333,27 +333,26 @@ async function addGloballyComputedWhereInputs({
     }
   }, Promise.resolve({} as Record<string, any>))
 
-  const test = await Object.keys(where).reduce(async (deeplyComputedData, fieldName) => {
+  // Combine computedInputValues with values provided by the user, recursing to add
+  // global computedInputs to nested types
+  return await Object.keys(where).reduce(async (deeplyComputedData, fieldName) => {
     const field = inputType.fields.find((_) => _.name === fieldName)!
     const fieldValue =
-      field.inputType.kind === 'object' && typeof where[fieldName] === 'object' && where[fieldName] !== null
-        ? await addGloballyComputedWhereInputs({
-            argType: field.inputType.type,
-            inputType: dmmf.getInputType(field.inputType.type),
-            dmmf,
-            params,
-            where: where[fieldName],
-          })
-        : where[fieldName]
+        field.inputType.kind === 'object' && typeof where[fieldName] === 'object' && where[fieldName] !== null
+            ? await addGloballyComputedWhereInputs({
+              argType: field.inputType.type,
+              inputType: dmmf.getInputType(field.inputType.type),
+              dmmf,
+              params,
+              where: where[fieldName],
+            })
+            : where[fieldName]
 
     return {
       [fieldName]: fieldValue,
       ...(await deeplyComputedData),
     }
   }, computedInputValues)
-  // Combine computedInputValues with values provided by the user, recursing to add
-  // global computedInputs to nested types
-  return test
 }
 
 export async function addComputedWhereInputs({
