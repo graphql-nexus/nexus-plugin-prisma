@@ -375,7 +375,6 @@ export class SchemaBuilder {
               }
 
               args = this.paginationStrategy.resolve(args)
-
               return prismaClient[mappedField.prismaClientAccessor][mappedField.operation](args)
             }
 
@@ -689,7 +688,12 @@ export class SchemaBuilder {
       if (inputType.fields.length > 0) {
         args.push({
           arg: whereArg,
-          type: inputType,
+          type: {
+            ...inputType,
+            fields: inputType.fields.filter(
+              (filed) => !Object.keys(publisherConfig.locallyComputedWhereInputs).includes(filed.name)
+            ),
+          },
         })
       }
     }

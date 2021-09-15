@@ -62,7 +62,6 @@ type TransformConfig = Required<TransformOptions>
 
 function transformSchema(schema: DMMF.Schema, options: TransformConfig): InternalDMMF.Schema {
   const enumTypes = schema.enumTypes.model ?? []
-
   const inputTypes =
     schema.inputObjectTypes.model?.map((type) =>
       transformInputType(
@@ -319,14 +318,13 @@ async function addGloballyComputedWhereInputs({
 }: AddDeepComputedWhereInputsArgs): Promise<Record<string, any>> {
   // Get values for computedInputs corresponding to keys that exist in inputType
   const computedInputValues = Object.keys(inputType.computedWhereInputs).reduce(async (values, key) => {
+    const computedWhereInputs = await inputType.computedWhereInputs[key](params)
     if (
-      argType.includes('Where') &&
-      !argType.includes('Unique') &&
-      inputType.fields.find((field) => field.name === key)
+      !(argType.includes('Unique') && typeof computedWhereInputs !== 'object') // If Input type is ~UniqueInput. It should be scalar and object type data should be ignored
     ) {
       return {
         ...(await values),
-        [key]: await inputType.computedWhereInputs[key](params),
+        [key]: computedWhereInputs,
       }
     } else {
       return {
@@ -409,13 +407,24 @@ function transformInputType(
       fieldNames.includes(key) ? Object.assign(args, { [key]: globallyComputedInputs[key] }) : args,
     {} as GlobalComputedInputs
   )
+  const globallyComputedWhereInputsInType = inputType.fields.find(
+    (field) => !(field.name in globallyComputedWhereInputs)
+  )
+    ? Object.keys(globallyComputedWhereInputs).reduce(
+        (args, key) =>
+          fieldNames.includes(key) ? Object.assign(args, { [key]: globallyComputedWhereInputs[key] }) : args,
+        {} as GlobalComputedWhereInputs
+      )
+    : {}
+
   return {
     ...inputType,
     fields: inputType.fields
       .filter((field) => !(field.name in globallyComputedInputs))
+      .filter((field) => !(field.name in globallyComputedWhereInputs))
       .map((field) => transformArg(field, atomicOperations)),
     computedInputs: globallyComputedInputsInType,
-    computedWhereInputs: globallyComputedWhereInputs,
+    computedWhereInputs: globallyComputedWhereInputsInType,
   }
 }
 

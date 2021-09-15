@@ -1,6 +1,6 @@
 import * as Nexus from 'nexus'
-import { addComputedInputs, addComputedWhereInputs } from '../../src/dmmf/transformer'
-import { GlobalComputedInputs, GlobalComputedWhereInputs } from '../../src/utils'
+import { addComputedWhereInputs } from '../../src/dmmf/transformer'
+import { GlobalComputedWhereInputs } from '../../src/utils'
 import { generateSchemaAndTypes, getDmmf } from '../__utils'
 
 // TODO: Split local and global computedInputs into their own suites
@@ -18,19 +18,19 @@ const resolverTestData = {
     definition(t: any) {
       t.crud.user()
       t.crud.users({
+        filtering: {
+          name: true,
+          createdWithBrowser: true,
+        },
         computedWhereInputs: {
-          organizationId: ({ ctx }) => ctx.organizationId,
+          name: ({ ctx }) => ctx.organizationId,
         } as GlobalComputedWhereInputs,
       })
     },
   }),
   mutation: Nexus.mutationType({
     definition(t: any) {
-      t.crud.createOneUser({
-        computedInputs: {
-          createdWithBrowser: ({ ctx }) => ctx.browser,
-        } as GlobalComputedInputs,
-      })
+      t.crud.createOneUser()
     },
   }),
   user: Nexus.objectType({
@@ -109,7 +109,11 @@ it('infers the value of resolver-level computedWhereInputs at runtime', async ()
     await addComputedWhereInputs({
       params: {
         info: {} as any,
-        args: {},
+        args: {
+          where: {
+            organizationId: 2,
+          },
+        },
         ctx: { organizationId: 1 },
       },
       argType: 'UserWhereInput',
@@ -137,7 +141,7 @@ it('removes global computedWhereInputs from all input types', async () => {
 it('infers the value of global computedWhereInputs at runtime', async () => {
   const { datamodel } = globalTestData
   const dmmf = await getDmmf(datamodel, {
-    globallyComputedWhereInputs: { id: ({ ctx }) => ({ equals: ctx.organizationId }) },
+    globallyComputedWhereInputs: { organizationId: ({ ctx }) => ({ equals: ctx.organizationId }) },
   })
 
   expect(
@@ -151,14 +155,15 @@ it('infers the value of global computedWhereInputs at runtime', async () => {
         },
         ctx: { organizationId: 1 },
       },
-      argType: 'UserWhereUniqueInput',
-      inputType: dmmf.getInputType('UserWhereUniqueInput'),
+      argType: 'UserWhereInput',
+      inputType: dmmf.getInputType('UserWhereInput'),
       dmmf,
       locallyComputedWhereInputs: {},
     })
   ).toStrictEqual({
     where: {
       id: 1,
+      organizationId: { equals: 1 },
     },
   })
 })
@@ -176,19 +181,12 @@ it('does not add the value to args whose schema does not have key.', async () =>
         args: {
           where: {
             name: { contains: 'a' },
-            nested: {
-              some: {
-                name: {
-                  contains: 'a',
-                },
-              },
-            },
           },
         },
         ctx: { organizationId: 1 },
       },
-      argType: 'UserWhereInput',
-      inputType: dmmf.getInputType('UserWhereInput'),
+      argType: 'NestedWhereInput',
+      inputType: dmmf.getInputType('NestedWhereInput'),
       dmmf,
       locallyComputedWhereInputs: {},
     })
@@ -196,61 +194,6 @@ it('does not add the value to args whose schema does not have key.', async () =>
     where: {
       name: {
         contains: 'a',
-      },
-      organizationId: { equals: 1 },
-      nested: {
-        some: {
-          name: {
-            contains: 'a',
-          },
-        },
-      },
-    },
-  })
-})
-
-it('infers the value of global computedWhereInputs at runtime and override original args that has same key', async () => {
-  const { datamodel } = globalTestData
-  const dmmf = await getDmmf(datamodel, {
-    globallyComputedWhereInputs: { organizationId: ({ ctx }) => ({ equals: ctx.organizationId }) },
-  })
-
-  expect(
-    await addComputedWhereInputs({
-      params: {
-        info: {} as any,
-        args: {
-          where: {
-            organizationId: { equals: 2 }, // If args specified some value with the same key. It should override by computedInput
-            name: { contains: 'a' },
-            nested: {
-              some: {
-                name: {
-                  contains: 'a',
-                },
-              },
-            },
-          },
-        },
-        ctx: { organizationId: 1 },
-      },
-      argType: 'UserWhereInput',
-      inputType: dmmf.getInputType('UserWhereInput'),
-      dmmf,
-      locallyComputedWhereInputs: {},
-    })
-  ).toStrictEqual({
-    where: {
-      name: {
-        contains: 'a',
-      },
-      organizationId: { equals: 1 },
-      nested: {
-        some: {
-          name: {
-            contains: 'a',
-          },
-        },
       },
     },
   })
@@ -261,8 +204,6 @@ it('infers the nested value of global computedInputs at runtime', async () => {
   const dmmf = await getDmmf(datamodel, {
     globallyComputedWhereInputs: { nested: ({ ctx }) => ({ some: { name: { contains: ctx.contains } } }) },
   })
-
-  // console.log(JSON.stringify(dmmf.getInputType('NestedWhereInput'),null,1))
   expect(
     await addComputedWhereInputs({
       params: {
@@ -312,13 +253,6 @@ it('override original args that has same key with the nested global computed inp
             name: {
               contains: 'a',
             },
-            nested: {
-              every: {
-                name: {
-                  contains: 'b',
-                },
-              },
-            },
           },
         },
         ctx: { organizationId: 1 },
@@ -337,53 +271,6 @@ it('override original args that has same key with the nested global computed inp
         some: {
           name: {
             contains: 'a',
-          },
-        },
-      },
-    },
-  })
-})
-
-it('override original all nested args that has same key with global computed inputs.', async () => {
-  const { datamodel } = globalTestData
-  const dmmf = await getDmmf(datamodel, {
-    globallyComputedWhereInputs: { name: () => ({ contains: 'c' }) },
-  })
-
-  expect(
-    await addComputedWhereInputs({
-      params: {
-        info: {} as any,
-        args: {
-          where: {
-            name: {
-              contains: 'a',
-            },
-            nested: {
-              some: {
-                name: {
-                  contains: 'b',
-                },
-              },
-            },
-          },
-        },
-        ctx: { organizationId: 1 },
-      },
-      argType: 'UserWhereInput',
-      inputType: dmmf.getInputType('UserWhereInput'),
-      dmmf,
-      locallyComputedWhereInputs: {},
-    })
-  ).toStrictEqual({
-    where: {
-      name: {
-        contains: 'c',
-      },
-      nested: {
-        some: {
-          name: {
-            contains: 'c',
           },
         },
       },

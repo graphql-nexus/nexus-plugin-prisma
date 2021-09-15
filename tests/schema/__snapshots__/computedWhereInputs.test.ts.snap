@@ -30,7 +30,6 @@ input UserWhereUniqueInput {
 }
 
 input UserCreateInput {
-  organizationId: Int!
   name: String!
   createdWithBrowser: String!
   nested: NestedCreateNestedManyWithoutUserInput
@@ -69,7 +68,6 @@ input NestedCreateOrConnectWithoutUserInput {
 }
 
 input UserCreateWithoutNestedInput {
-  organizationId: Int!
   name: String!
   createdWithBrowser: String!
 }
@@ -103,8 +101,8 @@ interface PrismaModels {
 interface NexusPrismaInputs {
   Query: {
     users: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'organizationId' | 'name' | 'nested' | 'createdWithBrowser'
-      ordering: 'id' | 'organizationId' | 'name' | 'createdWithBrowser'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested' | 'createdWithBrowser'
+      ordering: 'id' | 'name' | 'createdWithBrowser'
     }
     nesteds: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'createdWithBrowser' | 'userId' | 'user'
@@ -193,7 +191,7 @@ exports[`removes resolver-level computedWhereInputs from the corresponding input
 Object {
   "schema": "type Query {
   user(where: UserWhereUniqueInput!): User
-  users(first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
+  users(where: QueryUsersWhereInput, first: Int, last: Int, before: UserWhereUniqueInput, after: UserWhereUniqueInput): [User!]!
 }
 
 type Mutation {
@@ -210,9 +208,42 @@ input UserWhereUniqueInput {
   id: Int
 }
 
+input QueryUsersWhereInput {
+  createdWithBrowser: StringFilter
+}
+
 input UserCreateInput {
   organizationId: Int!
   name: String!
+  createdWithBrowser: String!
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 ",
   "typegen": "import * as Typegen from 'nexus-plugin-prisma/typegen'
