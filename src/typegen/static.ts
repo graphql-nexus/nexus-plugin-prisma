@@ -116,25 +116,38 @@ type GetNexusPrismaInput<
  *  the request's input and returns the value to pass to the prisma
  *  arg of the same name.
  */
-export type LocalComputedInputs<MethodName extends string> = Record<
+export declare type LocalComputedInputs<MethodName extends string> = Record<
   string,
   (params: LocalMutationResolverParams<MethodName>) => unknown
 >
-
-export type GlobalComputedInputs = Record<string, (params: GlobalMutationResolverParams) => unknown>
-
-type BaseMutationResolverParams = {
+export declare type LocalComputedWhereInputs<MethodName extends string> = Record<
+  string,
+  (params: LocalQueryResolverParams<MethodName>) => unknown
+>
+export declare type GlobalComputedInputs = Record<string, (params: GlobalMutationResolverParams) => unknown>
+export declare type GlobalComputedWhereInputs = Record<string, (params: GlobalQueryResolverParams) => unknown>
+declare type BaseResolverParams = {
   info: GraphQLResolveInfo
   ctx: Context
 }
-
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
-  args: Record<string, any> & { data: unknown }
+export declare type GlobalMutationResolverParams = BaseResolverParams & {
+  args: Record<string, any> & {
+    data: unknown
+  }
 }
-
-export type LocalMutationResolverParams<MethodName extends string> = BaseMutationResolverParams & {
+export declare type GlobalQueryResolverParams = BaseResolverParams & {
+  args: Record<string, any> & {
+    where?: unknown
+  }
+}
+export declare type LocalMutationResolverParams<MethodName extends string> = BaseResolverParams & {
   args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
     ? core.GetGen3<'argTypes', 'Mutation', MethodName>
+    : any
+}
+export declare type LocalQueryResolverParams<MethodName extends string> = BaseResolverParams & {
+  args: MethodName extends keyof core.GetGen2<'argTypes', 'Query'>
+    ? core.GetGen3<'argTypes', 'Query', MethodName>
     : any
 }
 
@@ -169,8 +182,9 @@ export type BaseRelationOptions<
    */
   resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
   computedInputs?: LocalComputedInputs<MethodName>
+  computedWhereInputs?: LocalComputedWhereInputs<MethodName>
 } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias> &
-CommonFieldConfig
+  CommonFieldConfig
 
 // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
 type NexusPrismaRelationOpts<

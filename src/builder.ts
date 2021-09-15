@@ -246,6 +246,7 @@ export class SchemaBuilder {
   protected publisher: Publisher
   protected scalars: Record<string, GraphQLScalarType>
   protected globallyComputedInputs: GlobalComputedInputs
+  protected globallyComputedWhereInputs: GlobalComputedWhereInputs
   protected unknownFieldsByModel: Index<string[]>
   public wasCrudUsedButDisabled: boolean
 
@@ -258,11 +259,13 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
+    this.globallyComputedWhereInputs = config.computedWhereInputs ? config.computedWhereInputs : {}
     this.paginationStrategy = paginationStrategies[config.paginationStrategy]
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
+        globallyComputedWhereInputs: this.globallyComputedWhereInputs,
         paginationStrategy: this.paginationStrategy,
         atomicOperations: config.atomicOperations,
       })
