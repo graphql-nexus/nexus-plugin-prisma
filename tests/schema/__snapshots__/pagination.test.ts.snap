@@ -46,17 +46,17 @@ interface NexusPrismaInputs {
   Query: {
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
-      ordering: 'id'
+      ordering: 'id' | 'posts'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   }
   Post: {
@@ -173,17 +173,17 @@ interface NexusPrismaInputs {
   Query: {
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
-      ordering: 'id'
+      ordering: 'id' | 'posts'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   },
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'authorId'
+      ordering: 'id' | 'title' | 'author' | 'authorId'
     }
   }
   Post: {

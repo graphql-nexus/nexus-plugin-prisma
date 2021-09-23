@@ -97,17 +97,17 @@ interface NexusPrismaInputs {
   Query: {
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested'
-      ordering: 'id' | 'name'
+      ordering: 'id' | 'name' | 'nested'
     }
     nesteds: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
-      ordering: 'id' | 'name' | 'userId'
+      ordering: 'id' | 'name' | 'userId' | 'user'
     }
   },
   User: {
     nested: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
-      ordering: 'id' | 'name' | 'userId'
+      ordering: 'id' | 'name' | 'userId' | 'user'
     }
   }
   Nested: {

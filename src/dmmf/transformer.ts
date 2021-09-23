@@ -124,7 +124,7 @@ function transformOutputType(type: DMMF.OutputType, options: TransformConfig) {
  * support union types on args, but Prisma Client does.
  */
 function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): InternalDMMF.SchemaArg {
-  const inputType = argTypeUnionToArgType(arg.inputTypes, atomicOperations)
+  const [inputType, forceNullable] = argTypeUnionToArgType(arg.inputTypes, atomicOperations)
 
   return {
     name: arg.name,
@@ -132,7 +132,7 @@ function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): InternalD
       type: getTypeName(inputType.type),
       isList: inputType.isList,
       kind: getKind(inputType),
-      isNullable: arg.isNullable,
+      isNullable: arg.isNullable || forceNullable,
       isRequired: arg.isRequired,
     },
   }
@@ -147,7 +147,7 @@ function transformArg(arg: DMMF.SchemaArg, atomicOperations: boolean): InternalD
 function argTypeUnionToArgType(
   argTypeContexts: DMMF.SchemaArgInputType[],
   atomicOperations: boolean
-): DMMF.SchemaArgInputType {
+): [DMMF.SchemaArgInputType, boolean] {
   // Remove atomic operations if needed
   const filteredArgTypeContexts =
     atomicOperations === false
@@ -169,11 +169,20 @@ function argTypeUnionToArgType(
     // [AnyType]
     filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx) && argTypeCtx.isList) ??
     // AnyType
-    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx)) ??
-    // fallback to the first member of the union
-    argTypeContexts[0]
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx));
 
-  return result
+  if (result) {
+    return [result, false];
+  }
+
+  const jsonResult = filteredArgTypeContexts.find((argTypeCtx) => argTypeCtx.type === 'Json');
+  if (jsonResult) {
+    const dbIsNullable = !!filteredArgTypeContexts.find((argTypeCtx) => argTypeCtx.type === 'NullableJsonNullValueInput')
+    return [jsonResult, dbIsNullable];
+  }
+
+  // fallback to the first member of the union
+  return [argTypeContexts[0], false];
 
   function isInputObjectType(argTypeCtx: any) {
     return argTypeCtx.location === 'inputObjectTypes'
