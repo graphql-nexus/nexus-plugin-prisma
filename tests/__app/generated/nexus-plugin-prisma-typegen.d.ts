@@ -25,43 +25,43 @@ interface NexusPrismaInputs {
   Query: {
     bubbles: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
-      ordering: 'id' | 'createdAt' | 'private'
+      ordering: 'id' | 'createdAt' | 'members' | 'private'
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
-      ordering: 'id' | 'country' | 'city'
+      ordering: 'id' | 'country' | 'city' | 'User'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
-      ordering: 'id' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'authors' | 'rating' | 'likes' | 'status'
     }
   },
   Bubble: {
     members: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
-      ordering: 'id' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'authors' | 'rating' | 'likes' | 'status'
     }
   }
   Location: {
     User: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   Post: {
     authors: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
 }

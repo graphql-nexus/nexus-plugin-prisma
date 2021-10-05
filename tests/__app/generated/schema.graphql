@@ -253,7 +253,8 @@ input PostListRelationFilter {
   some: PostWhereInput
 }
 
-input PostOrderByInput {
+input PostOrderByWithRelationInput {
+  authors: UserOrderByRelationAggregateInput
   id: SortOrder
   likes: SortOrder
   rating: SortOrder
@@ -335,7 +336,7 @@ type User {
   firstName: String!
   id: String!
   location: Location!
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByWithRelationInput!], where: PostWhereInput): [Post!]!
 }
 
 input UserCreateNestedManyWithoutPostsInput {
@@ -361,6 +362,10 @@ input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
+}
+
+input UserOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 input UserWhereInput {

@@ -254,7 +254,8 @@ input PostListRelationFilter {
   some: PostWhereInput
 }
 
-input PostOrderByInput {
+input PostOrderByWithRelationInput {
+  authors: UserOrderByRelationAggregateInput
   id: SortOrder
   likes: SortOrder
   rating: SortOrder
@@ -336,7 +337,7 @@ type User {
   firstName: String!
   id: String!
   location: Location!
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByInput!], where: PostWhereInput): [Post!]!
+  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int, orderBy: [PostOrderByWithRelationInput!], where: PostWhereInput): [Post!]!
 }
 
 input UserCreateNestedManyWithoutPostsInput {
@@ -362,6 +363,10 @@ input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
+}
+
+input UserOrderByRelationAggregateInput {
+  _count: SortOrder
 }
 
 input UserWhereInput {
@@ -412,43 +417,43 @@ interface NexusPrismaInputs {
   Query: {
     bubbles: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
-      ordering: 'id' | 'createdAt' | 'private'
+      ordering: 'id' | 'createdAt' | 'members' | 'private'
     }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
-      ordering: 'id' | 'country' | 'city'
+      ordering: 'id' | 'country' | 'city' | 'User'
     }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
-      ordering: 'id' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'authors' | 'rating' | 'likes' | 'status'
     }
   },
   Bubble: {
     members: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   User: {
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
-      ordering: 'id' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'authors' | 'rating' | 'likes' | 'status'
     }
   }
   Location: {
     User: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
   Post: {
     authors: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
     }
   }
 }
@@ -725,7 +730,6 @@ Object {
               "locationId",
             ],
             "relationName": "LocationToUser",
-            "relationOnDelete": "Cascade",
             "relationToFields": Array [
               "id",
             ],
@@ -746,7 +750,6 @@ Object {
               "bubbleId",
             ],
             "relationName": "BubbleToUser",
-            "relationOnDelete": "SetNull",
             "relationToFields": Array [
               "id",
             ],
@@ -1344,6 +1347,19 @@ Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserOrderByRelationAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "members",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
                   "location": "enumTypes",
                   "namespace": "prisma",
                   "type": "SortOrder",
@@ -1354,7 +1370,7 @@ Object {
               "name": "private",
             },
           ],
-          "name": "BubbleOrderByInput",
+          "name": "BubbleOrderByWithRelationInput",
         },
         Object {
           "constraints": Object {
@@ -1376,6 +1392,93 @@ Object {
             },
           ],
           "name": "BubbleWhereUniqueInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 0,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "createdAt",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "private",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "BubbleCountOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_count",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "BubbleMaxOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_max",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "BubbleMinOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_min",
+            },
+          ],
+          "name": "BubbleOrderByWithAggregationInput",
         },
         Object {
           "constraints": Object {
@@ -1725,6 +1828,140 @@ Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostOrderByRelationAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "posts",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "firstName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "lastName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationOrderByWithRelationInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "location",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "BubbleOrderByWithRelationInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "Bubble",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "bubbleId",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserOrderByWithRelationInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "scalar",
+                  "type": "String",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+          ],
+          "name": "UserWhereUniqueInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 0,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
                   "location": "enumTypes",
                   "namespace": "prisma",
                   "type": "SortOrder",
@@ -1773,29 +2010,73 @@ Object {
               "isRequired": false,
               "name": "locationId",
             },
-          ],
-          "name": "UserOrderByInput",
-        },
-        Object {
-          "constraints": Object {
-            "maxNumFields": 1,
-            "minNumFields": 1,
-          },
-          "fields": Array [
             Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
-                  "location": "scalar",
-                  "type": "String",
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserCountOrderByAggregateInput",
                 },
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "id",
+              "name": "_count",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserAvgOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_avg",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserMaxOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_max",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserMinOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_min",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserSumOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_sum",
             },
           ],
-          "name": "UserWhereUniqueInput",
+          "name": "UserOrderByWithAggregationInput",
         },
         Object {
           "constraints": Object {
@@ -2124,8 +2405,21 @@ Object {
               "isRequired": false,
               "name": "city",
             },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserOrderByRelationAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "User",
+            },
           ],
-          "name": "LocationOrderByInput",
+          "name": "LocationOrderByWithRelationInput",
         },
         Object {
           "constraints": Object {
@@ -2147,6 +2441,119 @@ Object {
             },
           ],
           "name": "LocationWhereUniqueInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 0,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "country",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "city",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationCountOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_count",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationAvgOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_avg",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationMaxOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_max",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationMinOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_min",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "LocationSumOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_sum",
+            },
+          ],
+          "name": "LocationOrderByWithAggregationInput",
         },
         Object {
           "constraints": Object {
@@ -2431,6 +2838,19 @@ Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserOrderByRelationAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "authors",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
                   "location": "enumTypes",
                   "namespace": "prisma",
                   "type": "SortOrder",
@@ -2467,7 +2887,7 @@ Object {
               "name": "status",
             },
           ],
-          "name": "PostOrderByInput",
+          "name": "PostOrderByWithRelationInput",
         },
         Object {
           "constraints": Object {
@@ -2489,6 +2909,132 @@ Object {
             },
           ],
           "name": "PostWhereUniqueInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 0,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "status",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostCountOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_count",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostAvgOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_avg",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostMaxOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_max",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostMinOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_min",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostSumOrderByAggregateInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_sum",
+            },
+          ],
+          "name": "PostOrderByWithAggregationInput",
         },
         Object {
           "constraints": Object {
@@ -4898,6 +5444,172 @@ Object {
         },
         Object {
           "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_count",
+            },
+          ],
+          "name": "UserOrderByRelationAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "createdAt",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "private",
+            },
+          ],
+          "name": "BubbleCountOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "createdAt",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "private",
+            },
+          ],
+          "name": "BubbleMaxOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "createdAt",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "private",
+            },
+          ],
+          "name": "BubbleMinOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
             "maxNumFields": null,
             "minNumFields": null,
           },
@@ -5067,23 +5779,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5097,23 +5792,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5125,23 +5803,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "StringWithAggregatesFilter",
@@ -5268,23 +5929,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5298,23 +5942,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedDateTimeFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5326,23 +5953,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedDateTimeFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "DateTimeWithAggregatesFilter",
@@ -5397,23 +6007,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5427,23 +6020,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedBoolFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -5455,23 +6031,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedBoolFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "BoolWithAggregatesFilter",
@@ -5897,6 +6456,294 @@ Object {
         },
         Object {
           "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "_count",
+            },
+          ],
+          "name": "PostOrderByRelationAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "firstName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "lastName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "bubbleId",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserCountOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserAvgOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "firstName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "lastName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "bubbleId",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserMaxOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "firstName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "lastName",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "bubbleId",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserMinOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "locationId",
+            },
+          ],
+          "name": "UserSumOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
             "maxNumFields": null,
             "minNumFields": null,
           },
@@ -6086,23 +6933,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6116,23 +6946,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6144,23 +6957,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "StringNullableWithAggregatesFilter",
@@ -6287,23 +7083,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6315,23 +7094,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_avg",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "avg",
             },
             Object {
               "inputTypes": Array [
@@ -6347,23 +7109,6 @@ Object {
               "name": "_sum",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "sum",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6375,23 +7120,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_min",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
             },
             Object {
               "inputTypes": Array [
@@ -6406,25 +7134,196 @@ Object {
               "isRequired": false,
               "name": "_max",
             },
+          ],
+          "name": "IntWithAggregatesFilter",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
               "inputTypes": Array [
                 Object {
                   "isList": false,
-                  "location": "inputObjectTypes",
+                  "location": "enumTypes",
                   "namespace": "prisma",
-                  "type": "NestedIntFilter",
+                  "type": "SortOrder",
                 },
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "max",
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "country",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "city",
             },
           ],
-          "name": "IntWithAggregatesFilter",
+          "name": "LocationCountOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+          ],
+          "name": "LocationAvgOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "country",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "city",
+            },
+          ],
+          "name": "LocationMaxOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "country",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "city",
+            },
+          ],
+          "name": "LocationMinOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+          ],
+          "name": "LocationSumOrderByAggregateInput",
         },
         Object {
           "constraints": Object {
@@ -6606,6 +7505,285 @@ Object {
         },
         Object {
           "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "status",
+            },
+          ],
+          "name": "PostCountOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+          ],
+          "name": "PostAvgOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "status",
+            },
+          ],
+          "name": "PostMaxOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "status",
+            },
+          ],
+          "name": "PostMinOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
+            "maxNumFields": 1,
+            "minNumFields": 1,
+          },
+          "fields": Array [
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "id",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "rating",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "enumTypes",
+                  "namespace": "prisma",
+                  "type": "SortOrder",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "likes",
+            },
+          ],
+          "name": "PostSumOrderByAggregateInput",
+        },
+        Object {
+          "constraints": Object {
             "maxNumFields": null,
             "minNumFields": null,
           },
@@ -6726,23 +7904,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6754,23 +7915,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_avg",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "avg",
             },
             Object {
               "inputTypes": Array [
@@ -6786,23 +7930,6 @@ Object {
               "name": "_sum",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "sum",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6816,23 +7943,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6844,23 +7954,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "FloatWithAggregatesFilter",
@@ -6943,23 +8036,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -6973,23 +8049,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedEnumPostStatusFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -7001,23 +8060,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedEnumPostStatusFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "EnumPostStatusWithAggregatesFilter",
@@ -9868,23 +10910,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -9898,23 +10923,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -9926,23 +10934,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedStringWithAggregatesFilter",
@@ -10180,23 +11171,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10210,23 +11184,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedDateTimeFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10238,23 +11195,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedDateTimeFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedDateTimeWithAggregatesFilter",
@@ -10309,23 +11249,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10339,23 +11262,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedBoolFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10367,23 +11273,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedBoolFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedBoolWithAggregatesFilter",
@@ -10733,23 +11622,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10763,23 +11635,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -10791,23 +11646,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedStringNullableFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedStringNullableWithAggregatesFilter",
@@ -11065,23 +11903,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11093,23 +11914,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_avg",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "avg",
             },
             Object {
               "inputTypes": Array [
@@ -11125,23 +11929,6 @@ Object {
               "name": "_sum",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "sum",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11155,23 +11942,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11183,23 +11953,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedIntWithAggregatesFilter",
@@ -11504,23 +12257,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11532,23 +12268,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_avg",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "avg",
             },
             Object {
               "inputTypes": Array [
@@ -11564,23 +12283,6 @@ Object {
               "name": "_sum",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "sum",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11594,23 +12296,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11622,23 +12307,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedFloatFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedFloatWithAggregatesFilter",
@@ -11721,23 +12389,6 @@ Object {
               "name": "_count",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedIntFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "count",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11751,23 +12402,6 @@ Object {
               "name": "_min",
             },
             Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedEnumPostStatusFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "min",
-            },
-            Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
@@ -11779,23 +12413,6 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "_max",
-            },
-            Object {
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "NestedEnumPostStatusFilter",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "max",
             },
           ],
           "name": "NestedEnumPostStatusWithAggregatesFilter",
@@ -15179,13 +15796,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15262,6 +15879,17 @@ Object {
                 "type": "Boolean",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "name": "_count",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "BubbleCountOutputType",
+              },
+            },
           ],
           "name": "Bubble",
         },
@@ -15298,13 +15926,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15433,6 +16061,17 @@ Object {
                 "type": "Int",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "name": "_count",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "UserCountOutputType",
+              },
+            },
           ],
           "name": "User",
         },
@@ -15489,13 +16128,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15562,6 +16201,17 @@ Object {
                 "type": "User",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "name": "_count",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "LocationCountOutputType",
+              },
+            },
           ],
           "name": "Location",
         },
@@ -15598,13 +16248,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15702,6 +16352,17 @@ Object {
                 "type": "PostStatus",
               },
             },
+            Object {
+              "args": Array [],
+              "isNullable": true,
+              "name": "_count",
+              "outputType": Object {
+                "isList": false,
+                "location": "outputObjectTypes",
+                "namespace": "prisma",
+                "type": "PostCountOutputType",
+              },
+            },
           ],
           "name": "Post",
         },
@@ -15730,13 +16391,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15824,13 +16485,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15918,13 +16579,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -15999,13 +16660,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithAggregationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "BubbleOrderByInput",
+                      "type": "BubbleOrderByWithAggregationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16124,13 +16785,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16218,13 +16879,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16312,13 +16973,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16393,13 +17054,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithAggregationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "UserOrderByInput",
+                      "type": "UserOrderByWithAggregationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16518,13 +17179,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16612,13 +17273,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16706,13 +17367,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16787,13 +17448,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithAggregationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "LocationOrderByInput",
+                      "type": "LocationOrderByWithAggregationInput",
                     },
                   ],
                   "isNullable": false,
@@ -16912,13 +17573,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -17006,13 +17667,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -17100,13 +17761,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithRelationInput",
                     },
                   ],
                   "isNullable": false,
@@ -17181,13 +17842,13 @@ Object {
                       "isList": true,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithAggregationInput",
                     },
                     Object {
                       "isList": false,
                       "location": "inputObjectTypes",
                       "namespace": "prisma",
-                      "type": "PostOrderByInput",
+                      "type": "PostOrderByWithAggregationInput",
                     },
                   ],
                   "isNullable": false,
@@ -18454,21 +19115,6 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "count",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "BubbleCountAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_min",
               "outputType": Object {
@@ -18480,38 +19126,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "min",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "BubbleMinAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_max",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "BubbleMaxAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "max",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -18605,38 +19221,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "count",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "UserCountAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_avg",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "UserAvgAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "avg",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -18657,21 +19243,6 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "sum",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "UserSumAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_min",
               "outputType": Object {
@@ -18683,38 +19254,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "min",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "UserMinAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_max",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "UserMaxAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "max",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -18850,38 +19391,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "count",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "LocationCountAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_avg",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "LocationAvgAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "avg",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -18902,21 +19413,6 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "sum",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "LocationSumAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_min",
               "outputType": Object {
@@ -18928,38 +19424,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "min",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "LocationMinAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_max",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "LocationMaxAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "max",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -19075,38 +19541,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "count",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "PostCountAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_avg",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "PostAvgAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "avg",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -19127,21 +19563,6 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "sum",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "PostSumAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_min",
               "outputType": Object {
@@ -19153,38 +19574,8 @@ Object {
             },
             Object {
               "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "min",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "PostMinAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
               "isNullable": true,
               "name": "_max",
-              "outputType": Object {
-                "isList": false,
-                "location": "outputObjectTypes",
-                "namespace": "prisma",
-                "type": "PostMaxAggregateOutputType",
-              },
-            },
-            Object {
-              "args": Array [],
-              "deprecation": Object {
-                "reason": "Aggregation keywords got unified to use underscore as prefix to prevent field clashes.",
-                "sinceVersion": "2.23",
-              },
-              "isNullable": true,
-              "name": "max",
               "outputType": Object {
                 "isList": false,
                 "location": "outputObjectTypes",
@@ -19316,6 +19707,21 @@ Object {
             Object {
               "args": Array [],
               "isNullable": false,
+              "name": "members",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "BubbleCountOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
               "name": "id",
               "outputType": Object {
                 "isList": false,
@@ -19425,6 +19831,21 @@ Object {
             },
           ],
           "name": "BubbleMaxAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "name": "posts",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "UserCountOutputType",
         },
         Object {
           "fields": Array [
@@ -19636,6 +20057,21 @@ Object {
             Object {
               "args": Array [],
               "isNullable": false,
+              "name": "User",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "LocationCountOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
               "name": "id",
               "outputType": Object {
                 "isList": false,
@@ -19775,6 +20211,21 @@ Object {
             },
           ],
           "name": "LocationMaxAggregateOutputType",
+        },
+        Object {
+          "fields": Array [
+            Object {
+              "args": Array [],
+              "isNullable": false,
+              "name": "authors",
+              "outputType": Object {
+                "isList": false,
+                "location": "scalar",
+                "type": "Int",
+              },
+            },
+          ],
+          "name": "PostCountOutputType",
         },
         Object {
           "fields": Array [
