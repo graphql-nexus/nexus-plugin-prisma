@@ -1,6 +1,6 @@
 {
   "name": "@kenchi/nexus-plugin-prisma",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
