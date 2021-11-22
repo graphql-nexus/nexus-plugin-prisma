@@ -7,6 +7,7 @@ Object {
 }
 
 type Mutation {
+  deleteOneUser(where: UserWhereUniqueInput!): User
   createOneUser(data: UserCreateInput!): User!
   createOneNested(data: NestedCreateInput!): Nested!
 }

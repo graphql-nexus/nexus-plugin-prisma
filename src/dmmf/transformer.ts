@@ -222,6 +222,7 @@ async function addGloballyComputedInputs({
     }),
     Promise.resolve({} as Record<string, any>)
   )
+
   // Combine computedInputValues with values provided by the user, recursing to add
   // global computedInputs to nested types
   return Object.keys(data).reduce(async (deeplyComputedData, fieldName) => {
@@ -248,6 +249,10 @@ export async function addComputedInputs({
   locallyComputedInputs,
   params,
 }: AddComputedInputParams) {
+  if (params.args.data === undefined) {
+    return { ...params.args }
+  }
+
   return {
     ...params.args,
     data: {

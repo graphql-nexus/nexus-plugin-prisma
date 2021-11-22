@@ -61,6 +61,7 @@ const globalTestData = {
   }),
   mutation: Nexus.mutationType({
     definition(t: any) {
+      t.crud.deleteOneUser()
       t.crud.createOneUser()
       t.crud.createOneNested()
     },
@@ -191,6 +192,36 @@ it('handles arrays when recursing for computedInputs', async () => {
           { createdWithBrowser: 'firefox', name: 'Nested Name' },
         ],
       },
+    },
+  })
+})
+
+it('handles undefined data when recursing for computedInputs', async () => {
+  const { datamodel } = globalTestData
+  const dmmf = await getDmmf(datamodel, {
+    globallyComputedInputs: { createdWithBrowser: ({ ctx }) => ctx.browser },
+  })
+
+  expect(
+    await addComputedInputs({
+      params: {
+        info: {} as any,
+        args: {
+          data: undefined,
+          where: {
+            id: 'an id',
+          },
+        },
+        ctx: { browser: 'firefox' },
+      },
+      inputType: dmmf.getInputType('UserWhereUniqueInput'),
+      dmmf,
+      locallyComputedInputs: {},
+    })
+  ).toStrictEqual({
+    data: undefined,
+    where: {
+      id: 'an id',
     },
   })
 })
