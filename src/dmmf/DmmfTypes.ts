@@ -31,6 +31,7 @@ export declare namespace InternalDMMF {
     idFields: string[]
     isEmbedded: boolean
     uniqueFields: Array<string[]>
+    primaryKey: { fields?: string[] } | null
   }
   export type FieldKind = 'scalar' | 'object' | 'enum'
   type DatamodelFieldKind = 'scalar' | 'relation' | 'enum'

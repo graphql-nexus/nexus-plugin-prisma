@@ -24,6 +24,10 @@ export function resolveUniqueIdentifiers(typeName: string, dmmf: DmmfDocument): 
     return model.idFields
   }
 
+  // Try finding 3.
+  if (model.primaryKey && model.primaryKey.fields && model.primaryKey.fields.length > 0) {
+    return model.primaryKey.fields;
+  }
   const singleUniqueField = model.fields.find((f) => f.isUnique)
 
   if (singleUniqueField) {
