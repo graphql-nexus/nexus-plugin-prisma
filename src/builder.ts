@@ -3,7 +3,13 @@ import * as Nexus from 'nexus'
 import { DynamicOutputPropertyDef } from 'nexus/dist/dynamicProperty'
 import * as path from 'path'
 import * as Constraints from './constraints'
-import { addComputedInputs, DmmfDocument, getTransformedDmmf, InternalDMMF } from './dmmf'
+import {
+  addComputedInputs,
+  addComputedWhereInputs,
+  DmmfDocument,
+  getTransformedDmmf,
+  InternalDMMF,
+} from './dmmf'
 import * as GraphQL from './graphql'
 import {
   OnUnknownArgName,
@@ -29,10 +35,12 @@ import {
   apply,
   assertPrismaClientInContext,
   GlobalComputedInputs,
+  GlobalComputedWhereInputs,
   Index,
   indexBy,
   isEmptyObject,
   LocalComputedInputs,
+  LocalComputedWhereInputs,
   lowerFirst,
 } from './utils'
 
@@ -43,6 +51,7 @@ interface FieldPublisherConfig {
   filtering?: boolean | Record<string, boolean>
   ordering?: boolean | Record<string, boolean>
   computedInputs?: LocalComputedInputs<any>
+  computedWhereInputs?: LocalComputedWhereInputs<any>
   resolve?: (
     root: object,
     args: object,
@@ -56,9 +65,12 @@ type WithRequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
 // Config options that are populated with defaults will not be undefined
 type ResolvedFieldPublisherConfig = Omit<
   WithRequiredKeys<FieldPublisherConfig, 'alias' | 'type'>,
-  'computedInputs'
+  'computedInputs' | 'computedWhereInputs'
   // Internally rename the arg passed to a resolver as 'computedInputs' to clarify scope
-> & { locallyComputedInputs: LocalComputedInputs<any> }
+> & {
+  locallyComputedInputs: LocalComputedInputs<any>
+  locallyComputedWhereInputs: LocalComputedWhereInputs<any>
+}
 
 type FieldPublisher = (opts?: FieldPublisherConfig) => PublisherMethods // Fluent API
 type PublisherMethods = Record<string, FieldPublisher>
@@ -140,6 +152,7 @@ export interface Options {
    */
   scalars?: Partial<Record<Typegen.GetGen<'scalars', string>, GraphQLScalarType>>
   computedInputs?: GlobalComputedInputs
+  computedWhereInputs?: GlobalComputedWhereInputs
   /**
    * Enable atomic operations
    *
@@ -216,6 +229,7 @@ const defaultOptions = {
     typegen: defaultTypegenPath,
   },
   computedInputs: {},
+  computedWhereInputs: {},
 }
 
 export interface CustomInputArg {
@@ -232,6 +246,7 @@ export class SchemaBuilder {
   protected publisher: Publisher
   protected scalars: Record<string, GraphQLScalarType>
   protected globallyComputedInputs: GlobalComputedInputs
+  protected globallyComputedWhereInputs: GlobalComputedWhereInputs
   protected unknownFieldsByModel: Index<string[]>
   public wasCrudUsedButDisabled: boolean
 
@@ -244,11 +259,13 @@ export class SchemaBuilder {
     }
     // Internally rename the 'computedInputs' plugin option to clarify scope
     this.globallyComputedInputs = config.computedInputs ? config.computedInputs : {}
+    this.globallyComputedWhereInputs = config.computedWhereInputs ? config.computedWhereInputs : {}
     this.paginationStrategy = paginationStrategies[config.paginationStrategy]
     this.dmmf =
       options.dmmf ||
       getTransformedDmmf(config.inputs.prismaClient, {
         globallyComputedInputs: this.globallyComputedInputs,
+        globallyComputedWhereInputs: this.globallyComputedWhereInputs,
         paginationStrategy: this.paginationStrategy,
         atomicOperations: config.atomicOperations,
       })
@@ -309,6 +326,8 @@ export class SchemaBuilder {
         const publishers = getCrudMappedFields(typeName, this.dmmf).reduce((crud, mappedField) => {
           const fieldPublisher: FieldPublisher = (givenConfig) => {
             const inputType = this.dmmf.getInputType(mappedField.field.args[0].inputType.type)
+            const whereArgs = mappedField.field.args.find((arg) => arg.name === 'where')
+            const whereInputType = whereArgs && this.dmmf.getInputType(whereArgs.inputType.type)
             const publisherConfig = this.buildPublisherConfig({
               field: mappedField.field,
               givenConfig: givenConfig ? givenConfig : {},
@@ -335,8 +354,27 @@ export class SchemaBuilder {
                 })
               }
 
-              args = this.paginationStrategy.resolve(args)
+              if (
+                typeName === 'Query' &&
+                whereArgs &&
+                whereInputType &&
+                (!isEmptyObject(publisherConfig.locallyComputedWhereInputs) ||
+                  !isEmptyObject(this.globallyComputedWhereInputs))
+              ) {
+                args = await addComputedWhereInputs({
+                  argType: whereArgs.inputType.type,
+                  inputType: whereInputType,
+                  dmmf: this.dmmf,
+                  params: {
+                    info,
+                    args,
+                    ctx,
+                  },
+                  locallyComputedWhereInputs: publisherConfig.locallyComputedWhereInputs,
+                })
+              }
 
+              args = this.paginationStrategy.resolve(args)
               return prismaClient[mappedField.prismaClientAccessor][mappedField.operation](args)
             }
 
@@ -547,13 +585,14 @@ export class SchemaBuilder {
 
   buildPublisherConfig({
     field,
-    givenConfig: { computedInputs, ...otherConfig },
+    givenConfig: { computedInputs, computedWhereInputs, ...otherConfig },
   }: Required<PublisherConfigData>): ResolvedFieldPublisherConfig {
     return {
       pagination: true,
       type: field.outputType.type,
       alias: field.name,
       locallyComputedInputs: computedInputs ? computedInputs : {},
+      locallyComputedWhereInputs: computedWhereInputs ? computedWhereInputs : {},
       ...otherConfig,
     }
   }
@@ -562,6 +601,7 @@ export class SchemaBuilder {
     const {
       alias,
       locallyComputedInputs,
+      locallyComputedWhereInputs,
       type,
       filtering,
       ordering,
@@ -648,7 +688,12 @@ export class SchemaBuilder {
       if (inputType.fields.length > 0) {
         args.push({
           arg: whereArg,
-          type: inputType,
+          type: {
+            ...inputType,
+            fields: inputType.fields.filter(
+              (filed) => !Object.keys(publisherConfig.locallyComputedWhereInputs).includes(filed.name)
+            ),
+          },
         })
       }
     }
@@ -658,10 +703,9 @@ export class SchemaBuilder {
       const orderByTypeNamePreviewFeature = `${field.outputType.type}OrderByWithRelationInput`
       const orderByArg = field.args.find(
         (arg) =>
-          (arg.inputType.type === orderByTypeName ||
-            arg.inputType.type === orderByTypeNamePreviewFeature) &&
+          (arg.inputType.type === orderByTypeName || arg.inputType.type === orderByTypeNamePreviewFeature) &&
           arg.name === 'orderBy'
-      );
+      )
 
       if (!orderByArg) {
         throw new Error(`Could not find ordering argument for ${typeName}.${field.name}`)

@@ -156,20 +156,44 @@ export type LocalComputedInputs<MethodName extends string> = Record<
   (params: LocalMutationResolverParams<MethodName>) => unknown
 >
 
-export type GlobalComputedInputs = Record<string, (params: GlobalMutationResolverParams) => unknown>
+/**
+ *  Represents arguments required by Prisma Client JS that will
+ *  be derived from a request's input (args, context, and info)
+ *  and omitted from the GraphQL API. The object itself maps the
+ *  names of these args to a function that takes an object representing
+ *  the request's input and returns the value to pass to the prisma
+ *  arg of the same name.
+ */
+export type LocalComputedWhereInputs<MethodName extends string> = Record<
+  string,
+  (params: LocalMutationResolverParams<MethodName>) => unknown
+>
 
-type BaseMutationResolverParams = {
+export type GlobalComputedInputs = Record<string, (params: GlobalMutationResolverParams) => unknown>
+export type GlobalComputedWhereInputs = Record<string, (params: GlobalQueryResolverParams) => unknown>
+
+type BaseResolverParams = {
   info: GraphQLResolveInfo
   ctx: Context
 }
 
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
+export type GlobalMutationResolverParams = BaseResolverParams & {
   args: Record<string, any> & { data: unknown }
 }
 
-export type LocalMutationResolverParams<MethodName extends string> = BaseMutationResolverParams & {
+export type GlobalQueryResolverParams = BaseResolverParams & {
+  args: Record<string, any> & { where?: unknown }
+}
+
+export type LocalMutationResolverParams<MethodName extends string> = BaseResolverParams & {
   args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
     ? core.GetGen3<'argTypes', 'Mutation', MethodName>
+    : any
+}
+
+export type LocalQueryResolverParams<MethodName extends string> = BaseResolverParams & {
+  args: MethodName extends keyof core.GetGen2<'argTypes', 'Query'>
+    ? core.GetGen3<'argTypes', 'Query', MethodName>
     : any
 }
 
