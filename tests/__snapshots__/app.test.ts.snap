@@ -644,7 +644,6 @@ Object {
             "type": "Boolean",
           },
         ],
-        "isEmbedded": false,
         "isGenerated": false,
         "name": "Bubble",
         "primaryKey": null,
@@ -782,7 +781,6 @@ Object {
             "type": "Int",
           },
         ],
-        "isEmbedded": false,
         "isGenerated": false,
         "name": "User",
         "primaryKey": null,
@@ -852,7 +850,6 @@ Object {
             "type": "User",
           },
         ],
-        "isEmbedded": false,
         "isGenerated": false,
         "name": "Location",
         "primaryKey": null,
@@ -937,7 +934,6 @@ Object {
             "type": "PostStatus",
           },
         ],
-        "isEmbedded": false,
         "isGenerated": false,
         "name": "Post",
         "primaryKey": null,
@@ -8414,25 +8410,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -8472,6 +8449,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -8638,25 +8634,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -8696,6 +8673,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -9035,25 +9031,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "PostWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "PostWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -9093,6 +9070,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "PostWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -9295,19 +9291,6 @@ Object {
               "inputTypes": Array [
                 Object {
                   "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "BubbleWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
                   "location": "scalar",
                   "type": "Boolean",
                 },
@@ -9327,6 +9310,19 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "BubbleWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -9732,25 +9728,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -9790,6 +9767,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -9956,25 +9952,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -10014,6 +9991,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -10336,25 +10332,6 @@ Object {
               ],
               "isNullable": false,
               "isRequired": false,
-              "name": "connect",
-            },
-            Object {
-              "inputTypes": Array [
-                Object {
-                  "isList": false,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-                Object {
-                  "isList": true,
-                  "location": "inputObjectTypes",
-                  "namespace": "prisma",
-                  "type": "UserWhereUniqueInput",
-                },
-              ],
-              "isNullable": false,
-              "isRequired": false,
               "name": "set",
             },
             Object {
@@ -10394,6 +10371,25 @@ Object {
               "isNullable": false,
               "isRequired": false,
               "name": "delete",
+            },
+            Object {
+              "inputTypes": Array [
+                Object {
+                  "isList": false,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+                Object {
+                  "isList": true,
+                  "location": "inputObjectTypes",
+                  "namespace": "prisma",
+                  "type": "UserWhereUniqueInput",
+                },
+              ],
+              "isNullable": false,
+              "isRequired": false,
+              "name": "connect",
             },
             Object {
               "inputTypes": Array [
@@ -15881,7 +15877,7 @@ Object {
             },
             Object {
               "args": Array [],
-              "isNullable": true,
+              "isNullable": false,
               "name": "_count",
               "outputType": Object {
                 "isList": false,
@@ -16063,7 +16059,7 @@ Object {
             },
             Object {
               "args": Array [],
-              "isNullable": true,
+              "isNullable": false,
               "name": "_count",
               "outputType": Object {
                 "isList": false,
@@ -16203,7 +16199,7 @@ Object {
             },
             Object {
               "args": Array [],
-              "isNullable": true,
+              "isNullable": false,
               "name": "_count",
               "outputType": Object {
                 "isList": false,
@@ -16354,7 +16350,7 @@ Object {
             },
             Object {
               "args": Array [],
-              "isNullable": true,
+              "isNullable": false,
               "name": "_count",
               "outputType": Object {
                 "isList": false,
