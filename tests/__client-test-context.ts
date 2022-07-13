@@ -9,6 +9,7 @@ import { GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import * as Nexus from 'nexus'
 import * as path from 'path'
+import { tryDelete } from '../src/utils'
 import { generateSchemaAndTypes } from './__utils'
 
 type RuntimeTestContext = {
@@ -124,8 +125,8 @@ async function generateClientFromDatamodel(metadata: Metadata) {
   return {
     client,
     async teardown() {
-      await fs.removeAsync(metadata.tmpDir)
       await client.$disconnect()
+      await tryDelete(metadata.tmpDir)
     },
   }
 }
@@ -147,22 +148,25 @@ type Metadata = {
 function getTestMetadata(datamodelString: string): Metadata {
   const uniqId = Math.random().toString().slice(2)
   const tmpDir = path.join(__dirname, `tmp/${uniqId}`)
+  const shortTempDir = path.join('tests', `tmp/${uniqId}`) // absolute paths not working on WIN32 - https://github.com/prisma/prisma/issues/1732
+  const shortClientDir = path.join(tmpDir, 'client')
   const clientDir = path.join(tmpDir, 'client')
   const projectDir = path.join(__dirname, '..')
   const schemaPath = path.join(tmpDir, 'schema.prisma')
-  const datamodel = endent`
-    datasource db {
-      provider = "sqlite"
-      url      = "file:${tmpDir}/dev.db"
-    }
+  const datamodel = `
+datasource db {
+  provider = "sqlite"
+  url      = "file:${path.join(tmpDir, 'dev.db').replace(/\\/g, '\\\\')}"
+}
 
-    generator client {
-      provider = "prisma-client-js"
-      output   = "${clientDir}"
-    }
+generator client {
+  provider = "prisma-client-js"
+  output   = "${shortClientDir.replace(/\\/g, '\\\\')}"
+}
 
-    ${datamodelString}
-  `
+${datamodelString}
+`;
+
   return {
     tmpDir,
     clientDir,

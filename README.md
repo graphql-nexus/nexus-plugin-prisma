@@ -20,3 +20,11 @@ npm install @morgothulhu/nexus-plugin-prisma
 # OR
 yarn add @morgothulhu/nexus-plugin-prisma
 ```
+
+## Package management
+
+### Windows pre-requisites
+
+> Install SQLite3
+
+(follow instructions from [here](http://sqlitetutorials.com/sqlite-installation.html))

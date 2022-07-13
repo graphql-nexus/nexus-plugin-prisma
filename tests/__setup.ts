@@ -3,7 +3,7 @@ import ts from 'typescript'
 import * as tsm from 'ts-morph'
 import * as path from 'path'
 
-const formatTSDiagonsticsForJest = (diagnostics: readonly tsm.Diagnostic[]): string => {
+const formatTSDiagnosticsForJest = (diagnostics: readonly tsm.Diagnostic[]): string => {
   const tsDiagnostics = diagnostics.map((d) => d.compilerObject)
   const formatHost: ts.FormatDiagnosticsHost = {
     getCanonicalFileName: (path) => path,
@@ -18,7 +18,6 @@ const formatTSDiagonsticsForJest = (diagnostics: readonly tsm.Diagnostic[]): str
   )
 
   const sourcePath = process.cwd() + '/' + (((global as any).TS_FORMAT_PROJECT_ROOT as string) || '')
-
   const summaryReport = `${tsDiagnostics.length} Type Error(s):\n\n${tsDiagnostics
     .map((d) => (d.file ? d.file.fileName.replace(sourcePath, '') : '<no file>'))
     .join('\n')}`
@@ -39,7 +38,7 @@ expect.extend({
     const diagnostics = project.getPreEmitDiagnostics()
     const pass = diagnostics.length === 0
     return {
-      message: () => (pass ? 'expected program to not typecheck' : formatTSDiagonsticsForJest(diagnostics)),
+      message: () => (pass ? 'expected program to not typecheck' : formatTSDiagnosticsForJest(diagnostics)),
       pass,
     }
   },
