@@ -55,6 +55,7 @@
     "@types/pluralize": "0.0.29",
     "@types/prettier": "2.1.6",
     "@types/semver": "7.3.4",
+    "cash-rm": "0.2.0",
     "execa": "^5.0.0",
     "get-port": "5.1.1",
     "graphql": "15.4.0",
