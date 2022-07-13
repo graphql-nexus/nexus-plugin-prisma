@@ -1,6 +1,6 @@
 {
-  "name": "@kenchi/nexus-plugin-prisma",
-  "version": "0.39.0",
+  "name": "@morgothulhu/nexus-plugin-prisma",
+  "version": "0.40.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "typegen.d.ts"
   ],
   "scripts": {
-    "release": "npm config -L project set @kenchi:registry=https://npm.pkg.github.com/ && yarn publish && npm config -L project delete @kenchi:registry && yarn publish",
+    "release": "npm config -L project set @morgothulhu:registry=https://npm.pkg.github.com/ && yarn publish && npm config -L project delete @morgothulhu:registry && yarn publish",
     "clean": "rm -rf dist",
     "build": "yarn clean && yarn build:deps-sync && yarn build:module-facades && tsc",
     "build:deps-sync": "node scripts/ensure-deps-sync",
