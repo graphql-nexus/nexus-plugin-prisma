@@ -195,7 +195,8 @@ export async function tryDelete(path: string, numberRetries = 1): Promise<void> 
   let retryIndex = 0;
   while(retryIndex < numberRetries) {
     try {
-      fs.removeAsync(path);
+      await fs.removeAsync(path);
+      break;
     } catch(e) {
       // swallow
       retryIndex += 1;

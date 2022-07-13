@@ -27,8 +27,8 @@
     "postinstall": "node ./scripts/postinstall.js",
     "test": "yarn test:run && yarn test:clean",
     "test:clean": "rm -rf tests/tmp",
-    "test:run": "jest --testTimeout=10000 --forceExit --maxWorkers=1",
-    "test:run:rebaseSnapshots": "jest --testTimeout=10000 --forceExit --maxWorkers=1 --updateSnapshot",
+    "test:run": "jest --testTimeout=10000 --forceExit",
+    "test:run:rebaseSnapshots": "jest --testTimeout=10000 --forceExit --updateSnapshot",
     "test:dev": "jest src tests/ --watch",
     "upgrade-prisma-dev": "yarn add prisma @prisma/client@dev @prisma/generator-helper@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
