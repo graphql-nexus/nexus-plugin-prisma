@@ -1,4 +1,4 @@
-import { Migrate } from '@prisma/migrate'
+const MigratePackage = require('@prisma/migrate')
 import { getGenerator } from '@prisma/internals'
 import * as fs from 'fs-jetpack'
 import getPort from 'get-port'
@@ -115,6 +115,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
     schemaPath: metadata.schemaPath,
     printDownloadProgress: false,
     baseDir: metadata.tmpDir,
+    dataProxy: false,
   })
 
   await generator.generate()
@@ -133,7 +134,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
 }
 
 async function migrateLift(schemaPath: string): Promise<void> {
-  const migrate = new Migrate(schemaPath)
+  const migrate = new MigratePackage.Migrate(schemaPath)
 
   await migrate.push({ force: true })
 }

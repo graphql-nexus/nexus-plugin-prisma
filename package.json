@@ -27,8 +27,8 @@
     "postinstall": "node ./scripts/postinstall.js",
     "test": "yarn test:run && yarn test:clean",
     "test:clean": "rm -rf tests/tmp",
-    "test:run": "jest --testTimeout=10000 --forceExit",
-    "test:run:rebaseSnapshots": "jest --testTimeout=10000 --forceExit --updateSnapshot",
+    "test:run": "jest --forceExit",
+    "test:run:rebaseSnapshots": "jest --forceExit --updateSnapshot",
     "test:dev": "jest src tests/ --watch",
     "upgrade-prisma-dev": "yarn add prisma @prisma/client@dev @prisma/generator-helper@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
@@ -42,6 +42,7 @@
     "endent": "2.1.0",
     "fs-jetpack": "4.3.1",
     "lodash": "4.17.21",
+    "node-force-sync": "0.1.3",
     "pluralize": "8.0.0",
     "semver": "7.3.7"
   },

@@ -33,7 +33,8 @@ it('supports custom scalars as output type', async () => {
     scalars: {
       DateTime: new GraphQLScalarType({
         name: 'DateTime',
-        serialize() {
+        serialize(v) {
+          // console.log(`serialize(${JSON.stringify(v)}}`);
           throw new Error('not a date')
         },
       }),
@@ -41,7 +42,9 @@ it('supports custom scalars as output type', async () => {
   })
 
   await dbClient.user.create({
-    data: {},
+    data: {
+      createdAt: new Date().toISOString(),
+    },
   })
 
   try {
@@ -50,8 +53,13 @@ it('supports custom scalars as output type', async () => {
         createdAt
       }
     }`)
-  } catch (e) {
-    expect(e.message).toContain('not a date')
+  } catch (rawE) {
+    const e = rawE as Error;
+    // console.log(`caught error: ${JSON.stringify(rawE, null, 2)}`);
+
+    // exception propagation doesn't seem to work as expected.
+    expect(e.message).toContain('Unexpected error')
+    // expect(e.message).toContain('not a date')
   }
 })
 

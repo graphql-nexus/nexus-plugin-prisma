@@ -27,17 +27,33 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
       ordering: 'id' | 'createdAt' | 'members' | 'private'
     }
+    groupByBubble: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'createdAt' | 'members' | 'private'
+      ordering: 'id' | 'createdAt' | 'private' | '_count' | '_max' | '_min'
+    }
     users: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
       ordering: 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+    }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts' | 'firstName' | 'lastName' | 'location' | 'Bubble' | 'bubbleId' | 'locationId'
+      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
       ordering: 'id' | 'country' | 'city' | 'User'
     }
+    groupByLocation: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
+      ordering: 'id' | 'country' | 'city' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
       ordering: 'id' | 'authors' | 'rating' | 'likes' | 'status'
+    }
+    groupByPost: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'authors' | 'rating' | 'likes' | 'status'
+      ordering: 'id' | 'rating' | 'likes' | 'status' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   Bubble: {
@@ -69,39 +85,51 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    bubble: 'Bubble'
+    aggregateBubble: 'AggregateBubble'
     bubbles: 'Bubble'
-    user: 'User'
+    bubble: 'Bubble'
+    groupByBubble: 'BubbleGroupByOutputType'
+    aggregateUser: 'AggregateUser'
     users: 'User'
-    location: 'Location'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
+    aggregateLocation: 'AggregateLocation'
     locations: 'Location'
-    post: 'Post'
+    location: 'Location'
+    groupByLocation: 'LocationGroupByOutputType'
+    aggregatePost: 'AggregatePost'
     posts: 'Post'
+    post: 'Post'
+    groupByPost: 'PostGroupByOutputType'
   },
   Mutation: {
     createOneBubble: 'Bubble'
-    updateOneBubble: 'Bubble'
-    updateManyBubble: 'AffectedRowsOutput'
+    createManyBubble: 'AffectedRowsOutput'
     deleteOneBubble: 'Bubble'
     deleteManyBubble: 'AffectedRowsOutput'
+    updateOneBubble: 'Bubble'
+    updateManyBubble: 'AffectedRowsOutput'
     upsertOneBubble: 'Bubble'
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
+    createManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOneLocation: 'Location'
-    updateOneLocation: 'Location'
-    updateManyLocation: 'AffectedRowsOutput'
+    createManyLocation: 'AffectedRowsOutput'
     deleteOneLocation: 'Location'
     deleteManyLocation: 'AffectedRowsOutput'
+    updateOneLocation: 'Location'
+    updateManyLocation: 'AffectedRowsOutput'
     upsertOneLocation: 'Location'
     createOnePost: 'Post'
-    updateOnePost: 'Post'
-    updateManyPost: 'AffectedRowsOutput'
+    createManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
     deleteManyPost: 'AffectedRowsOutput'
+    updateOnePost: 'Post'
+    updateManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   Bubble: {

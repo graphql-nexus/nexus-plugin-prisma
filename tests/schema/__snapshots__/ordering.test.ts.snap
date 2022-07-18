@@ -24,7 +24,7 @@ enum SortOrder {
 `;
 
 exports[`orderby fields can be allow-listed: typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -50,6 +50,10 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'b' | 'c'
       ordering: 'id' | 'a' | 'b' | 'c'
     }
+    groupByFoo: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'b' | 'c'
+      ordering: 'id' | 'a' | 'b' | 'c' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
   },
   Foo: {
 
@@ -59,15 +63,17 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    foo: 'Foo'
+    aggregateFoo: 'AggregateFoo'
     foos: 'Foo'
+    foo: 'Foo'
+    groupByFoo: 'FooGroupByOutputType'
   },
   Mutation: {
     createOneFoo: 'Foo'
-    updateOneFoo: 'Foo'
-    updateManyFoo: 'AffectedRowsOutput'
     deleteOneFoo: 'Foo'
     deleteManyFoo: 'AffectedRowsOutput'
+    updateOneFoo: 'Foo'
+    updateManyFoo: 'AffectedRowsOutput'
     upsertOneFoo: 'Foo'
   },
   Foo: {

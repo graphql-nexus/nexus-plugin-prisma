@@ -101,7 +101,7 @@ type Query {
 `;
 
 exports[`disable atomic operations: typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -127,6 +127,10 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'amount'
       ordering: 'id' | 'name' | 'amount'
     }
+    groupByModelName: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'amount'
+      ordering: 'id' | 'name' | 'amount' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
   },
   ModelName: {
 
@@ -136,15 +140,17 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    modelName: 'ModelName'
+    aggregateModelName: 'AggregateModelName'
     modelNames: 'ModelName'
+    modelName: 'ModelName'
+    groupByModelName: 'ModelNameGroupByOutputType'
   },
   Mutation: {
     createOneModelName: 'ModelName'
-    updateOneModelName: 'ModelName'
-    updateManyModelName: 'AffectedRowsOutput'
     deleteOneModelName: 'ModelName'
     deleteManyModelName: 'AffectedRowsOutput'
+    updateOneModelName: 'ModelName'
+    updateManyModelName: 'AffectedRowsOutput'
     upsertOneModelName: 'ModelName'
   },
   ModelName: {
@@ -294,7 +300,7 @@ type Query {
 `;
 
 exports[`support atomic operations (default): typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -320,6 +326,10 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'amount'
       ordering: 'id' | 'name' | 'amount'
     }
+    groupByModelName: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'amount'
+      ordering: 'id' | 'name' | 'amount' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
   },
   ModelName: {
 
@@ -329,15 +339,17 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    modelName: 'ModelName'
+    aggregateModelName: 'AggregateModelName'
     modelNames: 'ModelName'
+    modelName: 'ModelName'
+    groupByModelName: 'ModelNameGroupByOutputType'
   },
   Mutation: {
     createOneModelName: 'ModelName'
-    updateOneModelName: 'ModelName'
-    updateManyModelName: 'AffectedRowsOutput'
     deleteOneModelName: 'ModelName'
     deleteManyModelName: 'AffectedRowsOutput'
+    updateOneModelName: 'ModelName'
+    updateManyModelName: 'AffectedRowsOutput'
     upsertOneModelName: 'ModelName'
   },
   ModelName: {

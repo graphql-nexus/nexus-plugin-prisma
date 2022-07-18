@@ -14,6 +14,9 @@ const operationToRoot: Record<OperationName, 'Query' | 'Mutation'> = {
   update: 'Mutation',
   updateMany: 'Mutation',
   upsert: 'Mutation',
+  aggregate: 'Query',
+  createMany: 'Mutation',
+  groupBy: 'Query',
 }
 
 async function getSchemaArgsForCrud(
