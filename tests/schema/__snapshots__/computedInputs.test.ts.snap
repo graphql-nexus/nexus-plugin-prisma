@@ -70,8 +70,7 @@ input UserCreateWithoutNestedInput {
 input UserCreateOrConnectWithoutNestedInput {
   where: UserWhereUniqueInput!
   create: UserCreateWithoutNestedInput!
-}
-",
+}",
   "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
@@ -203,8 +202,7 @@ input UserWhereUniqueInput {
 
 input UserCreateInput {
   name: String!
-}
-",
+}",
   "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 

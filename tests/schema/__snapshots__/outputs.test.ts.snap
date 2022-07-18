@@ -65,8 +65,7 @@ input NestedDateTimeFilter {
   gt: DateTime
   gte: DateTime
   not: NestedDateTimeFilter
-}
-"
+}"
 `;
 
 exports[`publishes scalars from input types: typegen 1`] = `

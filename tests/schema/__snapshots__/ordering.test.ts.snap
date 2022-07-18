@@ -20,8 +20,7 @@ input FooWhereUniqueInput {
 enum SortOrder {
   asc
   desc
-}
-"
+}"
 `;
 
 exports[`orderby fields can be allow-listed: typegen 1`] = `

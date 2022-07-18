@@ -7,8 +7,7 @@ exports[`support models with only one id field (some crud operations are removed
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support models with only one id field (some crud operations are removed): typegen 1`] = `

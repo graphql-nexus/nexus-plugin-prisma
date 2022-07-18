@@ -17,8 +17,7 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support prisma pagination: typegen 1`] = `
@@ -143,8 +142,7 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support relay pagination (default): typegen 1`] = `

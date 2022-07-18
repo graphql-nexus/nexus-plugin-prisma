@@ -272,8 +272,7 @@ it('in dev stage, warns if a graphql typename does not map to a prisma name but 
 
     type Query {
       ok: Boolean!
-    }
-    "
+    }"
   `)
   expect($output).toMatchInlineSnapshot(`
     "

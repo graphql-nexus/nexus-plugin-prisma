@@ -21,8 +21,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: Int
-}
-"
+}"
 `;
 
 exports[`does not automatically publish input/enum type if already created by user: typegen 1`] = `
@@ -167,8 +166,7 @@ input NestedEnumColorFilter {
   in: [Color!]
   notIn: [Color!]
   not: NestedEnumColorFilter
-}
-"
+}"
 `;
 
 exports[`does not publish enum twice (from input/output type): typegen 1`] = `
@@ -265,8 +263,7 @@ enum Color {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`publishes enum even as output type: typegen 1`] = `

@@ -97,8 +97,7 @@ input NestedStringFilter {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`disable atomic operations: typegen 1`] = `
@@ -291,8 +290,7 @@ input NestedStringFilter {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support atomic operations (default): typegen 1`] = `

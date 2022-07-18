@@ -14,8 +14,7 @@ scalar Json
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`publishes date and json scalar output types: typegen 1`] = `

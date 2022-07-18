@@ -7,14 +7,14 @@ let ctx = createRuntimeTestContext()
 it('supports nested query with one id field', async () => {
   const datamodel = `
   model Parent {
-    idField Int     @id
+    idField     Int    @id
     child       Child?
   }
   
   model Child {
-    idField Int    @id
+    idField     Int    @id
     parent      Parent @relation(fields: [parentId], references: [idField])
-    parentId Int
+    parentId    Int    @unique
   }
 `
 
@@ -74,7 +74,7 @@ it('supports nested query with compound ids', async () => {
     idField1 Int
     idField2 Int
     child    Child?
-    @@id([idField1, idField2])
+    @@unique([idField1, idField2])
   }
   
   model Child {
@@ -84,6 +84,7 @@ it('supports nested query with compound ids', async () => {
     parentId1 Int
     parentId2 Int
     @@id([idField1, idField2])
+    @@unique([parentId1, parentId2])
   }
 `
 
@@ -155,14 +156,14 @@ it('supports nested query with compound ids', async () => {
 it('supports nested query without id but one unique', async () => {
   const datamodel = `
   model Parent {
-    uniqueField Int     @unique
+    uniqueField Int    @unique
     child       Child?
   }
   
   model Child {
     uniqueField Int    @unique
     parent      Parent @relation(fields: [parentId], references: [uniqueField])
-    parentId    Int
+    parentId    Int    @unique
   }
 `
 
@@ -228,7 +229,7 @@ it('supports nested query without id but multiple uniques', async () => {
     uniqueField1 Int    @unique
     uniqueField2 Int    @unique
     parent       Parent @relation(fields: [parentId], references: uniqueField1)
-    parentId     Int
+    parentId     Int    @unique
   }
 `
 
@@ -304,6 +305,7 @@ it('supports nested query without id but compound uniques', async () => {
     parentUnique1 Int
     parentUnique2 Int
     @@unique([uniqueField1, uniqueField2])
+    @@unique([parentUnique1, parentUnique2])
   }
 `
 

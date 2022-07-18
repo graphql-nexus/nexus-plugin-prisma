@@ -98,8 +98,7 @@ input NestedStringFilter {
   startsWith: String
   endsWith: String
   not: NestedStringFilter
-}
-"
+}"
 `;
 
 exports[`generates publishers pluralized & camel-cased: typegen 1`] = `

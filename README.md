@@ -28,3 +28,9 @@ yarn add @morgothulhu/nexus-plugin-prisma
 > Install SQLite3
 
 (follow instructions from [here](http://sqlitetutorials.com/sqlite-installation.html))
+
+## Interactive test run
+
+> Windows 32 (as an example)
+
+`.\node_modules\.bin\jest --forceExit --verbose=true --useStderr=true --silent=false -t "supports nested query with one id field" --watch`
