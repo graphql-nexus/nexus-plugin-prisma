@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   schema-tests:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
