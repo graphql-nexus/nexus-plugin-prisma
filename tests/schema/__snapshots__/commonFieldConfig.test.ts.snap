@@ -37,6 +37,5 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;

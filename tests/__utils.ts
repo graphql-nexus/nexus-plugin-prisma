@@ -1,5 +1,5 @@
 const PrismaClientGenerator = require('@prisma/client/generator-build')
-import * as SDK from '@prisma/sdk'
+import * as SDK from '@prisma/internals'
 import * as GQL from 'graphql'
 import * as Nexus from 'nexus'
 import stripAnsi from 'strip-ansi'
@@ -8,6 +8,7 @@ import { DmmfDocument } from '../src/dmmf'
 import { transform, TransformOptions } from '../src/dmmf/transformer'
 import { paginationStrategies } from '../src/pagination'
 import { render as renderTypegen } from '../src/typegen'
+import { dumpToFile } from '../src/utils'
 
 export const createNexusPrismaInternal = (
   options: Omit<NexusPrismaBuilder.InternalOptions, 'nexusBuilder'>
@@ -23,8 +24,10 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
   const originalDmmf = await SDK.getDMMF({
     datamodel,
   })
+  // dumpToFile(originalDmmf, 'document.getDmmf.original');
   const clientDmmf = PrismaClientGenerator.externalToInternalDmmf(originalDmmf)
-  return new DmmfDocument(transform(clientDmmf, options))
+  // dumpToFile(clientDmmf, 'document.getDmmf.client');
+  return new DmmfDocument(transform(clientDmmf, {...options, dmmfDocumentIncludesSchema: true}))
 }
 
 export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {

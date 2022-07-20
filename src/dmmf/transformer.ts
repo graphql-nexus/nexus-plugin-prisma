@@ -1,3 +1,4 @@
+const PrismaClientGenerator = require('@prisma/client/generator-build')
 import { DMMF } from '@prisma/client/runtime'
 import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
@@ -6,6 +7,9 @@ import { DmmfDocument } from './DmmfDocument'
 import { InternalDMMF } from './DmmfTypes'
 import { getTypeName } from './helpers'
 import { getPrismaClientDmmf } from './utils'
+import { resolve } from 'path'
+import { readFileSync } from 'fs'
+import { forceSync } from 'node-force-sync';
 
 export type TransformOptions = {
   atomicOperations?: boolean
@@ -13,10 +17,15 @@ export type TransformOptions = {
   paginationStrategy?: PaginationStrategy
 }
 
+export type OptionalTransformOptions = {
+  prismaClientPackagePath?: string
+  dmmfDocumentIncludesSchema?: boolean,
+}
+
 export const getTransformedDmmf = (
   prismaClientPackagePath: string,
   options?: TransformOptions
-): DmmfDocument => new DmmfDocument(transform(getPrismaClientDmmf(prismaClientPackagePath), options))
+): DmmfDocument => new DmmfDocument(transform(getPrismaClientDmmf(prismaClientPackagePath), { ...options, prismaClientPackagePath }))
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
@@ -25,7 +34,45 @@ const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformO
   ...givenOptions,
 })
 
-export function transform(document: DMMF.Document, options?: TransformOptions): InternalDMMF.Document {
+const _documentsWithSchemaPerPath: Record<string, DMMF.Document> = {};
+
+export function transform(document: DMMF.Document, options?: TransformOptions & OptionalTransformOptions): InternalDMMF.Document {
+  if (!options?.dmmfDocumentIncludesSchema) {
+    if (!options?.prismaClientPackagePath?.trim()) {
+      throw new Error('prismaClientPackagePath invalid')
+    }
+
+    const datamodelPath = resolve(__dirname, '..', '..', 'node_modules', options.prismaClientPackagePath, 'schema.prisma');
+
+    // get the schema - this is explicitly done in prisma >4.0
+
+    document = _documentsWithSchemaPerPath[datamodelPath];
+    if (!document) {
+      // cache miss - generate and save
+
+      const datamodel = readFileSync(datamodelPath, { encoding: 'utf8' });
+      // this is an async operation - thus the async-to-sync wrapper
+      const getSchemaDocumentSync = forceSync(`
+function getSchemaDocument(datamodel){
+  return new Promise((resolve, reject) => {
+    require('@prisma/internals')
+      .getDMMF({ datamodel: datamodel })
+      .then((value) => resolve(value))
+      .catch((e) => reject(e))
+  });
+}`
+      );
+
+      const originalDocument = getSchemaDocumentSync(datamodel) as DMMF.Document;
+    
+      document = PrismaClientGenerator.externalToInternalDmmf(originalDocument)
+ 
+      _documentsWithSchemaPerPath[datamodelPath] = document;
+    }
+  }
+
+  // dumpToFile(document, 'document');
+
   const result = {
     datamodel: transformDatamodel(document.datamodel),
     schema: transformSchema(document.schema, addDefaultOptions(options)),
@@ -35,8 +82,15 @@ export function transform(document: DMMF.Document, options?: TransformOptions): 
 }
 
 function transformDatamodel(datamodel: DMMF.Datamodel): InternalDMMF.Datamodel {
+  const enums: DMMF.Datamodel['enums'] = datamodel.enums;
+  // const enums: DMMF.Datamodel['enums'] = schema.enumTypes.model?.map((e) => ({
+  //   name: e.name,
+  //   dbName: null,
+  //   values: e.values.map((eV) => ({name: eV, dbName: null})),
+  // })) ?? undefined;
+
   return {
-    enums: datamodel.enums,
+    enums,
     models: datamodel.models.map((model) => ({
       ...model,
       fields: model.fields.map((field) => ({
@@ -238,11 +292,11 @@ async function addGloballyComputedInputs({
     const fieldValue =
       field.inputType.kind === 'object'
         ? await addGloballyComputedInputs({
-            inputType: dmmf.getInputType(field.inputType.type),
-            dmmf,
-            params,
-            data: data[fieldName],
-          })
+          inputType: dmmf.getInputType(field.inputType.type),
+          dmmf,
+          params,
+          data: data[fieldName],
+        })
         : data[fieldName]
     return {
       ...(await deeplyComputedData),

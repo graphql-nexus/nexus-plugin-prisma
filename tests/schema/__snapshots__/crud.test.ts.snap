@@ -7,12 +7,11 @@ exports[`support models with only one id field (some crud operations are removed
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support models with only one id field (some crud operations are removed): typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -38,6 +37,10 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id'
       ordering: 'id'
     }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id'
+      ordering: 'id' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
   },
   User: {
 
@@ -47,15 +50,17 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
+    aggregateUser: 'AggregateUser'
     users: 'User'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
   },
   Mutation: {
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
   },
   User: {
     id: 'Int'

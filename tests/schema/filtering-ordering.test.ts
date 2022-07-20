@@ -71,7 +71,8 @@ it('in prod stage, throw error if no arg or wrong args are passed', async () => 
 
     expect(schema).toMatchSnapshot('schema')
     expect(typegen).toMatchSnapshot('typegen')
-  } catch (e) {
+  } catch (rawE) {
+    const e = rawE as Error;
     expect(e.message).toMatchSnapshot('output')
   }
 })

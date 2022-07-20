@@ -1,6 +1,6 @@
 import execa from 'execa'
 import * as FS from 'fs-jetpack'
-import * as nexusBuilder from 'nexus/dist/builder'
+import { generateSchema } from 'nexus/dist/core'
 import * as Path from 'path'
 import { getImportPathRelativeToOutput } from '../src/utils'
 import * as types from './__app/main'
@@ -11,6 +11,8 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 
 it('integrates together', async () => {
   const fs = FS.cwd(Path.join(__dirname, '__app'))
+
+  // console.log(`running prisma generate in ${fs.cwd()}`);
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -25,7 +27,7 @@ it('integrates together', async () => {
   // Run Prisma generation:
   // - Prisma Client JS
   //
-  execa.sync('prisma', ['generate'], {
+  execa.sync('npx', ['prisma', 'generate'], {
     cwd: fs.cwd(),
   })
 
@@ -42,6 +44,8 @@ it('integrates together', async () => {
 
   const nexusPrismaTypegenPath = fs.path(`generated/nexus-plugin-prisma-typegen.d.ts`)
   const typegenFacadePath = require.resolve('../src/typegen/static')
+
+  // console.log(`running nexus generate to ${nexusPrismaTypegenPath}`);
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {
@@ -60,10 +64,18 @@ it('integrates together', async () => {
   process.env.NODE_ENV = 'development'
 
   await mockConsoleLog(async () => {
-    await nexusBuilder.generateSchema({
+    await generateSchema({
       types,
       plugins: [nexusPrisma],
       shouldGenerateArtifacts: true,
+      sourceTypes: {
+        modules: [
+          {
+            module: require.resolve('@prisma/client/index.d.ts'),
+            alias: "prisma",
+          }
+        ]
+      },
       outputs: {
         typegen: fs.path(`generated/nexus-typegen.d.ts`),
         schema: fs.path(`generated/schema.graphql`),

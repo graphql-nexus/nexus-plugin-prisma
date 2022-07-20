@@ -1,18 +1,13 @@
 name: trunk
 
-on:
-  push:
-    branches: [main]
-
-env:
-  PRISMA_TELEMETRY_INFORMATION: "nexus-plugin-prisma trunk.yml"
+on: [push]
 
 jobs:
   schema-tests:
     runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x]
         nexus: [nexus@^1.0.0]
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +15,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
-      - run: yarn add ${{ matrix.nexus }}
       - run: yarn build
-      - run: yarn -s test
+      - run: yarn test

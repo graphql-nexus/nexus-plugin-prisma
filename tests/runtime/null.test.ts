@@ -14,6 +14,9 @@ const operationToRoot: Record<OperationName, 'Query' | 'Mutation'> = {
   update: 'Mutation',
   updateMany: 'Mutation',
   upsert: 'Mutation',
+  aggregate: 'Query',
+  createMany: 'Mutation',
+  groupBy: 'Query',
 }
 
 async function getSchemaArgsForCrud(
@@ -45,12 +48,12 @@ test('findMany: converts nulls to undefined when fields are not nullable', async
       id        String   @default(cuid()) @id
       email     String?  @unique
       birthDate DateTime
-      posts     Post[]
+      posts     Post[]   @relation("PostAuthors")
     }
     
     model Post {
       id      String @default(cuid()) @id
-      authors User[] @relation(references: [id])
+      authors User[] @relation("PostAuthors")
     }
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'findMany')
@@ -85,12 +88,12 @@ test('create: converts nulls to undefined when fields are not nullable', async (
     id        String   @default(cuid()) @id
     email     String?  @unique
     birthDate DateTime
-    posts     Post[]
+    posts     Post[]   @relation("PostAuthors")
   }
   
   model Post {
     id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
+    authors User[] @relation("PostAuthors")
   }
   `
   const { dmmf, schemaArgs } = await getSchemaArgsForCrud(datamodel, 'User', 'create')
@@ -117,12 +120,12 @@ test('model filtering: converts nulls to undefined when fields are not nullable'
     id        String   @default(cuid()) @id
     email     String?  @unique
     birthDate DateTime
-    posts     Post[]
+    posts     Post[]   @relation("PostAuthors")
   }
   
   model Post {
     id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
+    authors User[] @relation("PostAuthors")
   }
   `
   const dmmf = await getDmmf(datamodel)
@@ -152,12 +155,12 @@ test('do not convert args that are arrays', async () => {
     id        String   @default(cuid()) @id
     email     String?  @unique
     birthDate DateTime
-    posts     Post[]
+    posts     Post[]   @relation("PostAuthors")
   }
   
   model Post {
     id      String @default(cuid()) @id
-    authors User[] @relation(references: [id])
+    authors User[] @relation("PostAuthors")
   }
   `
   const dmmf = await getDmmf(datamodel)

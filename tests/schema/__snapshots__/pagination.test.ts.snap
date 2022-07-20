@@ -17,12 +17,11 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support prisma pagination: typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -48,9 +47,17 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
       ordering: 'id' | 'posts'
     }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
+      ordering: 'id' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'author' | 'authorId'
+    }
+    groupByPost: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   User: {
@@ -67,23 +74,27 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
+    aggregateUser: 'AggregateUser'
     users: 'User'
-    post: 'Post'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
+    aggregatePost: 'AggregatePost'
     posts: 'Post'
+    post: 'Post'
+    groupByPost: 'PostGroupByOutputType'
   },
   Mutation: {
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOnePost: 'Post'
-    updateOnePost: 'Post'
-    updateManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
     deleteManyPost: 'AffectedRowsOutput'
+    updateOnePost: 'Post'
+    updateManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   User: {
@@ -143,12 +154,11 @@ input PostWhereUniqueInput {
 
 type Query {
   ok: Boolean!
-}
-"
+}"
 `;
 
 exports[`support relay pagination (default): typegen 1`] = `
-"import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -175,9 +185,17 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
       ordering: 'id' | 'posts'
     }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'posts'
+      ordering: 'id' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
     posts: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
       ordering: 'id' | 'title' | 'author' | 'authorId'
+    }
+    groupByPost: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
+      ordering: 'id' | 'title' | 'authorId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   User: {
@@ -194,23 +212,27 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
+    aggregateUser: 'AggregateUser'
     users: 'User'
-    post: 'Post'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
+    aggregatePost: 'AggregatePost'
     posts: 'Post'
+    post: 'Post'
+    groupByPost: 'PostGroupByOutputType'
   },
   Mutation: {
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOnePost: 'Post'
-    updateOnePost: 'Post'
-    updateManyPost: 'AffectedRowsOutput'
     deleteOnePost: 'Post'
     deleteManyPost: 'AffectedRowsOutput'
+    updateOnePost: 'Post'
+    updateManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
   },
   User: {

@@ -46,11 +46,11 @@ input BubbleMembersWhereInput {
 
 input BubbleWhereInput {
   AND: [BubbleWhereInput!]
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
   createdAt: DateTimeFilter
   id: StringFilter
   members: UserListRelationFilter
-  NOT: [BubbleWhereInput!]
-  OR: [BubbleWhereInput!]
   private: BoolFilter
 }
 
@@ -144,12 +144,12 @@ input LocationCreateWithoutUserInput {
 
 input LocationWhereInput {
   AND: [LocationWhereInput!]
-  city: StringFilter
-  country: StringFilter
-  id: IntFilter
   NOT: [LocationWhereInput!]
   OR: [LocationWhereInput!]
   User: UserListRelationFilter
+  city: StringFilter
+  country: StringFilter
+  id: IntFilter
 }
 
 input LocationWhereUniqueInput {
@@ -274,11 +274,11 @@ input PostUpdateManyMutationInput {
 
 input PostWhereInput {
   AND: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
   authors: UserListRelationFilter
   id: IntFilter
   likes: IntFilter
-  NOT: [PostWhereInput!]
-  OR: [PostWhereInput!]
   rating: FloatFilter
   status: EnumPostStatusFilter
 }
@@ -371,14 +371,14 @@ input UserOrderByRelationAggregateInput {
 input UserWhereInput {
   AND: [UserWhereInput!]
   Bubble: BubbleWhereInput
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
   bubbleId: StringNullableFilter
   firstName: StringFilter
   id: StringFilter
   lastName: StringFilter
   location: LocationWhereInput
   locationId: IntFilter
-  NOT: [UserWhereInput!]
-  OR: [UserWhereInput!]
   posts: PostListRelationFilter
 }
 

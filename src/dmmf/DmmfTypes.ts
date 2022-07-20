@@ -101,16 +101,18 @@ export declare namespace InternalDMMF {
   interface Mapping {
     model: string
     plural: string
+    aggregate?: string | null;
+    groupBy?: string | null;
+    // findFirst?: string | null;
     findUnique?: string | null
-    //findFirst?: string | null;
     findMany?: string | null
     create?: string | null
+    createMany?: string | null
     update?: string | null
     updateMany?: string | null
     upsert?: string | null
     delete?: string | null
     deleteMany?: string | null
-    //aggregate?: string | null;
   }
   enum ModelAction {
     findOne = 'findUnique',

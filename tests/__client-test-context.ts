@@ -1,11 +1,10 @@
-import { Migrate } from '@prisma/migrate'
-import { getGenerator } from '@prisma/sdk'
-import endent from 'endent'
+const MigratePackage = require('@prisma/migrate')
+import { getGenerator } from '@prisma/internals'
 import * as fs from 'fs-jetpack'
 import getPort from 'get-port'
 import { GraphQLScalarType, GraphQLSchema } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
-import { GraphQLServer } from 'graphql-yoga'
+import { createServer as GraphQLServer } from 'graphql-yoga'
 import { Server } from 'http'
 import * as Nexus from 'nexus'
 import * as path from 'path'
@@ -94,13 +93,15 @@ async function getGraphQLServerAndClient(params: {
   })
   const port = await getPort()
   const endpoint = '/graphql'
-  const graphqlServer = new GraphQLServer({
+  const graphqlServer = GraphQLServer({
     context: { prisma: params.prismaClient.client },
     schema: schema as any,
+    port,
+    endpoint,
   })
   const client = new GraphQLClient(`http://localhost:${port}${endpoint}`)
 
-  const httpServer = await graphqlServer.start({ port, endpoint })
+  const httpServer = await graphqlServer.start()
 
   return { client, httpServer, schema, schemaString }
 }
@@ -114,6 +115,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
     schemaPath: metadata.schemaPath,
     printDownloadProgress: false,
     baseDir: metadata.tmpDir,
+    dataProxy: false,
   })
 
   await generator.generate()
@@ -132,7 +134,7 @@ async function generateClientFromDatamodel(metadata: Metadata) {
 }
 
 async function migrateLift(schemaPath: string): Promise<void> {
-  const migrate = new Migrate(schemaPath)
+  const migrate = new MigratePackage.Migrate(schemaPath)
 
   await migrate.push({ force: true })
 }

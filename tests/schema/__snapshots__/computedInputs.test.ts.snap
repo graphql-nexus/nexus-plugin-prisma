@@ -70,9 +70,8 @@ input UserCreateWithoutNestedInput {
 input UserCreateOrConnectWithoutNestedInput {
   where: UserWhereUniqueInput!
   create: UserCreateWithoutNestedInput!
-}
-",
-  "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+}",
+  "typegen": "import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -99,9 +98,17 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested'
       ordering: 'id' | 'name' | 'nested'
     }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'nested'
+      ordering: 'id' | 'name' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
     nesteds: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
       ordering: 'id' | 'name' | 'userId' | 'user'
+    }
+    groupByNested: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'userId' | 'user'
+      ordering: 'id' | 'name' | 'userId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   User: {
@@ -118,23 +125,27 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
+    aggregateUser: 'AggregateUser'
     users: 'User'
-    nested: 'Nested'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
+    aggregateNested: 'AggregateNested'
     nesteds: 'Nested'
+    nested: 'Nested'
+    groupByNested: 'NestedGroupByOutputType'
   },
   Mutation: {
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
     createOneNested: 'Nested'
-    updateOneNested: 'Nested'
-    updateManyNested: 'AffectedRowsOutput'
     deleteOneNested: 'Nested'
     deleteManyNested: 'AffectedRowsOutput'
+    updateOneNested: 'Nested'
+    updateManyNested: 'AffectedRowsOutput'
     upsertOneNested: 'Nested'
   },
   User: {
@@ -203,9 +214,8 @@ input UserWhereUniqueInput {
 
 input UserCreateInput {
   name: String!
-}
-",
-  "typegen": "import * as Typegen from '@kenchi/nexus-plugin-prisma/typegen'
+}",
+  "typegen": "import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
 
 // Pagination type
@@ -231,6 +241,10 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'createdWithBrowser'
       ordering: 'id' | 'name' | 'createdWithBrowser'
     }
+    groupByUser: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'name' | 'createdWithBrowser'
+      ordering: 'id' | 'name' | 'createdWithBrowser' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
   },
   User: {
 
@@ -240,15 +254,17 @@ interface NexusPrismaInputs {
 // Prisma output types metadata
 interface NexusPrismaOutputs {
   Query: {
-    user: 'User'
+    aggregateUser: 'AggregateUser'
     users: 'User'
+    user: 'User'
+    groupByUser: 'UserGroupByOutputType'
   },
   Mutation: {
     createOneUser: 'User'
-    updateOneUser: 'User'
-    updateManyUser: 'AffectedRowsOutput'
     deleteOneUser: 'User'
     deleteManyUser: 'AffectedRowsOutput'
+    updateOneUser: 'User'
+    updateManyUser: 'AffectedRowsOutput'
     upsertOneUser: 'User'
   },
   User: {

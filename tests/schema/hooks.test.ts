@@ -272,8 +272,7 @@ it('in dev stage, warns if a graphql typename does not map to a prisma name but 
 
     type Query {
       ok: Boolean!
-    }
-    "
+    }"
   `)
   expect($output).toMatchInlineSnapshot(`
     "
@@ -308,7 +307,8 @@ it('in prod stage, throw error if a graphql typename does not map to a prisma na
     const { schemaString: schema } = await generateSchemaAndTypes(datamodel, [User])
 
     expect(schema).toMatchInlineSnapshot()
-  } catch (e) {
+  } catch (rawE) {
+    const e = rawE as Error;
     expect(e.message).toMatchInlineSnapshot(`
       "Your GraphQL \`GraphQLTypeNameNotMappingToAPrismaModelName\` object definition is attempting to expose some Prisma model fields named \`\\"id\\", \\"name\\", \\"age\\"\`, but there is no such Prisma model called \`GraphQLTypeNameNotMappingToAPrismaModelName\`
       If this is not intentional, make sure you don't have a typo in your GraphQL type name \`GraphQLTypeNameNotMappingToAPrismaModelName\`

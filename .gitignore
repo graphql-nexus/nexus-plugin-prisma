@@ -13,3 +13,5 @@ yalc.lock
 .postgres-data
 .mysql-data
 tests/tmp
+tmp.*
+debug*.json

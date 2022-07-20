@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`forwards plugins to t.crud 1`] = `[Error: Not authorized: {"response":{"data":null,"errors":[{"message":"Not authorized","locations":[{"line":2,"column":7}],"path":["users"]}],"status":200},"request":{"query":"{\\n      users {\\n        id\\n      }\\n    }"}}]`;
+exports[`forwards plugins to t.crud 1`] = `[Error: Unexpected error.: {"response":{"errors":[{"message":"Unexpected error.","locations":[{"line":2,"column":7}],"path":["users"]}],"data":null,"status":200,"headers":{}},"request":{"query":"{\\n      users {\\n        id\\n      }\\n    }"}}]`;
 
-exports[`forwards plugins to t.model 1`] = `[Error: Not authorized: {"response":{"data":null,"errors":[{"message":"Not authorized","locations":[{"line":3,"column":9}],"path":["users",0,"id"]}],"status":200},"request":{"query":"{\\n      users {\\n        id\\n      }\\n    }"}}]`;
+exports[`forwards plugins to t.model 1`] = `[Error: Unexpected error.: {"response":{"errors":[{"message":"Unexpected error.","locations":[{"line":3,"column":9}],"path":["users",0,"id"]}],"data":null,"status":200,"headers":{}},"request":{"query":"{\\n      users {\\n        id\\n      }\\n    }"}}]`;
