@@ -7,27 +7,33 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+        nexus: [nexus@^1.0.0]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
-      - run: npm build
-      - run: npm test
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run: yarn test
 
   publish-gpr:
     needs: build
     runs-on: macos-latest
-    permissions:
-      packages: write
-      contents: read
+    strategy:
+      matrix:
+        node-version: [14.x]
+        nexus: [nexus@^1.0.0]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
-          registry-url: https://npm.pkg.github.com/
-      - run: npm build
-      - run: npm publish
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
