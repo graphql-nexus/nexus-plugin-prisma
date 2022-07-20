@@ -35,6 +35,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
+          scope: '@morgothulhu'
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run: yarn publish --access public
