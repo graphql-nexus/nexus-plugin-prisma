@@ -1,4 +1,6 @@
-name: Node.js Package
+# reference - https://sergiodxa.com/articles/github-actions-npm-publish
+
+name: publish [npmjs]
 
 on:
   release:
@@ -32,8 +34,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
       - run: yarn --frozen-lockfile
       - run: yarn build
-      - run: yarn publish
+      - run: yarn publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NPM_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
