@@ -2,7 +2,7 @@ const PrismaClientGenerator = require('@prisma/client/generator-build')
 import { DMMF } from '@prisma/client/runtime'
 import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
-import { dumpToFile, GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
+import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'
 import { DmmfDocument } from './DmmfDocument'
 import { InternalDMMF } from './DmmfTypes'
 import { getTypeName } from './helpers'
@@ -74,14 +74,14 @@ function getSchemaDocument(datamodel){
   // dumpToFile(document, 'document');
 
   const result = {
-    datamodel: transformDatamodel(document.datamodel, document.schema),
+    datamodel: transformDatamodel(document.datamodel),
     schema: transformSchema(document.schema, addDefaultOptions(options)),
     operations: document.mappings.modelOperations,
   }
   return result
 }
 
-function transformDatamodel(datamodel: DMMF.Datamodel, schema: DMMF.Schema): InternalDMMF.Datamodel {
+function transformDatamodel(datamodel: DMMF.Datamodel): InternalDMMF.Datamodel {
   const enums: DMMF.Datamodel['enums'] = datamodel.enums;
   // const enums: DMMF.Datamodel['enums'] = schema.enumTypes.model?.map((e) => ({
   //   name: e.name,

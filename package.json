@@ -33,7 +33,7 @@
     "upgrade-prisma-dev": "yarn add prisma @prisma/client@dev @prisma/generator-helper@dev @prisma/migrate@dev @prisma/sdk@dev"
   },
   "peerDependencies": {
-    "@prisma/client": "4.0.0",
+    "@prisma/client": "4.1.0",
     "graphql": "16.5.0",
     "nexus": "1.3.0"
   },
@@ -46,15 +46,18 @@
     "pluralize": "8.0.0",
     "semver": "7.3.7"
   },
+  "publishConfig": {
+    "@morgothulhu:registry": "https://npm.pkg.github.com"
+  },
   "devDependencies": {
     "@prisma-labs/prettier-config": "0.1.0",
-    "@prisma/client": "4.0.0",
-    "@prisma/generator-helper": "4.0.0",
-    "@prisma/migrate": "4.0.0",
-    "@prisma/internals": "4.0.0",
-    "@types/jest": "28.1.5",
+    "@prisma/client": "4.1.0",
+    "@prisma/generator-helper": "4.1.0",
+    "@prisma/migrate": "4.1.0",
+    "@prisma/internals": "4.1.0",
+    "@types/jest": "28.1.6",
     "@types/lodash": "4.14.182",
-    "@types/node": "^14.18.21",
+    "@types/node": "^14.18.22",
     "@types/node-fetch": "2.6.2",
     "@types/pluralize": "0.0.29",
     "@types/prettier": "2.6.3",
@@ -65,17 +68,17 @@
     "graphql": "16.5.0",
     "graphql-request": "4.3.0",
     "graphql-scalars": "1.17.0",
-    "graphql-yoga": "2.13.1",
-    "jest": "28.1.2",
+    "graphql-yoga": "2.13.4",
+    "jest": "28.1.3",
     "jest-watch-typeahead": "2.0.0",
     "nexus": "1.3.0",
-    "node-fetch": "3.2.8",
+    "node-fetch": "3.2.9",
     "prettier": "2.7.1",
-    "prisma": "4.0.0",
+    "prisma": "4.1.0",
     "strip-ansi": "^6.0.1",
-    "ts-jest": "28.0.5",
+    "ts-jest": "28.0.7",
     "ts-morph": "15.1.0",
-    "ts-node": "10.8.2",
+    "ts-node": "10.9.1",
     "tslib": "2.4.0",
     "typescript": "4.7.4"
   },
