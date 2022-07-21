@@ -15,6 +15,14 @@ You can find the [documentation on the Nexus website](https://nexusjs.org/docs/p
 
 **Note2:** This package is a fork from [kenchi's](https://github.com/kenchi/nexus-plugin-prisma). Thank you for your support pre-prisma 4.0.
 
+## Usage notes
+
+### AWS Lambda packaging
+
+Make sure to include `@prisma/internals` in your AWS Lambda packaged `node_modules` folder, in addition to the `@prisma/client` package.
+
+To mitigate overall package size issues, remove all `libquery_engine-debian-openssl-1.1.x.so.node` files under `node_modules/@prisma` as they are not leveraged by AWS Lambda.
+
 ## Installation
 
 ```
