@@ -12,16 +12,18 @@ export function runSync(params: {
   tagOpenWrappers?: [string, string]
   tagCloseWrappers?: [string, string]
   tmpFilePath?: string
+  cwd?: string
   nodeExecutable?: string
   maxBufferSize?: number
 }) {
   // inspired by https://github.com/tannerntannern/node-force-sync/blob/master/src/index.ts
-  const { code, tagOpenWrappers, tagCloseWrappers, tmpFilePath, nodeExecutable, maxBufferSize } = {
+  const { code, cwd, tagOpenWrappers, tagCloseWrappers, tmpFilePath, nodeExecutable, maxBufferSize } = {
     tagOpenWrappers: ['!!!', '!!!'] as [string, string],
     tagCloseWrappers: ['!!!/', '!!!'] as [string, string],
     tmpFilePath: process.cwd(),
     nodeExecutable: 'node',
     maxBufferSize: 1024 * 1024,
+    cwd: process.cwd(),
     ...params,
   }
 
@@ -55,8 +57,13 @@ export function runSync(params: {
     const tmpFile = resolve(tmpFilePath, `tmp${Date.now()}_${randomUUID()}.js`)
 
     writeFileSync(tmpFile, codeString, 'utf8')
-    const rawOutput = execSync(`${nodeExecutable} ${tmpFile}`, { maxBuffer: maxBufferSize }).toString()
-    unlinkSync(tmpFile)
+    let rawOutput = '';
+
+    try {
+      rawOutput = execSync(`${nodeExecutable} ${tmpFile}`, { maxBuffer: maxBufferSize, cwd }).toString()
+    } finally {
+      unlinkSync(tmpFile)
+    }
 
     const output = extractOutput(rawOutput, outputOpener, outputCloser)
     let error: string | null = null

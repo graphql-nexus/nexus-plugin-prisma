@@ -10,6 +10,7 @@ import { getPrismaClientDmmf } from './utils'
 import { resolve } from 'path'
 import { existsSync, readFileSync } from 'fs'
 import { runSync } from '../utilsSync'
+import { tmpdir } from 'os'
 
 export type TransformOptions = {
   atomicOperations?: boolean
@@ -44,19 +45,21 @@ export function transform(
   options?: TransformOptions & OptionalTransformOptions
 ): InternalDMMF.Document {
   if (!options?.dmmfDocumentIncludesSchema) {
+    const cwd = process.cwd();
+
     if (!options?.prismaClientPackagePath?.trim()) {
       throw new Error('prismaClientPackagePath invalid')
     }
 
     let datamodelPath = resolve(
-      process.cwd(),
+      cwd,
       'node_modules',
       options.prismaClientPackagePath,
       'schema.prisma'
     )
     if (!existsSync(datamodelPath)) {
       // 2nd chance
-      datamodelPath = resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'schema.prisma')
+      datamodelPath = resolve(cwd, 'node_modules', '.prisma', 'client', 'schema.prisma')
     }
 
     // get the schema - this is explicitly done in prisma >4.0
@@ -66,9 +69,14 @@ export function transform(
 
       const datamodel = readFileSync(datamodelPath, { encoding: 'utf8' })
       // this is an async operation - thus the async-to-sync wrapper
+      const tmpFilePath = tmpdir();
+
+      const cwdNodeModules = resolve(cwd, 'node_modules').replace(/\\/g, '\\\\');
+
       const getSchemaDocumentSync = runSync({
         code: `
 function getSchemaDocument(datamodel){
+  module.paths.push('${cwdNodeModules}');
   return new Promise((resolve, reject) => {
     require('@prisma/internals')
       .getDMMF({ datamodel: datamodel })
@@ -76,6 +84,8 @@ function getSchemaDocument(datamodel){
       .catch((e) => reject(e))
   });
 }`,
+        tmpFilePath,
+        cwd: tmpFilePath,
         maxBufferSize: 64 * 1024 * 1024, // 64MB
       })
 
@@ -405,3 +415,5 @@ function getKind(arg: DMMF.SchemaArgInputType | DMMF.SchemaField['outputType']):
     )}`
   )
 }
+
+// cSpell:word datamodel DMMF

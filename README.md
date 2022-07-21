@@ -3,7 +3,7 @@
   <h1 align="center">@morgothulhu/nexus-plugin-prisma</h1>
 </p>
 
-This plugin has been upgraded to support **Prisma 4.0+**.
+This plugin has been upgraded to support **Prisma 4.0+**. Latest version of prisma supported: [Prisma 4.1.0](https://github.com/prisma/prisma/releases/tag/4.1.0)
 
 ---
 
@@ -51,3 +51,5 @@ If tests need snapshot updates, run `yarn test:run:rebaseSnapshots`
 > Windows 32 (as an example)
 
 `.\node_modules\.bin\jest --forceExit --verbose=true --useStderr=true --silent=false -t "supports nested query with one id field" --watch`
+
+`.\node_modules\.bin\jest --forceExit --verbose=true --useStderr=true --silent=false --watch ./tests/app.test.ts`
