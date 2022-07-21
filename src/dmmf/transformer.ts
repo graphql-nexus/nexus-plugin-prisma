@@ -8,8 +8,8 @@ import { InternalDMMF } from './DmmfTypes'
 import { getTypeName } from './helpers'
 import { getPrismaClientDmmf } from './utils'
 import { resolve } from 'path'
-import { readFileSync } from 'fs'
-import { forceSync } from 'node-force-sync';
+import { existsSync, readFileSync } from 'fs'
+import { runSync } from '../utilsSync'
 
 export type TransformOptions = {
   atomicOperations?: boolean
@@ -19,13 +19,16 @@ export type TransformOptions = {
 
 export type OptionalTransformOptions = {
   prismaClientPackagePath?: string
-  dmmfDocumentIncludesSchema?: boolean,
+  dmmfDocumentIncludesSchema?: boolean
 }
 
 export const getTransformedDmmf = (
   prismaClientPackagePath: string,
   options?: TransformOptions
-): DmmfDocument => new DmmfDocument(transform(getPrismaClientDmmf(prismaClientPackagePath), { ...options, prismaClientPackagePath }))
+): DmmfDocument =>
+  new DmmfDocument(
+    transform(getPrismaClientDmmf(prismaClientPackagePath), { ...options, prismaClientPackagePath })
+  )
 
 const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformOptions> => ({
   globallyComputedInputs: {},
@@ -34,25 +37,37 @@ const addDefaultOptions = (givenOptions?: TransformOptions): Required<TransformO
   ...givenOptions,
 })
 
-const _documentsWithSchemaPerPath: Record<string, DMMF.Document> = {};
+const _documentsWithSchemaPerPath: Record<string, DMMF.Document> = {}
 
-export function transform(document: DMMF.Document, options?: TransformOptions & OptionalTransformOptions): InternalDMMF.Document {
+export function transform(
+  document: DMMF.Document,
+  options?: TransformOptions & OptionalTransformOptions
+): InternalDMMF.Document {
   if (!options?.dmmfDocumentIncludesSchema) {
     if (!options?.prismaClientPackagePath?.trim()) {
       throw new Error('prismaClientPackagePath invalid')
     }
 
-    const datamodelPath = resolve(__dirname, '..', '..', 'node_modules', options.prismaClientPackagePath, 'schema.prisma');
+    let datamodelPath = resolve(
+      process.cwd(),
+      'node_modules',
+      options.prismaClientPackagePath,
+      'schema.prisma'
+    )
+    if (!existsSync(datamodelPath)) {
+      // 2nd chance
+      datamodelPath = resolve(process.cwd(), 'node_modules', '.prisma', 'client', 'schema.prisma')
+    }
 
     // get the schema - this is explicitly done in prisma >4.0
-
-    document = _documentsWithSchemaPerPath[datamodelPath];
+    document = _documentsWithSchemaPerPath[datamodelPath]
     if (!document) {
       // cache miss - generate and save
 
-      const datamodel = readFileSync(datamodelPath, { encoding: 'utf8' });
+      const datamodel = readFileSync(datamodelPath, { encoding: 'utf8' })
       // this is an async operation - thus the async-to-sync wrapper
-      const getSchemaDocumentSync = forceSync(`
+      const getSchemaDocumentSync = runSync({
+        code: `
 function getSchemaDocument(datamodel){
   return new Promise((resolve, reject) => {
     require('@prisma/internals')
@@ -60,14 +75,15 @@ function getSchemaDocument(datamodel){
       .then((value) => resolve(value))
       .catch((e) => reject(e))
   });
-}`
-      );
+}`,
+        maxBufferSize: 64 * 1024 * 1024, // 64MB
+      })
 
-      const originalDocument = getSchemaDocumentSync(datamodel) as DMMF.Document;
-    
+      const originalDocument = getSchemaDocumentSync(datamodel) as DMMF.Document
+
       document = PrismaClientGenerator.externalToInternalDmmf(originalDocument)
- 
-      _documentsWithSchemaPerPath[datamodelPath] = document;
+
+      _documentsWithSchemaPerPath[datamodelPath] = document
     }
   }
 
@@ -82,7 +98,7 @@ function getSchemaDocument(datamodel){
 }
 
 function transformDatamodel(datamodel: DMMF.Datamodel): InternalDMMF.Datamodel {
-  const enums: DMMF.Datamodel['enums'] = datamodel.enums;
+  const enums: DMMF.Datamodel['enums'] = datamodel.enums
   // const enums: DMMF.Datamodel['enums'] = schema.enumTypes.model?.map((e) => ({
   //   name: e.name,
   //   dbName: null,
@@ -223,20 +239,22 @@ function argTypeUnionToArgType(
     // [AnyType]
     filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx) && argTypeCtx.isList) ??
     // AnyType
-    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx));
+    filteredArgTypeContexts.find((argTypeCtx) => isInputObjectType(argTypeCtx))
 
   if (result) {
-    return [result, false];
+    return [result, false]
   }
 
-  const jsonResult = filteredArgTypeContexts.find((argTypeCtx) => argTypeCtx.type === 'Json');
+  const jsonResult = filteredArgTypeContexts.find((argTypeCtx) => argTypeCtx.type === 'Json')
   if (jsonResult) {
-    const dbIsNullable = !!filteredArgTypeContexts.find((argTypeCtx) => argTypeCtx.type === 'NullableJsonNullValueInput')
-    return [jsonResult, dbIsNullable];
+    const dbIsNullable = !!filteredArgTypeContexts.find(
+      (argTypeCtx) => argTypeCtx.type === 'NullableJsonNullValueInput'
+    )
+    return [jsonResult, dbIsNullable]
   }
 
   // fallback to the first member of the union
-  return [argTypeContexts[0], false];
+  return [argTypeContexts[0], false]
 
   function isInputObjectType(argTypeCtx: any) {
     return argTypeCtx.location === 'inputObjectTypes'
@@ -292,11 +310,11 @@ async function addGloballyComputedInputs({
     const fieldValue =
       field.inputType.kind === 'object'
         ? await addGloballyComputedInputs({
-          inputType: dmmf.getInputType(field.inputType.type),
-          dmmf,
-          params,
-          data: data[fieldName],
-        })
+            inputType: dmmf.getInputType(field.inputType.type),
+            dmmf,
+            params,
+            data: data[fieldName],
+          })
         : data[fieldName]
     return {
       ...(await deeplyComputedData),
