@@ -1,6 +1,6 @@
 {
   "name": "@morgothulhu/nexus-plugin-prisma",
-  "version": "0.43.1",
+  "version": "0.43.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
