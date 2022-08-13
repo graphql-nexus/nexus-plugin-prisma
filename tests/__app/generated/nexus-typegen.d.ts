@@ -3,7 +3,7 @@
  * Do not make changes to this file directly
  */
 
-import type * as prisma from "./../../../node_modules/@prisma/client/index"
+
 
 
 
@@ -308,9 +308,9 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  PostStatus: prisma.PostStatus
-  QueryMode: prisma.QueryMode
-  SortOrder: prisma.SortOrder
+  PostStatus: "DRAFT" | "PUBLISHED"
+  QueryMode: "default" | "insensitive"
+  SortOrder: "asc" | "desc"
 }
 
 export interface NexusGenScalars {
@@ -326,12 +326,25 @@ export interface NexusGenObjects {
   AffectedRowsOutput: { // root type
     count: number; // Int!
   }
-  Bubble: prisma.Bubble;
-  Location: prisma.Location;
+  Bubble: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // String!
+  }
+  Location: { // root type
+    city: string; // String!
+    country: string; // String!
+    id: number; // Int!
+  }
   Mutation: {};
-  Post: prisma.Post;
+  Post: { // root type
+    id: number; // Int!
+    status: NexusGenEnums['PostStatus']; // PostStatus!
+  }
   Query: {};
-  User: prisma.User;
+  User: { // root type
+    firstName: string; // String!
+    id: string; // String!
+  }
 }
 
 export interface NexusGenInterfaces {
