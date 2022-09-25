@@ -1609,6 +1609,13 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
+brace-expansion@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-2.0.1.tgz#1edc459e0f0c548486ecf9fc99f2221364b9a0ae"
+  integrity sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==
+  dependencies:
+    balanced-match "^1.0.0"
+
 braces@^2.3.1:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/braces/-/braces-2.3.2.tgz#5979fd3f14cd531565e5fa2df1abfff1dfaee729"
@@ -2746,13 +2753,12 @@ fs-jetpack@^3.1.0:
     minimatch "^3.0.2"
     rimraf "^2.6.3"
 
-fs-jetpack@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/fs-jetpack/-/fs-jetpack-4.1.0.tgz#d693fcffd3cedbd8829226967866b9e89f290f0f"
-  integrity sha512-h4nHLIcCaxnXfUWhwP+mLnar03R2DBlqicNvKJG44TJob8RV6GB8EKNwJgSaBeDAfqWhqq01y+Ao96vRwpXlPw==
+fs-jetpack@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/fs-jetpack/-/fs-jetpack-5.0.0.tgz#020bde38f9d4a5422fc663b7934ac8abdc64a885"
+  integrity sha512-0f9QoIbfAq/DuafAQisvsHJmLnJB2D53d9FXIu0UZPUg4Kzocez1+AinToPON6JD/C60kDlye121puiR5ivfdg==
   dependencies:
-    minimatch "^3.0.2"
-    rimraf "^2.6.3"
+    minimatch "^5.1.0"
 
 fs-minipass@^2.0.0:
   version "2.1.0"
@@ -4327,6 +4333,13 @@ minimatch@^3.0.2, minimatch@^3.0.4:
   integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
   dependencies:
     brace-expansion "^1.1.7"
+
+minimatch@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-5.1.0.tgz#1717b464f4971b144f6aabe8f2d0b8e4511e09c7"
+  integrity sha512-9TPBGGak4nHfGZsPBohm9AWg6NoT7QTCehS3BIJABslyZbzxfV78QM2Y6+i741OPZIafFAaiiEMh5OyIrJPgtg==
+  dependencies:
+    brace-expansion "^2.0.1"
 
 minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.5"
