@@ -3,7 +3,7 @@
   <h1 align="center">@morgothulhu/nexus-plugin-prisma</h1>
 </p>
 
-This plugin has been upgraded to support **Prisma 4.0+**. Latest version of prisma supported: [Prisma 4.2.1](https://github.com/prisma/prisma/releases/tag/4.2.1)
+This plugin has been upgraded to support **Prisma 4.0+**. Latest version of prisma supported: [Prisma 4.4.0](https://github.com/prisma/prisma/releases/tag/4.4.0)
 
 ---
 
