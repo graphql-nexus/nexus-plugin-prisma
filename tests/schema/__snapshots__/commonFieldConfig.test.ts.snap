@@ -2,23 +2,23 @@
 
 exports[`forwards description & deprecation on all field types: commonFieldsOutput 1`] = `
 "type User {
-  \\"\\"\\"The unique id\\"\\"\\"
-  id: Int! @deprecated(reason: \\"never\\")
+  """The unique id"""
+  id: Int! @deprecated(reason: "never")
 
-  \\"\\"\\"The user's full name\\"\\"\\"
-  name: String! @deprecated(reason: \\"who needs names\\")
+  """The user's full name"""
+  name: String! @deprecated(reason: "who needs names")
 
-  \\"\\"\\"The user's height, in meters\\"\\"\\"
-  heightM: Float! @deprecated(reason: \\"size doesn't matter\\")
+  """The user's height, in meters"""
+  heightM: Float! @deprecated(reason: "size doesn't matter")
 
-  \\"\\"\\"The user's favorite color\\"\\"\\"
-  favouriteColor: Color! @deprecated(reason: \\"no longer required\\")
+  """The user's favorite color"""
+  favouriteColor: Color! @deprecated(reason: "no longer required")
 
-  \\"\\"\\"All the user's blog posts\\"\\"\\"
-  posts(first: Int, last: Int, before: PostWhereUniqueInput, after: PostWhereUniqueInput): [Post!]! @deprecated(reason: \\"no more blog\\")
+  """All the user's blog posts"""
+  posts(first: Int, last: Int, before: PostWhereUniqueInput, after: PostWhereUniqueInput): [Post!]! @deprecated(reason: "no more blog")
 
-  \\"\\"\\"The user's last blog post\\"\\"\\"
-  latestPost: Post @deprecated(reason: \\"not here anymore\\")
+  """The user's last blog post"""
+  latestPost: Post @deprecated(reason: "not here anymore")
 }
 
 type Post {

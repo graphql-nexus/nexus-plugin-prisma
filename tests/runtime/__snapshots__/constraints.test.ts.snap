@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`supports nested query with compound ids 1`] = `
-Object {
-  "parent": Object {
-    "child": Object {
+{
+  "parent": {
+    "child": {
       "idField1": 1,
       "idField2": 2,
     },
@@ -14,9 +14,9 @@ Object {
 `;
 
 exports[`supports nested query with one id field 1`] = `
-Object {
-  "parent": Object {
-    "child": Object {
+{
+  "parent": {
+    "child": {
       "idField": 1,
     },
     "idField": 1,
@@ -25,9 +25,9 @@ Object {
 `;
 
 exports[`supports nested query without id but compound uniques 1`] = `
-Object {
-  "parent": Object {
-    "child": Object {
+{
+  "parent": {
+    "child": {
       "uniqueField1": 1,
       "uniqueField2": 2,
     },
@@ -38,9 +38,9 @@ Object {
 `;
 
 exports[`supports nested query without id but multiple uniques 1`] = `
-Object {
-  "parent": Object {
-    "child": Object {
+{
+  "parent": {
+    "child": {
       "uniqueField1": 1,
       "uniqueField2": 2,
     },
@@ -51,9 +51,9 @@ Object {
 `;
 
 exports[`supports nested query without id but one unique 1`] = `
-Object {
-  "parent": Object {
-    "child": Object {
+{
+  "parent": {
+    "child": {
       "uniqueField": 1,
     },
     "uniqueField": 1,

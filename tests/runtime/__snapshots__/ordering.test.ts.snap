@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`runs through list of order-by types 1`] = `
-Object {
-  "users": Array [
-    Object {
+{
+  "users": [
+    {
       "a": "a",
       "b": "a",
       "c": "z",
       "id": 1,
       "name": "Foo",
     },
-    Object {
+    {
       "a": "b",
       "b": "z",
       "c": "b",
       "id": 2,
       "name": "Bar",
     },
-    Object {
+    {
       "a": "b",
       "b": "b",
       "c": "a",
@@ -29,23 +29,23 @@ Object {
 `;
 
 exports[`with whitelist 1`] = `
-Object {
-  "users": Array [
-    Object {
+{
+  "users": [
+    {
       "a": "b",
       "b": "b",
       "c": "a",
       "id": 3,
       "name": "Qux",
     },
-    Object {
+    {
       "a": "b",
       "b": "z",
       "c": "b",
       "id": 2,
       "name": "Bar",
     },
-    Object {
+    {
       "a": "a",
       "b": "a",
       "c": "z",

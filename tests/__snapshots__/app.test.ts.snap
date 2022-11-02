@@ -585,31 +585,31 @@ declare global {
 `;
 
 exports[`integrates together: prisma client dmmf 1`] = `
-Object {
-  "datamodel": Object {
-    "enums": Array [
-      Object {
+{
+  "datamodel": {
+    "enums": [
+      {
         "dbName": null,
         "name": "PostStatus",
-        "values": Array [
-          Object {
+        "values": [
+          {
             "dbName": null,
             "name": "DRAFT",
           },
-          Object {
+          {
             "dbName": null,
             "name": "PUBLISHED",
           },
         ],
       },
     ],
-    "models": Array [
-      Object {
+    "models": [
+      {
         "dbName": null,
-        "fields": Array [
-          Object {
-            "default": Object {
-              "args": Array [],
+        "fields": [
+          {
+            "default": {
+              "args": [],
               "name": "uuid",
             },
             "hasDefaultValue": true,
@@ -624,9 +624,9 @@ Object {
             "name": "id",
             "type": "String",
           },
-          Object {
-            "default": Object {
-              "args": Array [],
+          {
+            "default": {
+              "args": [],
               "name": "now",
             },
             "hasDefaultValue": true,
@@ -641,7 +641,7 @@ Object {
             "name": "createdAt",
             "type": "DateTime",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -652,12 +652,12 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "members",
-            "relationFromFields": Array [],
+            "relationFromFields": [],
             "relationName": "BubbleToUser",
-            "relationToFields": Array [],
+            "relationToFields": [],
             "type": "User",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -674,15 +674,15 @@ Object {
         "isGenerated": false,
         "name": "Bubble",
         "primaryKey": null,
-        "uniqueFields": Array [],
-        "uniqueIndexes": Array [],
+        "uniqueFields": [],
+        "uniqueIndexes": [],
       },
-      Object {
+      {
         "dbName": null,
-        "fields": Array [
-          Object {
-            "default": Object {
-              "args": Array [],
+        "fields": [
+          {
+            "default": {
+              "args": [],
               "name": "cuid",
             },
             "hasDefaultValue": true,
@@ -697,7 +697,7 @@ Object {
             "name": "id",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -708,14 +708,14 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "posts",
-            "relationFromFields": Array [],
+            "relationFromFields": [],
             "relationName": "PostToUser",
-            "relationToFields": Array [
+            "relationToFields": [
               "id",
             ],
             "type": "Post",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -728,7 +728,7 @@ Object {
             "name": "firstName",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -741,7 +741,7 @@ Object {
             "name": "lastName",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -752,16 +752,16 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "location",
-            "relationFromFields": Array [
+            "relationFromFields": [
               "locationId",
             ],
             "relationName": "LocationToUser",
-            "relationToFields": Array [
+            "relationToFields": [
               "id",
             ],
             "type": "Location",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -772,16 +772,16 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "Bubble",
-            "relationFromFields": Array [
+            "relationFromFields": [
               "bubbleId",
             ],
             "relationName": "BubbleToUser",
-            "relationToFields": Array [
+            "relationToFields": [
               "id",
             ],
             "type": "Bubble",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -794,7 +794,7 @@ Object {
             "name": "bubbleId",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -811,15 +811,15 @@ Object {
         "isGenerated": false,
         "name": "User",
         "primaryKey": null,
-        "uniqueFields": Array [],
-        "uniqueIndexes": Array [],
+        "uniqueFields": [],
+        "uniqueIndexes": [],
       },
-      Object {
+      {
         "dbName": null,
-        "fields": Array [
-          Object {
-            "default": Object {
-              "args": Array [],
+        "fields": [
+          {
+            "default": {
+              "args": [],
               "name": "autoincrement",
             },
             "hasDefaultValue": true,
@@ -834,7 +834,7 @@ Object {
             "name": "id",
             "type": "Int",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -847,7 +847,7 @@ Object {
             "name": "country",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -860,7 +860,7 @@ Object {
             "name": "city",
             "type": "String",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -871,24 +871,24 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "User",
-            "relationFromFields": Array [],
+            "relationFromFields": [],
             "relationName": "LocationToUser",
-            "relationToFields": Array [],
+            "relationToFields": [],
             "type": "User",
           },
         ],
         "isGenerated": false,
         "name": "Location",
         "primaryKey": null,
-        "uniqueFields": Array [],
-        "uniqueIndexes": Array [],
+        "uniqueFields": [],
+        "uniqueIndexes": [],
       },
-      Object {
+      {
         "dbName": null,
-        "fields": Array [
-          Object {
-            "default": Object {
-              "args": Array [],
+        "fields": [
+          {
+            "default": {
+              "args": [],
               "name": "autoincrement",
             },
             "hasDefaultValue": true,
@@ -903,7 +903,7 @@ Object {
             "name": "id",
             "type": "Int",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -914,14 +914,14 @@ Object {
             "isUpdatedAt": false,
             "kind": "object",
             "name": "authors",
-            "relationFromFields": Array [],
+            "relationFromFields": [],
             "relationName": "PostToUser",
-            "relationToFields": Array [
+            "relationToFields": [
               "id",
             ],
             "type": "User",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -934,7 +934,7 @@ Object {
             "name": "rating",
             "type": "Float",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -947,7 +947,7 @@ Object {
             "name": "likes",
             "type": "Int",
           },
-          Object {
+          {
             "hasDefaultValue": false,
             "isGenerated": false,
             "isId": false,
@@ -964,15 +964,15 @@ Object {
         "isGenerated": false,
         "name": "Post",
         "primaryKey": null,
-        "uniqueFields": Array [],
-        "uniqueIndexes": Array [],
+        "uniqueFields": [],
+        "uniqueIndexes": [],
       },
     ],
-    "types": Array [],
+    "types": [],
   },
-  "mappings": Object {
-    "modelOperations": Array [
-      Object {
+  "mappings": {
+    "modelOperations": [
+      {
         "aggregate": "aggregateBubble",
         "create": "createOneBubble",
         "createMany": "createManyBubble",
@@ -988,7 +988,7 @@ Object {
         "updateMany": "updateManyBubble",
         "upsert": "upsertOneBubble",
       },
-      Object {
+      {
         "aggregate": "aggregateUser",
         "create": "createOneUser",
         "createMany": "createManyUser",
@@ -1004,7 +1004,7 @@ Object {
         "updateMany": "updateManyUser",
         "upsert": "upsertOneUser",
       },
-      Object {
+      {
         "aggregate": "aggregateLocation",
         "create": "createOneLocation",
         "createMany": "createManyLocation",
@@ -1020,7 +1020,7 @@ Object {
         "updateMany": "updateManyLocation",
         "upsert": "upsertOneLocation",
       },
-      Object {
+      {
         "aggregate": "aggregatePost",
         "create": "createOnePost",
         "createMany": "createManyPost",
@@ -1037,9 +1037,9 @@ Object {
         "upsert": "upsertOnePost",
       },
     ],
-    "otherOperations": Object {
-      "read": Array [],
-      "write": Array [
+    "otherOperations": {
+      "read": [],
+      "write": [
         "executeRaw",
         "queryRaw",
       ],

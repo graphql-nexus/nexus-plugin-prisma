@@ -43,14 +43,14 @@ it('supports camel-cased model name', async () => {
   }`)
 
   expect(result).toMatchInlineSnapshot(`
-Object {
-  "camelCasedModels": Array [
-    Object {
-      "camelCasedField": "something",
-    },
-  ],
-}
-`)
+    {
+      "camelCasedModels": [
+        {
+          "camelCasedField": "something",
+        },
+      ],
+    }
+  `)
 })
 
 it('supports aliased model fields', async () => {
@@ -94,12 +94,12 @@ it('supports aliased model fields', async () => {
   }`)
 
   expect(result).toMatchInlineSnapshot(`
-Object {
-  "aliasedFieldModels": Array [
-    Object {
-      "fullName": "Jane Smith",
-    },
-  ],
-}
-`)
+    {
+      "aliasedFieldModels": [
+        {
+          "fullName": "Jane Smith",
+        },
+      ],
+    }
+  `)
 })
