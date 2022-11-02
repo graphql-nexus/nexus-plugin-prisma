@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`create: converts nulls to undefined when fields are not nullable 1`] = `
-Object {
-  "data": Object {
+{
+  "data": {
     "id": undefined,
-    "posts": Object {
+    "posts": {
       "connect": undefined,
-      "create": Object {
+      "create": {
         "id": "titi",
       },
     },
@@ -15,13 +15,13 @@ Object {
 `;
 
 exports[`do not convert args that are arrays 1`] = `
-Object {
-  "where": Object {
-    "OR": Array [
-      Object {
+{
+  "where": {
+    "OR": [
+      {
         "something": true,
       },
-      Object {
+      {
         "something": false,
       },
     ],
@@ -30,19 +30,19 @@ Object {
 `;
 
 exports[`findMany: converts nulls to undefined when fields are not nullable 1`] = `
-Object {
+{
   "after": undefined,
   "before": undefined,
   "first": 1,
-  "orderBy": Object {
+  "orderBy": {
     "birthDate": undefined,
     "email": undefined,
     "id": "asc",
   },
-  "where": Object {
+  "where": {
     "AND": undefined,
-    "NOT": Object {
-      "AND": Object {
+    "NOT": {
+      "AND": {
         "birthDate": undefined,
       },
       "posts": undefined,
@@ -52,10 +52,10 @@ Object {
 `;
 
 exports[`model filtering: converts nulls to undefined when fields are not nullable 1`] = `
-Object {
-  "where": Object {
-    "authors": Object {
-      "every": Object {
+{
+  "where": {
+    "authors": {
+      "every": {
         "birthDate": undefined,
         "email": null,
         "posts": undefined,

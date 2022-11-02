@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`removes global computedInputs from all input types: globallyComputedInputs 1`] = `
-Object {
+{
   "schema": "type Query {
   user(where: UserWhereUniqueInput!): User
 }
@@ -193,7 +193,7 @@ declare global {
 `;
 
 exports[`removes resolver-level computedInputs from the corresponding input type: locallyComputedInputs 1`] = `
-Object {
+{
   "schema": "type Query {
   user(where: UserWhereUniqueInput!): User
 }

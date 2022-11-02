@@ -206,14 +206,14 @@ test('safely transforms json fields', async () => {
   const result = transformNullsToUndefined(incomingArgs, schemaArgs, dmmf)
 
   expect(result).toMatchInlineSnapshot(`
-    Object {
-      "data": Object {
+    {
+      "data": {
         "json1": undefined,
-        "json2": Object {
+        "json2": {
           "someRandomJson": "titi",
         },
         "optionalJson1": null,
-        "optionalJson2": Object {
+        "optionalJson2": {
           "someRandomJson": "titi",
         },
       },
