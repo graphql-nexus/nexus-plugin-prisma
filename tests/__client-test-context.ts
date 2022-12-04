@@ -4,7 +4,8 @@ import * as fs from 'fs-jetpack'
 import getPort from 'get-port'
 import { GraphQLScalarType, GraphQLSchema } from 'graphql'
 import { GraphQLClient } from 'graphql-request'
-import { createServer as GraphQLServer } from 'graphql-yoga'
+import { createSchema, createYoga } from 'graphql-yoga'
+import { createServer } from 'node:http'
 import { Server } from 'http'
 import * as Nexus from 'nexus'
 import * as path from 'path'
@@ -69,7 +70,8 @@ export function createRuntimeTestContext(): RuntimeTestContext {
           schema: serverAndClient.schema,
           schemaString: serverAndClient.schemaString,
         }
-      } catch (e) {
+      } catch (e: any) {
+        console.log(`❌ failed ${e.stack}. If P1003, make sure sqlite3 is in the PATH`);
         await teardownCtx()
         throw e
       }
@@ -92,16 +94,25 @@ async function getGraphQLServerAndClient(params: {
     scalars: params.scalars,
   })
   const port = await getPort()
-  const endpoint = '/graphql'
-  const graphqlServer = GraphQLServer({
-    context: { prisma: params.prismaClient.client },
-    schema: schema as any,
-    port,
-    endpoint,
-  })
-  const client = new GraphQLClient(`http://localhost:${port}${endpoint}`)
+  const graphqlEndpoint = '/graphql';
+  const url = `http://localhost:${port}${graphqlEndpoint}`;
 
-  const httpServer = await graphqlServer.start()
+  const yoga = createYoga({
+    schema: schema as any,
+    context: { prisma: params.prismaClient.client },
+    graphqlEndpoint,
+    // port,
+  });
+  
+  const httpServer = createServer(yoga)
+  await new Promise((resolve) => {
+    httpServer.listen(port, () => {
+      console.log(`🕸️ listening on ${url}`);
+      resolve(null);
+    });
+  });
+
+  const client = new GraphQLClient(url);
 
   return { client, httpServer, schema, schemaString }
 }
@@ -134,9 +145,24 @@ async function generateClientFromDatamodel(metadata: Metadata) {
 }
 
 async function migrateLift(schemaPath: string): Promise<void> {
-  const migrate = new MigratePackage.Migrate(schemaPath)
+  try {
+    // console.log(`migrateLift(${schemaPath})   started >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
 
-  await migrate.push({ force: true })
+    // ref: https://github.com/prisma/prisma/issues/10306
+    const devMigrate = new MigratePackage.MigrateDev();
+    await devMigrate.parse([`--name=init`, '--skip-seed', `--schema=${schemaPath}`]);
+
+    // const migrate = new MigratePackage.Migrate(schemaPath)
+    // console.log(`migrateLift(${schemaPath}) - init`);
+    // console.log(`migrateLift(${schemaPath}) - getPrismaSchema() = ${migrate.getPrismaSchema()}`);
+    // migrate.reset();
+    // await migrate.push({ force: true })
+
+    // console.log(`migrateLift(${schemaPath}) completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`);
+  } catch (e: any) {
+    console.log(`❌ failed during migration - ${e}`);
+    throw e;
+  }
 }
 
 type Metadata = {
