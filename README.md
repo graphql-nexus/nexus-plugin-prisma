@@ -48,6 +48,14 @@ yarn build
 
 If tests need snapshot updates, run `yarn test:run:rebaseSnapshots`
 
+### Dependencies versioning
+
+> update all packages
+
+```
+yarn update:all
+```
+
 ### Windows pre-requisites
 
 > Install SQLite3
