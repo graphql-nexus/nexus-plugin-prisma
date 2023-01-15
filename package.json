@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "update:all": "npm-check --update-all --exact --skip-unused .",
+    "update:all": "npm-check -i \"{camelcase,escape-string-regexp}\" --update-all --exact --skip-unused .",
     "build": "yarn clean && yarn build:deps-sync && yarn build:module-facades && tsc",
     "build:deps-sync": "node scripts/ensure-deps-sync",
     "build:module-facades": "node scripts/build-module-facades",
