@@ -710,9 +710,7 @@ exports[`integrates together: prisma client dmmf 1`] = `
             "name": "posts",
             "relationFromFields": [],
             "relationName": "PostToUser",
-            "relationToFields": [
-              "id",
-            ],
+            "relationToFields": [],
             "type": "Post",
           },
           {
@@ -916,9 +914,7 @@ exports[`integrates together: prisma client dmmf 1`] = `
             "name": "authors",
             "relationFromFields": [],
             "relationName": "PostToUser",
-            "relationToFields": [
-              "id",
-            ],
+            "relationToFields": [],
             "type": "User",
           },
           {
