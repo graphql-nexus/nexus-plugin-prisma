@@ -52,18 +52,18 @@ interface NexusPrismaInputs {
       ordering: 'id' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
+      ordering: 'id' | 'title' | 'authorId' | 'author'
     }
     groupByPost: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
       ordering: 'id' | 'title' | 'authorId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   User: {
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
+      ordering: 'id' | 'title' | 'authorId' | 'author'
     }
   }
   Post: {
@@ -190,18 +190,18 @@ interface NexusPrismaInputs {
       ordering: 'id' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
+      ordering: 'id' | 'title' | 'authorId' | 'author'
     }
     groupByPost: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
       ordering: 'id' | 'title' | 'authorId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
   },
   User: {
     posts: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'author' | 'authorId'
-      ordering: 'id' | 'title' | 'author' | 'authorId'
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'title' | 'authorId' | 'author'
+      ordering: 'id' | 'title' | 'authorId' | 'author'
     }
   }
   Post: {
