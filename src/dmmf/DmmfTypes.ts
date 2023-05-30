@@ -101,8 +101,8 @@ export declare namespace InternalDMMF {
   interface Mapping {
     model: string
     plural: string
-    aggregate?: string | null;
-    groupBy?: string | null;
+    aggregate?: string | null
+    groupBy?: string | null
     // findFirst?: string | null;
     findUnique?: string | null
     findMany?: string | null

@@ -45,18 +45,13 @@ export function transform(
   options?: TransformOptions & OptionalTransformOptions
 ): InternalDMMF.Document {
   if (!options?.dmmfDocumentIncludesSchema) {
-    const cwd = process.cwd();
+    const cwd = process.cwd()
 
     if (!options?.prismaClientPackagePath?.trim()) {
       throw new Error('prismaClientPackagePath invalid')
     }
 
-    let datamodelPath = resolve(
-      cwd,
-      'node_modules',
-      options.prismaClientPackagePath,
-      'schema.prisma'
-    )
+    let datamodelPath = resolve(cwd, 'node_modules', options.prismaClientPackagePath, 'schema.prisma')
     if (!existsSync(datamodelPath)) {
       // 2nd chance
       datamodelPath = resolve(cwd, 'node_modules', '.prisma', 'client', 'schema.prisma')
@@ -69,9 +64,9 @@ export function transform(
 
       const datamodel = readFileSync(datamodelPath, { encoding: 'utf8' })
       // this is an async operation - thus the async-to-sync wrapper
-      const tmpFilePath = tmpdir();
+      const tmpFilePath = tmpdir()
 
-      const cwdNodeModules = resolve(cwd, 'node_modules').replace(/\\/g, '\\\\');
+      const cwdNodeModules = resolve(cwd, 'node_modules').replace(/\\/g, '\\\\')
 
       const getSchemaDocumentSync = runSync({
         code: `

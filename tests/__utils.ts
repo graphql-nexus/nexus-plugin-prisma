@@ -27,7 +27,7 @@ export async function getDmmf(datamodel: string, options?: TransformOptions) {
   // dumpToFile(originalDmmf, 'document.getDmmf.original');
   const clientDmmf = PrismaClientGenerator.externalToInternalDmmf(originalDmmf)
   // dumpToFile(clientDmmf, 'document.getDmmf.client');
-  return new DmmfDocument(transform(clientDmmf, {...options, dmmfDocumentIncludesSchema: true}))
+  return new DmmfDocument(transform(clientDmmf, { ...options, dmmfDocumentIncludesSchema: true }))
 }
 
 export async function getPinnedDmmfFromSchemaPath(datamodelPath: string) {

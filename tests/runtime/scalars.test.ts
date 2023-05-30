@@ -54,7 +54,7 @@ it('supports custom scalars as output type', async () => {
       }
     }`)
   } catch (rawE) {
-    const e = rawE as Error;
+    const e = rawE as Error
     // console.log(`caught error: ${JSON.stringify(rawE, null, 2)}`);
 
     // exception propagation doesn't seem to work as expected.

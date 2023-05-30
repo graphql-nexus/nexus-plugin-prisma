@@ -170,7 +170,7 @@ export type BaseRelationOptions<
   resolve?: CustomFieldResolver<TypeName, Alias extends undefined ? MethodName : Alias>
   computedInputs?: LocalComputedInputs<MethodName>
 } & NexusGenPluginFieldConfig<TypeName, Alias extends undefined ? MethodName : Alias> &
-CommonFieldConfig
+  CommonFieldConfig
 
 // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
 type NexusPrismaRelationOpts<

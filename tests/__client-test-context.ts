@@ -18,6 +18,7 @@ type RuntimeTestContext = {
     types: any[]
     plugins?: Nexus.core.NexusPlugin[]
     scalars?: Record<string, GraphQLScalarType>
+    previewFeatures?: string[]
   }) => Promise<{
     graphqlClient: GraphQLClient
     dbClient: any
@@ -46,9 +47,9 @@ export function createRuntimeTestContext(): RuntimeTestContext {
   afterEach(teardownCtx)
 
   return {
-    async setup({ datamodel, types, plugins, scalars }) {
+    async setup({ datamodel, types, plugins, scalars, previewFeatures }) {
       try {
-        const metadata = getTestMetadata(datamodel)
+        const metadata = getTestMetadata(datamodel, previewFeatures)
 
         await fs.dirAsync(metadata.tmpDir)
 
@@ -71,7 +72,7 @@ export function createRuntimeTestContext(): RuntimeTestContext {
           schemaString: serverAndClient.schemaString,
         }
       } catch (e: any) {
-        console.log(`❌ failed ${e.stack}. If P1003, make sure sqlite3 is in the PATH`);
+        console.log(`❌ failed ${e.stack}. If P1003, make sure sqlite3 is in the PATH`)
         await teardownCtx()
         throw e
       }
@@ -94,25 +95,25 @@ async function getGraphQLServerAndClient(params: {
     scalars: params.scalars,
   })
   const port = await getPort()
-  const graphqlEndpoint = '/graphql';
-  const url = `http://localhost:${port}${graphqlEndpoint}`;
+  const graphqlEndpoint = '/graphql'
+  const url = `http://localhost:${port}${graphqlEndpoint}`
 
   const yoga = createYoga({
     schema: schema as any,
     context: { prisma: params.prismaClient.client },
     graphqlEndpoint,
     // port,
-  });
-  
+  })
+
   const httpServer = createServer(yoga)
   await new Promise((resolve) => {
     httpServer.listen(port, () => {
-      console.log(`🕸️ listening on ${url}`);
-      resolve(null);
-    });
-  });
+      console.log(`🕸️ listening on ${url}`)
+      resolve(null)
+    })
+  })
 
-  const client = new GraphQLClient(url);
+  const client = new GraphQLClient(url)
 
   return { client, httpServer, schema, schemaString }
 }
@@ -149,8 +150,8 @@ async function migrateLift(schemaPath: string): Promise<void> {
     // console.log(`migrateLift(${schemaPath})   started >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>`);
 
     // ref: https://github.com/prisma/prisma/issues/10306
-    const devMigrate = new MigratePackage.MigrateDev();
-    await devMigrate.parse([`--name=init`, '--skip-seed', `--schema=${schemaPath}`]);
+    const devMigrate = new MigratePackage.MigrateDev()
+    await devMigrate.parse([`--name=init`, '--skip-seed', `--schema=${schemaPath}`])
 
     // const migrate = new MigratePackage.Migrate(schemaPath)
     // console.log(`migrateLift(${schemaPath}) - init`);
@@ -160,8 +161,8 @@ async function migrateLift(schemaPath: string): Promise<void> {
 
     // console.log(`migrateLift(${schemaPath}) completed <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`);
   } catch (e: any) {
-    console.log(`❌ failed during migration - ${e}`);
-    throw e;
+    console.log(`❌ failed during migration - ${e}`)
+    throw e
   }
 }
 
@@ -173,7 +174,7 @@ type Metadata = {
   datamodel: string
 }
 
-function getTestMetadata(datamodelString: string): Metadata {
+function getTestMetadata(datamodelString: string, previewFeatures?: string[]): Metadata {
   const uniqId = Math.random().toString().slice(2)
   const tmpDir = path.join(__dirname, `tmp/${uniqId}`)
   const shortTempDir = path.join('tests', `tmp/${uniqId}`) // absolute paths not working on WIN32 - https://github.com/prisma/prisma/issues/1732
@@ -190,10 +191,11 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
   output   = "${shortClientDir.replace(/\\/g, '\\\\')}"
+  ${previewFeatures ? `previewFeatures = ${JSON.stringify(previewFeatures)}` : ''}
 }
 
 ${datamodelString}
-`;
+`
 
   return {
     tmpDir,

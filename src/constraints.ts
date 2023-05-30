@@ -21,7 +21,7 @@ export function resolveUniqueIdentifiers(typeName: string, dmmf: DmmfDocument): 
 
   // Try finding 2.
   if (model.primaryKey && model.primaryKey.fields.length > 0) {
-    return model.primaryKey.fields;
+    return model.primaryKey.fields
   }
 
   const singleUniqueField = model.fields.find((f) => f.isUnique)
