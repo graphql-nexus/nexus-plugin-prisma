@@ -57,7 +57,7 @@ export function runSync(params: {
     const tmpFile = resolve(tmpFilePath, `tmp${Date.now()}_${randomUUID()}.js`)
 
     writeFileSync(tmpFile, codeString, 'utf8')
-    let rawOutput = '';
+    let rawOutput = ''
 
     try {
       rawOutput = execSync(`${nodeExecutable} ${tmpFile}`, { maxBuffer: maxBufferSize, cwd }).toString()

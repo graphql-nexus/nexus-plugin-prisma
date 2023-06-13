@@ -7,7 +7,7 @@ function ensureDepIsInstalled(depName: string) {
   try {
     require(depName)
   } catch (rawErr) {
-    const err = rawErr as {code?: string};
+    const err = rawErr as { code?: string }
     if (err.code === 'MODULE_NOT_FOUND') {
       console.error(
         `${colors.red('ERROR:')} ${colors.green(

@@ -1,12 +1,12 @@
 import * as Typegen from '../../../src/typegen/static'
-import * as Prisma from '@prisma/client';
+import * as Prisma from '@prisma/client'
 
 // Pagination type
 type Pagination = {
-    first?: boolean
-    last?: boolean
-    before?: boolean
-    after?: boolean
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
 }
 
 // Prisma custom scalar names
@@ -32,12 +32,44 @@ interface NexusPrismaInputs {
       ordering: 'id' | 'createdAt' | 'private' | '_count' | '_max' | '_min'
     }
     users: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
+      filtering:
+        | 'AND'
+        | 'OR'
+        | 'NOT'
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | 'posts'
+        | 'location'
+        | 'Bubble'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
     }
     groupByUser: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
-      ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+      filtering:
+        | 'AND'
+        | 'OR'
+        | 'NOT'
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | 'posts'
+        | 'location'
+        | 'Bubble'
+      ordering:
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | '_count'
+        | '_avg'
+        | '_max'
+        | '_min'
+        | '_sum'
     }
     locations: {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'country' | 'city' | 'User'
@@ -55,10 +87,21 @@ interface NexusPrismaInputs {
       filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'rating' | 'likes' | 'status' | 'authors'
       ordering: 'id' | 'rating' | 'likes' | 'status' | '_count' | '_avg' | '_max' | '_min' | '_sum'
     }
-  },
+  }
   Bubble: {
     members: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
+      filtering:
+        | 'AND'
+        | 'OR'
+        | 'NOT'
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | 'posts'
+        | 'location'
+        | 'Bubble'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
     }
   }
@@ -70,13 +113,35 @@ interface NexusPrismaInputs {
   }
   Location: {
     User: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
+      filtering:
+        | 'AND'
+        | 'OR'
+        | 'NOT'
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | 'posts'
+        | 'location'
+        | 'Bubble'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
     }
   }
   Post: {
     authors: {
-      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
+      filtering:
+        | 'AND'
+        | 'OR'
+        | 'NOT'
+        | 'id'
+        | 'firstName'
+        | 'lastName'
+        | 'bubbleId'
+        | 'locationId'
+        | 'posts'
+        | 'location'
+        | 'Bubble'
       ordering: 'id' | 'firstName' | 'lastName' | 'bubbleId' | 'locationId' | 'posts' | 'location' | 'Bubble'
     }
   }
@@ -101,7 +166,7 @@ interface NexusPrismaOutputs {
     posts: 'Post'
     post: 'Post'
     groupByPost: 'PostGroupByOutputType'
-  },
+  }
   Mutation: {
     createOneBubble: 'Bubble'
     createManyBubble: 'AffectedRowsOutput'
@@ -131,7 +196,7 @@ interface NexusPrismaOutputs {
     updateOnePost: 'Post'
     updateManyPost: 'AffectedRowsOutput'
     upsertOnePost: 'Post'
-  },
+  }
   Bubble: {
     id: 'String'
     createdAt: 'DateTime'
@@ -185,9 +250,8 @@ interface NexusPrismaGenTypes {
 declare global {
   interface NexusPrismaGen extends NexusPrismaGenTypes {}
 
-  type NexusPrisma<
-    TypeName extends string,
-    ModelOrCrud extends 'model' | 'crud'
-  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+  type NexusPrisma<TypeName extends string, ModelOrCrud extends 'model' | 'crud'> = Typegen.GetNexusPrisma<
+    TypeName,
+    ModelOrCrud
+  >
 }
-  

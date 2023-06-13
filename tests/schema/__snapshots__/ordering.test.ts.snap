@@ -1,5 +1,182 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`finds correct ordering types if fullTextSearch preview feature is enabled: schema 1`] = `
+"type Foo {
+  id: Int!
+  a: String!
+  bars(orderBy: [BarOrderByWithRelationAndSearchRelevanceInput!], first: Int, last: Int, before: BarWhereUniqueInput, after: BarWhereUniqueInput): [Bar!]!
+}
+
+type Bar {
+  id: Int!
+  foo: Foo
+}
+
+type Query {
+  foos(orderBy: [FooOrderByWithRelationAndSearchRelevanceInput!], first: Int, last: Int, before: FooWhereUniqueInput, after: FooWhereUniqueInput): [Foo!]!
+}
+
+input BarOrderByWithRelationAndSearchRelevanceInput {
+  id: SortOrder
+  fooId: SortOrder
+  foo: FooOrderByWithRelationAndSearchRelevanceInput
+}
+
+input BarWhereUniqueInput {
+  id: Int
+}
+
+input FooOrderByWithRelationAndSearchRelevanceInput {
+  id: SortOrder
+  a: SortOrder
+  bars: BarOrderByRelationAggregateInput
+  _relevance: FooOrderByRelevanceInput
+}
+
+input FooWhereUniqueInput {
+  id: Int
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input BarOrderByRelationAggregateInput {
+  _count: SortOrder
+}
+
+input FooOrderByRelevanceInput {
+  fields: FooOrderByRelevanceFieldEnum!
+  sort: SortOrder!
+  search: String!
+}
+
+enum FooOrderByRelevanceFieldEnum {
+  a
+}"
+`;
+
+exports[`finds correct ordering types if fullTextSearch preview feature is enabled: typegen 1`] = `
+"import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
+
+// Pagination type
+type Pagination = {
+    first?: boolean
+    last?: boolean
+    before?: boolean
+    after?: boolean
+}
+
+// Prisma custom scalar names
+type CustomScalars = 'No custom scalars are used in your Prisma Schema.'
+
+// Prisma model type definitions
+interface PrismaModels {
+  Foo: Prisma.Foo
+  Bar: Prisma.Bar
+}
+
+// Prisma input types metadata
+interface NexusPrismaInputs {
+  Query: {
+    foos: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'bars'
+      ordering: 'id' | 'a' | 'bars' | '_relevance'
+    }
+    groupByFoo: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'a' | 'bars'
+      ordering: 'id' | 'a' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
+    bars: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'fooId' | 'foo'
+      ordering: 'id' | 'fooId' | 'foo'
+    }
+    groupByBar: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'fooId' | 'foo'
+      ordering: 'id' | 'fooId' | '_count' | '_avg' | '_max' | '_min' | '_sum'
+    }
+  },
+  Foo: {
+    bars: {
+      filtering: 'AND' | 'OR' | 'NOT' | 'id' | 'fooId' | 'foo'
+      ordering: 'id' | 'fooId' | 'foo'
+    }
+  }
+  Bar: {
+
+  }
+}
+
+// Prisma output types metadata
+interface NexusPrismaOutputs {
+  Query: {
+    aggregateFoo: 'AggregateFoo'
+    foos: 'Foo'
+    foo: 'Foo'
+    groupByFoo: 'FooGroupByOutputType'
+    aggregateBar: 'AggregateBar'
+    bars: 'Bar'
+    bar: 'Bar'
+    groupByBar: 'BarGroupByOutputType'
+  },
+  Mutation: {
+    createOneFoo: 'Foo'
+    createManyFoo: 'AffectedRowsOutput'
+    deleteOneFoo: 'Foo'
+    deleteManyFoo: 'AffectedRowsOutput'
+    updateOneFoo: 'Foo'
+    updateManyFoo: 'AffectedRowsOutput'
+    upsertOneFoo: 'Foo'
+    createOneBar: 'Bar'
+    createManyBar: 'AffectedRowsOutput'
+    deleteOneBar: 'Bar'
+    deleteManyBar: 'AffectedRowsOutput'
+    updateOneBar: 'Bar'
+    updateManyBar: 'AffectedRowsOutput'
+    upsertOneBar: 'Bar'
+  },
+  Foo: {
+    id: 'Int'
+    a: 'String'
+    bars: 'Bar'
+  }
+  Bar: {
+    id: 'Int'
+    fooId: 'Int'
+    foo: 'Foo'
+  }
+}
+
+// Helper to gather all methods relative to a model
+interface NexusPrismaMethods {
+  Foo: Typegen.NexusPrismaFields<'Foo'>
+  Bar: Typegen.NexusPrismaFields<'Bar'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
+}
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
+
+declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
+  type NexusPrisma<
+    TypeName extends string,
+    ModelOrCrud extends 'model' | 'crud'
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
+}
+  "
+`;
+
 exports[`orderby fields can be allow-listed: schema 1`] = `
 "type Foo {
   id: Int!

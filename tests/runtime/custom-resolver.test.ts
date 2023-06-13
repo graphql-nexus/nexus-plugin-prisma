@@ -34,7 +34,7 @@ it('supports custom resolver for t.crud', async () => {
           originalResolve: GraphQLFieldResolver<any, any, any>
         ) => {
           before()
-          const res = await originalResolve(root, args, ctx, info) as unknown[];
+          const res = (await originalResolve(root, args, ctx, info)) as unknown[]
           after()
           return [...res, { id: 2 }]
         },

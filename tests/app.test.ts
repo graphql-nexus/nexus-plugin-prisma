@@ -72,9 +72,9 @@ it('integrates together', async () => {
         modules: [
           {
             module: require.resolve('@prisma/client/index.d.ts'),
-            alias: "prisma",
-          }
-        ]
+            alias: 'prisma',
+          },
+        ],
       },
       outputs: {
         typegen: fs.path(`generated/nexus-typegen.d.ts`),

@@ -31,7 +31,7 @@ const buildField = (mapping: InternalDMMF.Mapping, operation: OperationName): Ba
 const CRUD_MAPPED_FIELDS: Record<string, (m: InternalDMMF.Mapping) => (BaseMappedField | null)[]> = {
   Query: (m) => [
     buildField(m, 'aggregate'),
-    // buildField(m, 'findFirst'), 
+    // buildField(m, 'findFirst'),
     buildField(m, 'findMany'),
     buildField(m, 'findUnique'),
     buildField(m, 'groupBy'),
@@ -53,16 +53,14 @@ export const getCrudMappedFields = (
   namingStrategy: FieldNamingStrategy = defaultFieldNamingStrategy
 ): MappedField[] => {
   const mappedFields = flatMap(dmmf.operations, (m) => {
-    const res = CRUD_MAPPED_FIELDS[typeName](m);
+    const res = CRUD_MAPPED_FIELDS[typeName](m)
     // appendFileSync('tmp.output.log.txt', `mapping::getCrudMappedFields() - [${typeName}][${JSON.stringify(m)}] as res=${JSON.stringify(res)}\n`);
-    return res;
-  }).filter(
-    (mappedField) => {
-      const res = mappedField !== null;
-      // appendFileSync('tmp.output.log.txt', `mapping::getCrudMappedFields() - [${typeName}] field ${JSON.stringify(mappedField)} - res=${res}\n`);
-      return res;
-    }
-  ) as BaseMappedField[]
+    return res
+  }).filter((mappedField) => {
+    const res = mappedField !== null
+    // appendFileSync('tmp.output.log.txt', `mapping::getCrudMappedFields() - [${typeName}] field ${JSON.stringify(mappedField)} - res=${res}\n`);
+    return res
+  }) as BaseMappedField[]
 
   const result = mappedFields.map((mappedField) => ({
     ...mappedField,

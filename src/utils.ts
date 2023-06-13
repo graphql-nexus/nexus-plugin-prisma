@@ -47,7 +47,7 @@ export const hardWriteFileSync = (filePath: string, data: string): void => {
   try {
     fs.remove(filePath)
   } catch (error) {
-    if ((error as {code?: string}).code !== 'ENOENT') throw error
+    if ((error as { code?: string }).code !== 'ENOENT') throw error
   }
   fs.write(filePath, data)
 }
@@ -187,20 +187,20 @@ export function apply<T, F extends Function = (x: T) => any>(val: T, fn: F): any
 
 export async function delay(milliseconds: number) {
   return new Promise<void>((resolve) => {
-    setTimeout(resolve, milliseconds);
-  });
+    setTimeout(resolve, milliseconds)
+  })
 }
 
 export async function tryDelete(path: string, numberRetries = 1): Promise<void> {
-  let retryIndex = 0;
-  while(retryIndex < numberRetries) {
+  let retryIndex = 0
+  while (retryIndex < numberRetries) {
     try {
-      await fs.removeAsync(path);
-      break;
-    } catch(e) {
+      await fs.removeAsync(path)
+      break
+    } catch (e) {
       // swallow
-      retryIndex += 1;
-      await delay(250);
+      retryIndex += 1
+      await delay(250)
     }
   }
 }
