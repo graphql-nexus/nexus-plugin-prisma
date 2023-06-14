@@ -9,8 +9,7 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
 
-// broken prisma since 4.14 || 4.15
-it.skip('integrates together', async () => {
+it('integrates together', async () => {
   const fs = FS.cwd(Path.join(__dirname, '__app'))
 
   console.log(`running prisma generate in ${fs.cwd()}`);
