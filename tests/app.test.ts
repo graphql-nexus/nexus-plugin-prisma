@@ -94,7 +94,9 @@ it('integrates together', async () => {
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
 
   // For convenience
-  expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
+  const prismaRequire = require('@prisma/client')
+  const dmmf = prismaRequire.dmmf || prismaRequire.Prisma.dmmf
+  expect(dmmf).toMatchSnapshot('prisma client dmmf')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.
