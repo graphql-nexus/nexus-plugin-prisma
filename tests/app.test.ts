@@ -9,8 +9,7 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 // IDEA Future tests?
 // - show we gracefully handle case of Prisma Client JS import failing
 
-// broken prisma since 4.14 || 4.15
-it.skip('integrates together', async () => {
+it('integrates together', async () => {
   const fs = FS.cwd(Path.join(__dirname, '__app'))
 
   console.log(`running prisma generate in ${fs.cwd()}`);
@@ -95,7 +94,9 @@ it.skip('integrates together', async () => {
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
 
   // For convenience
-  expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
+  const prismaRequire = require('@prisma/client')
+  const dmmf = prismaRequire.dmmf || prismaRequire.Prisma.dmmf
+  expect(dmmf).toMatchSnapshot('prisma client dmmf')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.

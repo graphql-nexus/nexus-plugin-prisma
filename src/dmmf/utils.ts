@@ -4,7 +4,8 @@ export const getPrismaClientDmmf = (packagePath: string): DMMF.Document => {
   let dmmf: undefined | DMMF.Document = undefined
 
   try {
-    dmmf = require(packagePath).dmmf
+    const prismaPackage = require(packagePath)
+    dmmf = prismaPackage.dmmf || prismaPackage.Prisma.dmmf
   } catch (error) {
     throw new Error(
       `Failed to import prisma client package at ${packagePath}. The following error occurred while trying:
