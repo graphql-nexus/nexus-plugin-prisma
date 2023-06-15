@@ -12,7 +12,7 @@ import { createNexusPrismaInternal, mockConsoleLog } from './__utils'
 it('integrates together', async () => {
   const fs = FS.cwd(Path.join(__dirname, '__app'))
 
-  // console.log(`running prisma generate in ${fs.cwd()}`);
+  console.log(`running prisma generate in ${fs.cwd()}`);
 
   // Remove generated files before test run. The idea here is as follows:
   //
@@ -45,7 +45,7 @@ it('integrates together', async () => {
   const nexusPrismaTypegenPath = fs.path(`generated/nexus-plugin-prisma-typegen.d.ts`)
   const typegenFacadePath = require.resolve('../src/typegen/static')
 
-  // console.log(`running nexus generate to ${nexusPrismaTypegenPath}`);
+  console.log(`running nexus generate to ${nexusPrismaTypegenPath}`);
   const nexusPrisma = createNexusPrismaInternal({
     shouldGenerateArtifacts: true,
     outputs: {
@@ -94,7 +94,9 @@ it('integrates together', async () => {
   expect(nexusPrismaTypeGen).toMatchSnapshot('nexus prisma typegen')
 
   // For convenience
-  expect(require('@prisma/client').dmmf).toMatchSnapshot('prisma client dmmf')
+  const prismaRequire = require('@prisma/client')
+  const dmmf = prismaRequire.dmmf || prismaRequire.Prisma.dmmf
+  expect(dmmf).toMatchSnapshot('prisma client dmmf')
 
   // Assert the app type checks. In effect this is testing that our
   // typegen works.
