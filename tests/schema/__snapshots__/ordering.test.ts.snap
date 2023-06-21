@@ -18,7 +18,7 @@ type Query {
 
 input BarOrderByWithRelationAndSearchRelevanceInput {
   id: SortOrder
-  fooId: SortOrder
+  fooId: SortOrderInput
   foo: FooOrderByWithRelationAndSearchRelevanceInput
 }
 
@@ -42,6 +42,11 @@ enum SortOrder {
   desc
 }
 
+input SortOrderInput {
+  sort: SortOrder!
+  nulls: NullsOrder
+}
+
 input BarOrderByRelationAggregateInput {
   _count: SortOrder
 }
@@ -50,6 +55,11 @@ input FooOrderByRelevanceInput {
   fields: FooOrderByRelevanceFieldEnum!
   sort: SortOrder!
   search: String!
+}
+
+enum NullsOrder {
+  first
+  last
 }
 
 enum FooOrderByRelevanceFieldEnum {
