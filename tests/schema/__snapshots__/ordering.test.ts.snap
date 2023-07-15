@@ -24,6 +24,11 @@ input BarOrderByWithRelationAndSearchRelevanceInput {
 
 input BarWhereUniqueInput {
   id: Int
+  AND: [BarWhereInput!]
+  OR: [BarWhereInput!]
+  NOT: [BarWhereInput!]
+  fooId: IntNullableFilter
+  foo: FooWhereInput
 }
 
 input FooOrderByWithRelationAndSearchRelevanceInput {
@@ -35,6 +40,11 @@ input FooOrderByWithRelationAndSearchRelevanceInput {
 
 input FooWhereUniqueInput {
   id: Int
+  AND: [FooWhereInput!]
+  OR: [FooWhereInput!]
+  NOT: [FooWhereInput!]
+  a: StringFilter
+  bars: BarListRelationFilter
 }
 
 enum SortOrder {
@@ -47,6 +57,35 @@ input SortOrderInput {
   nulls: NullsOrder
 }
 
+input BarWhereInput {
+  AND: [BarWhereInput!]
+  OR: [BarWhereInput!]
+  NOT: [BarWhereInput!]
+  id: IntFilter
+  fooId: IntNullableFilter
+  foo: FooWhereInput
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntNullableFilter
+}
+
+input FooWhereInput {
+  AND: [FooWhereInput!]
+  OR: [FooWhereInput!]
+  NOT: [FooWhereInput!]
+  id: IntFilter
+  a: StringFilter
+  bars: BarListRelationFilter
+}
+
 input BarOrderByRelationAggregateInput {
   _count: SortOrder
 }
@@ -57,13 +96,88 @@ input FooOrderByRelevanceInput {
   search: String!
 }
 
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  search: String
+  mode: QueryMode
+  not: NestedStringFilter
+}
+
+input BarListRelationFilter {
+  every: BarWhereInput
+  some: BarWhereInput
+  none: BarWhereInput
+}
+
 enum NullsOrder {
   first
   last
 }
 
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedIntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntNullableFilter
+}
+
 enum FooOrderByRelevanceFieldEnum {
   a
+}
+
+enum QueryMode {
+  default
+  insensitive
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  search: String
+  not: NestedStringFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }"
 `;
 
@@ -202,11 +316,77 @@ input QueryFoosOrderByInput {
 
 input FooWhereUniqueInput {
   id: Int
+  AND: [FooWhereInput!]
+  OR: [FooWhereInput!]
+  NOT: [FooWhereInput!]
+  a: StringFilter
+  b: StringFilter
+  c: StringFilter
 }
 
 enum SortOrder {
   asc
   desc
+}
+
+input FooWhereInput {
+  AND: [FooWhereInput!]
+  OR: [FooWhereInput!]
+  NOT: [FooWhereInput!]
+  id: IntFilter
+  a: StringFilter
+  b: StringFilter
+  c: StringFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }"
 `;
 

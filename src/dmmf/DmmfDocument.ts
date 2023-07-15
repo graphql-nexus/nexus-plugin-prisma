@@ -185,3 +185,5 @@ function findCustomScalars(models: InternalDMMF.Model[]): Array<string> {
 
   return [...customScalars]
 }
+
+// cSpell:word DMMF datamodel entrypoints

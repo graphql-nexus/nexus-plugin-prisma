@@ -125,3 +125,5 @@ export declare namespace InternalDMMF {
     deleteMany = 'deleteMany',
   }
 }
+
+// cSpell:word DMMF datamodel

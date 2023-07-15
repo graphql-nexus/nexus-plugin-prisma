@@ -26,6 +26,11 @@ type Nested {
 
 input UserWhereUniqueInput {
   id: Int
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  name: StringFilter
+  nested: NestedListRelationFilter
 }
 
 input UserCreateInput {
@@ -40,6 +45,41 @@ input NestedCreateInput {
 
 input NestedWhereUniqueInput {
   id: Int
+  AND: [NestedWhereInput!]
+  OR: [NestedWhereInput!]
+  NOT: [NestedWhereInput!]
+  name: StringFilter
+  userId: IntFilter
+  user: UserWhereInput
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  name: StringFilter
+  nested: NestedListRelationFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedListRelationFilter {
+  every: NestedWhereInput
+  some: NestedWhereInput
+  none: NestedWhereInput
 }
 
 input NestedCreateNestedManyWithoutUserInput {
@@ -52,6 +92,41 @@ input UserCreateNestedOneWithoutNestedInput {
   create: UserCreateWithoutNestedInput
   connectOrCreate: UserCreateOrConnectWithoutNestedInput
   connect: UserWhereUniqueInput
+}
+
+input NestedWhereInput {
+  AND: [NestedWhereInput!]
+  OR: [NestedWhereInput!]
+  NOT: [NestedWhereInput!]
+  id: IntFilter
+  name: StringFilter
+  userId: IntFilter
+  user: UserWhereInput
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
 }
 
 input NestedCreateWithoutUserInput {
@@ -70,6 +145,17 @@ input UserCreateWithoutNestedInput {
 input UserCreateOrConnectWithoutNestedInput {
   where: UserWhereUniqueInput!
   create: UserCreateWithoutNestedInput!
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }",
   "typegen": "import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';
@@ -210,10 +296,74 @@ type User {
 
 input UserWhereUniqueInput {
   id: Int
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  name: StringFilter
+  createdWithBrowser: StringFilter
 }
 
 input UserCreateInput {
   name: String!
+}
+
+input UserWhereInput {
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  id: IntFilter
+  name: StringFilter
+  createdWithBrowser: StringFilter
+}
+
+input StringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
+}
+
+input NestedStringFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  not: NestedStringFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }",
   "typegen": "import * as Typegen from '@morgothulhu/nexus-plugin-prisma/typegen'
 import * as Prisma from '@prisma/client';

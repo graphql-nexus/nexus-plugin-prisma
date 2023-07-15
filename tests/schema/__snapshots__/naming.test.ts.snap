@@ -20,6 +20,10 @@ type ModelName {
 
 input ModelNameWhereUniqueInput {
   id: Int
+  AND: [ModelNameWhereInput!]
+  OR: [ModelNameWhereInput!]
+  NOT: [ModelNameWhereInput!]
+  name: StringFilter
 }
 
 input ModelNameCreateInput {
@@ -46,21 +50,6 @@ input ModelNameWhereInput {
   name: StringFilter
 }
 
-input StringFieldUpdateOperationsInput {
-  set: String
-}
-
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: NestedIntFilter
-}
-
 input StringFilter {
   equals: String
   in: [String!]
@@ -75,7 +64,11 @@ input StringFilter {
   not: NestedStringFilter
 }
 
-input NestedIntFilter {
+input StringFieldUpdateOperationsInput {
+  set: String
+}
+
+input IntFilter {
   equals: Int
   in: [Int!]
   notIn: [Int!]
@@ -98,6 +91,17 @@ input NestedStringFilter {
   startsWith: String
   endsWith: String
   not: NestedStringFilter
+}
+
+input NestedIntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: NestedIntFilter
 }"
 `;
 
