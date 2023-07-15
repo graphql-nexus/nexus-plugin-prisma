@@ -1,5 +1,5 @@
 const PrismaClientGenerator = require('@prisma/client/generator-build')
-import { DMMF } from '@prisma/client/runtime'
+import { DMMF } from '@prisma/client/runtime/library'
 import { inspect } from 'util'
 import { paginationStrategies, PaginationStrategy } from '../pagination'
 import { GlobalComputedInputs, GlobalMutationResolverParams, LocalComputedInputs } from '../utils'

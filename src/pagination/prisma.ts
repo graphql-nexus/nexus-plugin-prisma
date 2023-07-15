@@ -66,3 +66,5 @@ export const prismaStrategy: PaginationStrategy<PrismaPaginationArgs> = {
     return args
   },
 }
+
+// cSpell:word DMMF

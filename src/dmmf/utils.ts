@@ -1,4 +1,4 @@
-import { DMMF } from '@prisma/client/runtime'
+import { DMMF } from '@prisma/client/runtime/library'
 
 export const getPrismaClientDmmf = (packagePath: string): DMMF.Document => {
   let dmmf: undefined | DMMF.Document = undefined
@@ -21,3 +21,5 @@ If that does not solve your problem, please open an issue.`)
 
   return dmmf
 }
+
+// cSpell:word DMMF

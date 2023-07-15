@@ -55,7 +55,13 @@ export interface NexusGenInputs {
     private?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
   }
   BubbleWhereUniqueInput: { // input type
+    AND?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    NOT?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    OR?: NexusGenInputs['BubbleWhereInput'][] | null; // [BubbleWhereInput!]
+    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     id?: string | null; // String
+    members?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
+    private?: NexusGenInputs['BoolFilter'] | null; // BoolFilter
   }
   DateTimeFilter: { // input type
     equals?: NexusGenScalars['DateTime'] | null; // DateTime
@@ -133,6 +139,12 @@ export interface NexusGenInputs {
     id?: NexusGenInputs['IntFilter'] | null; // IntFilter
   }
   LocationWhereUniqueInput: { // input type
+    AND?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    NOT?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    OR?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
+    User?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
+    city?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    country?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: number | null; // Int
   }
   NestedBoolFilter: { // input type
@@ -235,7 +247,14 @@ export interface NexusGenInputs {
     status?: NexusGenInputs['EnumPostStatusFilter'] | null; // EnumPostStatusFilter
   }
   PostWhereUniqueInput: { // input type
+    AND?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    NOT?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    OR?: NexusGenInputs['PostWhereInput'][] | null; // [PostWhereInput!]
+    authors?: NexusGenInputs['UserListRelationFilter'] | null; // UserListRelationFilter
     id?: number | null; // Int
+    likes?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    rating?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
+    status?: NexusGenInputs['EnumPostStatusFilter'] | null; // EnumPostStatusFilter
   }
   StringFilter: { // input type
     contains?: string | null; // String
@@ -303,7 +322,17 @@ export interface NexusGenInputs {
     posts?: NexusGenInputs['PostListRelationFilter'] | null; // PostListRelationFilter
   }
   UserWhereUniqueInput: { // input type
+    AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    Bubble?: NexusGenInputs['BubbleWhereInput'] | null; // BubbleWhereInput
+    NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
+    bubbleId?: NexusGenInputs['StringNullableFilter'] | null; // StringNullableFilter
+    firstName?: NexusGenInputs['StringFilter'] | null; // StringFilter
     id?: string | null; // String
+    lastName?: NexusGenInputs['StringFilter'] | null; // StringFilter
+    location?: NexusGenInputs['LocationWhereInput'] | null; // LocationWhereInput
+    locationId?: NexusGenInputs['IntFilter'] | null; // IntFilter
+    posts?: NexusGenInputs['PostListRelationFilter'] | null; // PostListRelationFilter
   }
 }
 

@@ -55,7 +55,13 @@ input BubbleWhereInput {
 }
 
 input BubbleWhereUniqueInput {
+  AND: [BubbleWhereInput!]
+  NOT: [BubbleWhereInput!]
+  OR: [BubbleWhereInput!]
+  createdAt: DateTimeFilter
   id: String
+  members: UserListRelationFilter
+  private: BoolFilter
 }
 
 scalar DateTime
@@ -153,6 +159,12 @@ input LocationWhereInput {
 }
 
 input LocationWhereUniqueInput {
+  AND: [LocationWhereInput!]
+  NOT: [LocationWhereInput!]
+  OR: [LocationWhereInput!]
+  User: UserListRelationFilter
+  city: StringFilter
+  country: StringFilter
   id: Int
 }
 
@@ -284,7 +296,14 @@ input PostWhereInput {
 }
 
 input PostWhereUniqueInput {
+  AND: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  authors: UserListRelationFilter
   id: Int
+  likes: IntFilter
+  rating: FloatFilter
+  status: EnumPostStatusFilter
 }
 
 type Query {
@@ -383,5 +402,15 @@ input UserWhereInput {
 }
 
 input UserWhereUniqueInput {
+  AND: [UserWhereInput!]
+  Bubble: BubbleWhereInput
+  NOT: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  bubbleId: StringNullableFilter
+  firstName: StringFilter
   id: String
+  lastName: StringFilter
+  location: LocationWhereInput
+  locationId: IntFilter
+  posts: PostListRelationFilter
 }

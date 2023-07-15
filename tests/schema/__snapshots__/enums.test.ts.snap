@@ -21,6 +21,24 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: Int
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  favouriteColor: EnumColorFilter
+}
+
+input EnumColorFilter {
+  equals: Color
+  in: [Color!]
+  notIn: [Color!]
+  not: NestedEnumColorFilter
+}
+
+input NestedEnumColorFilter {
+  equals: Color
+  in: [Color!]
+  notIn: [Color!]
+  not: NestedEnumColorFilter
 }"
 `;
 
@@ -130,6 +148,10 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: Int
+  AND: [UserWhereInput!]
+  OR: [UserWhereInput!]
+  NOT: [UserWhereInput!]
+  favouriteColor: EnumColorFilter
 }
 
 enum Color {

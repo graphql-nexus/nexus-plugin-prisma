@@ -179,3 +179,5 @@ function resolveSkip(cursor: object | undefined) {
 
   return undefined
 }
+
+// cSpell:word DMMF

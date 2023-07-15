@@ -1,4 +1,4 @@
-import { DMMF } from '@prisma/client/runtime'
+import { DMMF } from '@prisma/client/runtime/library'
 import { InternalDMMF } from '../dmmf'
 import { prismaStrategy } from './prisma'
 import { relayStrategy } from './relay'
@@ -33,3 +33,5 @@ export const paginationStrategies: PaginationStrategies = {
 }
 
 export type PaginationStrategyTypes = typeof relayStrategy | typeof prismaStrategy
+
+// cSpell:word DMMF
