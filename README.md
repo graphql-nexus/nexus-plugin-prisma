@@ -5,7 +5,7 @@
 
 **NOTE: this plugin is now following the same package version as the Prisma framework it is linked/validated against. Will make things easier to track 👍**
 
-This plugin has been upgraded to support **Prisma 4.0+**. Latest version of prisma supported: [Prisma 5.0.0](https://github.com/prisma/prisma/releases/tag/5.0.0)
+This plugin has been upgraded to support **Prisma 4.0+**. Latest version of prisma supported: [Prisma 5.1.1](https://github.com/prisma/prisma/releases/tag/5.1.1)
 
 ---
 
